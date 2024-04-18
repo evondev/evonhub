@@ -8,10 +8,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        primary: "#926aff",
+        secondary: "#ff69cf",
+        text4: "#C9CAD1",
+        text3: "#A3A3A3",
+        text2: "#686A70",
+        bgDark3: "#263142",
+      },
       backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        gradientPrimary: "linear-gradient(90deg, #926aff 0%, #ff69cf 100%)",
       },
     },
   },
