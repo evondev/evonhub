@@ -20,9 +20,17 @@ const config: Config = {
         gray70: "#70767F",
         grayef: "#EFEFEF",
         grayb2: "#B2B8C6",
+        grayDark: "#1C1F25",
+        grayDarkest: "#101010",
       },
       backgroundImage: {
-        gradientPrimary: "linear-gradient(90deg, #926aff 0%, #ff69cf 100%)",
+        // gradientPrimary: "linear-gradient(90deg, #926aff 0%, #ff69cf 100%)",
+        gradientPrimary: `linear-gradient(
+          135deg,
+          #926aff 0%,
+          #ff77b0 50%,
+          #ffb367 100%
+        )`,
       },
     },
   },

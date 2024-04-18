@@ -4,11 +4,11 @@ import Link from "next/link";
 const Header = () => {
   return (
     <div className="top py-8 mb-5 flex items-center justify-between gap-5">
-      <div className="rounded-full gap-4 h-12 px-5 bg-white w-[min(100%,390px)] flex items-center">
+      <div className="rounded-full gap-4 h-12 px-5 bg-white dark:bg-grayDark w-[min(100%,390px)] flex items-center">
         <input
           type="text"
           placeholder="Search..."
-          className="bg-transparent w-full text-sm"
+          className="bg-transparent w-full text-sm dark:text-white"
         />
         <button className="text-grayb2">
           <svg

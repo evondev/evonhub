@@ -13,7 +13,7 @@ const MenuLink = ({ link, isActiveLink }: MenuLinkProps) => {
         "flex items-center gap-4 p-4 rounded-lg transition-all",
         isActiveLink(link.url)
           ? "bg-gradientPrimary text-white font-semibold"
-          : "text-gray70 hover:bg-grayef hover:text-grayPrimary font-medium"
+          : "text-gray70 hover:bg-grayef hover:text-grayPrimary font-medium dark:hover:bg-grayDarkest dark:hover:bg-opacity-20 dark:hover:text-white"
       )}
     >
       {link.icon}

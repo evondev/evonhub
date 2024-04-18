@@ -5,7 +5,7 @@
 @layer base {
   body {
     max-width: 1440px;
-    @apply mx-auto bg-grayf4 text-grayPrimary;
+    @apply mx-auto bg-grayf4 text-grayPrimary dark:text-white dark:bg-grayDarkest;
   }
   input {
     @apply bg-transparent outline-none border-none;
@@ -13,7 +13,13 @@
 }
 @layer components {
   .gradient {
-    background-image: linear-gradient(to right, #926aff, #ff69cf);
+    background-image: linear-gradient(
+      135deg,
+      #926aff 0%,
+      #ff77b0 50%,
+      #ffb367 100%
+    );
+    /* background-image: linear-gradient(to right, #926aff, #ff69cf); */
     transition: 0.5s;
   }
   .text-gradient {
