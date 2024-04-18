@@ -9,7 +9,7 @@ type CardProps = {
 };
 const Card = () => {
   return (
-    <div className="p-5 bg-bgDark3 rounded-xl">
+    <div className="p-5 bg-white rounded-xl">
       <div className="relative h-[220px] mb-6">
         <Image
           src="https://spotlight-modern.highfivethemes.com/content/images/size/w1000/format/webp/2023/06/demo-image-00007.webp"
@@ -25,7 +25,7 @@ const Card = () => {
       >
         HTML CSS
       </Link>
-      <h3 className="text-xl font-medium leading-normal mb-6 tracking-wide">
+      <h3 className="text-xl font-bold leading-normal mb-6 tracking-wide">
         Khóa học HTML CSS từ cơ bản đến nâng cao dành cho người mới
       </h3>
       <Link

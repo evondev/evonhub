@@ -20,9 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${manrope.className} relative`}>
-        <main className="grid grid-cols-[300px,minmax(0,1fr)] min-h-screen">
+        <main className="grid grid-cols-1 md:grid-cols-[300px,minmax(0,1fr)] min-h-screen">
           <Sidebar></Sidebar>
-          <section className="px-10 pb-10">
+          <section className="px-5 md:px-10 pb-10">
             <Header></Header>
             {children}
           </section>

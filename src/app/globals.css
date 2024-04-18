@@ -5,7 +5,7 @@
 @layer base {
   body {
     max-width: 1440px;
-    @apply mx-auto bg-[#1D2733] text-white;
+    @apply mx-auto bg-grayf4 text-grayPrimary;
   }
   input {
     @apply bg-transparent outline-none border-none;

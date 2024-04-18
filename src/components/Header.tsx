@@ -2,14 +2,14 @@ import Image from "next/image";
 
 const Header = () => {
   return (
-    <div className="top py-8 mb-5 flex items-center justify-between">
-      <div className="rounded-full gap-4 h-12 px-5 bg-bgDark3 w-[min(100%,390px)] flex items-center">
+    <div className="top py-8 mb-5 flex items-center justify-between gap-5">
+      <div className="rounded-full gap-4 h-12 px-5 bg-white w-[min(100%,390px)] flex items-center">
         <input
           type="text"
           placeholder="Search..."
-          className="bg-transparent w-full text-white"
+          className="bg-transparent w-full text-sm"
         />
-        <button>
+        <button className="text-grayb2">
           <svg
             width={22}
             height={22}
@@ -21,14 +21,14 @@ const Header = () => {
               cx={11}
               cy="10.5"
               r="8.5"
-              stroke="#F6F6F4"
+              stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
             <path
               d="M16.5 17L19.5 20"
-              stroke="#F6F6F4"
+              stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"

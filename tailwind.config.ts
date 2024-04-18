@@ -15,6 +15,11 @@ const config: Config = {
         text3: "#A3A3A3",
         text2: "#686A70",
         bgDark3: "#263142",
+        grayf4: "#F4F4F4",
+        grayPrimary: "#1A1D1F",
+        gray70: "#70767F",
+        grayef: "#EFEFEF",
+        grayb2: "#B2B8C6",
       },
       backgroundImage: {
         gradientPrimary: "linear-gradient(90deg, #926aff 0%, #ff69cf 100%)",
