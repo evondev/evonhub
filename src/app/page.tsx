@@ -1,9 +1,9 @@
-import Overview from "@/pages/Overview";
+import Dashboard from "@/pages/Dashboard";
 
 export default function Home() {
   return (
     <>
-      <Overview></Overview>
+      <Dashboard></Dashboard>
     </>
   );
 }

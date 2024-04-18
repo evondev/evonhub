@@ -8,14 +8,14 @@ import { TMenuLink } from "@/types";
 
 export const menuLinks: TMenuLink[] = [
   {
-    title: "Overview",
-    icon: <IconDashboard></IconDashboard>,
+    title: "Dashboard",
+    icon: <IconHome></IconHome>,
     url: "/",
   },
   {
-    title: "Dashboard",
-    icon: <IconHome></IconHome>,
-    url: "/dashboard",
+    title: "Overview",
+    icon: <IconDashboard></IconDashboard>,
+    url: "/overview",
   },
   {
     title: "Courses",
