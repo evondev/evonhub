@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const Header = () => {
   return (
@@ -37,7 +38,7 @@ const Header = () => {
         </button>
       </div>
       <div className="flex items-center gap-5">
-        <div className="rounded-full size-10">
+        <Link href="/profile" className="rounded-full size-10">
           <Image
             alt=""
             src="https://spotlight-modern.highfivethemes.com/content/images/size/w800/format/webp/2023/06/demo-image-00002-1.webp"
@@ -45,7 +46,7 @@ const Header = () => {
             height={80}
             className="w-full h-full rounded-full object-cover"
           ></Image>
-        </div>
+        </Link>
       </div>
     </div>
   );

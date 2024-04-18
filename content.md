@@ -1,0 +1,9 @@
+- HomePage
+- Lesson
+- Details course
+- Profile
+- Students
+- Courses
+- Ranking
+- Auth
+- Admin:

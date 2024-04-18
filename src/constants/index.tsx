@@ -13,7 +13,7 @@ export const menuLinks: TMenuLink[] = [
     url: "/",
   },
   {
-    title: "Home Page",
+    title: "Dashboard",
     icon: <IconHome></IconHome>,
     url: "/dashboard",
   },

@@ -7,7 +7,7 @@ import MenuLink from "./MenuLink";
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const isActiveLink = (url: string) => pathname.includes(url);
+  const isActiveLink = (url: string) => pathname === url;
   return (
     <aside className="bg-white sticky top-0 left-0 py-8 px-5 hidden sm:block">
       <Link href="/" className="flex items-center gap-3 py-3 mb-5">
