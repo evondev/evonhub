@@ -17,13 +17,16 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<TActiveTab>("My courses");
   return (
     <div>
-      <div className="flex p-2 rounded-lg bg-white gap-2">
+      <div className="flex p-2 rounded-lg bg-white dark:bg-grayDark gap-2">
         {tabs.map((tab) => (
           <button
             key={tab.title}
+            onClick={() => setActiveTab(tab.title)}
             className={twMerge(
               "font-medium py-2 px-4 text-sm rounded",
-              tab.title === activeTab ? "bg-gray-100 font-semibold" : ""
+              tab.title === activeTab
+                ? "bg-gray-100 dark:bg-gradientPrimary dark:text-white font-semibold"
+                : ""
             )}
           >
             {tab.title}
