@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#926aff",
-        secondary: "#ff69cf",
+        secondary: "#FD5404",
+        primary: "#0377FC",
         text4: "#C9CAD1",
         text3: "#A3A3A3",
         text2: "#686A70",
@@ -21,16 +21,8 @@ const config: Config = {
         grayef: "#EFEFEF",
         grayb2: "#B2B8C6",
         grayDark: "#1C1F25",
+        grayDarker: "#26282E",
         grayDarkest: "#101010",
-      },
-      backgroundImage: {
-        // gradientPrimary: "linear-gradient(90deg, #926aff 0%, #ff69cf 100%)",
-        gradientPrimary: `linear-gradient(
-          135deg,
-          #926aff 0%,
-          #ff77b0 50%,
-          #ffb367 100%
-        )`,
       },
     },
   },

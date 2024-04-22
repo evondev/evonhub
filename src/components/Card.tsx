@@ -22,7 +22,7 @@ const Card = () => {
       </div>
       <Link
         href="/"
-        className="uppercase inline-block py-1 px-4 rounded text-xs bg-primary bg-opacity-10 font-semibold text-primary mb-4"
+        className="uppercase inline-block py-1 px-4 rounded text-xs bg-primary bg-opacity-10 font-bold text-primary mb-4"
       >
         HTML CSS
       </Link>
@@ -31,9 +31,11 @@ const Card = () => {
       </h3>
       <Link
         href="/"
-        className="flex items-center justify-center gap-2 h-12 px-5 rounded-lg gradient text-white font-medium ml-auto w-fit"
+        className="flex items-center justify-center gap-2 h-12 px-5 rounded-full bg-primary text-white font-medium ml-auto w-fit group"
       >
-        <IconPlay />
+        <div className="group-hover:animate-spin">
+          <IconPlay />
+        </div>
         <span>Watch now</span>
       </Link>
     </div>

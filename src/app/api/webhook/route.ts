@@ -1,5 +1,8 @@
+import { createUser } from "@/lib/actions/user.action";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
+import { NextResponse } from "next/server";
+import slugify from "slugify";
 import { Webhook } from "svix";
 
 export async function POST(req: Request) {
@@ -53,16 +56,16 @@ export async function POST(req: Request) {
   if (eventType === "user.created") {
     const { id, email_addresses, image_url, username, first_name, last_name } =
       evt.data;
-    // const mongoUser = await createUser({
-    //   clerkId: id,
-    //   name: `${first_name} ${last_name}`,
-    //   username: username! || slugify(`${first_name}${last_name}`),
-    //   email: email_addresses[0].email_address,
-    //   avatar: image_url,
-    //   joinedAt: new Date(),
-    //   bio: "User at Hipnode",
-    // });
-    // return NextResponse.json({ message: "OK", user: mongoUser });
+    const mongoUser = await createUser({
+      clerkId: id,
+      name: `${first_name} ${last_name}`,
+      username: username! || slugify(`${first_name}${last_name}`),
+      email: email_addresses[0].email_address,
+      avatar: image_url,
+      joinedAt: new Date(),
+      bio: "User at Hipnode",
+    });
+    return NextResponse.json({ message: "OK", user: mongoUser });
   } else if (eventType === "user.updated") {
     const { id, email_addresses, image_url, username, first_name, last_name } =
       evt.data;

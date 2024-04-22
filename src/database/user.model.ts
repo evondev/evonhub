@@ -8,17 +8,8 @@ export interface IUser extends Document {
   password?: string;
   bio?: string;
   avatar: string;
-  followers: Schema.Types.ObjectId[];
-  following: Schema.Types.ObjectId[];
-  website?: string;
-  socials?: {
-    facebook?: string;
-    twitter?: string;
-    instagram?: string;
-    youtube?: string;
-  };
+  courses: Schema.Types.ObjectId[];
   liked: Schema.Types.ObjectId[];
-  saved: Schema.Types.ObjectId[];
   role: string;
   joinedAt: Date;
 }
@@ -51,45 +42,16 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  followers: [
+  courses: [
     {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Course",
     },
   ],
-  following: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
-  website: {
-    type: String,
-  },
-  socials: {
-    facebook: {
-      type: String,
-    },
-    twitter: {
-      type: String,
-    },
-    instagram: {
-      type: String,
-    },
-    youtube: {
-      type: String,
-    },
-  },
   liked: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Post",
-    },
-  ],
-  saved: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Post",
+      ref: "Course",
     },
   ],
   joinedAt: {

@@ -1,7 +1,9 @@
-import Image from "next/image";
+"use client";
+import { UserButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 
 const Header = () => {
+  const auth = useAuth();
   return (
     <div className="top py-8 mb-5 flex items-center justify-between gap-5">
       <div className="rounded-full gap-4 h-12 px-5 bg-white dark:bg-grayDark w-[min(100%,390px)] flex items-center">
@@ -38,15 +40,32 @@ const Header = () => {
         </button>
       </div>
       <div className="flex items-center gap-5">
-        <Link href="/profile" className="rounded-full size-10">
-          <Image
-            alt=""
-            src="https://spotlight-modern.highfivethemes.com/content/images/size/w800/format/webp/2023/06/demo-image-00002-1.webp"
-            width={80}
-            height={80}
-            className="w-full h-full rounded-full object-cover"
-          ></Image>
-        </Link>
+        {auth?.userId ? (
+          <UserButton afterSignOutUrl="/" />
+        ) : (
+          <Link
+            href="/sign-in"
+            className="py-3 flex items-center justify-center gap-2 px-5 h-12 rounded-lg bg-primary text-white font-semibold"
+          >
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </span>
+            Đăng nhập
+          </Link>
+        )}
       </div>
     </div>
   );

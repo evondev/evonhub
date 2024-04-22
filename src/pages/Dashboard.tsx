@@ -21,11 +21,14 @@ const Dashboard = () => {
         {tabs.map((tab) => (
           <button
             key={tab.title}
-            onClick={() => setActiveTab(tab.title)}
+            onClick={() => {
+              setActiveTab(tab.title);
+            }}
+            type="button"
             className={twMerge(
               "font-medium py-2 px-4 text-sm rounded",
               tab.title === activeTab
-                ? "bg-gray-100 dark:bg-gradientPrimary dark:text-white font-semibold"
+                ? "bg-gray-100 dark:bg-grayDarker dark:text-white font-semibold"
                 : ""
             )}
           >
