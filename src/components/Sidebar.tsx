@@ -11,7 +11,7 @@ const Sidebar = () => {
   return (
     <aside className="bg-white sticky top-0 left-0 py-8 px-5 hidden sm:block dark:bg-grayDark">
       <Link href="/" className="flex items-center gap-2 py-3 mb-5">
-        <span className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg bg-primary p-3.5">
+        <span className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg bg-grayDarker p-3.5">
           <Image
             width={40}
             height={40}

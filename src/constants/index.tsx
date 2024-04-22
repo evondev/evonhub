@@ -1,9 +1,4 @@
-import {
-  IconDashboard,
-  IconHome,
-  IconPlay,
-  IconUsers,
-} from "@/components/icons";
+import { IconHome, IconPlay } from "@/components/icons";
 import { TMenuLink } from "@/types";
 
 export const menuLinks: TMenuLink[] = [
@@ -12,19 +7,19 @@ export const menuLinks: TMenuLink[] = [
     icon: <IconHome></IconHome>,
     url: "/",
   },
-  {
-    title: "Overview",
-    icon: <IconDashboard></IconDashboard>,
-    url: "/overview",
-  },
+  // {
+  //   title: "Overview",
+  //   icon: <IconDashboard></IconDashboard>,
+  //   url: "/overview",
+  // },
   {
     title: "Courses",
     icon: <IconPlay></IconPlay>,
     url: "/courses",
   },
-  {
-    title: "Students",
-    icon: <IconUsers></IconUsers>,
-    url: "/students",
-  },
+  // {
+  //   title: "Students",
+  //   icon: <IconUsers></IconUsers>,
+  //   url: "/students",
+  // },
 ];
