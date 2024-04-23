@@ -40,3 +40,15 @@ export async function deleteUser(params: DeleteUserParams) {
     console.log(error);
   }
 }
+export async function getUserById({ userId }: { userId: string }) {
+  try {
+    connectToDatabase();
+    let user = await User.findOne({ clerkId: userId });
+    if (!user) {
+      user = await User.findById(userId);
+    }
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
+}

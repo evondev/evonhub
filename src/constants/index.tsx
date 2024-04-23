@@ -17,6 +17,11 @@ export const menuLinks: TMenuLink[] = [
     icon: <IconPlay></IconPlay>,
     url: "/courses",
   },
+  {
+    title: "Add new course",
+    icon: <IconPlay></IconPlay>,
+    url: "/not-admin/course/add-new",
+  },
   // {
   //   title: "Students",
   //   icon: <IconUsers></IconUsers>,

@@ -22,4 +22,10 @@ export interface UpdateUserParams {
 export interface DeleteUserParams {
   clerkId: string;
 }
+export interface CreateCourseParams {
+  title: string;
+  slug: string;
+  path: string;
+  author: string;
+}
 export { TMenuLink };

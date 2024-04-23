@@ -4,9 +4,16 @@
 
 @layer base {
   body {
-    max-width: 1440px;
-    @apply mx-auto bg-grayf4 text-grayPrimary dark:text-white dark:bg-grayDarkest antialiased;
+    @apply bg-grayf4 text-grayPrimary dark:text-white dark:bg-grayDarkest antialiased;
   }
+  .wrapper {
+    max-width: 1440px;
+    @apply mx-auto;
+  }
+  /* html body[data-scroll-locked] {
+    padding: 0 !important;
+    margin: 0 auto !important;
+  } */
   input {
     @apply bg-transparent outline-none border-none;
   }

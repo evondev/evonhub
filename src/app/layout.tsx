@@ -19,7 +19,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${manrope.className} relative`}>{children}</body>
+        <body className={`${manrope.className}`}>
+          <div className="wrapper relative">{children}</div>
+        </body>
       </html>
     </ClerkProvider>
   );
