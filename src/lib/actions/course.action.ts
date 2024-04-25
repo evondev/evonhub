@@ -18,9 +18,7 @@ export async function createCourse({
       path,
       author,
     });
-    console.log("course:", course);
     revalidatePath(path);
-    return course;
   } catch (error) {
     console.log(error);
   }

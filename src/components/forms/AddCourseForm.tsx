@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { createCourse } from "@/lib/actions/course.action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import slugify from "slugify";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -38,12 +39,18 @@ export default function AddCourseForm({ userId }: { userId: string }) {
     if (!slug) {
       newSlug = slugify(title, { lower: true });
     }
-    await createCourse({
-      title,
-      slug: newSlug,
-      path: "/",
-      author: userId,
-    });
+    try {
+      await createCourse({
+        title,
+        slug: newSlug,
+        path: "/",
+        author: userId,
+      });
+      form.reset();
+      toast.success("Khóa học đã được thêm thành công");
+    } catch (error) {
+      console.log(error);
+    }
   }
   return (
     <Form {...form}>
@@ -76,8 +83,14 @@ export default function AddCourseForm({ userId }: { userId: string }) {
             )}
           />
         </div>
-        <div className="mb-10"></div>
-        <Button type="submit">Thêm khóa học</Button>
+        <div className="mt-10 flex justify-end">
+          <Button
+            type="submit"
+            className="h-12 bg-primary dark:bg-primary dark:text-white text-white font-bold"
+          >
+            Thêm khóa học
+          </Button>
+        </div>
       </form>
     </Form>
   );

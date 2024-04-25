@@ -10,32 +10,16 @@
     max-width: 1440px;
     @apply mx-auto;
   }
-  /* html body[data-scroll-locked] {
-    padding: 0 !important;
-    margin: 0 auto !important;
-  } */
   input {
-    @apply bg-transparent outline-none border-none;
+    @apply bg-transparent outline-none;
   }
 }
 @layer components {
-  .gradient {
-    background-image: linear-gradient(
-      135deg,
-      #926aff 0%,
-      #ff77b0 50%,
-      #ffb367 100%
-    );
-    /* background-image: linear-gradient(to right, #926aff, #ff69cf); */
-    transition: 0.5s;
+  .Toastify__toast-container {
+    width: fit-content;
+    font-size: 14px;
   }
-  .text-gradient {
-    background-image: linear-gradient(to right, #926aff, #ff69cf);
-    color: transparent;
-    background-clip: text;
-    -webkit-background-clip: text;
-  }
-  .gradient:hover {
-    opacity: 0.75;
+  .Toastify__toast {
+    @apply text-gray-700;
   }
 }
