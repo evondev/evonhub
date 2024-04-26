@@ -1,6 +1,6 @@
 "use server";
-import Course from "@/database/course.model";
-import { CreateCourseParams } from "@/types";
+import Course, { ICourse } from "@/database/course.model";
+import { CreateCourseParams, UpdateCourseParams } from "@/types";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
@@ -22,4 +22,22 @@ export async function createCourse({
   } catch (error) {
     console.log(error);
   }
+}
+export async function updateCourse({ slug, updateData }: UpdateCourseParams) {
+  try {
+    connectToDatabase();
+    await Course.findOneAndUpdate({ slug }, updateData, {
+      new: true,
+    });
+    revalidatePath(`/admin/course/update?slug=${slug}`);
+  } catch (error) {}
+}
+export async function getCourseBySlug(
+  slug: string
+): Promise<ICourse | undefined> {
+  try {
+    connectToDatabase();
+    const course = await Course.findOne({ slug });
+    return course;
+  } catch (error) {}
 }

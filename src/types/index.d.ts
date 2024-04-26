@@ -28,4 +28,8 @@ export interface CreateCourseParams {
   path: string;
   author: string;
 }
+export interface UpdateCourseParams {
+  slug: string;
+  updateData: Partial<ICourse>;
+}
 export { TMenuLink };

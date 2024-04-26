@@ -15,7 +15,7 @@ const Lesson = () => {
   return (
     <div className="grid grid-cols-[2fr,1fr] gap-5 items-start">
       <div>
-        <div className="h-[400px] bg-gray-200 rounded-lg mb-5"></div>
+        <div className="h-[400px] bg-gray-200 dark:bg-grayDarker rounded-lg mb-5"></div>
         <h1 className="font-bold text-2xl mb-5">Studzy - Course Detail</h1>
         <div className="lesson-content">
           <p className="mb-5">
