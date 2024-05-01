@@ -41,3 +41,16 @@ export async function getCourseBySlug(
     return course;
   } catch (error) {}
 }
+export async function getAllCourses(): Promise<ICourse[] | undefined> {
+  try {
+    connectToDatabase();
+    const courses = await Course.find();
+    return courses;
+  } catch (error) {}
+}
+export async function deleteCourse(slug: string) {
+  try {
+    connectToDatabase();
+    await Course.findOneAndDelete({ slug });
+  } catch (error) {}
+}

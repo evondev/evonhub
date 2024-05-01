@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./globals.css";
+import "./globals.scss";
 
 const manrope = Manrope({ subsets: ["latin"] });
 

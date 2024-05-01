@@ -1,9 +1,12 @@
+import { getAllCourses } from "@/lib/actions/course.action";
 import Courses from "@/pages/Courses";
 
-const page = () => {
+const page = async () => {
+  const courses = await getAllCourses();
+  if (!courses) return <div>Loading...</div>;
   return (
     <div>
-      <Courses></Courses>
+      <Courses data={JSON.parse(JSON.stringify(courses)) || []}></Courses>
     </div>
   );
 };

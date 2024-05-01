@@ -7,24 +7,19 @@ export const menuLinks: TMenuLink[] = [
     icon: <IconHome></IconHome>,
     url: "/",
   },
-  // {
-  //   title: "Overview",
-  //   icon: <IconDashboard></IconDashboard>,
-  //   url: "/overview",
-  // },
   {
     title: "Courses",
     icon: <IconPlay></IconPlay>,
     url: "/courses",
   },
   {
-    title: "Add new course",
+    title: "Manage Courses",
     icon: <IconPlay></IconPlay>,
-    url: "/admin/course/add-new",
+    url: "/admin/course/manage",
+    isAdmin: true,
   },
-  // {
-  //   title: "Students",
-  //   icon: <IconUsers></IconUsers>,
-  //   url: "/students",
-  // },
 ];
+export const primaryButtonClassName =
+  "bg-primary text-white rounded-lg h-12 inline-flex items-center justify-center text-center px-5 font-semibold";
+export const actionClassName =
+  "hover:text-white size-8 flex items-center justify-center bg-gray-100 dark:bg-grayDarkest rounded-full  transition-all";

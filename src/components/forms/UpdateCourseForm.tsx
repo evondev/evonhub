@@ -57,6 +57,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
       salePrice: data.salePrice.toString(),
       intro: data.intro,
       desc: data.desc,
+      level: data.level,
     },
   });
   const [infoType, setInfoType] = useState<TInfo>("requirements");
@@ -161,7 +162,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
               <FormItem>
                 <FormLabel>Trình độ</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="Trình độ" {...field} />
+                  <Input placeholder="Trình độ" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -174,7 +175,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
               <FormItem>
                 <FormLabel>Danh mục</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="Danh mục" {...field} />
+                  <Input placeholder="Danh mục" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

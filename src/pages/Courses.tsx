@@ -1,11 +1,12 @@
-import Card from "@/components/Card";
+import CourseItem from "@/components/CourseItem";
+import { ICourse } from "@/database/course.model";
 
-const Courses = () => {
+const Courses = ({ data }: { data: ICourse[] }) => {
   return (
-    <div className="main grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6">
-      <Card></Card>
-      <Card></Card>
-      <Card></Card>
+    <div className="main grid grid-cols-3 gap-6">
+      {data.map((course) => (
+        <CourseItem key={course.slug} data={course}></CourseItem>
+      ))}
     </div>
   );
 };

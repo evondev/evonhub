@@ -4,6 +4,7 @@ type TMenuLink = {
   title: string;
   icon: React.ReactNode;
   url: string;
+  isAdmin?: boolean;
 };
 export interface CreateUserParams {
   clerkId: string;
@@ -16,7 +17,7 @@ export interface CreateUserParams {
 }
 export interface UpdateUserParams {
   clerkId: string;
-  updateData: Partial<IUser>;
+  updateData: Omit<Partial<IUser>, "role">;
   path: string;
 }
 export interface DeleteUserParams {

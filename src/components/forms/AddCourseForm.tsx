@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { createCourse } from "@/lib/actions/course.action";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import slugify from "slugify";
@@ -25,6 +26,7 @@ const formSchema = z.object({
 });
 
 export default function AddCourseForm({ userId }: { userId: string }) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,6 +50,7 @@ export default function AddCourseForm({ userId }: { userId: string }) {
       });
       form.reset();
       toast.success("Khóa học đã được thêm thành công");
+      router.push(`/admin/course/update?slug=${newSlug}`);
     } catch (error) {
       console.log(error);
     }

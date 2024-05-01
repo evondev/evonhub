@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-grayf4 text-grayPrimary dark:text-white dark:bg-grayDarkest antialiased;
+  }
+  .wrapper {
+    max-width: 1440px;
+    @apply mx-auto;
+  }
+  textarea,
+  input {
+    @apply bg-transparent outline-none;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+@layer components {
+}
+.Toastify__toast-container {
+  width: fit-content;
+  font-size: 14px;
+}
+.Toastify__toast {
+  @apply text-gray-700;
+}
+.swal2-container {
+  .swal2-popup {
+    @apply rounded-xl;
+  }
+  .swal2-popup .swal2-title {
+    @apply text-2xl font-semibold text-grayDarkest;
+  }
+  .swal2-popup .swal2-styled.swal2-confirm {
+    all: unset;
+    box-sizing: border-box;
+    @apply text-white bg-primary font-semibold rounded-lg px-4 py-2 h-10 w-28 flex items-center justify-center text-center text-sm cursor-pointer;
+  }
+  .swal2-popup .swal2-styled.swal2-cancel {
+    all: unset;
+    box-sizing: border-box;
+    @apply bg-transparent text-grayDarkest hover:bg-none hover:bg-transparent h-10 w-28 text-sm font-semibold px-4 py-2 cursor-pointer text-center;
+  }
+  .swal2-popup .swal2-actions:not(.swal2-loading) .swal2-styled:hover {
+    @apply bg-none;
+  }
+}
