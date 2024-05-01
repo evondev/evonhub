@@ -1,6 +1,7 @@
 export { default as IconDashboard } from "./IconDashboard";
 export { default as IconDelete } from "./IconDelete";
 export { default as IconEdit } from "./IconEdit";
+export { default as IconEye } from "./IconEye";
 export { default as IconFavorite } from "./IconFavorite";
 export { default as IconHome } from "./IconHome";
 export { default as IconLike } from "./IconLike";

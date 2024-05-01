@@ -52,5 +52,6 @@ export async function deleteCourse(slug: string) {
   try {
     connectToDatabase();
     await Course.findOneAndDelete({ slug });
+    revalidatePath("/admin/course/manage");
   } catch (error) {}
 }

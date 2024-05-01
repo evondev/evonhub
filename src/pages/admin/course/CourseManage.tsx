@@ -1,5 +1,6 @@
 "use client";
-import { IconDelete, IconEdit } from "@/components/icons";
+import { IconDelete, IconEdit, IconEye } from "@/components/icons";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -12,7 +13,6 @@ import { actionClassName, primaryButtonClassName } from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { deleteCourse } from "@/lib/actions/course.action";
 import { cn } from "@/lib/utils";
-import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import Swal from "sweetalert2";
@@ -28,7 +28,6 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await deleteCourse(slug);
-        revalidatePath("/admin/course/manage");
         Swal.fire("Xóa khóa học thành công", "", "success");
       }
     });
@@ -43,8 +42,10 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
       </div>
       <Table className="bg-white rounded-lg dark:bg-grayDarker">
         <TableHeader>
-          <TableRow className="rounded-t-lg ">
-            <TableHead></TableHead>
+          <TableRow>
+            <TableHead>
+              <Checkbox />
+            </TableHead>
             <TableHead>Thông tin</TableHead>
             <TableHead>Giá khóa học</TableHead>
             <TableHead>Trạng thái</TableHead>
@@ -54,20 +55,22 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
         <TableBody>
           {courses.map((course) => (
             <TableRow key={course.slug}>
-              <TableCell></TableCell>
               <TableCell>
-                <div className="flex items-center gap-5">
+                <Checkbox />
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center gap-3">
                   <Image
-                    src={
-                      "https://spotlight-modern.highfivethemes.com/content/images/size/w800/format/webp/2023/06/demo-image-00002-1.webp"
-                    }
+                    src={course.image}
                     alt={course.title}
                     width={64}
                     height={64}
                     className="w-16 h-16 object-cover rounded flex-shrink-0"
                   />
                   <div>
-                    <p className="font-semibold text-base">{course.title}</p>
+                    <p className="font-bold text-base line-clamp-2 max-w-[400px]">
+                      {course.title}
+                    </p>
                     <p className="text-sm text-gray-400">
                       {new Date(course.createdAt).toLocaleDateString("vi-VN")}
                     </p>
@@ -86,6 +89,12 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
+                  <Link
+                    href={`/course/${course.slug}`}
+                    className={cn(actionClassName, "hover:bg-pink-500")}
+                  >
+                    <IconEye></IconEye>
+                  </Link>
                   <Link
                     href={`/admin/course/update?slug=${course.slug}`}
                     className={cn(actionClassName, "hover:bg-blue-500")}

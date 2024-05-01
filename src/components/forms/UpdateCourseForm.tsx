@@ -9,17 +9,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { actionClassName, primaryButtonClassName } from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { updateCourse } from "@/lib/actions/course.action";
+import { cn } from "@/lib/utils";
+import { UploadDropzone } from "@/utils/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useImmer } from "use-immer";
 import { z } from "zod";
+import { IconDelete } from "../icons";
 import IconAddMeta from "../icons/IconAddMeta";
 import { Button } from "../ui/button";
-import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 
 const formSchema = z.object({
@@ -58,6 +62,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
       intro: data.intro,
       desc: data.desc,
       level: data.level,
+      image: data.image,
     },
   });
   const [infoType, setInfoType] = useState<TInfo>("requirements");
@@ -95,6 +100,10 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
       console.log(error);
     }
   }
+  const image = useWatch({
+    control: form.control,
+    name: "image",
+  });
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
@@ -202,7 +211,11 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
               <FormItem>
                 <FormLabel>Mô tả</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Mô tả" {...field} className="h-40" />
+                  <Textarea
+                    placeholder="Mô tả"
+                    {...field}
+                    className="h-[250px]"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -215,27 +228,40 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
               <FormItem>
                 <FormLabel>Ảnh đại diện</FormLabel>
                 <FormControl>
-                  <Label
-                    htmlFor="picture"
-                    className="flex items-center justify-center h-40 bg-grayDarker rounded cursor-pointer text-slate-400"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="size-10"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
+                  <>
+                    {image && (
+                      <div className="relative">
+                        <Image
+                          src={image}
+                          alt="Course Image"
+                          width={200}
+                          height={150}
+                          className="w-full h-[250px] rounded-lg object-cover"
+                        />
+                        <button
+                          className={cn(
+                            actionClassName,
+                            "absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
+                          )}
+                          onClick={() => form.setValue("image", "")}
+                        >
+                          <IconDelete />
+                        </button>
+                      </div>
+                    )}
+                    {!image && (
+                      <UploadDropzone
+                        className="justify-center items-center bg-white dark:bg-grayDarker rounded-lg h-[250px]"
+                        endpoint="imageUploader"
+                        onClientUploadComplete={(res) => {
+                          form.setValue("image", res[0].url);
+                        }}
+                        onUploadError={(error: Error) => {
+                          alert(`ERROR! ${error.message}`);
+                        }}
                       />
-                    </svg>
-
-                    <Input id="picture" type="file" className="hidden" />
-                  </Label>
+                    )}
+                  </>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -314,10 +340,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
           />
         </div>
         <div className="mt-10 flex justify-end">
-          <Button
-            type="submit"
-            className="h-12 bg-primary dark:bg-primary dark:text-white text-white font-bold"
-          >
+          <Button type="submit" className={primaryButtonClassName}>
             Cập nhật
           </Button>
         </div>

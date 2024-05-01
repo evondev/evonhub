@@ -9,10 +9,10 @@ const nextConfig = {
         pathname: "/content/**",
       },
       {
-        protocol: "http",
-        hostname: "localhost",
+        protocol: "https",
+        hostname: "utfs.io",
         port: "",
-        pathname: "/**",
+        pathname: "/f/**",
       },
     ],
   },
