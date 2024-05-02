@@ -33,4 +33,8 @@ export interface UpdateCourseParams {
   slug: string;
   updateData: Partial<ICourse>;
 }
-export { TMenuLink };
+enum Role {
+  ADMIN = "ADMIN",
+  USER = "USER",
+}
+export { Role, TMenuLink };

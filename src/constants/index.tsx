@@ -1,4 +1,10 @@
-import { IconHome, IconPlay } from "@/components/icons";
+import {
+  IconCategory,
+  IconCourseManage,
+  IconHome,
+  IconPlay,
+  IconUsers,
+} from "@/components/icons";
 import { TMenuLink } from "@/types";
 
 export const menuLinks: TMenuLink[] = [
@@ -13,9 +19,21 @@ export const menuLinks: TMenuLink[] = [
     url: "/courses",
   },
   {
-    title: "Manage Courses",
-    icon: <IconPlay></IconPlay>,
+    title: "Manage courses",
+    icon: <IconCourseManage></IconCourseManage>,
     url: "/admin/course/manage",
+    isAdmin: true,
+  },
+  {
+    title: "Manage members",
+    icon: <IconUsers></IconUsers>,
+    url: "/admin/user/manage",
+    isAdmin: true,
+  },
+  {
+    title: "Manage categories",
+    icon: <IconCategory></IconCategory>,
+    url: "/admin/category/manage",
     isAdmin: true,
   },
 ];

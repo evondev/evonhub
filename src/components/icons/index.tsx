@@ -1,3 +1,5 @@
+export { default as IconCategory } from "./IconCategory";
+export { default as IconCourseManage } from "./IconCourseManage";
 export { default as IconDashboard } from "./IconDashboard";
 export { default as IconDelete } from "./IconDelete";
 export { default as IconEdit } from "./IconEdit";

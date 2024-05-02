@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MenuLink from "./MenuLink";
 
-const Sidebar = () => {
+const Sidebar = ({ role }: { role: string }) => {
   const pathname = usePathname();
   const isActiveLink = (url: string) => pathname === url;
   return (
@@ -23,11 +23,14 @@ const Sidebar = () => {
         <span className="text-xl font-bold">EvonHub</span>
       </Link>
       <ul className="flex flex-col gap-3">
-        {menuLinks.map((link) => (
-          <li key={link.title}>
-            <MenuLink link={link} isActiveLink={isActiveLink}></MenuLink>
-          </li>
-        ))}
+        {menuLinks.map((link) => {
+          if (link.isAdmin && role !== "ADMIN") return null;
+          return (
+            <li key={link.title}>
+              <MenuLink link={link} isActiveLink={isActiveLink}></MenuLink>
+            </li>
+          );
+        })}
       </ul>
     </aside>
   );
