@@ -2,7 +2,6 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { getUserById } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({
   children,
@@ -10,8 +9,8 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { userId } = auth();
-  if (!userId) redirect("/sign-in");
-  const mongoUser = await getUserById({ userId });
+  // if (!userId) redirect("/sign-in");
+  const mongoUser = await getUserById({ userId: userId || "" });
   const role = mongoUser?.role;
   return (
     <>

@@ -21,6 +21,9 @@
   }
 }
 @layer components {
+  .focus-primary:focus {
+    box-shadow: 0 0 0 2px rgb(106, 90, 249, 0.5);
+  }
 }
 .Toastify__toast-container {
   width: fit-content;

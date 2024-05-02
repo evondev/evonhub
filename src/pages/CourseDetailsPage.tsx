@@ -1,4 +1,10 @@
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   boxDetailClassName,
   primaryButtonClassName,
   widgetClassName,
@@ -48,15 +54,73 @@ const CourseDetailsPage = ({ data }: { data: ICourse }) => {
           </div>
           <div className="flex flex-col gap-5">
             <h2 className="text-lg font-bold">Nội dung</h2>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>Getting Started</AccordionTrigger>
+                <AccordionContent>
+                  Yes. It adheres to the WAI-ARIA design pattern.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
           <div className="flex flex-col gap-5">
             <h2 className="text-lg font-bold">Yêu cầu</h2>
+            <ul className="flex flex-col gap-5 text-sm">
+              {data.info.requirements.map((requirement, index) => (
+                <li key={index} className="flex items-center gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4.5 12.75l6 6 9-13.5"
+                    />
+                  </svg>
+                  <p>{requirement}</p>
+                </li>
+              ))}
+            </ul>
           </div>
           <div className="flex flex-col gap-5">
             <h2 className="text-lg font-bold">Lợi ích</h2>
+            <ul className="flex flex-col gap-5 text-sm">
+              {data.info.gained.map((item, index) => (
+                <li key={index} className="flex items-center gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4.5 12.75l6 6 9-13.5"
+                    />
+                  </svg>
+                  <p>{item}</p>
+                </li>
+              ))}
+            </ul>
           </div>
           <div className="flex flex-col gap-5">
             <h2 className="text-lg font-bold">Q/A</h2>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                <AccordionContent>
+                  Yes. It adheres to the WAI-ARIA design pattern.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </div>
       </div>

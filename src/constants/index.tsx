@@ -37,8 +37,9 @@ export const menuLinks: TMenuLink[] = [
     isAdmin: true,
   },
 ];
-export const primaryButtonClassName =
-  "bg-primary text-white rounded-lg h-12 inline-flex items-center justify-center text-center px-5 font-semibold min-w-[125px]";
+export const baseButtonClassName =
+  "rounded-lg h-12 inline-flex items-center justify-center text-center px-5 font-semibold min-w-[100px]";
+export const primaryButtonClassName = `bg-primary text-white ${baseButtonClassName}`;
 export const actionClassName =
   "hover:text-white size-8 flex items-center justify-center bg-gray-100 dark:bg-grayDarkest rounded-full  transition-all";
 export const boxDetailClassName =

@@ -7,11 +7,12 @@ const CourseItem = ({ data }: { data: ICourse }) => {
     <div className=" bg-white rounded-md dark:bg-grayDark flex flex-col">
       <div className="relative h-[220px]">
         <Image
-          src=""
+          src={data.image}
           fill
           priority
           alt=""
           className="w-full h-full object-cover rounded-md"
+          sizes="400px"
         ></Image>
       </div>
       <div className="p-5 flex-1 flex flex-col">
@@ -32,7 +33,7 @@ const CourseItem = ({ data }: { data: ICourse }) => {
             href={`/course/${data.slug}`}
             className="flex items-center justify-center gap-1 h-12 px-5 rounded-md bg-primary text-white font-semibold ml-auto w-fit group"
           >
-            <span>View details</span>
+            <span>Thông tin khóa học</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
