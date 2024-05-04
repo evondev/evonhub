@@ -42,6 +42,7 @@ const CourseContent = ({
         content: string;
         video: string;
         type: string;
+        slug: string;
       }[];
     }[];
   };
@@ -56,6 +57,7 @@ const CourseContent = ({
         content: string;
         video: string;
         type: string;
+        slug: string;
       }[];
     }[]
   >([]);
@@ -317,7 +319,7 @@ const CourseContent = ({
                                 </button>
                               </div>
                             </AccordionTrigger>
-                            <AccordionContent className="bg-white rounded-lg mt-5">
+                            <AccordionContent className="bgDarkMode rounded-lg mt-5">
                               <CourseContentLesson
                                 lessonId={lesson._id}
                                 lesson={lesson}
@@ -333,7 +335,7 @@ const CourseContent = ({
                     <Button
                       className={cn(
                         baseButtonClassName,
-                        "w-[140px] border border-current dark:hover:border-current hover:text-primary ml-auto block h-10 my-5 dark:border-grayDarker"
+                        "w-[140px] border border-current dark:hover:border-gray-700  ml-auto block h-10 my-5 dark:border-grayDarker hover:border-gray-400"
                       )}
                       onClick={() => handleAddLesson(lecture._id)}
                       isLoading={isSubmitting.lesson}
@@ -352,7 +354,7 @@ const CourseContent = ({
         <Button
           className={cn(
             baseButtonClassName,
-            "w-[160px] border border-current hover:text-primary dark:hover:border-current dark:border-grayDarker"
+            "w-[160px] border border-current hover:border-gray-400 dark:hover:border-gray-700 dark:border-grayDarker"
           )}
           onClick={handleAddLecture}
           isLoading={isSubmitting.lecture}

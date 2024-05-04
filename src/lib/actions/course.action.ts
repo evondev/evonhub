@@ -69,7 +69,12 @@ export async function getAllCourses(): Promise<ICourse[] | undefined> {
 export async function deleteCourse(slug: string) {
   try {
     connectToDatabase();
-    await Course.findOneAndDelete({ slug });
+    await Course.findOneAndUpdate(
+      { slug },
+      {
+        status: "pending",
+      }
+    );
     revalidatePath("/admin/course/manage");
   } catch (error) {}
 }

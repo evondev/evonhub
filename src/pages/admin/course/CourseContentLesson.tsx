@@ -13,10 +13,13 @@ import { updateLesson } from "@/lib/actions/lesson.action";
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import slugify from "slugify";
 import { z } from "zod";
 const formSchema = z.object({
   video: z.string().optional(),
   content: z.string().optional(),
+  slug: z.string().optional(),
+  title: z.string().optional(),
 });
 
 const CourseContentLesson = ({
@@ -29,12 +32,16 @@ const CourseContentLesson = ({
   lesson: {
     video: string;
     content: string;
+    slug: string;
+    title: string;
   };
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       video: lesson.video,
       content: lesson.content,
+      slug: lesson.slug,
+      title: lesson.title,
     },
   });
   async function onSubmitLesson(values: z.infer<typeof formSchema>) {
@@ -44,6 +51,13 @@ const CourseContentLesson = ({
         path: `/admin/course/content?slug=${slug}`,
         data: {
           ...values,
+          slug:
+            values.slug ||
+            slugify(lesson.title, {
+              lower: true,
+              locale: "vi",
+              remove: /[*+~.()'"!:@]/g,
+            }),
         },
       });
       toast.success("Bài học đã được cập nhật thành công");
@@ -56,7 +70,24 @@ const CourseContentLesson = ({
       <form
         onSubmit={form.handleSubmit(onSubmitLesson)}
         className="flex flex-col gap-6"
+        autoComplete="off"
       >
+        <FormField
+          control={form.control}
+          name="slug"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Slug</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Slug"
+                  className="bgDarkestMode"
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="video"
@@ -66,7 +97,7 @@ const CourseContentLesson = ({
               <FormControl>
                 <Input
                   placeholder="Nhập đường dẫn video"
-                  className="bg-gray-100 dark:bg-grayDarker"
+                  className="bgDarkestMode"
                   {...field}
                 />
               </FormControl>
@@ -82,7 +113,7 @@ const CourseContentLesson = ({
               <FormControl>
                 <Textarea
                   placeholder="Nhập nội dung"
-                  className="bg-gray-100 dark:bg-grayDarker"
+                  className="bgDarkestMode"
                   {...field}
                 />
               </FormControl>

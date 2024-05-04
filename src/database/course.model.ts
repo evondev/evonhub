@@ -1,3 +1,4 @@
+import { TLevel, TStatus } from "@/types";
 import mongoose, { Document, Schema, models } from "mongoose";
 mongoose.Promise = global.Promise;
 export interface ICourse extends Document {
@@ -11,8 +12,8 @@ export interface ICourse extends Document {
   rating: number;
   image: string;
   intro: string;
-  status: string;
-  level: string;
+  status: TStatus;
+  level: TLevel;
   category: Schema.Types.ObjectId;
   info: {
     requirements: string[];
@@ -67,7 +68,7 @@ const courseSchema = new Schema<ICourse>({
   },
   level: {
     type: String,
-    default: "beginner",
+    default: "easy",
   },
   category: {
     type: Schema.Types.ObjectId,

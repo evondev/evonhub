@@ -12,7 +12,7 @@ const MenuLink = ({ link, isActiveLink }: MenuLinkProps) => {
       className={twMerge(
         "flex items-center gap-4 p-3 rounded-lg transition-all",
         isActiveLink(link.url)
-          ? "text-white font-semibold bg-primary"
+          ? "text-white font-semibold gradientPrimary"
           : "text-gray70 dark:text-slate-500 hover:bg-primary hover:bg-opacity-10 hover:text-primary font-medium"
       )}
     >

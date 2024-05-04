@@ -9,7 +9,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { actionClassName, primaryButtonClassName } from "@/constants";
+import {
+  actionClassName,
+  courseStatus,
+  courseStatusClassName,
+  primaryButtonClassName,
+} from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { deleteCourse } from "@/lib/actions/course.action";
 import { cn } from "@/lib/utils";
@@ -87,26 +92,31 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                 </p>
               </TableCell>
               <TableCell>
-                <span className="text-xs font-semibold dark:bg-green-950 dark:text-green-50 text-green-950 bg-green-100 inline-flex py-1 px-3 rounded-full">
-                  Approved
+                <span
+                  className={cn(
+                    courseStatusClassName,
+                    courseStatus[course.status].className
+                  )}
+                >
+                  {courseStatus[course.status].text}
                 </span>
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
                   <Link
                     href={`/course/${course.slug}`}
-                    className={cn(actionClassName, "hover:bg-pink-500")}
+                    className={cn(actionClassName)}
                   >
                     <IconEye></IconEye>
                   </Link>
                   <Link
                     href={`/admin/course/update?slug=${course.slug}`}
-                    className={cn(actionClassName, "hover:bg-blue-500")}
+                    className={cn(actionClassName)}
                   >
                     <IconEdit></IconEdit>
                   </Link>
                   <button
-                    className={cn(actionClassName, "hover:bg-red-500")}
+                    className={cn(actionClassName)}
                     onClick={() => handleDeleteCourse(course.slug)}
                   >
                     <IconDelete />

@@ -1,6 +1,6 @@
 import { IUser } from "@/database/user.model";
 
-type TMenuLink = {
+export type TMenuLink = {
   title: string;
   icon: React.ReactNode;
   url: string;
@@ -34,8 +34,7 @@ export interface UpdateCourseParams {
   updateData: Partial<ICourse>;
   path?: string;
 }
-enum Role {
-  ADMIN = "ADMIN",
-  USER = "USER",
-}
-export { Role, TMenuLink };
+
+export type TStatus = "pending" | "approved" | "rejected";
+export type TLevel = "easy" | "medium" | "expert";
+export type TCourseInfo = "requirements" | "qa" | "gained";

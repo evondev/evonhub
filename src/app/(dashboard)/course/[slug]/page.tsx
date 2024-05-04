@@ -1,6 +1,7 @@
 import PageNotFound from "@/app/not-found";
 import { getCourseBySlug } from "@/lib/actions/course.action";
 import CourseDetailsPage from "@/pages/CourseDetailsPage";
+import { ECourseStatus } from "@/types/enums";
 
 const page = async ({
   params,
@@ -11,7 +12,8 @@ const page = async ({
 }) => {
   const slug = params.slug;
   const courseDetails = await getCourseBySlug(slug);
-  if (!courseDetails?.slug) return <PageNotFound />;
+  if (!courseDetails?.slug || courseDetails.status !== ECourseStatus.APPROVED)
+    return <PageNotFound />;
   return (
     <CourseDetailsPage
       data={JSON.parse(JSON.stringify(courseDetails))}

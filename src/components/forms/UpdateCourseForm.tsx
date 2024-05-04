@@ -17,6 +17,9 @@ import {
 import { ICourse } from "@/database/course.model";
 import { updateCourse } from "@/lib/actions/course.action";
 import { cn } from "@/lib/utils";
+import { TCourseInfo } from "@/types";
+import { TCourseInfoType } from "@/types/enums";
+import { updateCourseSchema } from "@/utils/formSchema";
 import { UploadDropzone } from "@/utils/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -29,37 +32,19 @@ import { z } from "zod";
 import { IconDelete, IconViews } from "../icons";
 import IconAddMeta from "../icons/IconAddMeta";
 import { Button } from "../ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Textarea } from "../ui/textarea";
 
-const formSchema = z.object({
-  title: z.string().min(10, {
-    message: "Tiêu đề phải có ít nhất 10 ký tự",
-  }),
-  slug: z.string().optional(),
-  price: z.string().optional(),
-  salePrice: z.string().optional(),
-  intro: z.string().optional(),
-  image: z.string().optional(),
-  desc: z.string().optional(),
-  content: z.string().optional(),
-  level: z.string().optional(),
-  category: z.string().optional(),
-  qa: z
-    .array(
-      z.object({
-        question: z.string(),
-        answer: z.string(),
-      })
-    )
-    .optional(),
-  requirements: z.array(z.string()).optional(),
-  gained: z.array(z.string()).optional(),
-});
-type TInfo = "requirements" | "qa" | "gained";
 export default function UpdateCourseForm({ data }: { data: ICourse }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof updateCourseSchema>>({
+    resolver: zodResolver(updateCourseSchema),
     defaultValues: {
       title: data.title,
       slug: data.slug,
@@ -69,6 +54,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
       desc: data.desc,
       level: data.level,
       image: data.image,
+      status: data.status,
     },
   });
   const [infoData, setInfoData] = useImmer({
@@ -76,8 +62,8 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
     qa: data.info.qa || [],
     gained: data.info.gained || [],
   });
-  const handleInfoData = (type: TInfo) => {
-    if (type === "qa") {
+  const handleInfoData = (type: TCourseInfo) => {
+    if (type === TCourseInfoType.QA) {
       setInfoData((draft) => {
         draft.qa.push({ question: "", answer: "" });
       });
@@ -88,7 +74,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
     });
   };
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof updateCourseSchema>) {
     setIsSubmitting(true);
     try {
       await updateCourse({
@@ -184,7 +170,19 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
               <FormItem>
                 <FormLabel>Trình độ</FormLabel>
                 <FormControl>
-                  <Input placeholder="Trình độ" {...field} />
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn trình độ" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="easy">Dễ</SelectItem>
+                      <SelectItem value="medium">Trung bình</SelectItem>
+                      <SelectItem value="expert">Khó</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -216,7 +214,31 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
               </FormItem>
             )}
           />
-          <div></div>
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Trạng thái</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn trạng thái" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="approved">Đã duyệt</SelectItem>
+                      <SelectItem value="pending">Đang chờ duyệt</SelectItem>
+                      <SelectItem value="rejected">Bị từ chối</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="desc"
