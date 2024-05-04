@@ -2,6 +2,7 @@ import type { Config } from "tailwindcss";
 import { withUt } from "uploadthing/tw";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -11,8 +12,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        secondary: "#ff6bcb",
-        primary: "#6a5af9",
+        secondary: "#0168FD",
+        primary: "#FF6E60",
         text4: "#C9CAD1",
         text3: "#A3A3A3",
         text2: "#686A70",

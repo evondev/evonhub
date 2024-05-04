@@ -33,3 +33,6 @@ export const getTimestamp = (createdAt: Date): string => {
     return `${years} ${years === 1 ? "year" : "years"} ago`;
   }
 };
+export const formatThoundsand = (num: number): string => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};

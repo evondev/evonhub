@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { ComponentProps } from "react";
 
 const IconAddMeta = (props: ComponentProps<"svg">) => {
@@ -6,8 +7,8 @@ const IconAddMeta = (props: ComponentProps<"svg">) => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      className="w-5 h-5 cursor-pointer"
       {...props}
+      className={cn("size-6 cursor-pointer", props.className)}
     >
       <path
         fillRule="evenodd"

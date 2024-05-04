@@ -9,19 +9,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { actionClassName, primaryButtonClassName } from "@/constants";
+import {
+  actionClassName,
+  baseButtonClassName,
+  primaryButtonClassName,
+} from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { updateCourse } from "@/lib/actions/course.action";
 import { cn } from "@/lib/utils";
 import { UploadDropzone } from "@/utils/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useImmer } from "use-immer";
 import { z } from "zod";
-import { IconDelete } from "../icons";
+import { IconDelete, IconViews } from "../icons";
 import IconAddMeta from "../icons/IconAddMeta";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
@@ -52,6 +57,7 @@ const formSchema = z.object({
 });
 type TInfo = "requirements" | "qa" | "gained";
 export default function UpdateCourseForm({ data }: { data: ICourse }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,24 +71,25 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
       image: data.image,
     },
   });
-  const [infoType, setInfoType] = useState<TInfo>("requirements");
   const [infoData, setInfoData] = useImmer({
     requirements: data.info.requirements || [],
     qa: data.info.qa || [],
     gained: data.info.gained || [],
   });
   const handleInfoData = (type: TInfo) => {
-    if (type === "qa") return;
+    if (type === "qa") {
+      setInfoData((draft) => {
+        draft.qa.push({ question: "", answer: "" });
+      });
+      return;
+    }
     setInfoData((draft) => {
       draft[type].push("");
     });
   };
-  // useEffect(() => {
-  //   form.setValue("title", data.title);
-  //   form.setValue("slug", data.slug);
-  // }, [data]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
     try {
       await updateCourse({
         slug: data.slug,
@@ -98,11 +105,17 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
       toast.success("Cập nhật khóa học thành công");
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsSubmitting(false);
     }
   }
   const image = useWatch({
     control: form.control,
     name: "image",
+  });
+  const slug = useWatch({
+    control: form.control,
+    name: "slug",
   });
   return (
     <Form {...form}>
@@ -214,7 +227,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
                   <Textarea
                     placeholder="Mô tả"
                     {...field}
-                    className="h-[250px]"
+                    className="h-[250px] focus-primary"
                   />
                 </FormControl>
                 <FormMessage />
@@ -230,7 +243,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
                 <FormControl>
                   <>
                     {image && (
-                      <div className="relative">
+                      <div className="relative group">
                         <Image
                           src={image}
                           alt="Course Image"
@@ -241,7 +254,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
                         <button
                           className={cn(
                             actionClassName,
-                            "absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
+                            "absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 hover:bg-red-500 opacity-0 invisible group-hover:opacity-100 group-hover:visible"
                           )}
                           onClick={() => form.setValue("image", "")}
                         >
@@ -274,7 +287,10 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
               <FormItem>
                 <FormLabel className="flex items-center justify-between">
                   Yêu cầu
-                  <IconAddMeta onClick={() => handleInfoData("requirements")} />
+                  <IconAddMeta
+                    className="text-primary"
+                    onClick={() => handleInfoData("requirements")}
+                  />
                 </FormLabel>
                 <FormControl>
                   <>
@@ -303,7 +319,10 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
               <FormItem>
                 <FormLabel className="flex items-center justify-between">
                   Kết quả đạt được
-                  <IconAddMeta onClick={() => handleInfoData("gained")} />
+                  <IconAddMeta
+                    className="text-primary"
+                    onClick={() => handleInfoData("gained")}
+                  />
                 </FormLabel>
                 <FormControl>
                   <>
@@ -332,17 +351,61 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
             name="qa"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Q/A</FormLabel>
-                <FormControl></FormControl>
+                <FormLabel className="flex items-center justify-between">
+                  Q/A
+                  <IconAddMeta
+                    className="text-primary"
+                    onClick={() => handleInfoData("qa")}
+                  />
+                </FormLabel>
+                <FormControl>
+                  <>
+                    {infoData.qa.map((item, index) => (
+                      <div key={index} className="grid grid-cols-2 gap-5">
+                        <Input
+                          placeholder={`Câu hỏi số ${index + 1}`}
+                          value={item.question}
+                          onChange={(e) => {
+                            setInfoData((draft) => {
+                              draft.qa[index].question = e.target.value;
+                            });
+                          }}
+                        />
+                        <Input
+                          placeholder={`Trả lời số ${index + 1}`}
+                          value={item.answer}
+                          onChange={(e) => {
+                            setInfoData((draft) => {
+                              draft.qa[index].answer = e.target.value;
+                            });
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <div className="mt-10 flex justify-end">
-          <Button type="submit" className={primaryButtonClassName}>
+        <div className="mt-10 flex justify-end gap-2">
+          <Button
+            type="submit"
+            className={primaryButtonClassName}
+            isLoading={isSubmitting}
+          >
             Cập nhật
           </Button>
+          <Link
+            href={`/course/${slug}`}
+            target="_blank"
+            type="submit"
+            className={cn(baseButtonClassName, "gap-2 text-sm")}
+          >
+            <IconViews />
+            Preview
+          </Link>
         </div>
       </form>
     </Form>

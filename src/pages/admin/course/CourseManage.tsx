@@ -35,7 +35,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
   return (
     <div>
       <div className="mb-10 flex items-center justify-between">
-        <h1 className="text-xl font-bold">Quản lý khóa học</h1>
+        <h1 className="text-3xl font-extrabold">Quản lý khóa học</h1>
         <Link href="/admin/course/add-new" className={primaryButtonClassName}>
           Tạo khóa học mới
         </Link>
@@ -68,9 +68,13 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                     className="w-16 h-16 object-cover rounded flex-shrink-0"
                   />
                   <div>
-                    <p className="font-bold text-base line-clamp-2 max-w-[400px]">
+                    <Link
+                      href={`/admin/course/content?slug=${course.slug}`}
+                      target="_blank"
+                      className="font-bold text-base line-clamp-2 max-w-[400px] block"
+                    >
                       {course.title}
-                    </p>
+                    </Link>
                     <p className="text-sm text-gray-400">
                       {new Date(course.createdAt).toLocaleDateString("vi-VN")}
                     </p>

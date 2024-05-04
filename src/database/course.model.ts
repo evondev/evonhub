@@ -56,8 +56,7 @@ const courseSchema = new Schema<ICourse>({
   },
   image: {
     type: String,
-    default:
-      "http://localhost:3000/_next/image?url=https%3A%2F%2Fspotlight-modern.highfivethemes.com%2Fcontent%2Fimages%2Fsize%2Fw800%2Fformat%2Fwebp%2F2023%2F06%2Fdemo-image-00002-1.webp&w=128&q=75",
+    default: "/default.jpg",
   },
   intro: {
     type: String,

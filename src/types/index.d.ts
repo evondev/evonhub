@@ -32,6 +32,7 @@ export interface CreateCourseParams {
 export interface UpdateCourseParams {
   slug: string;
   updateData: Partial<ICourse>;
+  path?: string;
 }
 enum Role {
   ADMIN = "ADMIN",

@@ -1,29 +1,22 @@
 const IconViews = () => {
   return (
     <svg
-      width={22}
-      height={22}
-      viewBox="0 0 22 22"
-      fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="size-4"
     >
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M14.0759 11.0002C14.0759 12.674 12.6982 14.0305 10.9994 14.0305C9.30058 14.0305 7.92383 12.674 7.92383 11.0002C7.92383 9.32547 9.30058 7.96899 10.9994 7.96899C12.6982 7.96899 14.0759 9.32547 14.0759 11.0002Z"
-        stroke="#C9CAD1"
-        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
       />
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M10.9981 18C14.7031 18 18.092 15.3752 20 11C18.092 6.62476 14.7031 4 10.9981 4H11.0019C7.29686 4 3.908 6.62476 2 11C3.908 15.3752 7.29686 18 11.0019 18H10.9981Z"
-        stroke="#C9CAD1"
-        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
       />
     </svg>
   );

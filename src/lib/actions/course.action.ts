@@ -1,7 +1,6 @@
 "use server";
 import Course, { ICourse } from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
-import Lesson from "@/database/lesson.model";
 import { CreateCourseParams, UpdateCourseParams } from "@/types";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -25,21 +24,31 @@ export async function createCourse({
     console.log(error);
   }
 }
-export async function updateCourse({ slug, updateData }: UpdateCourseParams) {
+export async function updateCourse({
+  slug,
+  updateData,
+  path,
+}: UpdateCourseParams) {
   try {
     connectToDatabase();
     await Course.findOneAndUpdate({ slug }, updateData, {
       new: true,
+      upsert: true,
     });
-    revalidatePath(`/admin/course/update?slug=${slug}`);
-  } catch (error) {}
+
+    revalidatePath(path || `/admin/course/update?slug=${slug}`);
+  } catch (error) {
+    console.log("error:", error);
+  }
 }
 export async function getCourseBySlug(
   slug: string
 ): Promise<ICourse | undefined> {
   try {
     connectToDatabase();
-    const course = await Course.findOne({ slug });
+    const course = await Course.findOne({ slug }).populate({
+      path: "lecture",
+    });
     return course;
   } catch (error) {}
 }
@@ -48,16 +57,7 @@ export async function getCourseContentBySlug(
 ): Promise<ICourse | undefined> {
   try {
     connectToDatabase();
-    const course = await Course.findOne({ slug })
-      .select("title lecture")
-      .populate({
-        path: "lecture",
-        model: Lecture,
-        populate: {
-          path: "lesson",
-          model: Lesson,
-        },
-      });
+    const course = await Course.findOne({ slug }).populate("lecture");
     return course;
   } catch (error) {}
 }
@@ -74,4 +74,26 @@ export async function deleteCourse(slug: string) {
     await Course.findOneAndDelete({ slug });
     revalidatePath("/admin/course/manage");
   } catch (error) {}
+}
+export async function updateCourseWithLecture(params: {
+  title: string;
+  courseId: string;
+  order: number;
+}) {
+  try {
+    connectToDatabase();
+    const course = await Course.findById(params.courseId);
+
+    if (!course) {
+      throw new Error("Không tìm thấy khóa học");
+    }
+    const newLecture = new Lecture({
+      ...params,
+    });
+    await newLecture.save();
+    course.lecture.push(newLecture._id);
+    await course.save();
+  } catch (error) {
+    console.log(error);
+  }
 }
