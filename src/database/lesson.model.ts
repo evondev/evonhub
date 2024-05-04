@@ -23,15 +23,15 @@ const lessonSchema = new Schema<ILesson>({
   },
   type: {
     type: String,
-    required: true,
+    default: "video",
   },
   video: {
     type: String,
-    required: true,
+    default: "",
   },
   duration: {
     type: Number,
-    required: true,
+    default: 0,
   },
   content: {
     type: String,

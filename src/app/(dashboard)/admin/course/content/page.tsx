@@ -1,4 +1,4 @@
-import { getCourseContentBySlug } from "@/lib/actions/course.action";
+import { getCourseBySlug } from "@/lib/actions/course.action";
 import CourseContent from "@/pages/admin/course/CourseContent";
 
 const page = async ({
@@ -8,7 +8,7 @@ const page = async ({
     slug: string;
   };
 }) => {
-  const data = await getCourseContentBySlug(searchParams.slug);
+  const data = await getCourseBySlug(searchParams.slug);
   return (
     <CourseContent data={JSON.parse(JSON.stringify(data))}></CourseContent>
   );

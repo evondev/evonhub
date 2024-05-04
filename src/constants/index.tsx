@@ -38,7 +38,7 @@ export const menuLinks: TMenuLink[] = [
   },
 ];
 export const baseButtonClassName =
-  "rounded-lg h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[100px] transition-all";
+  "rounded-md h-10 inline-flex items-center justify-center text-center px-5 font-bold min-w-[100px] transition-all text-sm";
 export const primaryButtonClassName = `bg-primary text-white primary-button ${baseButtonClassName}`;
 export const actionClassName =
   "hover:text-white size-8 flex items-center justify-center bg-gray-100 dark:bg-grayDarkest rounded-lg  p-2 transition-all";

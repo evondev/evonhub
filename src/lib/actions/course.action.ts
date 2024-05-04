@@ -1,6 +1,7 @@
 "use server";
 import Course, { ICourse } from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
+import Lesson from "@/database/lesson.model";
 import { CreateCourseParams, UpdateCourseParams } from "@/types";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -48,18 +49,15 @@ export async function getCourseBySlug(
     connectToDatabase();
     const course = await Course.findOne({ slug }).populate({
       path: "lecture",
+      populate: {
+        path: "lessons",
+        model: Lesson,
+      },
     });
     return course;
-  } catch (error) {}
-}
-export async function getCourseContentBySlug(
-  slug: string
-): Promise<ICourse | undefined> {
-  try {
-    connectToDatabase();
-    const course = await Course.findOne({ slug }).populate("lecture");
-    return course;
-  } catch (error) {}
+  } catch (error) {
+    console.log("error:", error);
+  }
 }
 export async function getAllCourses(): Promise<ICourse[] | undefined> {
   try {
