@@ -38,7 +38,7 @@ const CourseDetailsPage = ({
 }) => {
   const lectures = data.lecture || [];
   return (
-    <div className="grid grid-cols-[minmax(0,2fr),minmax(0,1fr)] gap-10 items-start relative">
+    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,1.2fr)] gap-10 items-start relative">
       <div>
         <div className="aspect-video relative mb-5">
           {data.intro ? (
