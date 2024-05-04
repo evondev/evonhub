@@ -28,6 +28,11 @@ const CourseDetailsPage = ({
     lecture: {
       _id: string;
       title: string;
+      lessons: {
+        _id: string;
+        title: string;
+        video: string;
+      }[];
     }[];
   };
 }) => {
@@ -86,15 +91,24 @@ const CourseDetailsPage = ({
               <Accordion
                 type="single"
                 collapsible
-                className="w-full"
+                className="w-full mb-5"
                 key={item._id}
               >
                 <AccordionItem value="item-1">
                   <AccordionTrigger className="font-semibold">
                     {item.title}
                   </AccordionTrigger>
-                  <AccordionContent>
-                    Yes. It adheres to the WAI-ARIA design pattern.
+                  <AccordionContent className="bg-white dark:bg-grayDarker rounded-lg mt-5">
+                    {item.lessons.map((lesson, index) => (
+                      <div
+                        key={lesson._id}
+                        className="mb-5 pb-5 border-b border-dashed last:pb-0 last:mb-0 last:border-b-0 font-medium flex items-center gap-2
+                        "
+                      >
+                        <IconPlay />
+                        {lesson.title}
+                      </div>
+                    ))}
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
