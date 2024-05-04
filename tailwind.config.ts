@@ -2,7 +2,6 @@ import type { Config } from "tailwindcss";
 import { withUt } from "uploadthing/tw";
 
 const config: Config = {
-  // darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -17,6 +16,7 @@ const config: Config = {
         text4: "#C9CAD1",
         text3: "#A3A3A3",
         text2: "#686A70",
+        text5: "#929CAD",
         bgDark3: "#263142",
         grayf4: "#F4F4F4",
         grayPrimary: "#1A1D1F",

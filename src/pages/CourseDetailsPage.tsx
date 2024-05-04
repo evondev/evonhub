@@ -66,7 +66,7 @@ const CourseDetailsPage = ({
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Mô tả</h2>
-            <p className="text-slate-700 dark:text-white">{data.desc}</p>
+            <p className="text-slate-700 dark:text-text5">{data.desc}</p>
           </div>
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Chi tiết</h2>
@@ -91,18 +91,18 @@ const CourseDetailsPage = ({
               <Accordion
                 type="single"
                 collapsible
-                className="w-full mb-5"
+                className="w-full"
                 key={item._id}
               >
                 <AccordionItem value="item-1">
-                  <AccordionTrigger className="font-semibold">
+                  <AccordionTrigger className="font-semibold dark:text-text5">
                     {item.title}
                   </AccordionTrigger>
                   <AccordionContent className="bg-white dark:bg-grayDarker rounded-lg mt-5">
                     {item.lessons.map((lesson, index) => (
                       <div
                         key={lesson._id}
-                        className="mb-5 pb-5 border-b border-dashed last:pb-0 last:mb-0 last:border-b-0 font-medium flex items-center gap-2
+                        className="mb-5 pb-5 border-b border-dashed last:pb-0 last:mb-0 last:border-b-0 font-medium flex items-center gap-2 dark:text-text5
                         "
                       >
                         <IconPlay />
@@ -127,10 +127,10 @@ const CourseDetailsPage = ({
                 key={item.question}
               >
                 <AccordionItem value="item-1">
-                  <AccordionTrigger className="font-semibold mb-2">
+                  <AccordionTrigger className="font-semibold mb-2 ">
                     {item.question}
                   </AccordionTrigger>
-                  <AccordionContent className="font-medium bg-white rounded-lg dark:bg-grayDarker">
+                  <AccordionContent className="font-medium bg-white rounded-lg dark:bg-grayDarker  dark:text-text5">
                     {item.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -221,7 +221,7 @@ function BoxList({ title, data }: { title: string; data: string[] }) {
 
 function ListItem({ title }: { title: string }) {
   return (
-    <li className="flex items-center gap-3">
+    <li className="flex items-center gap-3 dark:text-text5 text-sm">
       <div className="size-4 p-0.5 flex items-center justify-center rounded bg-primary text-white">
         <IconCheck />
       </div>
