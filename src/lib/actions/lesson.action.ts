@@ -10,6 +10,7 @@ export async function addLesson(params: {
   video: string;
   content: string;
   type: string;
+  order: number;
   lectureId: string;
   courseId: string;
 }) {
@@ -19,12 +20,17 @@ export async function addLesson(params: {
     if (!findLecture) {
       throw new Error("Lecture not found");
     }
+    const existLessonSlug = await Lesson.findOne({ slug: params.slug });
+    if (existLessonSlug) {
+      throw new Error("Lesson slug already exists");
+    }
     const newLesson = new Lesson({
       ...params,
     });
     await newLesson.save();
     findLecture.lessons.push(newLesson._id);
     await findLecture.save();
+    revalidatePath(`/admin/course/content?slug=${params.slug}`);
   } catch (error) {
     console.log(error);
   }
@@ -65,6 +71,17 @@ export async function updateLesson({
 }) {
   try {
     connectToDatabase();
+    const allLesson = await Lesson.find();
+    const existLessonSlug = allLesson.find(
+      (lesson) => lesson.slug === data.slug
+    );
+    if (existLessonSlug && existLessonSlug._id.toString() !== lessonId) {
+      return {
+        type: "error",
+        message: "Đường dẫn bài học đã tồn tại!",
+      };
+    }
+
     await Lesson.findByIdAndUpdate(lessonId, data);
     revalidatePath(path);
   } catch (error) {

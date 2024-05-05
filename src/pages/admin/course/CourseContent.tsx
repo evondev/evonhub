@@ -86,13 +86,20 @@ const CourseContent = ({
     try {
       await addLesson({
         title: "Tiêu đề bài học mới",
-        slug: "tieu-de-bai-hoc-moi",
+        slug:
+          "tieu-de-bai-hoc-moi" +
+          (lectureList.find((item) => item._id === lectureId)?.lessons.length ||
+            0),
         content: "",
         video: "",
         type: "video",
+        order:
+          lectureList.find((item) => item._id === lectureId)?.lessons.length ||
+          0,
         lectureId,
         courseId: data._id.toString(),
       });
+
       toast.success("Bài học đã được thêm thành công");
     } catch (error) {
       console.log(error);
@@ -262,7 +269,7 @@ const CourseContent = ({
                   <div></div>
                 </div>
                 <div className="flex flex-col gap-3 pl-10 mb-5">
-                  {lessons.map((lesson) => (
+                  {lessons.map((lesson, index) => (
                     <div key={lesson._id}>
                       {editLessonIndex === index ? (
                         <>
@@ -314,13 +321,13 @@ const CourseContent = ({
                             <AccordionTrigger>
                               <div className="flex items-center gap-3 text-sm font-medium">
                                 <div>{lesson.title}</div>
-                                <button
+                                <span
                                   className="size-5 flex items-center justify-center hover:text-blue-400"
                                   onClick={() => setEditLessonIndex(index)}
                                 >
                                   <IconEdit />
-                                </button>
-                                <button
+                                </span>
+                                <span
                                   className="size-5 hover:text-red-500 flex items-center justify-center"
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -328,7 +335,7 @@ const CourseContent = ({
                                   }}
                                 >
                                   <IconDelete />
-                                </button>
+                                </span>
                               </div>
                             </AccordionTrigger>
                             <AccordionContent className="bgDarkMode rounded-lg mt-5">

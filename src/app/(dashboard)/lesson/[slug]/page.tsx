@@ -24,6 +24,9 @@ const page = async ({
     ? lessonDetails.video.split("?v=").at(-1)
     : lessonDetails.video.split("/").at(-1);
   const lectures = course?.lecture || [];
+  const allLessons = lectures.reduce((acc, item) => {
+    return acc.concat(item.lessons);
+  }, [] as any[]);
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-5 items-start">
       <div>
@@ -44,8 +47,9 @@ const page = async ({
             collapsible
             className="w-full mb-5"
             key={item.title}
+            defaultValue={lessonDetails.lectureId.toString()}
           >
-            <AccordionItem value="item-1">
+            <AccordionItem value={item.id}>
               <AccordionTrigger className="font-semibold dark:text-text5">
                 {item.title}
               </AccordionTrigger>
@@ -55,6 +59,7 @@ const page = async ({
                     key={lesson._id}
                     title={lesson.title}
                     url={lesson.slug === params.slug ? undefined : lesson.slug}
+                    isActive={lesson.slug === params.slug}
                   ></LessonItem>
                 ))}
               </AccordionContent>

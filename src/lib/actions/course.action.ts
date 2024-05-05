@@ -14,7 +14,15 @@ export async function createCourse({
 }: CreateCourseParams) {
   try {
     connectToDatabase();
-    const course = await Course.create({
+    const allCourse = await Course.find();
+    const existSlug = allCourse.some((item) => item.slug === slug);
+    if (existSlug) {
+      return {
+        type: "error",
+        message: "Đường dẫn khóa học đã tồn tại!",
+      };
+    }
+    await Course.create({
       title,
       slug,
       path,
@@ -32,6 +40,14 @@ export async function updateCourse({
 }: UpdateCourseParams) {
   try {
     connectToDatabase();
+    const allCourse = await Course.find();
+    const existSlug = allCourse.some((item) => item.slug === slug);
+    if (existSlug) {
+      return {
+        type: "error",
+        message: "Đường dẫn khóa học đã tồn tại!",
+      };
+    }
     await Course.findOneAndUpdate({ slug }, updateData, {
       new: true,
       upsert: true,

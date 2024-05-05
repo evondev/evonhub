@@ -40,7 +40,7 @@ export interface CourseParams {
     id: string;
     title: string;
     lessons: {
-      _id: Schema.Types.ObjectId;
+      _id: string;
       title: string;
       slug: string;
       type: string;
@@ -49,8 +49,6 @@ export interface CourseParams {
       content: string;
       status: string;
       order: number;
-      courseId: Schema.Types.ObjectId;
-      createdAt: Date;
     }[];
     order: number;
   }[];

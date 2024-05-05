@@ -42,12 +42,15 @@ export default function AddCourseForm({ userId }: { userId: string }) {
       newSlug = slugify(title, { lower: true });
     }
     try {
-      await createCourse({
+      const res = await createCourse({
         title,
         slug: newSlug,
         path: "/",
         author: userId,
       });
+      if (res?.type === "error") {
+        return toast.error(res.message);
+      }
       form.reset();
       toast.success("Khóa học đã được thêm thành công");
       router.push(`/admin/course/update?slug=${newSlug}`);

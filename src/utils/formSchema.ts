@@ -11,9 +11,9 @@ export const updateCourseSchema = z.object({
   image: z.string().optional(),
   desc: z.string().optional(),
   content: z.string().optional(),
-  level: z.string().optional(),
+  level: z.enum(["easy", "medium", "expert"]).optional(),
   category: z.string().optional(),
-  status: z.string().optional(),
+  status: z.enum(["pending", "approved", "rejected"]).optional(),
   qa: z
     .array(
       z.object({

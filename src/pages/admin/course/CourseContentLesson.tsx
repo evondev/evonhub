@@ -47,7 +47,7 @@ const CourseContentLesson = ({
   });
   async function onSubmitLesson(values: z.infer<typeof formSchema>) {
     try {
-      await updateLesson({
+      const res = await updateLesson({
         lessonId,
         path: `/admin/course/content?slug=${slug}`,
         data: {
@@ -61,6 +61,10 @@ const CourseContentLesson = ({
             }),
         },
       });
+      if (res?.type === "error" && res?.message) {
+        toast.error(res.message);
+        return;
+      }
       toast.success("Bài học đã được cập nhật thành công");
     } catch (error) {
       console.log(error);

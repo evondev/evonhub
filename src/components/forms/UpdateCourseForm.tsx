@@ -77,10 +77,13 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
   async function onSubmit(values: z.infer<typeof updateCourseSchema>) {
     setIsSubmitting(true);
     try {
-      await updateCourse({
+      const res = await updateCourse({
         slug: data.slug,
         updateData: {
           ...values,
+          price: parseInt(values.price || "0"),
+          salePrice: parseInt(values.salePrice || "0"),
+          category: data.category,
           info: {
             requirements: infoData.requirements.filter((item) => item !== ""),
             qa: infoData.qa,
@@ -88,6 +91,9 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
           },
         },
       });
+      if (res?.type === "error") {
+        return toast.error(res.message);
+      }
       toast.success("Cập nhật khóa học thành công");
     } catch (error) {
       console.log(error);
