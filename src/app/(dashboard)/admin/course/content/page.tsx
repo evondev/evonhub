@@ -1,5 +1,5 @@
+import CourseContent from "@/components/course/CourseContent";
 import { getCourseBySlug } from "@/lib/actions/course.action";
-import CourseContent from "@/pages/admin/course/CourseContent";
 
 const page = async ({
   searchParams,

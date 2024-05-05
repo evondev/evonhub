@@ -1,6 +1,6 @@
 import EmptyData from "@/components/EmptyData";
+import CourseManage from "@/components/course/CourseManage";
 import { getAllCourses } from "@/lib/actions/course.action";
-import CourseManage from "@/pages/admin/course/CourseManage";
 
 const page = async () => {
   const courses = await getAllCourses();

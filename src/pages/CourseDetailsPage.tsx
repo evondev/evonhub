@@ -1,3 +1,4 @@
+import PageNotFound from "@/app/not-found";
 import {
   IconClock,
   IconLevel,
@@ -36,7 +37,8 @@ const CourseDetailsPage = ({
     }[];
   };
 }) => {
-  const lectures = data.lecture || [];
+  if (!data) return <PageNotFound />;
+  const lectures = data?.lecture || [];
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,1.2fr)] gap-10 items-start relative">
       <div>
@@ -87,7 +89,7 @@ const CourseDetailsPage = ({
           </div>
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Nội dung</h2>
-            {lectures.map((item, index) => (
+            {lectures?.map((item, index) => (
               <Accordion
                 type="single"
                 collapsible
