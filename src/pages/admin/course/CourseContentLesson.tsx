@@ -21,6 +21,7 @@ const formSchema = z.object({
   content: z.string().optional(),
   slug: z.string().optional(),
   title: z.string().optional(),
+  order: z.number().optional(),
 });
 
 const CourseContentLesson = ({
@@ -35,6 +36,7 @@ const CourseContentLesson = ({
     content: string;
     slug: string;
     title: string;
+    order: number;
   };
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,6 +45,7 @@ const CourseContentLesson = ({
       content: lesson.content,
       slug: lesson.slug,
       title: lesson.title,
+      order: lesson.order,
     },
   });
   async function onSubmitLesson(values: z.infer<typeof formSchema>) {
@@ -119,6 +122,23 @@ const CourseContentLesson = ({
                 <Textarea
                   placeholder="Nhập nội dung"
                   className="bgDarkestMode"
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="order"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Thứ tự</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="Nhập thứ tự"
+                  className="bgDarkestMode w-20"
                   {...field}
                 />
               </FormControl>

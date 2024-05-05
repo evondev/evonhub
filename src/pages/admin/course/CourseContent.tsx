@@ -41,6 +41,7 @@ const CourseContent = ({
         video: string;
         type: string;
         slug: string;
+        order: number;
       }[];
     }[];
   };
@@ -56,6 +57,7 @@ const CourseContent = ({
         video: string;
         type: string;
         slug: string;
+        order: number;
       }[];
     }[]
   >([]);
