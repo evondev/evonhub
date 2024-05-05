@@ -8,9 +8,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { primaryButtonClassName } from "@/constants";
+import { baseButtonClassName, primaryButtonClassName } from "@/constants";
 import { updateLesson } from "@/lib/actions/lesson.action";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import slugify from "slugify";
@@ -124,6 +125,16 @@ const CourseContentLesson = ({
           <Button className={cn(primaryButtonClassName)} type="submit">
             Cập nhật
           </Button>
+          <Link
+            href={`/lesson/${lesson.slug}`}
+            target="_blank"
+            className={cn(
+              baseButtonClassName,
+              "hover:bg-gray-100 dark:hover:bg-gray-800"
+            )}
+          >
+            Xem trước
+          </Link>
         </div>
       </form>
     </Form>

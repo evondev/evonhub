@@ -1,6 +1,7 @@
 "use client";
 import { UserButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
+import { ModeToggle } from "./ModeToggle";
 
 const Header = () => {
   const auth = useAuth();
@@ -40,6 +41,7 @@ const Header = () => {
         </button>
       </div>
       <div className="flex items-center gap-5">
+        <ModeToggle></ModeToggle>
         {auth?.userId ? (
           <UserButton afterSignOutUrl="/" />
         ) : (

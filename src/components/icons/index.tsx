@@ -9,6 +9,7 @@ export { default as IconFavorite } from "./IconFavorite";
 export { default as IconHome } from "./IconHome";
 export { default as IconLevel } from "./IconLevel";
 export { default as IconLike } from "./IconLike";
+export { default as IconLongArrowRight } from "./IconLongArrowRight";
 export { default as IconPlay } from "./IconPlay";
 export { default as IconShare } from "./IconShare";
 export { default as IconUsers } from "./IconUsers";

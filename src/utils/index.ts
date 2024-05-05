@@ -1,3 +1,5 @@
+import slugify from "slugify";
+
 export const getTimestamp = (createdAt: Date): string => {
   const now = new Date();
   const timeDifference = now.getTime() - createdAt.getTime();
@@ -35,4 +37,11 @@ export const getTimestamp = (createdAt: Date): string => {
 };
 export const formatThoundsand = (num: number): string => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};
+export const convertSlug = (str: string): string => {
+  return slugify(str, {
+    lower: true,
+    locale: "vi",
+    remove: /[*+~.()'"!:@]/g,
+  });
 };

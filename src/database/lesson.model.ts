@@ -1,7 +1,7 @@
 import mongoose, { Schema, models } from "mongoose";
 
 export interface ILesson extends Document {
-  id: string;
+  _id: Schema.Types.ObjectId;
   title: string;
   slug: string;
   type: string;
@@ -10,6 +10,7 @@ export interface ILesson extends Document {
   content: string;
   status: string;
   order: number;
+  courseId: Schema.Types.ObjectId;
   createdAt: Date;
 }
 const lessonSchema = new Schema<ILesson>({
@@ -43,6 +44,10 @@ const lessonSchema = new Schema<ILesson>({
   order: {
     type: Number,
     default: 0,
+  },
+  courseId: {
+    type: Schema.Types.ObjectId,
+    ref: "Course",
   },
   createdAt: {
     type: Date,

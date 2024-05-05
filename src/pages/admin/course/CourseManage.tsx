@@ -18,6 +18,7 @@ import {
 import { ICourse } from "@/database/course.model";
 import { deleteCourse } from "@/lib/actions/course.action";
 import { cn } from "@/lib/utils";
+import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import Swal from "sweetalert2";
@@ -45,7 +46,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
           Tạo khóa học mới
         </Link>
       </div>
-      <Table className="bg-white rounded-lg dark:bg-grayDarker">
+      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto">
         <TableHeader>
           <TableRow>
             <TableHead>
@@ -87,8 +88,8 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                 </div>
               </TableCell>
               <TableCell>
-                <p className="font-semibold">
-                  {course?.price?.toLocaleString() || 0} VNĐ
+                <p className="font-semibold whitespace-nowrap">
+                  {formatThoundsand(course.price)} VNĐ
                 </p>
               </TableCell>
               <TableCell>

@@ -4,11 +4,15 @@ import Lesson, { ILesson } from "@/database/lesson.model";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
-export async function addLesson(
-  params: Partial<ILesson> & {
-    lectureId: string;
-  }
-) {
+export async function addLesson(params: {
+  title: string;
+  slug: string;
+  video: string;
+  content: string;
+  type: string;
+  lectureId: string;
+  courseId: string;
+}) {
   try {
     connectToDatabase();
     const findLecture = await Lecture.findById(params.lectureId);
@@ -72,6 +76,17 @@ export async function getLessonsByLectureId(lectureId: string) {
     connectToDatabase();
     const lessons = await Lesson.find({ lectureId });
     return lessons;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function getLessonBySlug(
+  slug: string
+): Promise<ILesson | undefined> {
+  try {
+    connectToDatabase();
+    const lesson = await Lesson.findOne({ slug });
+    return lesson;
   } catch (error) {
     console.log(error);
   }

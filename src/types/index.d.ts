@@ -1,3 +1,4 @@
+import { ICourse } from "@/database/course.model";
 import { IUser } from "@/database/user.model";
 
 export type TMenuLink = {
@@ -33,6 +34,26 @@ export interface UpdateCourseParams {
   slug: string;
   updateData: Partial<ICourse>;
   path?: string;
+}
+export interface CourseParams {
+  lecture: {
+    id: string;
+    title: string;
+    lessons: {
+      _id: Schema.Types.ObjectId;
+      title: string;
+      slug: string;
+      type: string;
+      video: string;
+      duration: number;
+      content: string;
+      status: string;
+      order: number;
+      courseId: Schema.Types.ObjectId;
+      createdAt: Date;
+    }[];
+    order: number;
+  }[];
 }
 
 export type TStatus = "pending" | "approved" | "rejected";

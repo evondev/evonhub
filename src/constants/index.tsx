@@ -51,7 +51,7 @@ export const boxDetailClassName =
 export const widgetClassName = "p-5 rounded-lg bg-white dark:bg-grayDarker";
 
 export const courseStatusClassName =
-  "text-xs font-semibold  inline-flex py-1 px-3 rounded-full";
+  "text-xs font-semibold  inline-flex py-1 px-3 rounded-full whitespace-nowrap";
 
 export const courseStatus = {
   approved: {

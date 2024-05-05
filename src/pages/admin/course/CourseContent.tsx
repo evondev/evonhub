@@ -17,15 +17,13 @@ import {
   updateLesson,
 } from "@/lib/actions/lesson.action";
 import { cn } from "@/lib/utils";
+import { convertSlug } from "@/utils";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useImmer } from "use-immer";
-import { z } from "zod";
 import CourseContentLesson from "./CourseContentLesson";
-const formSchema = z.object({
-  video: z.string().optional(),
-  content: z.string().optional(),
-});
+
 const CourseContent = ({
   data,
 }: {
@@ -93,7 +91,9 @@ const CourseContent = ({
         video: "",
         type: "video",
         lectureId,
+        courseId: data._id.toString(),
       });
+      toast.success("Bài học đã được thêm thành công");
     } catch (error) {
       console.log(error);
     }
@@ -160,7 +160,16 @@ const CourseContent = ({
       setEditLectureIndex(-1);
     }
   };
-  const handleSaveLesson = async (lessonId: string) => {
+  const handleSaveLesson = async (
+    lessonId: string,
+    lesson: {
+      title: string;
+      content: string;
+      video: string;
+      type: string;
+      slug: string;
+    }
+  ) => {
     setIsSubmitting((draf) => {
       draf.lesson = true;
     });
@@ -169,7 +178,8 @@ const CourseContent = ({
         lessonId,
         path: `/admin/course/content?slug=${data.slug}`,
         data: {
-          ...lessonData,
+          title: lessonData.title || lesson.title,
+          slug: convertSlug(lessonData.title || lesson.title),
         },
       });
     } catch (error) {
@@ -278,7 +288,9 @@ const CourseContent = ({
                             <div className="flex justify-end">
                               <button
                                 className={primaryButtonClassName}
-                                onClick={() => handleSaveLesson(lesson._id)}
+                                onClick={() =>
+                                  handleSaveLesson(lesson._id, lesson)
+                                }
                               >
                                 Cập nhật
                               </button>
