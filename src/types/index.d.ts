@@ -15,6 +15,7 @@ export interface CreateUserParams {
   avatar: string;
   joinedAt?: Date;
   bio?: string;
+  status?: TUserStatus;
 }
 export interface UpdateUserParams {
   clerkId: string;
@@ -53,7 +54,14 @@ export interface CourseParams {
     order: number;
   }[];
 }
+export interface GetUsersParams {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  filter?: string;
+}
 
 export type TStatus = "pending" | "approved" | "rejected";
 export type TLevel = "easy" | "medium" | "expert";
 export type TCourseInfo = "requirements" | "qa" | "gained";
+export type TUserStatus = "active" | "inactive";

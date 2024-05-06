@@ -1,3 +1,4 @@
+import { TUserStatus } from "@/types";
 import { Document, Schema, model, models } from "mongoose";
 
 export interface IUser extends Document {
@@ -10,6 +11,7 @@ export interface IUser extends Document {
   avatar: string;
   courses: Schema.Types.ObjectId[];
   liked: Schema.Types.ObjectId[];
+  status: TUserStatus;
   role: string;
   joinedAt: Date;
 }
@@ -57,6 +59,10 @@ const UserSchema = new Schema({
   joinedAt: {
     type: Date,
     default: Date.now,
+  },
+  status: {
+    type: String,
+    default: "active",
   },
   role: {
     type: String,

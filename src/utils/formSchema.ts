@@ -25,3 +25,10 @@ export const updateCourseSchema = z.object({
   requirements: z.array(z.string()).optional(),
   gained: z.array(z.string()).optional(),
 });
+export const updateUserSchema = z.object({
+  name: z.string().optional(),
+  email: z.string().email().optional(),
+  username: z.string().optional(),
+  bio: z.string().optional(),
+  avatar: z.string().optional(),
+});

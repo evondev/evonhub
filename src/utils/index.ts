@@ -1,3 +1,4 @@
+import queryString from "query-string";
 import slugify from "slugify";
 
 export const getTimestamp = (createdAt: Date): string => {
@@ -44,4 +45,22 @@ export const convertSlug = (str: string): string => {
     locale: "vi",
     remove: /[*+~.()'"!:@]/g,
   });
+};
+interface UrlQueryParams {
+  params: string;
+  key: string;
+  value: string | null;
+}
+export const formUrlQuery = ({ params, key, value }: UrlQueryParams) => {
+  const currentUrl = queryString.parse(params);
+
+  currentUrl[key] = value;
+
+  return queryString.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currentUrl,
+    },
+    { skipNull: true }
+  );
 };

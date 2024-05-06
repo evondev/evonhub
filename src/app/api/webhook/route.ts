@@ -63,6 +63,7 @@ export async function POST(req: Request) {
       email: email_addresses[0].email_address,
       avatar: image_url,
       joinedAt: new Date(),
+      status: "active",
       bio: "User at Evonhub",
     });
     return NextResponse.json({ message: "OK", user: mongoUser });
