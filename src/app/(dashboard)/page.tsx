@@ -8,7 +8,7 @@ async function Home() {
   if (!userId) return null;
   const mongoUser = await getUserById({ userId });
   if (!mongoUser) return null;
-  const courses = mongoUser.courses;
+  const courses = JSON.parse(JSON.stringify(mongoUser.courses));
   const allPromise = Promise.all(
     courses.map(async (item: any) => {
       return getLessonByCourseId(item._id);
@@ -18,8 +18,8 @@ async function Home() {
 
   return (
     <Dashboard
-      lessons={lessons[0]}
-      courses={JSON.parse(JSON.stringify(courses))}
+      lessons={JSON.parse(JSON.stringify(lessons[0]))}
+      courses={courses}
     ></Dashboard>
   );
 }

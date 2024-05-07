@@ -52,12 +52,11 @@ export async function getUserById({ userId }: { userId: string }) {
     connectToDatabase();
     let user = await User.findOne({ clerkId: userId }).populate({
       path: "courses",
-      populate: {
-        path: "lecture",
-      },
     });
     if (!user) {
-      user = await User.findById(userId);
+      user = await User.findById(userId).populate({
+        path: "courses",
+      });
     }
     return user;
   } catch (error) {
@@ -67,7 +66,9 @@ export async function getUserById({ userId }: { userId: string }) {
 export async function getUserByUsername({ username }: { username: string }) {
   try {
     connectToDatabase();
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).populate({
+      path: "courses",
+    });
     return user;
   } catch (error) {
     console.log(error);
@@ -105,9 +106,11 @@ export async function getAllUsers(
 export async function addCourseToUser({
   userId,
   courseId,
+  path,
 }: {
   userId: string;
   courseId: string;
+  path: string;
 }) {
   try {
     connectToDatabase();
@@ -124,6 +127,7 @@ export async function addCourseToUser({
     }
     user.courses.push(courseId);
     await user.save();
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
   }
@@ -131,9 +135,11 @@ export async function addCourseToUser({
 export async function removeCourseFromUser({
   userId,
   courseId,
+  path,
 }: {
   userId: string;
   courseId: string;
+  path: string;
 }) {
   try {
     connectToDatabase();
@@ -143,7 +149,7 @@ export async function removeCourseFromUser({
     }
     user.courses = user.courses.filter((c: any) => c.toString() !== courseId);
     await user.save();
-    return user;
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
   }
