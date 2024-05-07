@@ -44,7 +44,7 @@ export const menuLinks: TMenuLink[] = [
   },
 ];
 export const baseButtonClassName =
-  "rounded-md h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[100px] transition-all text-sm";
+  "rounded-md h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm";
 
 export const primaryButtonClassName = `bg-primary text-white gradientPrimary gradientPrimaryHover ${baseButtonClassName}`;
 

@@ -12,6 +12,7 @@ import { baseButtonClassName, primaryButtonClassName } from "@/constants";
 import { updateLesson } from "@/lib/actions/lesson.action";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import slugify from "slugify";
@@ -39,6 +40,7 @@ const CourseContentLesson = ({
     order: number;
   };
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       video: lesson.video,
@@ -49,6 +51,7 @@ const CourseContentLesson = ({
     },
   });
   async function onSubmitLesson(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
     try {
       const res = await updateLesson({
         lessonId,
@@ -71,6 +74,8 @@ const CourseContentLesson = ({
       toast.success("Bài học đã được cập nhật thành công");
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsSubmitting(false);
     }
   }
   return (
@@ -146,7 +151,11 @@ const CourseContentLesson = ({
           )}
         />
         <div className="flex items-center justify-end gap-3">
-          <Button className={cn(primaryButtonClassName)} type="submit">
+          <Button
+            className={cn(primaryButtonClassName)}
+            type="submit"
+            isLoading={isSubmitting}
+          >
             Cập nhật
           </Button>
           <Link
@@ -154,7 +163,7 @@ const CourseContentLesson = ({
             target="_blank"
             className={cn(
               baseButtonClassName,
-              "hover:bg-gray-100 dark:hover:bg-gray-800"
+              "hover:bg-gray-100 dark:hover:bg-grayDarkest"
             )}
           >
             Xem trước

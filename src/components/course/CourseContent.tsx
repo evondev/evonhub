@@ -68,8 +68,8 @@ const CourseContent = ({
     content: "",
     video: "",
   });
-  const [editLectureIndex, setEditLectureIndex] = useState(-1);
-  const [editLessonIndex, setEditLessonIndex] = useState(-1);
+  const [editLectureIndex, setEditLectureIndex] = useState("");
+  const [editLessonIndex, setEditLessonIndex] = useState("");
   const [isSubmitting, setIsSubmitting] = useImmer({
     lecture: false,
     lesson: false,
@@ -156,7 +156,7 @@ const CourseContent = ({
         lectureId: lectureList[index]._id,
         path: `/admin/course/content?slug=${data.slug}`,
         data: {
-          title: lectureInput,
+          title: lectureInput || lectureList[index].title,
         },
       });
     } catch (error) {
@@ -166,7 +166,7 @@ const CourseContent = ({
         draf.lecture = false;
       });
       setLectureInput("");
-      setEditLectureIndex(-1);
+      setEditLectureIndex("");
     }
   };
   const handleSaveLesson = async (
@@ -198,7 +198,7 @@ const CourseContent = ({
       setIsSubmitting((draf) => {
         draf.lesson = false;
       });
-      setEditLessonIndex(-1);
+      setEditLessonIndex("");
       setLessonData({
         ...lessonData,
         title: "",
@@ -206,10 +206,10 @@ const CourseContent = ({
     }
   };
   const handleCancelLecture = (index: number) => {
-    setEditLectureIndex(-1);
+    setEditLectureIndex("");
   };
   const handleCancelLesson = (index: number) => {
-    setEditLessonIndex(-1);
+    setEditLessonIndex("");
   };
 
   return (
@@ -219,14 +219,14 @@ const CourseContent = ({
         const lessons = lecture.lessons;
         return (
           <div key={lecture.title}>
-            {editLectureIndex === index ? (
+            {editLectureIndex === lecture._id ? (
               <>
-                <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5">
+                <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
                   <div className="flex items-center gap-3 mb-5">
                     <h3 className="flex-shrink-0 font-bold">Tên chương:</h3>
                     <Input
                       placeholder="Nhập tiêu đề"
-                      className="font-semibold border-gray-200"
+                      className="font-semibold border-gray-200 dark:border-grayDarker dark:bg-grayDarkest"
                       defaultValue={lecture.title}
                       onChange={debounce(
                         (e) => setLectureInput(e.target.value),
@@ -235,12 +235,13 @@ const CourseContent = ({
                     />
                   </div>
                   <div className="flex justify-end">
-                    <button
+                    <Button
                       className={primaryButtonClassName}
                       onClick={() => handleSaveLecture(index)}
+                      isLoading={isSubmitting.lecture}
                     >
                       Cập nhật
-                    </button>
+                    </Button>
                     <button
                       className={cn(baseButtonClassName)}
                       onClick={() => handleCancelLecture(index)}
@@ -258,7 +259,7 @@ const CourseContent = ({
                     <p>{lecture.title}</p>
                     <button
                       className="size-5 flex items-center justify-center hover:text-blue-400"
-                      onClick={() => setEditLectureIndex(index)}
+                      onClick={() => setEditLectureIndex(lecture._id)}
                     >
                       <IconEdit />
                     </button>
@@ -272,9 +273,9 @@ const CourseContent = ({
                   <div></div>
                 </div>
                 <div className="flex flex-col gap-3 pl-10 mb-5">
-                  {lessons.map((lesson, index) => (
+                  {lessons.map((lesson, idx) => (
                     <div key={lesson._id}>
-                      {editLessonIndex === index ? (
+                      {editLessonIndex === lesson._id ? (
                         <>
                           <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
                             <div className="flex items-center gap-3 mb-5">
@@ -296,14 +297,15 @@ const CourseContent = ({
                               />
                             </div>
                             <div className="flex justify-end">
-                              <button
+                              <Button
                                 className={primaryButtonClassName}
                                 onClick={() =>
                                   handleSaveLesson(lesson._id, lesson)
                                 }
+                                isLoading={isSubmitting.lesson}
                               >
                                 Cập nhật
-                              </button>
+                              </Button>
                               <button
                                 className={cn(baseButtonClassName)}
                                 onClick={() => handleCancelLesson(index)}
@@ -326,7 +328,7 @@ const CourseContent = ({
                                 <div>{lesson.title}</div>
                                 <span
                                   className="size-5 flex items-center justify-center hover:text-blue-400"
-                                  onClick={() => setEditLessonIndex(index)}
+                                  onClick={() => setEditLessonIndex(lesson._id)}
                                 >
                                   <IconEdit />
                                 </span>
@@ -353,7 +355,7 @@ const CourseContent = ({
                       )}
                     </div>
                   ))}
-                  {editLessonIndex === -1 && (
+                  {editLessonIndex === "" && (
                     <Button
                       className={cn(
                         baseButtonClassName,
@@ -372,7 +374,7 @@ const CourseContent = ({
         );
       })}
 
-      {editLectureIndex === -1 && editLessonIndex === -1 && (
+      {editLectureIndex === "" && editLessonIndex === "" && (
         <Button
           className={cn(
             baseButtonClassName,
