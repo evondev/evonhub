@@ -191,6 +191,7 @@ const CourseContent = ({
           slug: convertSlug(lessonData.title || lesson.title),
         },
       });
+      toast.success("Bài học đã được cập nhật thành công");
     } catch (error) {
       console.log(error);
     } finally {
@@ -275,14 +276,14 @@ const CourseContent = ({
                     <div key={lesson._id}>
                       {editLessonIndex === index ? (
                         <>
-                          <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5">
+                          <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
                             <div className="flex items-center gap-3 mb-5">
                               <h3 className="flex-shrink-0 font-bold">
                                 Tên bài học:
                               </h3>
                               <Input
                                 placeholder="Nhập tiêu đề"
-                                className="font-semibold border-gray-200"
+                                className="font-semibold border-gray-200 dark:border-grayDarker dark:bg-grayDarkest"
                                 defaultValue={lesson.title}
                                 onChange={debounce(
                                   (e) =>

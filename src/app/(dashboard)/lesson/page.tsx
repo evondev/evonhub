@@ -1,5 +1,6 @@
 import PageNotFound from "@/app/not-found";
 import LessonItem from "@/components/course/LessonItem";
+import LessonPlayer from "@/components/course/LessonPlayer";
 import {
   Accordion,
   AccordionContent,
@@ -10,13 +11,13 @@ import { getCourseById } from "@/lib/actions/course.action";
 import { getLessonBySlug } from "@/lib/actions/lesson.action";
 
 const page = async ({
-  params,
+  searchParams,
 }: {
-  params: {
+  searchParams: {
     slug: string;
   };
 }) => {
-  const lessonDetails = await getLessonBySlug(params.slug);
+  const lessonDetails = await getLessonBySlug(searchParams.slug);
   if (!lessonDetails) return <PageNotFound />;
   const courseId = lessonDetails.courseId;
   const course = await getCourseById(courseId.toString());
@@ -27,19 +28,23 @@ const page = async ({
   const allLessons = lectures.reduce((acc, item) => {
     return acc.concat(item.lessons);
   }, [] as any[]);
+  const currentLessonIndex = allLessons.findIndex(
+    (lesson) => lesson.slug === searchParams.slug
+  );
+  const nextLesson = allLessons[currentLessonIndex + 1]?.slug;
+  const prevLesson = allLessons[currentLessonIndex - 1]?.slug;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-5 items-start">
-      <div>
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
-          className="w-full h-full object-cover rounded-lg aspect-video mb-5"
-        ></iframe>
-        <h1 className="font-bold text-2xl mb-5">{lessonDetails.title}</h1>
-        <div className="lesson-content">{lessonDetails.content}</div>
-      </div>
+      <LessonPlayer
+        videoId={videoId || ""}
+        video={lessonDetails.video}
+        lessonDetails={{
+          title: lessonDetails.title,
+          content: lessonDetails.content,
+        }}
+        nextLesson={nextLesson}
+        prevLesson={prevLesson}
+      ></LessonPlayer>
       <div>
         {lectures.map((item) => (
           <Accordion
@@ -58,8 +63,12 @@ const page = async ({
                   <LessonItem
                     key={lesson._id}
                     title={lesson.title}
-                    url={lesson.slug === params.slug ? undefined : lesson.slug}
-                    isActive={lesson.slug === params.slug}
+                    url={
+                      lesson.slug === searchParams.slug
+                        ? undefined
+                        : lesson.slug
+                    }
+                    isActive={lesson.slug === searchParams.slug}
                   ></LessonItem>
                 ))}
               </AccordionContent>
