@@ -6,10 +6,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { IconLongArrowRight } from "./icons";
 
-const CourseItem = ({ data }: { data: ICourse }) => {
+const CourseItem = ({
+  data,
+  cta,
+  url,
+}: {
+  data: ICourse;
+  cta?: string;
+  url?: string;
+}) => {
+  const link = url || `/course/${data.slug}`;
   return (
     <div className=" bg-white rounded-md dark:bg-grayDark flex flex-col">
-      <Link href={`/course/${data.slug}`} className="relative h-[200px] block">
+      <Link href={link} className="relative h-[200px] block">
         <Image
           src={data.image}
           fill
@@ -27,7 +36,7 @@ const CourseItem = ({ data }: { data: ICourse }) => {
           HTML CSS
         </Link> */}
         <Link
-          href={`/course/${data.slug}`}
+          href={link}
           className="text-xl font-extrabold mb-2 line-clamp-3 block"
         >
           {data.title}
@@ -37,10 +46,10 @@ const CourseItem = ({ data }: { data: ICourse }) => {
             {formatThoundsand(data.price)} VNĐ
           </div>
           <Link
-            href={`/course/${data.slug}`}
+            href={link}
             className={cn(primaryButtonClassName, "ml-auto w-fit flex group")}
           >
-            <span>Thông tin khóa học</span>
+            <span>{cta || "Thông tin khóa học"}</span>
             <IconLongArrowRight />
           </Link>
         </div>

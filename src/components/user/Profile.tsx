@@ -1,15 +1,12 @@
 "use client";
-import { actionClassName, primaryButtonClassName } from "@/constants";
+import { primaryButtonClassName } from "@/constants";
 import { IUser } from "@/database/user.model";
 import { updateUser } from "@/lib/actions/user.action";
-import { cn } from "@/lib/utils";
 import { updateUserSchema } from "@/utils/formSchema";
-import { UploadDropzone } from "@/utils/uploadthing";
-import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
-import { IconDelete } from "../icons";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -35,21 +32,16 @@ const Profile = ({ user }: { user: IUser }) => {
   async function onSubmit(values: z.infer<typeof updateUserSchema>) {
     setIsSubmitting(true);
     try {
-      // await fetch("/api/update-user", {
-      //   method: "POST",
-      //   body: JSON.stringify({
-      //     username: values.username,
-      //   }),
-      // });
       await updateUser({
         clerkId: user.clerkId,
         updateData: {
-          ...values,
-          username: user.username,
-          email: user.email,
+          name: values.name,
+          username: values.username,
+          bio: values.bio,
         },
         path: "/profile",
       });
+      toast.success("Cập nhật thành công");
     } catch (error) {
       console.log(error);
     } finally {
@@ -61,6 +53,15 @@ const Profile = ({ user }: { user: IUser }) => {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
+          <div className="mt-10 flex justify-end gap-2">
+            <Button
+              type="submit"
+              className={primaryButtonClassName}
+              isLoading={isSubmitting}
+            >
+              Cập nhật
+            </Button>
+          </div>
           <div className="grid grid-cols-2 gap-10 mb-10">
             <FormField
               control={form.control}
@@ -114,7 +115,7 @@ const Profile = ({ user }: { user: IUser }) => {
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="avatar"
               render={({ field }) => (
@@ -159,16 +160,7 @@ const Profile = ({ user }: { user: IUser }) => {
                   <FormMessage />
                 </FormItem>
               )}
-            />
-          </div>
-          <div className="mt-10 flex justify-end gap-2">
-            <Button
-              type="submit"
-              className={primaryButtonClassName}
-              isLoading={isSubmitting}
-            >
-              Cập nhật
-            </Button>
+            /> */}
           </div>
         </form>
       </Form>

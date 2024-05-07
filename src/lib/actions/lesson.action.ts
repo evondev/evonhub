@@ -108,3 +108,14 @@ export async function getLessonBySlug(
     console.log(error);
   }
 }
+export async function getLessonByCourseId(
+  courseId: string
+): Promise<ILesson[] | undefined> {
+  try {
+    connectToDatabase();
+    const lessons = await Lesson.find({ courseId });
+    return lessons;
+  } catch (error) {
+    console.log(error);
+  }
+}

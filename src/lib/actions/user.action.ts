@@ -50,7 +50,12 @@ export async function deleteUser(params: DeleteUserParams) {
 export async function getUserById({ userId }: { userId: string }) {
   try {
     connectToDatabase();
-    let user = await User.findOne({ clerkId: userId });
+    let user = await User.findOne({ clerkId: userId }).populate({
+      path: "courses",
+      populate: {
+        path: "lecture",
+      },
+    });
     if (!user) {
       user = await User.findById(userId);
     }

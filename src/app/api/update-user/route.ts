@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
   // The user attributes to update
   //  get params from request body
   const params = await req.json();
+  console.log("POST ~ params:", params);
 
   const updatedUser = await clerkClient.users.updateUser(userId, params);
   // refetch the user to get the updated data

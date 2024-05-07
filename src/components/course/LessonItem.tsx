@@ -13,7 +13,7 @@ const LessonItem = ({
 }) => {
   const base = cn(
     "mb-5 pb-5 border-b border-dashed last:pb-0 last:mb-0 last:border-b-0 font-medium flex items-center gap-2 dark:text-text5",
-    isActive ? "text-primary font-bold" : ""
+    isActive ? "text-primary font-bold dark:text-primary" : ""
   );
   const child = (
     <>
