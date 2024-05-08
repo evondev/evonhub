@@ -10,7 +10,7 @@ const Dashboard = ({
   courses: ICourse[];
   lessons: any[];
 }) => {
-  const url = `/lesson/${lessons?.[0]?.slug}`;
+  const url = `/lesson?slug=${lessons?.[0]?.slug}`;
   return (
     <div>
       <h1 className="text-3xl font-extrabold mb-10">Khu vực học tập</h1>

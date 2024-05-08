@@ -159,7 +159,7 @@ const CourseContentLesson = ({
             Cập nhật
           </Button>
           <Link
-            href={`/lesson/${lesson.slug}`}
+            href={`/lesson?slug=${lesson.slug}`}
             target="_blank"
             className={cn(
               baseButtonClassName,
