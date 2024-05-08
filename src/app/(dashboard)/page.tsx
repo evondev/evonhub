@@ -18,7 +18,7 @@ async function Home() {
 
   return (
     <Dashboard
-      lessons={JSON.parse(JSON.stringify(lessons[0]))}
+      lessons={lessons[0] ? JSON.parse(JSON.stringify(lessons[0])) : []}
       courses={courses}
     ></Dashboard>
   );
