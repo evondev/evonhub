@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import Navigation from "@/components/Navigation";
 import Sidebar from "@/components/Sidebar";
 import { getUserById } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
@@ -19,6 +20,7 @@ export default async function DashboardLayout({
         <section className="px-5 md:px-10 pb-10">
           <Header></Header>
           {children}
+          <Navigation role={role}></Navigation>
         </section>
       </main>
     </>

@@ -2,8 +2,8 @@ import Link from "next/link";
 
 const PageNotFound = () => {
   return (
-    <div className="py-20">
-      <h1 className="text-5xl mb-5 font-extrabold text-center flex flex-col gap-5 items-center">
+    <div className="py-5 lg:py-20">
+      <h1 className="text-3xl lg:text-5xl mb-5 font-extrabold text-center flex flex-col gap-5 items-center">
         <span className="text-gradient inline-block text-7xl">404</span>
         <span>Page Not Found</span>
       </h1>

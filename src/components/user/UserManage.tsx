@@ -35,15 +35,17 @@ const UserManage = ({ users, count }: { users: IUser[]; count: number }) => {
   };
   return (
     <div>
-      <div className="mb-10 flex items-center justify-between">
-        <h1 className="text-3xl font-extrabold">Quản lý thành viên({count})</h1>
+      <div className="mb-10 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
+        <h1 className="text-2xl lg:text-3xl font-extrabold">
+          Quản lý thành viên({count})
+        </h1>
         <Input
           placeholder="Tìm kiếm thành viên"
           className="w-[300px]"
           onChange={debounce((e) => handleFilter(e.target.value), 300)}
         />
       </div>
-      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto">
+      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
             <TableHead>
@@ -70,10 +72,11 @@ const UserManage = ({ users, count }: { users: IUser[]; count: number }) => {
                     className="w-12 h-12 object-cover rounded-full flex-shrink-0"
                   />
                   <div>
-                    <h4 className="font-bold text-base line-clamp-2 max-w-[400px] block">
+                    <h4 className="font-bold text-base line-clamp-2 whitespace-nowrap max-w-[100px] lg:max-w-[400px] block">
                       {item.name}
                     </h4>
                     <h5>{item.username}</h5>
+                    <h5>{item.email}</h5>
                     <p className="text-sm text-gray-400">
                       {new Date(item.joinedAt).toLocaleDateString("vi-VN")}
                     </p>

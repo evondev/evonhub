@@ -7,7 +7,7 @@ const Header = () => {
   const auth = useAuth();
   return (
     <div className="top py-8 mb-5 flex items-center justify-between gap-5">
-      <div className="rounded-full gap-4 h-12 px-5 bg-white dark:bg-grayDark w-[min(100%,390px)] flex items-center">
+      <div className="rounded-full gap-4 h-12 px-5 bg-white dark:bg-grayDark w-[min(100%,390px)] items-center flex">
         <input
           type="text"
           placeholder="Search..."
@@ -47,7 +47,7 @@ const Header = () => {
         ) : (
           <Link
             href="/sign-in"
-            className="py-3 flex items-center justify-center gap-2 px-5 h-12 rounded-lg bg-primary text-white font-semibold"
+            className="py-3 flex items-center justify-center gap-2 px-5 h-12 w-12 lg:w-auto rounded-lg bg-primary text-white font-semibold"
           >
             <span>
               <svg
@@ -65,7 +65,7 @@ const Header = () => {
                 />
               </svg>
             </span>
-            Đăng nhập
+            <span className="hidden lg:inline">Đăng nhập</span>
           </Link>
         )}
       </div>

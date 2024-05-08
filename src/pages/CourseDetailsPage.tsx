@@ -64,7 +64,9 @@ const CourseDetailsPage = ({
             />
           )}
         </div>
-        <h1 className="font-extrabold text-3xl mb-10">{data.title}</h1>
+        <h1 className="font-extrabold text-2xl lg:text-3xl mb-10">
+          {data.title}
+        </h1>
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Mô tả</h2>
@@ -72,7 +74,7 @@ const CourseDetailsPage = ({
           </div>
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Chi tiết</h2>
-            <div className="grid grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
               <DetailsItem title="Bài học" icon={<IconVideo />}>
                 128
               </DetailsItem>

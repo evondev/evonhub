@@ -39,7 +39,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
     });
   };
   return (
-    <div>
+    <div className="hidden lg:block">
       <div className="mb-10 flex items-center justify-between">
         <h1 className="text-3xl font-extrabold">Quản lý khóa học</h1>
         <Link href="/admin/course/add-new" className={primaryButtonClassName}>

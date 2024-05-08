@@ -8,7 +8,7 @@
   }
   .wrapper {
     max-width: 1440px;
-    @apply mx-auto;
+    @apply mx-auto pb-16 lg:pb-10;
   }
   textarea,
   input {
@@ -39,6 +39,14 @@
   }
   .gradientPrimaryHover:hover {
     background-size: 100% 100%;
+  }
+  .table-responsive {
+    @media screen and (max-width: 767.98px) {
+      th:not(:first-child),
+      td:not(:first-child) {
+        padding-left: 75px;
+      }
+    }
   }
 }
 @layer utilities {
