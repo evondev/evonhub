@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 interface GlobalState {
   isFullscreen: boolean;
@@ -14,8 +14,13 @@ export const useGlobalStore = create<GlobalState>()(
         toggleFullscreen: (isFullscreen: boolean) =>
           set((state) => ({ isFullscreen: isFullscreen })),
       }),
+
       {
         name: "global-storage",
+        storage: createJSONStorage(() => localStorage),
+        partialize: (state) => ({
+          isFullscreen: true,
+        }),
       }
     )
   )

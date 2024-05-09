@@ -53,7 +53,7 @@ const Profile = ({ user }: { user: IUser }) => {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
-          <div className="mt-10 flex justify-end gap-2">
+          <div className="flex justify-end gap-2 mb-5">
             <Button
               type="submit"
               className={primaryButtonClassName}
@@ -62,7 +62,7 @@ const Profile = ({ user }: { user: IUser }) => {
               Cập nhật
             </Button>
           </div>
-          <div className="grid grid-cols-2 gap-10 mb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-10 mb-10">
             <FormField
               control={form.control}
               name="name"

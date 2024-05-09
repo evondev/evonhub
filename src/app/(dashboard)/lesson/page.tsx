@@ -34,7 +34,10 @@ const page = async ({
   const nextLesson = allLessons[currentLessonIndex + 1]?.slug;
   const prevLesson = allLessons[currentLessonIndex - 1]?.slug;
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-5 items-start">
+    <div
+      className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-5 items-start transition-all"
+      id="lesson-study"
+    >
       <LessonPlayer
         videoId={videoId || ""}
         video={lessonDetails.video}
@@ -45,7 +48,7 @@ const page = async ({
         nextLesson={nextLesson}
         prevLesson={prevLesson}
       ></LessonPlayer>
-      <div>
+      <div id="lesson-content-aside">
         {lectures.map((item) => (
           <Accordion
             type="single"

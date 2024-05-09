@@ -15,9 +15,9 @@ export default async function DashboardLayout({
   const role = mongoUser?.role;
   return (
     <>
-      <main className="grid grid-cols-1 xl:grid-cols-[300px,minmax(0,1fr)] min-h-screen relative items-start">
+      <main className="grid grid-cols-1 xl:pl-[300px] min-h-screen relative items-start">
         <Sidebar role={role}></Sidebar>
-        <section className="px-5 md:px-10 pb-10">
+        <section className="px-8 pb-10">
           <Header></Header>
           {children}
           <Navigation role={role}></Navigation>

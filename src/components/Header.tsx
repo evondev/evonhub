@@ -6,7 +6,7 @@ import { ModeToggle } from "./ModeToggle";
 const Header = () => {
   const auth = useAuth();
   return (
-    <div className="top py-8 mb-5 flex items-center justify-between gap-5">
+    <div className="top py-8 flex items-center justify-between gap-5">
       <div className="rounded-full gap-4 h-12 px-5 bg-white dark:bg-grayDark w-[min(100%,390px)] items-center flex">
         <input
           type="text"

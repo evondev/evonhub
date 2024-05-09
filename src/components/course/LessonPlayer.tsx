@@ -23,6 +23,13 @@ const LessonPlayer = ({
 }) => {
   const handle = useFullScreenHandle();
   const { isFullscreen, toggleFullscreen } = useGlobalStore();
+  const handleExpandScreen = () => {
+    toggleFullscreen(!isFullscreen);
+    const layout = document.querySelector("#lesson-study");
+    if (layout) {
+      layout.classList.toggle("lg:grid-cols-[2fr,1fr]");
+    }
+  };
 
   return (
     <div>
@@ -50,19 +57,30 @@ const LessonPlayer = ({
         </div>
       </FullScreen>
 
-      <button
-        onClick={() => {
-          toggleFullscreen(true);
-          handle.enter();
-        }}
-        className={cn(
-          baseButtonClassName,
-          "mb-5 ml-auto flex w-fit gap-2 bg-white dark:bg-grayDarker"
-        )}
-      >
-        <IconFullscreen />
-        Toàn màn hình
-      </button>
+      <div className="flex items-center justify-end mb-5 gap-3">
+        <button
+          onClick={handleExpandScreen}
+          className={cn(
+            baseButtonClassName,
+            "flex w-fit gap-2 bg-white dark:bg-grayDarker hover:text-primary"
+          )}
+        >
+          {!isFullscreen ? "Mặc định" : "Mở rộng"}
+        </button>
+        <button
+          onClick={() => {
+            toggleFullscreen(true);
+            handle.enter();
+          }}
+          className={cn(
+            baseButtonClassName,
+            "flex w-fit gap-2 bg-white dark:bg-grayDarker hover:text-primary"
+          )}
+        >
+          <IconFullscreen />
+          Toàn màn hình
+        </button>
+      </div>
       <h1 className="font-bold text-2xl mb-5">{lessonDetails.title}</h1>
       <div className="lesson-content">{lessonDetails.content}</div>
     </div>
@@ -90,7 +108,7 @@ function PlayerControl({
     <button
       onClick={() => handleChangeLesson(url)}
       className={cn(
-        "flex size-10 rounded items-center bg-white justify-center absolute top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-all dark:bg-grayDarker",
+        "flex size-10 rounded items-center bg-white justify-center absolute top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 hover:!bg-primary hover:!text-white transition-all dark:bg-grayDarker",
         action === "prev" ? "left-5" : "right-5"
       )}
     >
