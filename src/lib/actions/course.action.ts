@@ -93,10 +93,18 @@ export async function getCourseById(
   }
 }
 
-export async function getAllCourses(): Promise<ICourse[] | undefined> {
+export async function getAllCourses(
+  params: any
+): Promise<ICourse[] | undefined> {
   try {
     connectToDatabase();
-    const courses = await Course.find();
+    let searchQuery = {};
+    if (params.status) {
+      searchQuery = {
+        status: params.status,
+      };
+    }
+    const courses = await Course.find(searchQuery);
     return courses;
   } catch (error) {}
 }

@@ -4,11 +4,9 @@ import {
   addCourseToUser,
   removeCourseFromUser,
 } from "@/lib/actions/user.action";
-import { updateUserSchema } from "@/utils/formSchema";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { z } from "zod";
+import Swal from "sweetalert2";
 import { IconDelete } from "../icons";
 import { Button } from "../ui/button";
 import {
@@ -20,29 +18,32 @@ import {
 } from "../ui/select";
 
 const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
-  const form = useForm({
-    defaultValues: {
-      name: user.name,
-      email: user.email,
-      username: user.username,
-      bio: user.bio,
-      avatar: user.avatar,
-    },
-  });
-  async function onSubmit(values: z.infer<typeof updateUserSchema>) {}
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleRemoveCourseFromUser = async (courseId: string) => {
     try {
-      await removeCourseFromUser({
-        userId: user.clerkId,
-        courseId: courseId,
-        path: `/admin/user/update?username=${user.username}`,
+      Swal.fire({
+        title: "Bạn có muốn xóa khóa học của user không ?",
+        showCancelButton: true,
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Hủy",
+        icon: "warning",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await removeCourseFromUser({
+            userId: user.clerkId,
+            courseId: courseId,
+            path: `/admin/user/update?username=${user.username}`,
+          });
+          toast.success("Xóa khóa học thành công");
+        }
       });
-      toast.success("Xóa khóa học thành công");
     } catch (error) {
       console.log(error);
+    } finally {
     }
   };
   const handleAddCourseToUser = async () => {
+    setIsSubmitting(true);
     try {
       const res = await addCourseToUser({
         userId: user.clerkId,
@@ -55,6 +56,8 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
       toast.success("Thêm khóa học thành công");
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
   const [selectCourse, setSelectCourse] = useState("");
@@ -77,6 +80,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
           type="button"
           className={primaryButtonClassName}
           onClick={handleAddCourseToUser}
+          isLoading={isSubmitting}
         >
           Thêm khóa học
         </Button>

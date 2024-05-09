@@ -18,15 +18,24 @@ const CourseItem = ({
   const link = url || `/course/${data.slug}`;
   return (
     <div className=" bg-white rounded-md dark:bg-grayDark flex flex-col">
-      <Link href={link} className="relative h-[200px] block">
+      <Link
+        href={link}
+        className="relative h-[200px] block group overflow-hidden rounded-md"
+        style={{
+          transform: "translate3d(0, 0, 0) translateZ(0)",
+        }}
+      >
         <Image
           src={data.image}
           fill
           priority
           alt=""
-          className="w-full h-full object-cover rounded-md"
+          className="w-full h-full object-cover rounded-md group-hover:scale-125 transition-all"
           sizes="400px"
         ></Image>
+        <span className="absolute right-5 top-5 z-10 text-white inline-flex px-3 py-1 rounded-full bg-green-500 text-xs font-semibold">
+          Mới ra mắt
+        </span>
       </Link>
       <div className="p-5 flex-1 flex flex-col">
         {/* <Link

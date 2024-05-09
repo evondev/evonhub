@@ -1,7 +1,9 @@
 import PageNotFound from "@/app/not-found";
 import { getCourseBySlug } from "@/lib/actions/course.action";
+import { getUserById } from "@/lib/actions/user.action";
 import CourseDetailsPage from "@/pages/CourseDetailsPage";
-import { ECourseStatus } from "@/types/enums";
+import { ECourseStatus, Role } from "@/types/enums";
+import { auth } from "@clerk/nextjs/server";
 
 const page = async ({
   params,
@@ -12,7 +14,14 @@ const page = async ({
 }) => {
   const slug = params.slug;
   const courseDetails = await getCourseBySlug(slug);
-  if (!courseDetails?.slug || courseDetails.status !== ECourseStatus.APPROVED)
+  const { userId } = auth();
+  // if (!userId) redirect("/sign-in");
+  const mongoUser = await getUserById({ userId: userId || "" });
+  const role = mongoUser?.role;
+  if (
+    !courseDetails?.slug ||
+    (courseDetails.status !== ECourseStatus.APPROVED && role !== Role.ADMIN)
+  )
     return <PageNotFound />;
   return (
     <CourseDetailsPage

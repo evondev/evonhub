@@ -17,7 +17,7 @@ export const menuLinks: TMenuLink[] = [
   {
     title: "Khám phá",
     icon: <IconPlay></IconPlay>,
-    url: "/courses",
+    url: "/explore",
   },
   {
     title: "Quản lý khóa học",

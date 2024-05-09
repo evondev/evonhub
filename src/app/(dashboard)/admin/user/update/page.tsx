@@ -2,6 +2,7 @@ import PageNotFound from "@/app/not-found";
 import UserUpdateCourse from "@/components/user/UserUpdateCourse";
 import { getAllCourses } from "@/lib/actions/course.action";
 import { getUserByUsername } from "@/lib/actions/user.action";
+import { ECourseStatus } from "@/types/enums";
 
 const page = async ({
   searchParams,
@@ -13,7 +14,9 @@ const page = async ({
   const user = await getUserByUsername({
     username: searchParams.username,
   });
-  const allCoures = await getAllCourses();
+  const allCoures = await getAllCourses({
+    status: ECourseStatus.APPROVED,
+  });
   if (!user) return <PageNotFound />;
   return (
     <UserUpdateCourse

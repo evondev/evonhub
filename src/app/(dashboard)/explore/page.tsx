@@ -1,8 +1,11 @@
 import { getAllCourses } from "@/lib/actions/course.action";
 import Courses from "@/pages/Courses";
+import { ECourseStatus } from "@/types/enums";
 
 const page = async () => {
-  const courses = await getAllCourses();
+  const courses = await getAllCourses({
+    status: ECourseStatus.APPROVED,
+  });
   if (!courses) return <div>Loading...</div>;
   return (
     <div>

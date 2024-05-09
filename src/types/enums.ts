@@ -12,3 +12,9 @@ export enum ECourseStatus {
   APPROVED = "approved",
   REJECTED = "rejected",
 }
+export enum EcourseLabel {
+  NEW = "new",
+  HOT = "hot",
+  TOP = "top",
+  NONE = "none",
+}
