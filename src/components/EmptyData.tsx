@@ -1,5 +1,5 @@
 const EmptyData = () => {
-  return <div>EmptyData</div>;
+  return <div></div>;
 };
 
 export default EmptyData;

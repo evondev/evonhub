@@ -35,6 +35,7 @@ export interface UpdateCourseParams {
   slug: string;
   updateData: Partial<ICourse>;
   path?: string;
+  courseSlug?: string;
 }
 export interface CourseParams {
   lecture: {

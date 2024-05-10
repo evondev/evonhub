@@ -16,6 +16,7 @@ const page = async ({
     <>
       <UpdateCourseForm
         data={JSON.parse(JSON.stringify(findCourse))}
+        slug={slug}
       ></UpdateCourseForm>
     </>
   );

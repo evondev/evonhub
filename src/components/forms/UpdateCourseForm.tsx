@@ -41,7 +41,13 @@ import {
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 
-export default function UpdateCourseForm({ data }: { data: ICourse }) {
+export default function UpdateCourseForm({
+  data,
+  slug: courseSlug,
+}: {
+  data: ICourse;
+  slug: string;
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<z.infer<typeof updateCourseSchema>>({
     resolver: zodResolver(updateCourseSchema),
@@ -78,7 +84,8 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
     setIsSubmitting(true);
     try {
       const res = await updateCourse({
-        slug: values.slug || data.slug,
+        slug: values.slug || "",
+        courseSlug,
         updateData: {
           ...values,
           price: parseInt(values.price || "0"),

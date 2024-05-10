@@ -37,17 +37,21 @@ export async function updateCourse({
   slug,
   updateData,
   path,
+  courseSlug,
 }: UpdateCourseParams) {
   try {
     connectToDatabase();
     const allCourse = await Course.find();
-    const existSlug = allCourse.some((item) => item.slug === slug);
-    if (existSlug) {
+    const existCourse = allCourse.some(
+      (item) => item.slug === slug && item.slug !== courseSlug
+    );
+    if (existCourse) {
       return {
         type: "error",
-        message: "Đường dẫn khóa học đã tồn tại!",
+        message: "Đường dẫn này đã tồn tại!",
       };
     }
+
     await Course.findOneAndUpdate({ slug }, updateData, {
       new: true,
     });
