@@ -35,7 +35,7 @@ const UserManage = ({ users, count }: { users: IUser[]; count: number }) => {
   };
   return (
     <div>
-      <div className="mb-10 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
+      <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
         <h1 className="text-2xl lg:text-3xl font-extrabold">
           Quản lý thành viên({count})
         </h1>

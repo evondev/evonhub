@@ -13,7 +13,7 @@ const Dashboard = ({
   const url = `/lesson?slug=${lessons?.[0]?.slug}`;
   return (
     <div>
-      <h1 className="text-3xl font-extrabold mb-10">Khu vực học tập</h1>
+      <h1 className="text-3xl font-extrabold mb-8">Khu vực học tập</h1>
       <div className="grid grid-cols-2 xl:grid-cols-3 gap-5">
         {courses.length > 0 &&
           courses?.map((course) => (

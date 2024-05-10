@@ -57,7 +57,6 @@
     @apply bg-gray-100 dark:bg-grayDarkest #{!important};
   }
 }
-
 .Toastify__toast-container {
   width: fit-content;
   font-size: 14px;
@@ -67,20 +66,21 @@
 }
 .swal2-container {
   .swal2-popup {
-    @apply rounded-xl;
+    @apply rounded-xl p-8;
+    max-width: 400px;
   }
   .swal2-popup .swal2-title {
-    @apply text-2xl font-semibold text-grayDarkest;
+    @apply text-xl font-bold text-grayDarkest;
   }
   .swal2-popup .swal2-styled.swal2-confirm {
     all: unset;
     box-sizing: border-box;
-    @apply text-white bg-primary font-semibold rounded-lg px-4 py-2 h-10 w-28 flex items-center justify-center text-center text-sm cursor-pointer;
+    @apply text-white bg-primary font-semibold rounded-lg px-4 py-2 h-12 w-28 flex items-center justify-center text-center text-sm cursor-pointer hover:bg-opacity-90;
   }
   .swal2-popup .swal2-styled.swal2-cancel {
     all: unset;
     box-sizing: border-box;
-    @apply bg-transparent text-grayDarkest hover:bg-none hover:bg-transparent h-10 w-28 text-sm font-semibold px-4 py-2 cursor-pointer text-center;
+    @apply bg-transparent text-grayDarkest hover:bg-none hover:bg-transparent h-10 w-28 text-sm font-semibold px-4 py-2 cursor-pointer text-center hover:text-opacity-55;
   }
   .swal2-popup .swal2-actions:not(.swal2-loading) .swal2-styled:hover {
     @apply bg-none;

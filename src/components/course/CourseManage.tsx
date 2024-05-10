@@ -40,7 +40,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
   };
   return (
     <div className="hidden lg:block">
-      <div className="mb-10 flex items-center justify-between">
+      <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-extrabold">Quản lý khóa học</h1>
         <Link href="/admin/course/add-new" className={primaryButtonClassName}>
           Tạo khóa học mới
@@ -69,8 +69,8 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                   <Image
                     src={course.image}
                     alt={course.title}
-                    width={64}
-                    height={64}
+                    width={128}
+                    height={128}
                     className="w-16 h-16 object-cover rounded flex-shrink-0"
                   />
                   <div>

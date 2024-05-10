@@ -1,8 +1,8 @@
 import {
-  IconCategory,
   IconCourseManage,
-  IconHome,
+  IconCube,
   IconPlay,
+  IconStudy,
   IconUser,
   IconUsers,
 } from "@/components/icons";
@@ -10,8 +10,14 @@ import { TMenuLink } from "@/types";
 
 export const menuLinks: TMenuLink[] = [
   {
+    title: "Overview",
+    icon: <IconCube></IconCube>,
+    url: "/admin/overview",
+    isAdmin: true,
+  },
+  {
     title: "Khu vực học tập",
-    icon: <IconHome></IconHome>,
+    icon: <IconStudy></IconStudy>,
     url: "/",
   },
   {
@@ -31,12 +37,12 @@ export const menuLinks: TMenuLink[] = [
     url: "/admin/user/manage",
     isAdmin: true,
   },
-  {
-    title: "Quản lý danh mục",
-    icon: <IconCategory></IconCategory>,
-    url: "/admin/category/manage",
-    isAdmin: true,
-  },
+  // {
+  //   title: "Quản lý danh mục",
+  //   icon: <IconCategory></IconCategory>,
+  //   url: "/admin/category/manage",
+  //   isAdmin: true,
+  // },
   {
     title: "Profile",
     icon: <IconUser></IconUser>,

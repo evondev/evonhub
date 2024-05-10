@@ -282,7 +282,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
                         <button
                           className={cn(
                             actionClassName,
-                            "absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 hover:bg-red-500 opacity-0 invisible group-hover:opacity-100 group-hover:visible"
+                            "absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 hover:bg-red-500 hover:!text-white opacity-0 invisible group-hover:opacity-100 group-hover:visible"
                           )}
                           onClick={() => form.setValue("image", "")}
                         >

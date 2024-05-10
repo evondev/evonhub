@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { createCourse } from "@/lib/actions/course.action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import slugify from "slugify";
@@ -26,6 +27,7 @@ const formSchema = z.object({
 });
 
 export default function AddCourseForm({ userId }: { userId: string }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,6 +38,7 @@ export default function AddCourseForm({ userId }: { userId: string }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
     const { title, slug } = values;
     let newSlug = slug || "";
     if (!slug) {
@@ -55,7 +58,10 @@ export default function AddCourseForm({ userId }: { userId: string }) {
       toast.success("Khóa học đã được thêm thành công");
       router.push(`/admin/course/update?slug=${newSlug}`);
     } catch (error) {
+      toast.error("Tạo khóa học thất bại");
       console.log(error);
+    } finally {
+      setIsSubmitting(false);
     }
   }
   return (
@@ -93,6 +99,7 @@ export default function AddCourseForm({ userId }: { userId: string }) {
           <Button
             type="submit"
             className="h-12 bg-primary dark:bg-primary dark:text-white text-white font-bold"
+            isLoading={isSubmitting}
           >
             Thêm khóa học
           </Button>
