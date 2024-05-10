@@ -41,7 +41,7 @@ const UserManage = ({ users, count }: { users: IUser[]; count: number }) => {
         </h1>
         <Input
           placeholder="Tìm kiếm thành viên"
-          className="w-[300px]"
+          className="w-full lg:w-[300px]"
           onChange={debounce((e) => handleFilter(e.target.value), 300)}
         />
       </div>

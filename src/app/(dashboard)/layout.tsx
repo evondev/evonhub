@@ -17,7 +17,7 @@ export default async function DashboardLayout({
     <>
       <main className="grid grid-cols-1 xl:pl-[300px] min-h-screen relative items-start">
         <Sidebar role={role}></Sidebar>
-        <section className="px-8 pb-10">
+        <section className="px-5 lg:px-8 pb-10">
           <Header></Header>
           {children}
           <Navigation role={role}></Navigation>
