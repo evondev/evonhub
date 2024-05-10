@@ -78,7 +78,7 @@ export default function UpdateCourseForm({ data }: { data: ICourse }) {
     setIsSubmitting(true);
     try {
       const res = await updateCourse({
-        slug: data.slug,
+        slug: values.slug || data.slug,
         updateData: {
           ...values,
           price: parseInt(values.price || "0"),

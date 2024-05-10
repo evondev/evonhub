@@ -22,7 +22,7 @@ import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useImmer } from "use-immer";
-import CourseContentLesson from "./CourseContentLesson";
+import LessonItemUpdate from "../lesson/LessonItemUpdate";
 
 const CourseContent = ({
   data,
@@ -101,9 +101,8 @@ const CourseContent = ({
         lectureId,
         courseId: data._id.toString(),
       });
-
-      toast.success("Bài học đã được thêm thành công");
     } catch (error) {
+      toast.error("Có lỗi xảy ra khi thêm bài học");
       console.log(error);
     }
   };
@@ -129,6 +128,7 @@ const CourseContent = ({
         order: lectureList.length,
       });
     } catch (error) {
+      toast.error("Có lỗi xảy ra khi thêm chương mới");
       console.log(error);
     } finally {
       setIsSubmitting((draf) => {
@@ -214,7 +214,9 @@ const CourseContent = ({
 
   return (
     <div>
-      <h1 className="font-bold text-3xl mb-5">{data.title}</h1>
+      <h1 className="font-extrabold text-3xl mb-8 text-primary">
+        {data.title}
+      </h1>
       {lectureList.map((lecture, index) => {
         const lessons = lecture.lessons;
         return (
@@ -344,11 +346,11 @@ const CourseContent = ({
                               </div>
                             </AccordionTrigger>
                             <AccordionContent className="bgDarkMode rounded-lg mt-5">
-                              <CourseContentLesson
+                              <LessonItemUpdate
                                 lessonId={lesson._id}
                                 lesson={lesson}
                                 slug={data.slug}
-                              ></CourseContentLesson>
+                              ></LessonItemUpdate>
                             </AccordionContent>
                           </AccordionItem>
                         </Accordion>

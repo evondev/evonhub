@@ -50,7 +50,6 @@ export async function updateCourse({
     }
     await Course.findOneAndUpdate({ slug }, updateData, {
       new: true,
-      upsert: true,
     });
 
     revalidatePath(path || `/admin/course/update?slug=${slug}`);
@@ -138,6 +137,7 @@ export async function updateCourseWithLecture(params: {
     await newLecture.save();
     course.lecture.push(newLecture._id);
     await course.save();
+    revalidatePath(`/admin/course/content?slug=${course.slug}`);
   } catch (error) {
     console.log(error);
   }
