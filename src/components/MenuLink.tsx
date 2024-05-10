@@ -8,6 +8,7 @@ interface MenuLinkProps {
 const MenuLink = ({ link, isActiveLink }: MenuLinkProps) => {
   return (
     <Link
+      prefetch
       href={link.url}
       className={twMerge(
         "flex items-center gap-4 p-3 rounded-lg transition-all",
