@@ -5,7 +5,6 @@ export interface IReaction extends Document {
   type: EReactionType;
   lessonId: Schema.Types.ObjectId;
   userId: Schema.Types.ObjectId;
-  courseId: Schema.Types.ObjectId;
   createdAt: Date;
 }
 const reactionSchema = new Schema<IReaction>({
@@ -29,11 +28,6 @@ const reactionSchema = new Schema<IReaction>({
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
-    required: true,
-  },
-  courseId: {
-    type: Schema.Types.ObjectId,
-    ref: "Course",
     required: true,
   },
   createdAt: {

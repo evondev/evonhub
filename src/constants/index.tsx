@@ -7,6 +7,7 @@ import {
   IconUsers,
 } from "@/components/icons";
 import { TLevel, TMenuLink } from "@/types";
+import { EReactionType } from "@/types/enums";
 
 export const menuLinks: TMenuLink[] = [
   {
@@ -121,3 +122,46 @@ export const courseLevel: Record<TLevel, string> = {
   medium: "Trung bình",
   expert: "Khó",
 };
+export const reactions: {
+  icon: string;
+  title: string;
+  value: EReactionType;
+  bg: string;
+}[] = [
+  {
+    icon: "🤩",
+    title: "Tuyệt vời",
+    value: EReactionType.EXCELLENT,
+    bg: "bg-yellow-50",
+  },
+  {
+    icon: "🥰",
+    title: "Yêu thích",
+    value: EReactionType.LOVE,
+    bg: "bg-pink-50",
+  },
+  {
+    icon: "😁",
+    title: "Vui vẻ",
+    value: EReactionType.HAPPY,
+    bg: "bg-green-50",
+  },
+  {
+    icon: "🙂",
+    title: "Hài lòng",
+    value: EReactionType.SATISFIED,
+    bg: "bg-blue-50",
+  },
+  {
+    icon: "😢",
+    title: "Buồn",
+    value: EReactionType.SAD,
+    bg: "bg-gray-50",
+  },
+  {
+    icon: "😱",
+    title: "Sốc",
+    value: EReactionType.SHOCK,
+    bg: "bg-red-50",
+  },
+];

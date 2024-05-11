@@ -9,7 +9,10 @@ import {
 } from "@/components/ui/form";
 import { editorOptions, primaryButtonClassName } from "@/constants";
 import { createComment } from "@/lib/actions/comment.action";
+import { createReaction } from "@/lib/actions/reaction.action";
+import { cn } from "@/lib/utils";
 import { ICommentParams } from "@/types";
+import { EReactionType } from "@/types/enums";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "next-themes";
@@ -19,6 +22,7 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
+import ReactLesson from "../reaction/ReactLesson";
 import { Button } from "../ui/button";
 import CommentReplyForm from "./CommentReplyForm";
 const commentSchema = z.object({
@@ -89,7 +93,7 @@ const CommentForm = ({
         lesson: lessonId,
         path: `/lesson?slug=${searchParams?.get("slug")}`,
       });
-      toast.success("Bình luận của bạn đã được gửi");
+      toast.success("Cám ơn bạn đã khen bài học này");
       // reset form
       form.reset();
       if (editorRef.current) {
@@ -103,66 +107,27 @@ const CommentForm = ({
   }
   const { theme } = useTheme();
   const editorRef = useRef(null);
-  const reactions = [
-    {
-      icon: "🤩",
-      title: "Tuyệt vời",
-      value: "excellent",
-      bg: "bg-yellow-50",
-    },
-    {
-      icon: "🥰",
-      title: "Yêu thích",
-      value: "love",
-      bg: "bg-pink-50",
-    },
-    {
-      icon: "😁",
-      title: "Vui vẻ",
-      value: "happy",
-      bg: "bg-green-50",
-    },
-    {
-      icon: "🙂",
-      title: "Hài lòng",
-      value: "satisfied",
-      bg: "bg-blue-50",
-    },
-    {
-      icon: "😢",
-      title: "Buồn",
-      value: "sad",
-      bg: "bg-gray-50",
-    },
-    {
-      icon: "😱",
-      title: "Sốc",
-      value: "shock",
-      bg: "bg-red-50",
-    },
-  ];
+
+  const handleReaction = async (reaction: EReactionType) => {
+    try {
+      await createReaction({
+        type: reaction,
+        userId,
+        lessonId,
+        path: `/lesson?slug=${searchParams?.get("slug")}`,
+      });
+      await toast.success("Cám ơn bạn đã reaction bài học này");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="mt-8">
-      {/* <div className="flex items-center gap-5">
-        {reactions.map((reaction) => (
-          <button
-            key={reaction.value}
-            className="flex flex-col gap-2 text-xs justify-center items-center group font-semibold hover:-translate-y-3 transition-all"
-          >
-            <span
-              className={cn(
-                "size-10 rounded-full flex items-center justify-center text-sm",
-                reaction.bg
-              )}
-            >
-              {reaction.icon}
-            </span>
-            <span className="opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible">
-              {reaction.title}
-            </span>
-          </button>
-        ))}
-      </div> */}
+      <ReactLesson
+        handleReaction={handleReaction}
+        lessonId={lessonId}
+        userId={userId}
+      ></ReactLesson>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
           <FormField
@@ -183,8 +148,12 @@ const CommentForm = ({
             )}
           />
           <div className="flex mt-5 justify-end">
-            <Button isLoading={isSubmitting} className={primaryButtonClassName}>
-              Đăng bình luận
+            <Button
+              isLoading={isSubmitting}
+              className={cn(primaryButtonClassName, "group w-[150px]")}
+            >
+              <span className="group-hover:hidden"> Chê bài này</span>
+              <span className="hidden group-hover:block">Khen bài này</span>
             </Button>
           </div>
         </form>

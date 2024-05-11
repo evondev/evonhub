@@ -3,7 +3,6 @@ import { completeLesson } from "@/lib/actions/history.action";
 import { cn } from "@/lib/utils";
 import { formUrlQuery } from "@/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { IconPlay } from "../icons";
 import { Checkbox } from "../ui/checkbox";
 
@@ -29,7 +28,6 @@ const LessonItem = ({
     isActive ? "text-primary font-bold dark:text-primary" : "font-medium"
   );
   const searchParams = useSearchParams();
-  const [isChecked, setIsChecked] = useState(isCompleted);
   const router = useRouter();
   const handleChangeLesson = () => {
     const newUrl = formUrlQuery({
@@ -55,6 +53,7 @@ const LessonItem = ({
       <Checkbox
         defaultChecked={isCompleted}
         onCheckedChange={(checked) => handleCompleteLesson(checked)}
+        className="data-[state=checked]:border-secondary data-[state=checked]:bg-secondary"
       />
 
       <IconPlay />
