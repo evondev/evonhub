@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { getAllComments } from "@/lib/actions/comment.action";
 import { getCourseById } from "@/lib/actions/course.action";
+import { getHistoriesByLessonId } from "@/lib/actions/history.action";
 import { getLessonBySlug } from "@/lib/actions/lesson.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
@@ -44,6 +45,9 @@ const page = async ({
   const comments = await getAllComments({
     lesson: lessonDetails._id.toString(),
     status: "approved",
+  });
+  const historyLessons = await getHistoriesByLessonId({
+    lessonId: lessonDetails._id.toString(),
   });
 
   return (
@@ -93,6 +97,14 @@ const page = async ({
                         : lesson.slug
                     }
                     isActive={lesson.slug === searchParams.slug}
+                    isCompleted={historyLessons?.some(
+                      (item) => item.lesson.toString() === lesson._id.toString()
+                    )}
+                    data={{
+                      userId: mongoUser._id.toString(),
+                      courseId: courseId.toString(),
+                      lessonId: lesson._id.toString(),
+                    }}
                   ></LessonItem>
                 ))}
               </AccordionContent>
