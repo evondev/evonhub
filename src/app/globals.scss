@@ -64,6 +64,9 @@
 .Toastify__toast {
   @apply text-gray-700;
 }
+div .tox .tox-edit-area::before {
+  border: none;
+}
 .swal2-container {
   .swal2-popup {
     @apply rounded-xl p-8;

@@ -1,4 +1,5 @@
 import PageNotFound from "@/app/not-found";
+import CommentForm from "@/components/comment/CommentForm";
 import LessonItem from "@/components/course/LessonItem";
 import LessonPlayer from "@/components/course/LessonPlayer";
 import {
@@ -7,8 +8,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { getAllComments } from "@/lib/actions/comment.action";
 import { getCourseById } from "@/lib/actions/course.action";
 import { getLessonBySlug } from "@/lib/actions/lesson.action";
+import { getUserById } from "@/lib/actions/user.action";
+import { auth } from "@clerk/nextjs/server";
 
 const page = async ({
   searchParams,
@@ -17,6 +21,9 @@ const page = async ({
     slug: string;
   };
 }) => {
+  const { userId } = auth();
+  if (!userId) return null;
+  const mongoUser = await getUserById({ userId });
   const lessonDetails = await getLessonBySlug(searchParams.slug);
   if (!lessonDetails) return <PageNotFound />;
   const courseId = lessonDetails.courseId;
@@ -34,21 +41,34 @@ const page = async ({
   );
   const nextLesson = allLessons[currentLessonIndex + 1]?.slug;
   const prevLesson = allLessons[currentLessonIndex - 1]?.slug;
+  const comments = await getAllComments({
+    lesson: lessonDetails._id.toString(),
+    status: "approved",
+  });
+
   return (
     <div
       className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,1fr)] gap-8 items-start transition-all"
       id="lesson-study"
     >
-      <LessonPlayer
-        videoId={videoId || ""}
-        video={lessonDetails.video}
-        lessonDetails={{
-          title: lessonDetails.title,
-          content: lessonDetails.content,
-        }}
-        nextLesson={nextLesson}
-        prevLesson={prevLesson}
-      ></LessonPlayer>
+      <div>
+        <LessonPlayer
+          videoId={videoId || ""}
+          video={lessonDetails.video}
+          lessonDetails={{
+            title: lessonDetails.title,
+            content: lessonDetails.content,
+          }}
+          nextLesson={nextLesson}
+          prevLesson={prevLesson}
+        ></LessonPlayer>
+        <CommentForm
+          userId={mongoUser._id.toString()}
+          courseId={lessonDetails.courseId.toString()}
+          comments={JSON.parse(JSON.stringify(comments))}
+          lessonId={lessonDetails._id.toString()}
+        ></CommentForm>
+      </div>
       <div id="lesson-content-aside">
         {lectures.map((item) => (
           <Accordion

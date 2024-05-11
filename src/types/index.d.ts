@@ -61,6 +61,17 @@ export interface GetUsersParams {
   searchQuery?: string;
   filter?: string;
 }
+export interface ICommentParams {
+  _id: string;
+  content: string;
+  user: {
+    username: string;
+    avatar: string;
+  };
+  course: string;
+  lesson: string;
+  createdAt: Date;
+}
 
 export type TStatus = "pending" | "approved" | "rejected";
 export type TLevel = "easy" | "medium" | "expert";

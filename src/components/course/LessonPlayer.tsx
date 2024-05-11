@@ -35,7 +35,7 @@ const LessonPlayer = ({
   };
 
   return (
-    <div>
+    <div className="mb-8">
       <FullScreen handle={handle}>
         <div className="relative group">
           {video.includes("iframe") ? (

@@ -86,7 +86,7 @@ export const editorOptions = (field: any, theme: any) => ({
   onEditorChange: (content: any) => field.onChange(content),
   init: {
     skin: theme === "dark" ? "oxide-dark" : "oxide",
-    height: 350,
+    height: 200,
     menubar: false,
     plugins: [
       "advlist",
