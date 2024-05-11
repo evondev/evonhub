@@ -27,7 +27,10 @@ const LessonPlayer = ({
     toggleFullscreen(!isFullscreen);
     const layout = document.querySelector("#lesson-study");
     if (layout) {
-      layout.classList.toggle("lg:grid-cols-[2fr,1fr]");
+      layout.setAttribute(
+        "style",
+        isFullscreen ? "display: block" : "display: grid"
+      );
     }
   };
 
@@ -69,7 +72,6 @@ const LessonPlayer = ({
         </button>
         <button
           onClick={() => {
-            toggleFullscreen(true);
             handle.enter();
           }}
           className={cn(

@@ -6,7 +6,7 @@ import {
   IconUser,
   IconUsers,
 } from "@/components/icons";
-import { TMenuLink } from "@/types";
+import { TLevel, TMenuLink } from "@/types";
 
 export const menuLinks: TMenuLink[] = [
   {
@@ -116,3 +116,8 @@ export const editorOptions = (field: any, theme: any) => ({
     content_style: `body { font-family: DM sans, Inter,Helvetica,Arial,sans-serif; font-size:14px; } img { max-width: 100%; height: auto; display: block; margin: 0 auto; }`,
   },
 });
+export const courseLevel: Record<TLevel, string> = {
+  easy: "Dễ",
+  medium: "Trung bình",
+  expert: "Khó",
+};

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/accordion";
 import {
   boxDetailClassName,
+  courseLevel,
   primaryButtonClassName,
   widgetClassName,
 } from "@/constants";
@@ -24,6 +25,7 @@ import Image from "next/image";
 
 const CourseDetailsPage = ({
   data,
+  lessonCount,
 }: {
   data: Omit<ICourse, "lecture"> & {
     lecture: {
@@ -36,6 +38,7 @@ const CourseDetailsPage = ({
       }[];
     }[];
   };
+  lessonCount: number;
 }) => {
   if (!data) return <PageNotFound />;
   const lectures = data?.lecture || [];
@@ -70,22 +73,24 @@ const CourseDetailsPage = ({
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Mô tả</h2>
-            <p className="text-slate-700 dark:text-text5">{data.desc}</p>
+            <p className="text-slate-700 dark:text-text5 text-lg">
+              {data.desc}
+            </p>
           </div>
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Chi tiết</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
               <DetailsItem title="Bài học" icon={<IconVideo />}>
-                128
+                {lessonCount}
               </DetailsItem>
               <DetailsItem title="Mức độ" icon={<IconLevel />}>
-                Dễ
+                {courseLevel[data.level]}
               </DetailsItem>
               <DetailsItem title="Tổng thời gian" icon={<IconClock />}>
-                30h25p
+                0h0p
               </DetailsItem>
               <DetailsItem title="Lượt xem" icon={<IconViews />}>
-                10,000
+                {data.views || 0}
               </DetailsItem>
             </div>
           </div>
@@ -131,7 +136,7 @@ const CourseDetailsPage = ({
                 key={item.question}
               >
                 <AccordionItem value="item-1">
-                  <AccordionTrigger className="font-semibold mb-2 ">
+                  <AccordionTrigger className="font-semibold mb-2">
                     {item.question}
                   </AccordionTrigger>
                   <AccordionContent className="font-medium bg-white rounded-lg dark:bg-grayDarker  dark:text-text5">
@@ -201,8 +206,8 @@ function DetailsItem({
 }) {
   return (
     <div className={boxDetailClassName}>
-      <h4 className="text-xs text-slate-600 dark:text-slate-400">{title}</h4>
-      <div className="flex items-center gap-1 text-sm">
+      <h4 className="text-sm text-slate-600 dark:text-slate-400">{title}</h4>
+      <div className="flex items-center gap-1">
         {icon}
         <span>{children}</span>
       </div>
@@ -225,7 +230,7 @@ function BoxList({ title, data }: { title: string; data: string[] }) {
 
 function ListItem({ title }: { title: string }) {
   return (
-    <li className="flex items-center gap-3 dark:text-text5">
+    <li className="flex items-baseline gap-3 dark:text-text5">
       <div className="size-4 p-0.5 flex items-center justify-center rounded bg-primary text-white">
         <IconCheck />
       </div>

@@ -29,6 +29,7 @@ export interface ICourse extends Document {
   review: Schema.Types.ObjectId[];
   lecture: Schema.Types.ObjectId[];
   author: Schema.Types.ObjectId;
+  views: number;
 }
 const courseSchema = new Schema<ICourse>({
   title: {
@@ -117,6 +118,10 @@ const courseSchema = new Schema<ICourse>({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  views: {
+    type: Number,
+    default: 0,
   },
 });
 const Course = models.Course || mongoose.model("Course", courseSchema);

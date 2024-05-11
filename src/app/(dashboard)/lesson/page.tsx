@@ -24,6 +24,7 @@ const page = async ({
   let videoId = lessonDetails.video.includes("?v=")
     ? lessonDetails.video.split("?v=").at(-1)
     : lessonDetails.video.split("/").at(-1);
+  videoId = videoId?.split("&").at(0);
   const lectures = course?.lecture || [];
   const allLessons = lectures.reduce((acc, item) => {
     return acc.concat(item.lessons);
@@ -35,7 +36,7 @@ const page = async ({
   const prevLesson = allLessons[currentLessonIndex - 1]?.slug;
   return (
     <div
-      className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-5 items-start transition-all"
+      className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,1fr)] gap-8 items-start transition-all"
       id="lesson-study"
     >
       <LessonPlayer
@@ -58,8 +59,8 @@ const page = async ({
             defaultValue={lessonDetails.lectureId.toString()}
           >
             <AccordionItem value={item.id}>
-              <AccordionTrigger className="font-semibold dark:text-text5">
-                {item.title}
+              <AccordionTrigger className="font-semibold dark:text-text5 ">
+                <div className="line-clamp-1">{item.title}</div>
               </AccordionTrigger>
               <AccordionContent className="bg-white dark:bg-grayDarker rounded-lg mt-5">
                 {item.lessons.map((lesson) => (

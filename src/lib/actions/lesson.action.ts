@@ -119,3 +119,15 @@ export async function getLessonByCourseId(
     console.log(error);
   }
 }
+export async function getLessonCount(
+  courseId: string
+): Promise<number | undefined> {
+  try {
+    connectToDatabase();
+    // count all lessons in course
+    const count = await Lesson.countDocuments({ courseId });
+    return count;
+  } catch (error) {
+    console.log(error);
+  }
+}
