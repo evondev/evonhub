@@ -16,7 +16,6 @@ const Navigation = ({ role }: { role: string }) => {
           return (
             <li key={link.title}>
               <Link
-                prefetch
                 href={link.url}
                 className={cn(
                   "size-10 flex items-center justify-center rounded-lg transition-all",

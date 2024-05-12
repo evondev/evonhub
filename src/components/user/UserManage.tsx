@@ -11,16 +11,20 @@ import {
 } from "@/components/ui/table";
 import {
   actionClassName,
-  courseStatus,
   courseStatusClassName,
+  userStatus,
 } from "@/constants";
 import { IUser } from "@/database/user.model";
+import { updateUser } from "@/lib/actions/user.action";
 import { cn } from "@/lib/utils";
+import { TUserStatus } from "@/types";
 import { formUrlQuery } from "@/utils";
 import { debounce } from "lodash";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import { Input } from "../ui/input";
 const UserManage = ({ users, count }: { users: IUser[]; count: number }) => {
   const router = useRouter();
@@ -32,6 +36,31 @@ const UserManage = ({ users, count }: { users: IUser[]; count: number }) => {
       value: filter,
     });
     router.push(newUrl);
+  };
+  const handleChangeUserStatus = async (
+    clerkId: string,
+    status: TUserStatus
+  ) => {
+    try {
+      Swal.fire({
+        icon: "warning",
+        title: "Bạn có chắc chắn muốn thay đổi trạng thái?",
+        showCancelButton: true,
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Hủy",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await updateUser({
+            clerkId,
+            updateData: {
+              status: status === "active" ? "inactive" : "active",
+            },
+            path: "/admin/user/manage",
+          });
+          toast.success("Cập nhật trạng thái thành công");
+        }
+      });
+    } catch (error) {}
   };
   return (
     <div>
@@ -84,14 +113,17 @@ const UserManage = ({ users, count }: { users: IUser[]; count: number }) => {
                 </div>
               </TableCell>
               <TableCell>
-                <span
+                <button
                   className={cn(
                     courseStatusClassName,
-                    courseStatus.approved.className
+                    userStatus[item.status].className
                   )}
+                  onClick={() =>
+                    handleChangeUserStatus(item.clerkId, item.status)
+                  }
                 >
-                  Đang hoạt động
-                </span>
+                  {userStatus[item.status].text}
+                </button>
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">

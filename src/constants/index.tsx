@@ -7,7 +7,7 @@ import {
   IconUser,
   IconUsers,
 } from "@/components/icons";
-import { TLevel, TMenuLink } from "@/types";
+import { TLevel, TMenuLink, TUserStatus } from "@/types";
 import { EReactionType } from "@/types/enums";
 
 export const menuLinks: TMenuLink[] = [
@@ -78,6 +78,22 @@ export const courseStatus = {
   },
   rejected: {
     text: "Bị từ chối",
+    className: "bg-red-500 bg-opacity-10 text-red-500",
+  },
+};
+export const userStatus: Record<
+  TUserStatus,
+  {
+    text: string;
+    className: string;
+  }
+> = {
+  active: {
+    text: "Hoạt động",
+    className: "bg-green-500 bg-opacity-10 text-green-500",
+  },
+  inactive: {
+    text: "Không hoạt động",
     className: "bg-red-500 bg-opacity-10 text-red-500",
   },
 };
