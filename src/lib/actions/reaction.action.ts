@@ -41,6 +41,9 @@ export async function isAlreadyReaction(params: {
       lessonId: params.lessonId,
       userId: params.userId,
     });
+    if (!existReaction) {
+      return undefined;
+    }
     return { data: existReaction.type };
   } catch (error) {
     console.log(error);
@@ -58,6 +61,19 @@ export async function getReactionCount(params: { lessonId: string }) {
       return acc;
     }, {});
     return reactionCount;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function getAllReactions() {
+  try {
+    connectToDatabase();
+    const reactions = await Reaction.find();
+    const reactionsData = reactions.reduce((acc, reaction) => {
+      acc[reaction.type] = (acc[reaction.type] || 0) + 1;
+      return acc;
+    }, {});
+    return reactionsData;
   } catch (error) {
     console.log(error);
   }

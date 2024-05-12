@@ -30,3 +30,8 @@ export enum ECommentStatus {
   APPROVED = "approved",
   REJECTED = "rejected",
 }
+export enum ECommonStatus {
+  PENDING = "pending",
+  APPROVED = "approved",
+  REJECTED = "rejected",
+}

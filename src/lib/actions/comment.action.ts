@@ -27,13 +27,16 @@ export async function getAllComments(params: {
 }): Promise<ICommentParams[] | undefined> {
   try {
     connectToDatabase();
-    let query: any = {
-      lesson: params.lesson,
-    };
+    let query: any = {};
+    if (params.lesson) {
+      query.lesson = params.lesson;
+    }
     if (params.status) {
       query.status = params.status;
     }
-    const comments = await Comment.find(query).populate("user");
+    const comments = await Comment.find(query)
+      .populate("user")
+      .populate("lesson");
     return comments;
   } catch (error) {
     console.log(error);
@@ -62,6 +65,19 @@ export async function replyComment(params: {
     await newComment.save();
     findComment.reply.push(newComment._id);
     revalidatePath(params.user.path);
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function updateComment(params: {
+  commentId: string;
+  updateData: Partial<ICommentParams>;
+  path?: string;
+}) {
+  try {
+    connectToDatabase();
+    await Comment.findByIdAndUpdate(params.commentId, params.updateData);
+    revalidatePath(params.path || "/");
   } catch (error) {
     console.log(error);
   }

@@ -8,7 +8,7 @@ import {
   IconUsers,
 } from "@/components/icons";
 import { TLevel, TMenuLink, TUserStatus } from "@/types";
-import { EReactionType } from "@/types/enums";
+import { ECommonStatus, EReactionType } from "@/types/enums";
 
 export const menuLinks: TMenuLink[] = [
   {
@@ -65,6 +65,8 @@ export const boxDetailClassName =
 export const widgetClassName = "p-5 rounded-lg bg-white dark:bg-grayDarker";
 
 export const courseStatusClassName =
+  "text-xs font-semibold  inline-flex py-1 px-3 rounded-full whitespace-nowrap";
+export const baseStatusClassName =
   "text-xs font-semibold  inline-flex py-1 px-3 rounded-full whitespace-nowrap";
 
 export const courseStatus = {
@@ -164,3 +166,24 @@ export const reactions: {
     value: EReactionType.TERRIBLE,
   },
 ];
+
+export const commonStatus: Record<
+  ECommonStatus,
+  {
+    text: string;
+    className: string;
+  }
+> = {
+  pending: {
+    text: "Chờ duyệt",
+    className: "bg-orange-500 bg-opacity-10 text-orange-500",
+  },
+  approved: {
+    text: "Đã duyệt",
+    className: "bg-green-500 bg-opacity-10 text-green-500",
+  },
+  rejected: {
+    text: "Bị từ chối",
+    className: "bg-red-500 bg-opacity-10 text-red-500",
+  },
+};

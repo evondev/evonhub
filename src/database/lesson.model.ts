@@ -12,6 +12,7 @@ export interface ILesson extends Document {
   order: number;
   courseId: Schema.Types.ObjectId;
   lectureId: Schema.Types.ObjectId;
+  views: number;
   createdAt: Date;
 }
 const lessonSchema = new Schema<ILesson>({
@@ -53,6 +54,10 @@ const lessonSchema = new Schema<ILesson>({
   lectureId: {
     type: Schema.Types.ObjectId,
     ref: "Lecture",
+  },
+  views: {
+    type: Number,
+    default: 0,
   },
   createdAt: {
     type: Date,

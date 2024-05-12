@@ -54,13 +54,14 @@ const LessonPlayer = ({
               className="w-full h-full object-cover rounded-lg aspect-video mb-5"
             ></iframe>
           )}
-
-          <PlayerControl action="prev" url={prevLesson}></PlayerControl>
-          <PlayerControl action="next" url={nextLesson}></PlayerControl>
+          <div className="flex my-5 gap-3 justify-end sm:block">
+            <PlayerControl action="prev" url={prevLesson}></PlayerControl>
+            <PlayerControl action="next" url={nextLesson}></PlayerControl>
+          </div>
         </div>
       </FullScreen>
 
-      <div className="flex items-center justify-end mb-5 gap-3">
+      <div className="hidden sm:flex items-center justify-end mb-5 gap-3">
         <button
           onClick={handleExpandScreen}
           className={cn(
@@ -105,12 +106,12 @@ function PlayerControl({
     });
     router.push(newUrl);
   };
-  if (!url) return null;
+  // if (!url) return null;
   return (
     <button
       onClick={() => handleChangeLesson(url)}
       className={cn(
-        "flex size-10 rounded items-center bg-white justify-center absolute top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 hover:!bg-primary hover:!text-white transition-all dark:bg-grayDarker",
+        "flex size-10 rounded items-center bg-white justify-center sm:absolute sm:top-1/2 sm:-translate-y-1/2 z-10 sm:opacity-0 group-hover:opacity-100 hover:!bg-primary hover:!text-white transition-all dark:bg-grayDarker",
         action === "prev" ? "left-5" : "right-5"
       )}
     >

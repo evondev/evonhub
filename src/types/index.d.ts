@@ -1,5 +1,6 @@
 import { ICourse } from "@/database/course.model";
 import { IUser } from "@/database/user.model";
+import { ECommonStatus } from "@/types/enums";
 
 export type TMenuLink = {
   title: string;
@@ -71,6 +72,7 @@ export interface ICommentParams {
   };
   course: string;
   lesson: string;
+  status: ECommonStatus;
   createdAt: Date;
 }
 

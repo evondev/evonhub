@@ -131,3 +131,13 @@ export async function getLessonCount(
     console.log(error);
   }
 }
+export async function getCourseIdByLesson(slug: string) {
+  try {
+    connectToDatabase();
+    const lesson = await Lesson.findOne({ slug });
+    if (!lesson) return;
+    return lesson.courseId;
+  } catch (error) {
+    console.log(error);
+  }
+}
