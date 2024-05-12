@@ -17,7 +17,7 @@ const LessonItem = ({
   url?: string;
   isActive?: boolean;
   isCompleted?: boolean;
-  data: {
+  data?: {
     userId: string;
     courseId: string;
     lessonId: string;
@@ -38,6 +38,7 @@ const LessonItem = ({
     router.push(newUrl);
   };
   const handleCompleteLesson = async (value: any) => {
+    if (!data) return;
     try {
       await completeLesson({
         lessonId: data.lessonId,
