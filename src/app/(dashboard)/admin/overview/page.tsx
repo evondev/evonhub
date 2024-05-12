@@ -1,7 +1,7 @@
 const OverviewPage = () => {
   return (
     <div>
-      <div className="grid grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         <BoxItem title="Khóa học" count={2}></BoxItem>
         <BoxItem title="Học viên" count={2000}></BoxItem>
         <BoxItem title="Bài học" count={200}></BoxItem>
