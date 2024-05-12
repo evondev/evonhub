@@ -7,20 +7,32 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { baseButtonClassName } from "@/constants";
+import { primaryButtonClassName } from "@/constants";
+import { createComment } from "@/lib/actions/comment.action";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 const commentSchema = z.object({
-  content: z.string().min(10, {
-    message: "Nội dung phải có ít nhất 10 ký tự",
+  content: z.string().min(2, {
+    message: "Nội dung phải có ít nhất 2 ký tự",
   }),
 });
-const CommentReplyForm = () => {
+const CommentReplyForm = ({
+  data,
+}: {
+  data: {
+    userId: string;
+    courseId: string;
+    lessonId: string;
+    commentId: string;
+    path: string;
+  };
+}) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<z.infer<typeof commentSchema>>({
     resolver: zodResolver(commentSchema),
@@ -33,6 +45,16 @@ const CommentReplyForm = () => {
     setIsSubmitting(true);
 
     try {
+      await createComment({
+        content: values.content,
+        user: data.userId,
+        course: data.courseId,
+        lesson: data.lessonId,
+        path: data.path,
+        parentId: data.commentId,
+      });
+      form.reset();
+      toast.success("Trả lời của bạn sẽ được hiển thị sau khi được duyệt");
     } catch (error) {
     } finally {
       setIsSubmitting(false);
@@ -40,7 +62,7 @@ const CommentReplyForm = () => {
   }
 
   return (
-    <div className="mt-5 hidden">
+    <div className="mt-5">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
           <FormField
@@ -49,7 +71,7 @@ const CommentReplyForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Textarea placeholder="Nhập bình luận của bạn" {...field} />
+                  <Textarea placeholder="Nhập trả lời của bạn" {...field} />
                 </FormControl>
                 <FormMessage className="text-red-400" />
               </FormItem>
@@ -58,10 +80,7 @@ const CommentReplyForm = () => {
           <div className="flex mt-5 justify-end">
             <Button
               isLoading={isSubmitting}
-              className={cn(
-                baseButtonClassName,
-                "text-primary bg-white dark:bg-grayDarker"
-              )}
+              className={cn(primaryButtonClassName, "w-[120px] bg-secondary")}
             >
               Trả lời
             </Button>

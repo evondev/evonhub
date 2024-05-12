@@ -1,14 +1,14 @@
-import { TStatus } from "@/types";
+import { ECommentStatus } from "@/types/enums";
 import mongoose, { Schema, models } from "mongoose";
 
 export interface IComment extends Document {
   _id: Schema.Types.ObjectId;
+  parentId: Schema.Types.ObjectId;
   content: string;
   user: Schema.Types.ObjectId;
   course: Schema.Types.ObjectId;
   lesson: Schema.Types.ObjectId;
-  reply: Schema.Types.ObjectId[];
-  status: TStatus;
+  status: ECommentStatus;
   createdAt: Date;
 }
 const commentSchema = new Schema<IComment>({
@@ -33,15 +33,17 @@ const commentSchema = new Schema<IComment>({
   },
   status: {
     type: String,
-    enum: ["pending", "approved", "rejected"],
-    default: "pending",
+    enum: [
+      ECommentStatus.PENDING,
+      ECommentStatus.APPROVED,
+      ECommentStatus.REJECTED,
+    ],
+    default: ECommentStatus.PENDING,
   },
-  reply: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Comment",
-    },
-  ],
+  parentId: {
+    type: Schema.Types.ObjectId,
+    ref: "Comment",
+  },
   createdAt: {
     type: Date,
     default: Date.now,

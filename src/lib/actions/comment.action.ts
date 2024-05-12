@@ -10,6 +10,7 @@ interface CreateCommentParams {
   course: string;
   path?: string;
   lesson: string;
+  parentId?: string;
 }
 export async function createComment(params: CreateCommentParams) {
   try {
@@ -32,9 +33,7 @@ export async function getAllComments(params: {
     if (params.status) {
       query.status = params.status;
     }
-    const comments = await Comment.find(query)
-      .sort({ createdAt: -1 })
-      .populate("user");
+    const comments = await Comment.find(query).populate("user");
     return comments;
   } catch (error) {
     console.log(error);

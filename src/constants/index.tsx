@@ -1,4 +1,5 @@
 import {
+  IconComment,
   IconCourseManage,
   IconCube,
   IconPlay,
@@ -38,12 +39,12 @@ export const menuLinks: TMenuLink[] = [
     url: "/admin/user/manage",
     isAdmin: true,
   },
-  // {
-  //   title: "Quản lý danh mục",
-  //   icon: <IconCategory></IconCategory>,
-  //   url: "/admin/category/manage",
-  //   isAdmin: true,
-  // },
+  {
+    title: "Quản lý bình luận",
+    icon: <IconComment></IconComment>,
+    url: "/admin/comment/manage",
+    isAdmin: true,
+  },
   {
     title: "Profile",
     icon: <IconUser></IconUser>,

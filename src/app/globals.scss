@@ -27,12 +27,20 @@
   .primary-button:hover {
     box-shadow: 0 0 0 3px rgb(44, 143, 255, 0.25);
   }
+  .avatar-shadow1 {
+    @apply border border-primary;
+    box-shadow: 0 0 0 3px rgb(44, 143, 255, 0.25);
+  }
+  .avatar-shadow2 {
+    @apply border border-secondary;
+    box-shadow: 0 0 0 3px rgb(250, 149, 117, 0.25);
+  }
   .gradientPrimary {
     transition: all 0.2s linear;
     @apply bg-primary;
   }
   .gradientPrimaryHover:hover {
-    @apply bg-opacity-80;
+    @apply bg-opacity-90;
     background-size: 100% 100%;
   }
   .table-responsive {

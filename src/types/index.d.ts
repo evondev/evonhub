@@ -64,6 +64,7 @@ export interface GetUsersParams {
 export interface ICommentParams {
   _id: string;
   content: string;
+  parentId?: string;
   user: {
     username: string;
     avatar: string;
