@@ -16,7 +16,12 @@ export async function createReaction(params: {
       lessonId: params.lessonId,
       userId: params.userId,
     });
-    if (existReaction) return;
+    if (existReaction) {
+      return {
+        type: "error",
+        message: "Bạn đã đánh giá bài học này rồi",
+      };
+    }
     const newReaction = new Reaction({
       ...params,
     });
@@ -29,14 +34,30 @@ export async function createReaction(params: {
 export async function isAlreadyReaction(params: {
   lessonId: string;
   userId: string;
-}): Promise<{ data: boolean } | undefined> {
+}): Promise<{ data: string } | undefined> {
   try {
     connectToDatabase();
     const existReaction = await Reaction.findOne({
       lessonId: params.lessonId,
       userId: params.userId,
     });
-    return { data: !!existReaction };
+    return { data: existReaction.type };
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function getReactionCount(params: { lessonId: string }) {
+  try {
+    connectToDatabase();
+    const reactions = await Reaction.find({
+      lessonId: params.lessonId,
+    });
+    //  get count of each reaction type
+    const reactionCount = reactions.reduce((acc, reaction) => {
+      acc[reaction.type] = (acc[reaction.type] || 0) + 1;
+      return acc;
+    }, {});
+    return reactionCount;
   } catch (error) {
     console.log(error);
   }

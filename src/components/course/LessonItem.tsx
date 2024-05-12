@@ -53,7 +53,6 @@ const LessonItem = ({
       <Checkbox
         defaultChecked={isCompleted}
         onCheckedChange={(checked) => handleCompleteLesson(checked)}
-        className="data-[state=checked]:border-secondary data-[state=checked]:bg-secondary"
       />
 
       <IconPlay />

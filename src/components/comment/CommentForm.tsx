@@ -7,14 +7,13 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { editorOptions, primaryButtonClassName } from "@/constants";
+import { primaryButtonClassName } from "@/constants";
 import { createComment } from "@/lib/actions/comment.action";
 import { createReaction } from "@/lib/actions/reaction.action";
 import { cn } from "@/lib/utils";
 import { ICommentParams } from "@/types";
 import { EReactionType } from "@/types/enums";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -24,6 +23,7 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 import ReactLesson from "../reaction/ReactLesson";
 import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
 import CommentReplyForm from "./CommentReplyForm";
 const commentSchema = z.object({
   content: z.string().min(10, {
@@ -110,13 +110,16 @@ const CommentForm = ({
 
   const handleReaction = async (reaction: EReactionType) => {
     try {
-      await createReaction({
+      const res = await createReaction({
         type: reaction,
         userId,
         lessonId,
         path: `/lesson?slug=${searchParams?.get("slug")}`,
       });
-      await toast.success("Cám ơn bạn đã reaction bài học này");
+      if (res?.type === "error") {
+        return toast.error(res.message);
+      }
+      toast.success(`Bạn đã đánh giá ${reaction} cho bài học này`);
     } catch (error) {
       console.log(error);
     }
@@ -136,11 +139,10 @@ const CommentForm = ({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Editor
-                    apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
-                    // @ts-ignore
-                    onInit={(evt, editor) => (editorRef.current = editor)}
-                    {...editorOptions(field, theme)}
+                  <Textarea
+                    {...field}
+                    placeholder="Viết bình luận của bạn..."
+                    className="resize-none min-h-[200px]"
                   />
                 </FormControl>
                 <FormMessage className="text-red-400" />
@@ -152,8 +154,7 @@ const CommentForm = ({
               isLoading={isSubmitting}
               className={cn(primaryButtonClassName, "group w-[150px]")}
             >
-              <span className="group-hover:hidden"> Chê bài này</span>
-              <span className="hidden group-hover:block">Khen bài này</span>
+              Gửi lời khen
             </Button>
           </div>
         </form>

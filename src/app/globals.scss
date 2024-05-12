@@ -22,22 +22,17 @@
 }
 @layer components {
   .focus-primary:focus {
-    box-shadow: 0 0 0 3px rgb(146, 106, 255, 0.25);
+    box-shadow: 0 0 0 3px rgb(44, 143, 255, 0.25);
   }
   .primary-button:hover {
-    box-shadow: 0 0 0 3px rgb(146, 106, 255, 0.25);
+    box-shadow: 0 0 0 3px rgb(44, 143, 255, 0.25);
   }
   .gradientPrimary {
-    background-image: linear-gradient(
-      96.34deg,
-      #926aff 0%,
-      #ff77b0 50%,
-      #ffb367 100%
-    );
-    background-size: 150% 150%;
     transition: all 0.2s linear;
+    @apply bg-primary;
   }
   .gradientPrimaryHover:hover {
+    @apply bg-opacity-80;
     background-size: 100% 100%;
   }
   .table-responsive {

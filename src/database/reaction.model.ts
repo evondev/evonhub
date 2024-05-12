@@ -12,12 +12,11 @@ const reactionSchema = new Schema<IReaction>({
     type: String,
     required: true,
     enum: [
-      EReactionType.EXCELLENT,
-      EReactionType.LOVE,
-      EReactionType.HAPPY,
-      EReactionType.SATISFIED,
-      EReactionType.SAD,
-      EReactionType.SHOCK,
+      EReactionType.AWESOME,
+      EReactionType.BAD,
+      EReactionType.GOOD,
+      EReactionType.MEH,
+      EReactionType.TERRIBLE,
     ],
   },
   lessonId: {

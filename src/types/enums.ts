@@ -19,10 +19,9 @@ export enum EcourseLabel {
   NONE = "none",
 }
 export enum EReactionType {
-  EXCELLENT = "excellent",
-  LOVE = "love",
-  HAPPY = "happy",
-  SATISFIED = "satisfied",
-  SAD = "sad",
-  SHOCK = "shock",
+  AWESOME = "Awesome",
+  GOOD = "Good",
+  MEH = "Meh",
+  BAD = "Bad",
+  TERRIBLE = "Terrible",
 }

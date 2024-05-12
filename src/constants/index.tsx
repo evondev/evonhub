@@ -124,44 +124,26 @@ export const courseLevel: Record<TLevel, string> = {
 };
 export const reactions: {
   icon: string;
-  title: string;
   value: EReactionType;
-  bg: string;
 }[] = [
   {
-    icon: "🤩",
-    title: "Tuyệt vời",
-    value: EReactionType.EXCELLENT,
-    bg: "bg-yellow-50",
+    icon: "/reactions/awesome.png",
+    value: EReactionType.AWESOME,
   },
   {
-    icon: "🥰",
-    title: "Yêu thích",
-    value: EReactionType.LOVE,
-    bg: "bg-pink-50",
+    icon: "/reactions/good.png",
+    value: EReactionType.GOOD,
   },
   {
-    icon: "😁",
-    title: "Vui vẻ",
-    value: EReactionType.HAPPY,
-    bg: "bg-green-50",
+    icon: "/reactions/meh.png",
+    value: EReactionType.MEH,
   },
   {
-    icon: "🙂",
-    title: "Hài lòng",
-    value: EReactionType.SATISFIED,
-    bg: "bg-blue-50",
+    icon: "/reactions/bad.png",
+    value: EReactionType.BAD,
   },
   {
-    icon: "😢",
-    title: "Buồn",
-    value: EReactionType.SAD,
-    bg: "bg-gray-50",
-  },
-  {
-    icon: "😱",
-    title: "Sốc",
-    value: EReactionType.SHOCK,
-    bg: "bg-red-50",
+    icon: "/reactions/terrible.png",
+    value: EReactionType.TERRIBLE,
   },
 ];
