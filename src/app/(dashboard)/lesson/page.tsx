@@ -1,4 +1,5 @@
 import PageNotFound from "@/app/not-found";
+import EmptyData from "@/components/EmptyData";
 import CommentForm from "@/components/comment/CommentForm";
 import LessonItem from "@/components/course/LessonItem";
 import LessonPlayer from "@/components/course/LessonPlayer";
@@ -25,6 +26,7 @@ const page = async ({
   const { userId } = auth();
   if (!userId) return null;
   const mongoUser = await getUserById({ userId });
+  if (!mongoUser || mongoUser.status !== "active") return <EmptyData />;
   const lessonDetails = await getLessonBySlug(searchParams.slug);
   if (!lessonDetails) return <PageNotFound />;
   const courseId = lessonDetails.courseId;
