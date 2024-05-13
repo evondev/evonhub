@@ -13,7 +13,7 @@ import {
   baseStatusClassName,
   commonStatus,
 } from "@/constants";
-import { updateComment } from "@/lib/actions/comment.action";
+import { deleteComment, updateComment } from "@/lib/actions/comment.action";
 import { cn } from "@/lib/utils";
 import { ICommentParams } from "@/types";
 import { ECommonStatus } from "@/types/enums";
@@ -113,7 +113,24 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
-                  <button className={cn(actionClassName)}>
+                  <button
+                    className={cn(actionClassName)}
+                    onClick={() => {
+                      Swal.fire({
+                        title: "Bạn chắc chứ?",
+                        text: "Bạn có chắc muốn xóa bình luận này?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Đồng ý",
+                        cancelButtonText: "Hủy",
+                      }).then(async (result) => {
+                        if (result.isConfirmed) {
+                          await deleteComment(comment._id);
+                          toast.success("Xóa bình luận thành công");
+                        }
+                      });
+                    }}
+                  >
                     <IconDelete />
                   </button>
                 </div>

@@ -19,6 +19,7 @@ const CourseItem = ({
   return (
     <div className=" bg-white rounded-md dark:bg-grayDark flex flex-col">
       <Link
+        prefetch={false}
         href={link}
         className="relative h-[200px] block group overflow-hidden rounded-md"
         style={{
@@ -45,6 +46,7 @@ const CourseItem = ({
           HTML CSS
         </Link> */}
         <Link
+          prefetch={false}
           href={link}
           className="text-xl font-extrabold mb-2 line-clamp-3 block"
         >
@@ -55,6 +57,7 @@ const CourseItem = ({
             {formatThoundsand(data.price)} VNĐ
           </div>
           <Link
+            prefetch={false}
             href={link}
             className={cn(primaryButtonClassName, "ml-auto w-fit flex group")}
           >

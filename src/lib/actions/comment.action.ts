@@ -82,3 +82,12 @@ export async function updateComment(params: {
     console.log(error);
   }
 }
+export async function deleteComment(commentId: string) {
+  try {
+    connectToDatabase();
+    await Comment.findByIdAndDelete(commentId);
+    revalidatePath("/admin/comment/manage");
+  } catch (error) {
+    console.log(error);
+  }
+}

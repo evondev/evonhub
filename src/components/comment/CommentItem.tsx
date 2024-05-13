@@ -44,7 +44,7 @@ const CommentItem = ({
             {comment.user.username}
           </h3>
           <div
-            className="font-medium text-sm"
+            className="font-medium text-sm leading-loose"
             dangerouslySetInnerHTML={{
               __html: comment.content,
             }}
