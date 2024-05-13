@@ -1,4 +1,5 @@
 import { createUser, deleteUser, updateUser } from "@/lib/actions/user.action";
+import { EUserStatus } from "@/types/enums";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -63,7 +64,7 @@ export async function POST(req: Request) {
       email: email_addresses[0].email_address,
       avatar: image_url,
       joinedAt: new Date(),
-      status: "active",
+      status: EUserStatus.ACTIVE,
       bio: "User at Evonhub",
     });
     return NextResponse.json({ message: "OK", user: mongoUser });
