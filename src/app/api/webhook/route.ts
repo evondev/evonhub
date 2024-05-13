@@ -58,7 +58,7 @@ export async function POST(req: Request) {
       evt.data;
     const mongoUser = await createUser({
       clerkId: id,
-      name: `${first_name} ${last_name}`,
+      name: first_name && last_name ? `${first_name} ${last_name}` : username!,
       username: username! || slugify(`${first_name}${last_name}`),
       email: email_addresses[0].email_address,
       avatar: image_url,
@@ -73,7 +73,8 @@ export async function POST(req: Request) {
     const mongoUser = await updateUser({
       clerkId: id,
       updateData: {
-        name: `${first_name} ${last_name}`,
+        name:
+          first_name && last_name ? `${first_name} ${last_name}` : username!,
         username: username!,
         email: email_addresses[0].email_address,
         avatar: image_url,

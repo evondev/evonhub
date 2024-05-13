@@ -1,4 +1,5 @@
 "use server";
+import Course from "@/database/course.model";
 import User, { IUser } from "@/database/user.model";
 import {
   CreateUserParams,
@@ -51,10 +52,12 @@ export async function getUserById({ userId }: { userId: string }) {
   try {
     connectToDatabase();
     let user = await User.findOne({ clerkId: userId }).populate({
+      model: Course,
       path: "courses",
     });
     if (!user) {
       user = await User.findById(userId).populate({
+        model: Course,
         path: "courses",
       });
     }
@@ -68,6 +71,7 @@ export async function getUserByUsername({ username }: { username: string }) {
     connectToDatabase();
     const user = await User.findOne({ username }).populate({
       path: "courses",
+      model: Course,
     });
     return user;
   } catch (error) {
@@ -91,7 +95,9 @@ export async function getAllUsers(
       ];
       limit = 5000;
     }
-    const users = await User.find(query).skip(skipAmount).limit(limit);
+    const users = await User.find(query).skip(skipAmount).limit(limit).sort({
+      joinedAt: -1,
+    });
     const totalUsers = await User.countDocuments(query);
     const isNext = totalUsers > skipAmount + users.length;
     return {
