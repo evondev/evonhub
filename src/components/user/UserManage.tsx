@@ -17,7 +17,7 @@ import {
 import { IUser } from "@/database/user.model";
 import { updateUser } from "@/lib/actions/user.action";
 import { cn } from "@/lib/utils";
-import { TUserStatus } from "@/types";
+import { EUserStatus } from "@/types/enums";
 import { formUrlQuery } from "@/utils";
 import { debounce } from "lodash";
 import Image from "next/image";
@@ -39,7 +39,7 @@ const UserManage = ({ users, count }: { users: IUser[]; count: number }) => {
   };
   const handleChangeUserStatus = async (
     clerkId: string,
-    status: TUserStatus
+    status: EUserStatus
   ) => {
     try {
       Swal.fire({
@@ -53,7 +53,10 @@ const UserManage = ({ users, count }: { users: IUser[]; count: number }) => {
           await updateUser({
             clerkId,
             updateData: {
-              status: status === "active" ? "inactive" : "active",
+              status:
+                status === EUserStatus.ACTIVE
+                  ? EUserStatus.INACTIVE
+                  : EUserStatus.ACTIVE,
             },
             path: "/admin/user/manage",
           });

@@ -1,6 +1,6 @@
 import { ICourse } from "@/database/course.model";
 import { IUser } from "@/database/user.model";
-import { ECommonStatus } from "@/types/enums";
+import { ECommonStatus, EReactionType, EUserStatus } from "@/types/enums";
 
 export type TMenuLink = {
   title: string;
@@ -16,7 +16,7 @@ export interface CreateUserParams {
   avatar: string;
   joinedAt?: Date;
   bio?: string;
-  status?: TUserStatus;
+  status?: EUserStatus;
 }
 export interface UpdateUserParams {
   clerkId: string;
@@ -75,8 +75,81 @@ export interface ICommentParams {
   status: ECommonStatus;
   createdAt: Date;
 }
-
-export type TStatus = "pending" | "approved" | "rejected";
-export type TLevel = "easy" | "medium" | "expert";
-export type TCourseInfo = "requirements" | "qa" | "gained";
-export type TUserStatus = "active" | "inactive";
+export interface CreateCommentParams {
+  content: string;
+  user: string;
+  course: string;
+  path?: string;
+  lesson: string;
+  parentId?: string;
+}
+export interface GetAllCommentsParams {
+  lesson?: string;
+  status?: string;
+}
+export interface ReplyCommentParams {
+  commentId: string;
+  user: {
+    lessonId: string;
+    userId: string;
+    courseId: string;
+    content: string;
+    path: string;
+  };
+}
+export interface UpdateCommentParams {
+  commentId: string;
+  updateData: Partial<ICommentParams>;
+  path?: string;
+}
+// reaction
+export interface CreateReactionParams {
+  type: EReactionType;
+  lessonId: string;
+  userId: string;
+  path: string;
+}
+export interface AlreadyReactionParams {
+  lessonId: string;
+  userId: string;
+}
+// lesson
+export interface CreateLessonParams {
+  title: string;
+  slug: string;
+  video: string;
+  content: string;
+  type: string;
+  order: number;
+  lectureId: string;
+  courseId: string;
+}
+export interface UpdateLessonParams {
+  lessonId: string;
+  data: Partial<ILesson>;
+  path: string;
+}
+export interface DeleteLessonParams {
+  lessonId: string;
+  lectureId: string;
+  path: string;
+}
+// lecture
+export interface CreateLectureParams {
+  title: string;
+  courseId: string;
+  order: number;
+}
+export interface UpdateLectureParams {
+  lectureId: string;
+  path: string;
+  data: {
+    title: string;
+    order?: number;
+  };
+}
+export interface DeleteLectureParams {
+  lectureId: string;
+  path: string;
+  courseId: string;
+}

@@ -7,8 +7,13 @@ import {
   IconUser,
   IconUsers,
 } from "@/components/icons";
-import { TLevel, TMenuLink, TUserStatus } from "@/types";
-import { ECommonStatus, EReactionType } from "@/types/enums";
+import { TMenuLink } from "@/types";
+import {
+  ECommonStatus,
+  ECourseLevel,
+  EReactionType,
+  EUserStatus,
+} from "@/types/enums";
 
 export const menuLinks: TMenuLink[] = [
   {
@@ -84,7 +89,7 @@ export const courseStatus = {
   },
 };
 export const userStatus: Record<
-  TUserStatus,
+  EUserStatus,
   {
     text: string;
     className: string;
@@ -136,7 +141,7 @@ export const editorOptions = (field: any, theme: any) => ({
     content_style: `body { font-family: DM sans, Inter,Helvetica,Arial,sans-serif; font-size:14px; } img { max-width: 100%; height: auto; display: block; margin: 0 auto; }`,
   },
 });
-export const courseLevel: Record<TLevel, string> = {
+export const courseLevel: Record<ECourseLevel, string> = {
   easy: "Dễ",
   medium: "Trung bình",
   expert: "Khó",

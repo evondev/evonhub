@@ -1,6 +1,7 @@
 "use server";
 import Course from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
+import { DeleteLectureParams, UpdateLectureParams } from "@/types";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
@@ -8,14 +9,7 @@ export async function updateLecture({
   lectureId,
   path,
   data,
-}: {
-  lectureId: string;
-  path: string;
-  data: {
-    title: string;
-    order?: number;
-  };
-}) {
+}: UpdateLectureParams) {
   try {
     connectToDatabase();
     await Lecture.findByIdAndUpdate(lectureId, data);
@@ -28,11 +22,7 @@ export async function deleteLecture({
   lectureId,
   path,
   courseId,
-}: {
-  lectureId: string;
-  path: string;
-  courseId: string;
-}) {
+}: DeleteLectureParams) {
   try {
     connectToDatabase();
     const course = await Course.findById(courseId);

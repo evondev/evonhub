@@ -1,15 +1,10 @@
 "use server";
 import Reaction from "@/database/reaction.model";
-import { EReactionType } from "@/types/enums";
+import { AlreadyReactionParams, CreateReactionParams } from "@/types";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
-export async function createReaction(params: {
-  type: EReactionType;
-  lessonId: string;
-  userId: string;
-  path: string;
-}) {
+export async function createReaction(params: CreateReactionParams) {
   try {
     connectToDatabase();
     const existReaction = await Reaction.findOne({
@@ -31,10 +26,9 @@ export async function createReaction(params: {
     console.log(error);
   }
 }
-export async function isAlreadyReaction(params: {
-  lessonId: string;
-  userId: string;
-}): Promise<{ data: string } | undefined> {
+export async function isAlreadyReaction(
+  params: AlreadyReactionParams
+): Promise<{ data: string } | undefined> {
   try {
     connectToDatabase();
     const existReaction = await Reaction.findOne({

@@ -17,8 +17,7 @@ import {
 import { ICourse } from "@/database/course.model";
 import { updateCourse } from "@/lib/actions/course.action";
 import { cn } from "@/lib/utils";
-import { TCourseInfo } from "@/types";
-import { TCourseInfoType } from "@/types/enums";
+import { ECourseInfo } from "@/types/enums";
 import { updateCourseSchema } from "@/utils/formSchema";
 import { UploadDropzone } from "@/utils/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -68,8 +67,8 @@ export default function UpdateCourseForm({
     qa: data.info.qa || [],
     gained: data.info.gained || [],
   });
-  const handleInfoData = (type: TCourseInfo) => {
-    if (type === TCourseInfoType.QA) {
+  const handleInfoData = (type: ECourseInfo) => {
+    if (type === ECourseInfo.QA) {
       setInfoData((draft) => {
         draft.qa.push({ question: "", answer: "" });
       });
@@ -324,7 +323,7 @@ export default function UpdateCourseForm({
                   Yêu cầu
                   <IconAddMeta
                     className="text-primary"
-                    onClick={() => handleInfoData("requirements")}
+                    onClick={() => handleInfoData(ECourseInfo.REQUIREMENTS)}
                   />
                 </FormLabel>
                 <FormControl>
@@ -356,7 +355,7 @@ export default function UpdateCourseForm({
                   Kết quả đạt được
                   <IconAddMeta
                     className="text-primary"
-                    onClick={() => handleInfoData("gained")}
+                    onClick={() => handleInfoData(ECourseInfo.GAINED)}
                   />
                 </FormLabel>
                 <FormControl>
@@ -390,7 +389,7 @@ export default function UpdateCourseForm({
                   Q/A
                   <IconAddMeta
                     className="text-primary"
-                    onClick={() => handleInfoData("qa")}
+                    onClick={() => handleInfoData(ECourseInfo.QA)}
                   />
                 </FormLabel>
                 <FormControl>

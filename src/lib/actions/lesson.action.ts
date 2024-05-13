@@ -1,19 +1,15 @@
 "use server";
 import Lecture from "@/database/lecture.model";
 import Lesson, { ILesson } from "@/database/lesson.model";
+import {
+  CreateLessonParams,
+  DeleteLessonParams,
+  UpdateLessonParams,
+} from "@/types";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
-export async function addLesson(params: {
-  title: string;
-  slug: string;
-  video: string;
-  content: string;
-  type: string;
-  order: number;
-  lectureId: string;
-  courseId: string;
-}) {
+export async function addLesson(params: CreateLessonParams) {
   try {
     connectToDatabase();
     const findLecture = await Lecture.findById(params.lectureId);
@@ -39,16 +35,12 @@ export async function deleteLesson({
   lessonId,
   lectureId,
   path,
-}: {
-  lessonId: string;
-  lectureId: string;
-  path: string;
-}) {
+}: DeleteLessonParams) {
   try {
     connectToDatabase();
     const findLecture = await Lecture.findById(lectureId);
     if (!findLecture) {
-      throw new Error("Lecture not found");
+      throw new Error("Không tìm thấy chương học");
     }
     await Lesson.findByIdAndDelete(lessonId);
     findLecture.lessons = findLecture.lessons.filter(
@@ -64,11 +56,7 @@ export async function updateLesson({
   lessonId,
   data,
   path,
-}: {
-  lessonId: string;
-  data: Partial<ILesson>;
-  path: string;
-}) {
+}: UpdateLessonParams) {
   try {
     connectToDatabase();
     const allLesson = await Lesson.find();

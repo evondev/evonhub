@@ -1,3 +1,4 @@
+import { ECourseLevel, ECourseStatus } from "@/types/enums";
 import { z } from "zod";
 
 export const updateCourseSchema = z.object({
@@ -11,9 +12,17 @@ export const updateCourseSchema = z.object({
   image: z.string().optional(),
   desc: z.string().optional(),
   content: z.string().optional(),
-  level: z.enum(["easy", "medium", "expert"]).optional(),
+  level: z
+    .enum([ECourseLevel.EASY, ECourseLevel.MEDIUM, ECourseLevel.EXPERT])
+    .optional(),
   category: z.string().optional(),
-  status: z.enum(["pending", "approved", "rejected"]).optional(),
+  status: z
+    .enum([
+      ECourseStatus.PENDING,
+      ECourseStatus.APPROVED,
+      ECourseStatus.REJECTED,
+    ])
+    .optional(),
   qa: z
     .array(
       z.object({

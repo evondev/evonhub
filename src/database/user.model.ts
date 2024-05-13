@@ -1,4 +1,4 @@
-import { TUserStatus } from "@/types";
+import { EUserStatus } from "@/types/enums";
 import { Document, Schema, model, models } from "mongoose";
 
 export interface IUser extends Document {
@@ -11,7 +11,7 @@ export interface IUser extends Document {
   avatar: string;
   courses: Schema.Types.ObjectId[];
   liked: Schema.Types.ObjectId[];
-  status: TUserStatus;
+  status: EUserStatus;
   role: string;
   joinedAt: Date;
 }
@@ -62,7 +62,8 @@ const UserSchema = new Schema({
   },
   status: {
     type: String,
-    default: "active",
+    enum: [EUserStatus.ACTIVE, EUserStatus.INACTIVE],
+    default: EUserStatus.ACTIVE,
   },
   role: {
     type: String,

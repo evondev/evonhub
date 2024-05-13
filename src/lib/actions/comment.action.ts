@@ -1,17 +1,15 @@
 "use server";
 import Comment from "@/database/comment.model";
-import { ICommentParams } from "@/types";
+import {
+  CreateCommentParams,
+  GetAllCommentsParams,
+  ICommentParams,
+  ReplyCommentParams,
+  UpdateCommentParams,
+} from "@/types";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
-interface CreateCommentParams {
-  content: string;
-  user: string;
-  course: string;
-  path?: string;
-  lesson: string;
-  parentId?: string;
-}
 export async function createComment(params: CreateCommentParams) {
   try {
     connectToDatabase();
@@ -21,10 +19,9 @@ export async function createComment(params: CreateCommentParams) {
     console.log(error);
   }
 }
-export async function getAllComments(params: {
-  lesson?: string;
-  status?: string;
-}): Promise<ICommentParams[] | undefined> {
+export async function getAllComments(
+  params: GetAllCommentsParams
+): Promise<ICommentParams[] | undefined> {
   try {
     connectToDatabase();
     let query: any = {};
@@ -42,16 +39,7 @@ export async function getAllComments(params: {
     console.log(error);
   }
 }
-export async function replyComment(params: {
-  commentId: string;
-  user: {
-    lessonId: string;
-    userId: string;
-    courseId: string;
-    content: string;
-    path: string;
-  };
-}) {
+export async function replyComment(params: ReplyCommentParams) {
   try {
     connectToDatabase();
     const findComment = await Comment.findById(params.commentId);
@@ -69,11 +57,7 @@ export async function replyComment(params: {
     console.log(error);
   }
 }
-export async function updateComment(params: {
-  commentId: string;
-  updateData: Partial<ICommentParams>;
-  path?: string;
-}) {
+export async function updateComment(params: UpdateCommentParams) {
   try {
     connectToDatabase();
     await Comment.findByIdAndUpdate(params.commentId, params.updateData);

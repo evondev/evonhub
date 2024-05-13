@@ -35,3 +35,17 @@ export enum ECommonStatus {
   APPROVED = "approved",
   REJECTED = "rejected",
 }
+export enum ECourseLevel {
+  EASY = "easy",
+  MEDIUM = "medium",
+  EXPERT = "expert",
+}
+export enum EUserStatus {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+}
+export enum ECourseInfo {
+  REQUIREMENTS = "requirements",
+  QA = "qa",
+  GAINED = "gained",
+}

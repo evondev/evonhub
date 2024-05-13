@@ -1,5 +1,4 @@
-import { TLevel, TStatus } from "@/types";
-import { EcourseLabel } from "@/types/enums";
+import { ECourseLevel, ECourseStatus, EcourseLabel } from "@/types/enums";
 import mongoose, { Document, Schema, models } from "mongoose";
 mongoose.Promise = global.Promise;
 export interface ICourse extends Document {
@@ -13,8 +12,8 @@ export interface ICourse extends Document {
   rating: number;
   image: string;
   intro: string;
-  status: TStatus;
-  level: TLevel;
+  status: ECourseStatus;
+  level: ECourseLevel;
   category: Schema.Types.ObjectId;
   label: EcourseLabel;
   info: {
@@ -67,11 +66,17 @@ const courseSchema = new Schema<ICourse>({
   },
   status: {
     type: String,
-    default: "pending",
+    enum: [
+      ECourseStatus.PENDING,
+      ECourseStatus.APPROVED,
+      ECourseStatus.REJECTED,
+    ],
+    default: ECourseStatus.PENDING,
   },
   level: {
     type: String,
-    default: "easy",
+    enum: [ECourseLevel.EASY, ECourseLevel.MEDIUM, ECourseLevel.EXPERT],
+    default: ECourseLevel.EASY,
   },
   label: {
     type: String,
