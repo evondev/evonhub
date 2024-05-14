@@ -106,12 +106,12 @@ function PlayerControl({
     });
     router.push(newUrl);
   };
-  // if (!url) return null;
+  if (!url) return null;
   return (
     <button
       onClick={() => handleChangeLesson(url)}
       className={cn(
-        "flex size-10 rounded items-center bg-white justify-center sm:absolute sm:top-1/2 sm:-translate-y-1/2 z-10 sm:opacity-0 group-hover:opacity-100 hover:!bg-primary hover:!text-white transition-all dark:bg-grayDarker",
+        "flex size-10 rounded items-center bg-white justify-center sm:absolute sm:top-1/2 sm:-translate-y-1/2 z-10 hover:!bg-primary hover:!text-white transition-all dark:bg-grayDarker",
         action === "prev" ? "left-5" : "right-5"
       )}
     >
