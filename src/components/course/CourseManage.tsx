@@ -106,12 +106,14 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                 <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
                   <Link
                     href={`/course/${course.slug}`}
+                    target="_blank"
                     className={cn(actionClassName)}
                   >
                     <IconEye></IconEye>
                   </Link>
                   <Link
                     href={`/admin/course/update?slug=${course.slug}`}
+                    target="_blank"
                     className={cn(actionClassName)}
                   >
                     <IconEdit></IconEdit>

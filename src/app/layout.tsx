@@ -1,3 +1,4 @@
+import Providers from "@/components/Providers";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
@@ -30,7 +31,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              {children}
+              <Providers>{children}</Providers>
             </ThemeProvider>
           </div>
           <ToastContainer autoClose={1500}></ToastContainer>

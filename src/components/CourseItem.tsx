@@ -34,7 +34,6 @@ const CourseItem = ({
   return (
     <div className=" bg-white rounded-lg dark:bg-grayDark flex flex-col">
       <Link
-        prefetch={false}
         href={link}
         className="relative h-[200px] block group rounded-xl"
         style={{
@@ -64,11 +63,7 @@ const CourseItem = ({
             <span>5.0</span>
           </div>
         </div>
-        <Link
-          prefetch={false}
-          href={link}
-          className="text-xl font-bold mb-5 line-clamp-3 block"
-        >
+        <Link href={link} className="text-xl font-bold mb-5 line-clamp-3 block">
           {data.title}
         </Link>
         <div className="mt-auto flex flex-col gap-8">
