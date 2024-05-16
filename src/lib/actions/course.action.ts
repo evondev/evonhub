@@ -3,6 +3,7 @@ import Course, { ICourse } from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
 import { CourseParams, CreateCourseParams, UpdateCourseParams } from "@/types";
+import { ECourseStatus } from "@/types/enums";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
@@ -117,7 +118,7 @@ export async function deleteCourse(slug: string) {
     await Course.findOneAndUpdate(
       { slug },
       {
-        status: "pending",
+        status: ECourseStatus.PENDING,
       }
     );
     revalidatePath("/admin/course/manage");

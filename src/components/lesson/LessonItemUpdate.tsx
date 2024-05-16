@@ -29,7 +29,7 @@ const formSchema = z.object({
   content: z.string().optional(),
   slug: z.string().optional(),
   title: z.string().optional(),
-  order: z.number().optional(),
+  duration: z.number().optional(),
 });
 
 const LessonItemUpdate = ({
@@ -44,7 +44,7 @@ const LessonItemUpdate = ({
     content: string;
     slug: string;
     title: string;
-    order: number;
+    duration: number;
   };
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,7 +56,7 @@ const LessonItemUpdate = ({
       content: lesson.content,
       slug: lesson.slug,
       title: lesson.title,
-      order: lesson.order,
+      duration: lesson.duration,
     },
   });
   async function onSubmitLesson(values: z.infer<typeof formSchema>) {
@@ -146,15 +146,15 @@ const LessonItemUpdate = ({
         />
         <FormField
           control={form.control}
-          name="order"
+          name="duration"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Thứ tự</FormLabel>
+              <FormLabel>Thời gian (phút)</FormLabel>
               <FormControl>
                 <Input
                   type="number"
-                  placeholder="Nhập thứ tự"
-                  className="bgDarkestMode w-20"
+                  placeholder="Số (phút)"
+                  className="bgDarkestMode w-24"
                   {...field}
                 />
               </FormControl>

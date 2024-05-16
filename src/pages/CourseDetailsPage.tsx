@@ -73,7 +73,7 @@ const CourseDetailsPage = ({
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Mô tả</h2>
-            <p className="text-slate-700 dark:text-text5 text-lg">
+            <p className="text-slate-700 dark:text-text5 leading-relaxed">
               {data.desc}
             </p>
           </div>

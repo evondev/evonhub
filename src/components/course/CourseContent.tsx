@@ -21,6 +21,7 @@ import { convertSlug } from "@/utils";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import { useImmer } from "use-immer";
 import LessonItemUpdate from "../lesson/LessonItemUpdate";
 
@@ -42,6 +43,7 @@ const CourseContent = ({
         type: string;
         slug: string;
         order: number;
+        duration: number;
       }[];
     }[];
   };
@@ -58,6 +60,7 @@ const CourseContent = ({
         type: string;
         slug: string;
         order: number;
+        duration: number;
       }[];
     }[]
   >([]);
@@ -108,10 +111,21 @@ const CourseContent = ({
   };
   const handleDeleteLesson = async (lessonId: string, lectureId: string) => {
     try {
-      await deleteLesson({
-        lessonId,
-        lectureId,
-        path: `/admin/course/content?slug=${data.slug}`,
+      Swal.fire({
+        title: "Xác nhận xóa",
+        text: "Bạn có chắc muốn xóa bài học này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await deleteLesson({
+            lessonId,
+            lectureId,
+            path: `/admin/course/content?slug=${data.slug}`,
+          });
+        }
       });
     } catch (error) {
       console.log(error);
@@ -138,10 +152,21 @@ const CourseContent = ({
   };
   const handleDeleteLecture = async (lectureId: string) => {
     try {
-      await deleteLecture({
-        lectureId,
-        courseId: data._id,
-        path: `/admin/course/content?slug=${data.slug}`,
+      Swal.fire({
+        title: "Xác nhận xóa",
+        text: "Bạn có chắc muốn xóa chương này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await deleteLecture({
+            lectureId,
+            courseId: data._id,
+            path: `/admin/course/content?slug=${data.slug}`,
+          });
+        }
       });
     } catch (error) {
       console.log(error);

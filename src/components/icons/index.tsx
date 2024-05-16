@@ -14,6 +14,7 @@ export { default as IconLike } from "./IconLike";
 export { default as IconLongArrowRight } from "./IconLongArrowRight";
 export { default as IconPlay } from "./IconPlay";
 export { default as IconShare } from "./IconShare";
+export { default as IconStar } from "./IconStar";
 export { default as IconStudy } from "./IconStudy";
 export { default as IconUser } from "./IconUser";
 export { default as IconUsers } from "./IconUsers";
