@@ -14,16 +14,20 @@ import {
   courseStatus,
   courseStatusClassName,
   primaryButtonClassName,
+  userPermissions,
 } from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { deleteCourse } from "@/lib/actions/course.action";
 import { cn } from "@/lib/utils";
+import { useGlobalStore } from "@/store";
+import { Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import Swal from "sweetalert2";
 
 const CourseManage = ({ courses }: { courses: ICourse[] }) => {
+  const { permissions, userRole } = useGlobalStore();
   const handleDeleteCourse = async (slug: string) => {
     Swal.fire({
       title: "Bạn có muốn xóa khóa học này không ?",
@@ -111,19 +115,24 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                   >
                     <IconEye></IconEye>
                   </Link>
-                  <Link
-                    href={`/admin/course/update?slug=${course.slug}`}
-                    target="_blank"
-                    className={cn(actionClassName)}
-                  >
-                    <IconEdit></IconEdit>
-                  </Link>
-                  <button
-                    className={cn(actionClassName)}
-                    onClick={() => handleDeleteCourse(course.slug)}
-                  >
-                    <IconDelete />
-                  </button>
+                  {(permissions?.includes(userPermissions.update_course) ||
+                    userRole === Role.ADMIN) && (
+                    <>
+                      <Link
+                        href={`/admin/course/update?slug=${course.slug}`}
+                        target="_blank"
+                        className={cn(actionClassName)}
+                      >
+                        <IconEdit></IconEdit>
+                      </Link>
+                      <button
+                        className={cn(actionClassName)}
+                        onClick={() => handleDeleteCourse(course.slug)}
+                      >
+                        <IconDelete />
+                      </button>
+                    </>
+                  )}
                 </div>
               </TableCell>
             </TableRow>

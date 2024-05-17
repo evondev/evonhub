@@ -1,11 +1,16 @@
 "use client";
-import { permissions, primaryButtonClassName } from "@/constants";
+import {
+  TUserPermission,
+  primaryButtonClassName,
+  userPermissions,
+} from "@/constants";
 import {
   addCourseToUser,
   removeCourseFromUser,
   updateUserByUsername,
 } from "@/lib/actions/user.action";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
@@ -85,6 +90,16 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
   );
   return (
     <>
+      <div className="mb-5 flex flex-col gap-3 pb-5 border-b border-dashed border-gray-400 dark:border-grayDarker">
+        <Image
+          src={user.avatar}
+          alt={user.username}
+          width={100}
+          height={100}
+          className="rounded-full"
+        />
+        <h1 className="font-bold text-xl">{user.username}</h1>
+      </div>
       <h2 className="font-bold text-xl mb-5">Thêm khóa học</h2>
       <div className="grid grid-cols-2 gap-8 items-start mb-8">
         <div className="flex items-center gap-5">
@@ -131,14 +146,14 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
       <h2 className="font-bold text-xl mb-5">Phân quyền</h2>
       <div className="bg-white rounded-lg p-5 dark:bg-grayDarker mb-5">
         <div className="grid grid-cols-4 gap-5">
-          {Object.keys(permissions).map((key) => (
+          {Object.keys(userPermissions).map((key) => (
             <div
               className="grid grid-cols-[200px,1fr] items-center gap-2 capitalize"
               key={key}
             >
               <span>{key}</span>
               <Checkbox
-                defaultValue={permissions[key]}
+                defaultValue={userPermissions[key as TUserPermission]}
                 className="border-gray-500 dark:border-white"
                 checked={selectPermissions.includes(key)}
                 onCheckedChange={(checked) => {
@@ -157,6 +172,8 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
           ))}
         </div>
       </div>
+      <h2 className="font-bold text-xl mb-5">Vai trò</h2>
+
       <Button
         onClick={handleUpdatePermissions}
         className={cn(primaryButtonClassName, "ml-auto w-fit flex")}

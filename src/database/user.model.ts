@@ -1,4 +1,4 @@
-import { EUserPermission, EUserStatus } from "@/types/enums";
+import { EUserPermission, EUserStatus, Role } from "@/types/enums";
 import { Document, Schema, model, models } from "mongoose";
 
 export interface IUser extends Document {
@@ -68,7 +68,7 @@ const UserSchema = new Schema({
   },
   role: {
     type: String,
-    default: "USER",
+    default: Role.USER,
   },
   permissions: [
     {

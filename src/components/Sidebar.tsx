@@ -25,7 +25,8 @@ const Sidebar = ({ role }: { role: string }) => {
       </Link>
       <ul className="flex flex-col gap-3">
         {menuLinks.map((link) => {
-          if (link.isAdmin && role !== Role.ADMIN) return null;
+          if (link.isAdmin && ![Role.ADMIN, Role.EXPERT].includes(role as Role))
+            return null;
           return (
             <li key={link.title}>
               <MenuLink link={link} isActiveLink={isActiveLink}></MenuLink>

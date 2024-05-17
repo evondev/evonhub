@@ -6,8 +6,10 @@ interface GlobalState {
   toggleFullscreen: (isFullscreen: boolean) => void;
   currentUser?: any;
   setCurrentUser?: (currentUser: any) => void;
-  permissions?: any;
+  permissions?: any[];
   setPermissions?: (permissions: any) => void;
+  userRole?: string;
+  setUserRole?: (userRole: string) => void;
 }
 
 export const useGlobalStore = create<GlobalState>()(
@@ -20,6 +22,12 @@ export const useGlobalStore = create<GlobalState>()(
         currentUser: undefined,
         setCurrentUser: (currentUser: any) =>
           set((state) => ({ currentUser: currentUser })),
+        permissions: [],
+        setPermissions: (permissions: any) =>
+          set((state) => ({ permissions: permissions })),
+        userRole: "",
+        setUserRole: (userRole: string) =>
+          set((state) => ({ userRole: userRole })),
       }),
 
       {

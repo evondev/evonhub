@@ -7,7 +7,8 @@ import {
   GetUsersParams,
   UpdateUserParams,
 } from "@/types";
-import { EUserStatus } from "@/types/enums";
+import { EUserStatus, Role } from "@/types/enums";
+import { auth } from "@clerk/nextjs/server";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -24,6 +25,9 @@ export async function createUser(userData: CreateUserParams) {
 export async function updateUser(params: UpdateUserParams) {
   try {
     connectToDatabase();
+    const { userId } = auth();
+    const findUser = await User.findOne({ clerkId: userId });
+    if (![Role.ADMIN].includes(findUser?.role)) return undefined;
     const { clerkId, updateData, path } = params;
     await User.findOneAndUpdate({ clerkId }, updateData, {
       new: true,
@@ -36,6 +40,9 @@ export async function updateUser(params: UpdateUserParams) {
 export async function updateUserByUsername(params: any) {
   try {
     connectToDatabase();
+    const { userId } = auth();
+    const findUser = await User.findOne({ clerkId: userId });
+    if (![Role.ADMIN].includes(findUser?.role)) return undefined;
     const { username, updateData } = params;
     await User.findOneAndUpdate({ username }, updateData, {
       new: true,
@@ -48,6 +55,9 @@ export async function updateUserByUsername(params: any) {
 export async function deleteUser(params: DeleteUserParams) {
   try {
     connectToDatabase();
+    const { userId } = auth();
+    const findUser = await User.findOne({ clerkId: userId });
+    if (![Role.ADMIN].includes(findUser?.role)) return undefined;
     const user = await User.findOne({ clerkId: params.clerkId });
     if (!user) {
       throw new Error("User not found");
@@ -106,6 +116,10 @@ export async function getAllUsers(
         { email: { $regex: searchQuery, $options: "i" } },
       ];
       limit = 5000;
+    }
+    if (params.userId) {
+      const findUser = await User.findOne({ clerkId: params.userId });
+      if (findUser.role !== Role.ADMIN) return undefined;
     }
     const users = await User.find(query).skip(skipAmount).limit(limit).sort({
       joinedAt: -1,

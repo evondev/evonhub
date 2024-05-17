@@ -110,7 +110,7 @@ const UserManage = ({ users, count }: { users: IUser[]; count: number }) => {
                     <h5>{item.username}</h5>
                     <h5>{item.email}</h5>
                     <p className="text-sm text-gray-400">
-                      {new Date(item.joinedAt).toLocaleDateString("vi-VN")}
+                      {new Date(item?.createdAt).toLocaleDateString("vi-VN")}
                     </p>
                   </div>
                 </div>

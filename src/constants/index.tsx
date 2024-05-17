@@ -192,7 +192,7 @@ export const commonStatus: Record<
     className: "bg-red-500 bg-opacity-10 text-red-500",
   },
 };
-export const permissions: Record<string, string> = {
+export const userPermissions = {
   create_course: "create:course",
   update_course: "update:course",
   create_lecture: "create:lecture",
@@ -206,4 +206,5 @@ export const permissions: Record<string, string> = {
   create_category: "create:category",
   update_category: "update:category",
   delete_category: "delete:category",
-};
+} satisfies Record<string, string>;
+export type TUserPermission = keyof typeof userPermissions;

@@ -15,11 +15,12 @@ const Providers = ({
   children: React.ReactNode;
   initialUser?: any;
 }) => {
-  const { setCurrentUser, setPermissions } = useGlobalStore();
+  const { setCurrentUser, setPermissions, setUserRole } = useGlobalStore();
   useEffect(() => {
     if (!initialUser) return;
     setCurrentUser?.(initialUser || null);
     setPermissions?.(initialUser?.permissions || []);
+    setUserRole?.(initialUser?.role || "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialUser?.username]);
   return (
