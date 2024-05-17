@@ -19,7 +19,8 @@ export async function createCourse({
     connectToDatabase();
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
-    if (![Role.ADMIN, Role.EXPERT].includes(findUser?.role)) return undefined;
+    if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
+      return undefined;
     const allCourse = await Course.find();
     const existSlug = allCourse.some((item) => item.slug === slug);
     if (existSlug) {
@@ -49,7 +50,8 @@ export async function updateCourse({
     connectToDatabase();
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
-    if (![Role.ADMIN, Role.EXPERT].includes(findUser?.role)) return undefined;
+    if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
+      return undefined;
     const allCourse = await Course.find();
     const existCourse = allCourse.some(
       (item) => item.slug === slug && item.slug !== courseSlug
@@ -77,7 +79,8 @@ export async function getCourseBySlug(
     connectToDatabase();
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
-    if (![Role.ADMIN, Role.EXPERT].includes(findUser?.role)) return undefined;
+    if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
+      return undefined;
     let searchQuery: any = {};
     searchQuery.slug = slug;
     const course = await Course.findOne(searchQuery).populate({
@@ -120,12 +123,17 @@ export async function getAllCourses(
     connectToDatabase();
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
-    if (![Role.ADMIN, Role.EXPERT].includes(findUser?.role)) return undefined;
+    if (
+      findUser &&
+      findUser?.role &&
+      ![Role.ADMIN, Role.EXPERT].includes(findUser?.role)
+    )
+      return undefined;
     let searchQuery: any = {};
     if (params.status) {
       searchQuery.status = params.status;
     }
-    if (findUser?.role !== Role.ADMIN) {
+    if (findUser && findUser?.role !== Role.ADMIN) {
       searchQuery.author = findUser._id;
     }
     const courses = await Course.find(searchQuery);

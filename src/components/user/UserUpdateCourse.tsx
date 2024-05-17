@@ -97,6 +97,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
           width={100}
           height={100}
           className="rounded-full"
+          priority
         />
         <h1 className="font-bold text-xl">{user.username}</h1>
       </div>

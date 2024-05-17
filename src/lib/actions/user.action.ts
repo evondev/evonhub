@@ -27,7 +27,8 @@ export async function updateUser(params: UpdateUserParams) {
     connectToDatabase();
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
-    if (![Role.ADMIN].includes(findUser?.role)) return undefined;
+    if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
+      return undefined;
     const { clerkId, updateData, path } = params;
     await User.findOneAndUpdate({ clerkId }, updateData, {
       new: true,
@@ -42,7 +43,8 @@ export async function updateUserByUsername(params: any) {
     connectToDatabase();
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
-    if (![Role.ADMIN].includes(findUser?.role)) return undefined;
+    if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
+      return undefined;
     const { username, updateData } = params;
     await User.findOneAndUpdate({ username }, updateData, {
       new: true,
@@ -57,7 +59,8 @@ export async function deleteUser(params: DeleteUserParams) {
     connectToDatabase();
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
-    if (![Role.ADMIN].includes(findUser?.role)) return undefined;
+    if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
+      return undefined;
     const user = await User.findOne({ clerkId: params.clerkId });
     if (!user) {
       throw new Error("User not found");
@@ -73,6 +76,7 @@ export async function deleteUser(params: DeleteUserParams) {
 export async function getUserById({ userId }: { userId: string }) {
   try {
     connectToDatabase();
+    if (!userId) return undefined;
     let user = await User.findOne({ clerkId: userId }).populate({
       model: Course,
       path: "courses",
@@ -105,6 +109,9 @@ export async function getAllUsers(
 ): Promise<{ users: IUser[]; isNext: boolean; total: number } | undefined> {
   try {
     connectToDatabase();
+    const { userId } = auth();
+    const findUser = await User.findOne({ clerkId: userId });
+    if (findUser && ![Role.ADMIN].includes(findUser?.role)) return undefined;
     const { page = 1, pageSize = 10, searchQuery } = params;
     const skipAmount = (page - 1) * pageSize;
     const query: FilterQuery<typeof User> = {};
@@ -116,10 +123,6 @@ export async function getAllUsers(
         { email: { $regex: searchQuery, $options: "i" } },
       ];
       limit = 5000;
-    }
-    if (params.userId) {
-      const findUser = await User.findOne({ clerkId: params.userId });
-      if (findUser.role !== Role.ADMIN) return undefined;
     }
     const users = await User.find(query).skip(skipAmount).limit(limit).sort({
       joinedAt: -1,
