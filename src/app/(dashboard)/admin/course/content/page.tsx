@@ -1,6 +1,5 @@
 import CourseContent from "@/components/course/CourseContent";
 import { getCourseBySlug } from "@/lib/actions/course.action";
-import { auth } from "@clerk/nextjs/server";
 
 const page = async ({
   searchParams,
@@ -9,8 +8,7 @@ const page = async ({
     slug: string;
   };
 }) => {
-  const { userId } = auth();
-  const data = await getCourseBySlug(searchParams.slug, userId || "");
+  const data = await getCourseBySlug(searchParams.slug);
   return (
     <CourseContent data={JSON.parse(JSON.stringify(data))}></CourseContent>
   );
