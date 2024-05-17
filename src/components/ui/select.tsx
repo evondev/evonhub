@@ -19,7 +19,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-12 w-full items-center justify-between rounded-md  bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500   disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1  dark:bg-grayDarker  dark:placeholder:text-slate-400 ",
+      "flex h-12 w-full items-center justify-between rounded-md  bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:bg-grayDarker  dark:placeholder:text-slate-400 ",
       className
     )}
     {...props}
@@ -39,7 +39,7 @@ const SelectScrollUpButton = React.forwardRef<
   <SelectPrimitive.ScrollUpButton
     ref={ref}
     className={cn(
-      "flex cursor-default items-center justify-center py-1",
+      "flex cursor-pointer items-center justify-center py-1",
       className
     )}
     {...props}
@@ -118,7 +118,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-2 pl-8 pr-2 text-sm outline-none focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-grayDarkest dark:focus:text-slate-50",
+      "relative flex w-full cursor-pointer select-none items-center rounded-sm py-2 pl-8 pr-2 text-sm outline-none focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-grayDarkest dark:focus:text-slate-50",
       className
     )}
     {...props}

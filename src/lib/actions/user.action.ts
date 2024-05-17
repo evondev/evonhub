@@ -33,6 +33,18 @@ export async function updateUser(params: UpdateUserParams) {
     console.log(error);
   }
 }
+export async function updateUserByUsername(params: any) {
+  try {
+    connectToDatabase();
+    const { username, updateData } = params;
+    await User.findOneAndUpdate({ username }, updateData, {
+      new: true,
+    });
+    // revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+  }
+}
 export async function deleteUser(params: DeleteUserParams) {
   try {
     connectToDatabase();

@@ -57,7 +57,7 @@ export const menuLinks: TMenuLink[] = [
   },
 ];
 export const baseButtonClassName =
-  "rounded-md h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm";
+  "rounded-md h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";
 
 export const primaryButtonClassName = `bg-primary text-white gradientPrimary gradientPrimaryHover ${baseButtonClassName}`;
 
@@ -191,4 +191,19 @@ export const commonStatus: Record<
     text: "Bị từ chối",
     className: "bg-red-500 bg-opacity-10 text-red-500",
   },
+};
+export const permissions: Record<string, string> = {
+  create_course: "create:course",
+  update_course: "update:course",
+  create_lecture: "create:lecture",
+  update_lecture: "update:lecture",
+  delete_lecture: "delete:lecture",
+  create_lesson: "create:lesson",
+  update_lesson: "update:lesson",
+  delete_lesson: "delete:lesson",
+  update_comment: "update:comment",
+  delete_comment: "delete:comment",
+  create_category: "create:category",
+  update_category: "update:category",
+  delete_category: "delete:category",
 };

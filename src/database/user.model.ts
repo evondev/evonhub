@@ -1,4 +1,4 @@
-import { EUserStatus } from "@/types/enums";
+import { EUserPermission, EUserStatus } from "@/types/enums";
 import { Document, Schema, model, models } from "mongoose";
 
 export interface IUser extends Document {
@@ -13,7 +13,8 @@ export interface IUser extends Document {
   liked: Schema.Types.ObjectId[];
   status: EUserStatus;
   role: string;
-  joinedAt: Date;
+  createdAt: Date;
+  permissions?: EUserPermission[];
 }
 const UserSchema = new Schema({
   clerkId: {
@@ -56,7 +57,7 @@ const UserSchema = new Schema({
       ref: "Course",
     },
   ],
-  joinedAt: {
+  createdAt: {
     type: Date,
     default: Date.now,
   },
@@ -69,6 +70,16 @@ const UserSchema = new Schema({
     type: String,
     default: "USER",
   },
+  permissions: [
+    {
+      type: String,
+      enum: Object.values(EUserPermission),
+      default: [
+        EUserPermission.CREATE_COMMENT,
+        EUserPermission.CREATE_REACTION,
+      ],
+    },
+  ],
 });
 const User = models.User || model("User", UserSchema);
 export default User;

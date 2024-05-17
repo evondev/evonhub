@@ -4,6 +4,10 @@ import { createJSONStorage, devtools, persist } from "zustand/middleware";
 interface GlobalState {
   isFullscreen: boolean;
   toggleFullscreen: (isFullscreen: boolean) => void;
+  currentUser?: any;
+  setCurrentUser?: (currentUser: any) => void;
+  permissions?: any;
+  setPermissions?: (permissions: any) => void;
 }
 
 export const useGlobalStore = create<GlobalState>()(
@@ -13,6 +17,9 @@ export const useGlobalStore = create<GlobalState>()(
         isFullscreen: false,
         toggleFullscreen: (isFullscreen: boolean) =>
           set((state) => ({ isFullscreen: isFullscreen })),
+        currentUser: undefined,
+        setCurrentUser: (currentUser: any) =>
+          set((state) => ({ currentUser: currentUser })),
       }),
 
       {

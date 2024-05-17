@@ -1,14 +1,16 @@
 "use client";
-import { primaryButtonClassName } from "@/constants";
+import { permissions, primaryButtonClassName } from "@/constants";
 import {
   addCourseToUser,
   removeCourseFromUser,
+  updateUserByUsername,
 } from "@/lib/actions/user.action";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import { IconDelete } from "../icons";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -60,44 +62,108 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
       setIsSubmitting(false);
     }
   };
+  const [isUpdatePermissions, setIsUpdatePermissions] = useState(false);
+  const handleUpdatePermissions = async () => {
+    setIsUpdatePermissions(true);
+    try {
+      await updateUserByUsername({
+        username: user.username,
+        updateData: {
+          permissions: selectPermissions,
+        },
+      });
+      toast.success("Cập nhật quyền thành công");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsUpdatePermissions(false);
+    }
+  };
   const [selectCourse, setSelectCourse] = useState("");
+  const [selectPermissions, setSelectPermissions] = useState<string[]>(
+    user.permissions || []
+  );
   return (
     <>
-      <div className="flex items-center gap-10 mb-10">
-        <Select onValueChange={(value) => setSelectCourse(value)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Chọn khóa học" />
-          </SelectTrigger>
-          <SelectContent>
-            {courses.map((course) => (
-              <SelectItem key={course._id} value={course._id.toString()}>
-                {course.title}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Button
-          type="button"
-          className={primaryButtonClassName}
-          onClick={handleAddCourseToUser}
-          isLoading={isSubmitting}
-        >
-          Thêm khóa học
-        </Button>
-      </div>
-      <div className="flex flex-col gap-5">
-        {user.courses.map((course: any, index: number) => (
-          <div className="flex items-center justify-between" key={index}>
-            <h3 className="font-bold text-lg">{course.title}</h3>
-            <Button
-              className="size-12 flex items-center justify-center bg-white dark:bg-grayDarker flex-shrink-0"
-              onClick={() => handleRemoveCourseFromUser(course._id.toString())}
+      <h2 className="font-bold text-xl mb-5">Thêm khóa học</h2>
+      <div className="grid grid-cols-2 gap-8 items-start mb-8">
+        <div className="flex items-center gap-5">
+          <Select onValueChange={(value) => setSelectCourse(value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Chọn khóa học" />
+            </SelectTrigger>
+            <SelectContent>
+              {courses.map((course) => (
+                <SelectItem key={course._id} value={course._id.toString()}>
+                  {course.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            type="button"
+            className={primaryButtonClassName}
+            onClick={handleAddCourseToUser}
+            isLoading={isSubmitting}
+          >
+            Thêm khóa học
+          </Button>
+        </div>
+        <div className="flex flex-col">
+          {user.courses.map((course: any, index: number) => (
+            <div
+              className="flex items-center justify-between mb-5 pb-5 border-b border-dashed last:border-0 last:pb-0 last:mb-0"
+              key={index}
             >
-              <IconDelete />
-            </Button>
-          </div>
-        ))}
+              <h3 className="font-semibold">{course.title}</h3>
+              <Button
+                className="h-12 px-5 flex items-center justify-center underline font-semibold text-base"
+                onClick={() =>
+                  handleRemoveCourseFromUser(course._id.toString())
+                }
+              >
+                Xóa
+              </Button>
+            </div>
+          ))}
+        </div>
       </div>
+      <h2 className="font-bold text-xl mb-5">Phân quyền</h2>
+      <div className="bg-white rounded-lg p-5 dark:bg-grayDarker mb-5">
+        <div className="grid grid-cols-4 gap-5">
+          {Object.keys(permissions).map((key) => (
+            <div
+              className="grid grid-cols-[200px,1fr] items-center gap-2 capitalize"
+              key={key}
+            >
+              <span>{key}</span>
+              <Checkbox
+                defaultValue={permissions[key]}
+                className="border-gray-500 dark:border-white"
+                checked={selectPermissions.includes(key)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setSelectPermissions([...selectPermissions, key]);
+                  } else {
+                    setSelectPermissions(
+                      selectPermissions.filter(
+                        (permission) => permission !== key
+                      )
+                    );
+                  }
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <Button
+        onClick={handleUpdatePermissions}
+        className={cn(primaryButtonClassName, "ml-auto w-fit flex")}
+        isLoading={isUpdatePermissions}
+      >
+        Cập nhật
+      </Button>
     </>
   );
 };

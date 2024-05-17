@@ -24,11 +24,12 @@ export interface ICourse extends Document {
       answer: string;
     }[];
   };
-  createdAt: Date;
   review: Schema.Types.ObjectId[];
   lecture: Schema.Types.ObjectId[];
   author: Schema.Types.ObjectId;
   views: number;
+  createdBy: Schema.Types.ObjectId;
+  createdAt: Date;
 }
 const courseSchema = new Schema<ICourse>({
   title: {
@@ -122,13 +123,17 @@ const courseSchema = new Schema<ICourse>({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  views: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
-  views: {
-    type: Number,
-    default: 0,
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
   },
 });
 const Course = models.Course || mongoose.model("Course", courseSchema);

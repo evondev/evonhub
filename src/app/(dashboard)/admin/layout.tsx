@@ -9,8 +9,8 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
   const { userId } = auth();
   if (!userId) redirect("/sign-in");
   const mongoUser = await getUserById({ userId: userId || "" });
-
-  if (mongoUser?.role !== Role.ADMIN) return <PageNotFound></PageNotFound>;
+  if (![Role.ADMIN, Role.EXPERT].includes(mongoUser?.role))
+    return <PageNotFound></PageNotFound>;
   return <div>{children}</div>;
 };
 
