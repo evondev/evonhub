@@ -35,7 +35,11 @@ export default async function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <Providers initialUser={JSON.parse(JSON.stringify(mongoUser))}>
+              <Providers
+                initialUser={
+                  mongoUser ? JSON.parse(JSON.stringify(mongoUser)) : {}
+                }
+              >
                 {children}
               </Providers>
             </ThemeProvider>
