@@ -1,7 +1,6 @@
 import CourseItem from "@/components/CourseItem";
-import { ICourse } from "@/database/course.model";
 
-const Courses = ({ data }: { data: ICourse[] }) => {
+const Courses = ({ data }: { data: any[] }) => {
   if (!data) return <div>Loading...</div>;
   if (!data.length) return <div>Chưa có khóa học nào!</div>;
   return (

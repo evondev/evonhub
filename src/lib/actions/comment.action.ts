@@ -4,10 +4,10 @@ import User from "@/database/user.model";
 import {
   CreateCommentParams,
   GetAllCommentsParams,
-  ICommentParams,
   ReplyCommentParams,
   UpdateCommentParams,
 } from "@/types";
+import { Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -21,13 +21,11 @@ export async function createComment(params: CreateCommentParams) {
     console.log(error);
   }
 }
-export async function getAllComments(
-  params: GetAllCommentsParams
-): Promise<ICommentParams[] | undefined> {
+export async function getAllComments(params: GetAllCommentsParams) {
   try {
     connectToDatabase();
     const { userId } = auth();
-    if (!userId) return;
+    if (!userId) return undefined;
     const findUser = await User.findOne({ clerkId: userId });
     let query: any = {};
     if (params.lesson) {
@@ -36,8 +34,8 @@ export async function getAllComments(
     if (params.status) {
       query.status = params.status;
     }
-    if (findUser && findUser.role !== "admin") {
-      query.user = findUser._id;
+    if (findUser && findUser?.role !== Role.ADMIN) {
+      query.user = findUser._id.toString();
     }
     const comments = await Comment.find(query)
       .populate("user")

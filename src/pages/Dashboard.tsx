@@ -1,13 +1,12 @@
 "use client";
 
 import CourseItem from "@/components/CourseItem";
-import { ICourse } from "@/database/course.model";
 
 const Dashboard = ({
   courses = [],
   lessons,
 }: {
-  courses: ICourse[];
+  courses: any[];
   lessons: any[];
 }) => {
   const url = `/lesson?slug=${lessons?.[0]?.slug}`;

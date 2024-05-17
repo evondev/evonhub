@@ -86,6 +86,7 @@ export interface CreateCommentParams {
 export interface GetAllCommentsParams {
   lesson?: string;
   status?: string;
+  userId?: string;
 }
 export interface ReplyCommentParams {
   commentId: string;
