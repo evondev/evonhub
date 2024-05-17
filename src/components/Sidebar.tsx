@@ -1,5 +1,5 @@
 "use client";
-import { menuLinks } from "@/constants";
+import { adminRoutes, menuLinks } from "@/constants";
 import { Role } from "@/types/enums";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,6 +25,8 @@ const Sidebar = ({ role }: { role: string }) => {
       </Link>
       <ul className="flex flex-col gap-3">
         {menuLinks.map((link) => {
+          if (adminRoutes.includes(link.url) && Role.ADMIN !== role)
+            return null;
           if (link.isAdmin && ![Role.ADMIN, Role.EXPERT].includes(role as Role))
             return null;
           return (

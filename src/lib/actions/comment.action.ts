@@ -1,5 +1,6 @@
 "use server";
 import Comment from "@/database/comment.model";
+import User from "@/database/user.model";
 import {
   CreateCommentParams,
   GetAllCommentsParams,
@@ -7,6 +8,7 @@ import {
   ReplyCommentParams,
   UpdateCommentParams,
 } from "@/types";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
@@ -24,12 +26,18 @@ export async function getAllComments(
 ): Promise<ICommentParams[] | undefined> {
   try {
     connectToDatabase();
+    const { userId } = auth();
+    if (!userId) return;
+    const findUser = await User.findOne({ clerkId: userId });
     let query: any = {};
     if (params.lesson) {
       query.lesson = params.lesson;
     }
     if (params.status) {
       query.status = params.status;
+    }
+    if (findUser && findUser.role !== "admin") {
+      query.user = findUser._id;
     }
     const comments = await Comment.find(query)
       .populate("user")

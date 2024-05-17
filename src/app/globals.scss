@@ -19,6 +19,9 @@
     -webkit-appearance: none;
     margin: 0;
   }
+  svg {
+    @apply max-w-full;
+  }
 }
 @layer components {
   .focus-primary:focus {

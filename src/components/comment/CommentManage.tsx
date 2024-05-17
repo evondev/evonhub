@@ -89,6 +89,13 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
+          {commentList.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={999} className="text-center">
+                Không có dữ liệu
+              </TableCell>
+            </TableRow>
+          )}
           {commentList.map((comment) => (
             <TableRow key={comment._id}>
               <TableCell>

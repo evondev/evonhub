@@ -6,11 +6,11 @@ const page = async () => {
   const courses = await getAllCourses({
     status: ECourseStatus.APPROVED,
   });
-  if (!courses) return <div>Loading...</div>;
   return (
-    <div>
+    <>
+      <h1 className="text-3xl font-extrabold mb-8">Khám phá</h1>
       <Courses data={JSON.parse(JSON.stringify(courses)) || []}></Courses>
-    </div>
+    </>
   );
 };
 

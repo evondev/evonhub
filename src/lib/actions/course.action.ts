@@ -75,7 +75,7 @@ export async function updateCourse({
     console.log("error:", error);
   }
 }
-export async function getCourseBySlug(
+export async function getCourseBySlugUser(
   slug: string
 ): Promise<ICourse | undefined> {
   try {
@@ -94,9 +94,32 @@ export async function getCourseBySlug(
         model: Lesson,
       },
     });
-    if (findUser?._id !== course?.author && findUser?.role !== Role.ADMIN) {
+    if (
+      findUser?._id.toString() !== course?.author.toString() &&
+      findUser?.role !== Role.ADMIN
+    ) {
       return undefined;
     }
+    return course;
+  } catch (error) {
+    console.log("error:", error);
+  }
+}
+export async function getCourseBySlug(
+  slug: string
+): Promise<ICourse | undefined> {
+  try {
+    connectToDatabase();
+    let searchQuery: any = {};
+    searchQuery.slug = slug;
+    const course = await Course.findOne(searchQuery).populate({
+      path: "lecture",
+      populate: {
+        path: "lessons",
+        model: Lesson,
+      },
+    });
+
     return course;
   } catch (error) {
     console.log("error:", error);
@@ -120,7 +143,7 @@ export async function getCourseById(
   }
 }
 
-export async function getAllCourses(
+export async function getAllCoursesUser(
   params: any
 ): Promise<ICourse[] | undefined> {
   try {
@@ -141,6 +164,26 @@ export async function getAllCourses(
       searchQuery.author = findUser._id;
     }
     const courses = await Course.find(searchQuery);
+    return courses;
+  } catch (error) {}
+}
+export async function getAllCourses(
+  params: any
+): Promise<ICourse[] | undefined> {
+  try {
+    connectToDatabase();
+    let searchQuery: any = {};
+    if (params.status) {
+      searchQuery.status = params.status;
+    }
+    const courses = await Course.find(searchQuery).populate({
+      path: "lecture",
+      model: Lecture,
+      populate: {
+        path: "lessons",
+        model: Lesson,
+      },
+    });
     return courses;
   } catch (error) {}
 }

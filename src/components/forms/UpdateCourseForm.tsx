@@ -60,6 +60,8 @@ export default function UpdateCourseForm({
       level: data.level,
       image: data.image,
       status: data.status,
+      cta: data.cta,
+      ctaLink: data.ctaLink,
     },
   });
   const [infoData, setInfoData] = useImmer({
@@ -168,6 +170,35 @@ export default function UpdateCourseForm({
                   <Input
                     type="number"
                     placeholder="Giá khuyến mãi"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="cta"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Call to action</FormLabel>
+                <FormControl>
+                  <Input placeholder="Call to action" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="ctaLink"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>CTA Link</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="https://fb.com/someone"
                     {...field}
                   />
                 </FormControl>

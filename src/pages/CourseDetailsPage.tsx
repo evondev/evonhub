@@ -3,6 +3,8 @@ import {
   IconClock,
   IconLevel,
   IconPlay,
+  IconStudy,
+  IconUser,
   IconVideo,
   IconViews,
 } from "@/components/icons";
@@ -22,6 +24,7 @@ import { ICourse } from "@/database/course.model";
 import { cn } from "@/lib/utils";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
+import Link from "next/link";
 
 const CourseDetailsPage = ({
   data,
@@ -35,6 +38,7 @@ const CourseDetailsPage = ({
         _id: string;
         title: string;
         video: string;
+        duration: number;
       }[];
     }[];
   };
@@ -42,6 +46,11 @@ const CourseDetailsPage = ({
 }) => {
   if (!data) return <PageNotFound />;
   const lectures = data?.lecture || [];
+  const totalMinutes = lectures.reduce((acc, cur) => {
+    return acc + cur.lessons.reduce((acc, cur) => acc + cur.duration, 0);
+  }, 0);
+  const totalHours = Math.floor(totalMinutes / 60);
+  const totalMinutesLeft = totalMinutes % 60;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,1.2fr)] gap-8 items-start relative">
       <div>
@@ -87,7 +96,7 @@ const CourseDetailsPage = ({
                 {courseLevel[data.level]}
               </DetailsItem>
               <DetailsItem title="Tổng thời gian" icon={<IconClock />}>
-                0h0p
+                {totalHours}h{totalMinutesLeft}p
               </DetailsItem>
               <DetailsItem title="Lượt xem" icon={<IconViews />}>
                 {data.views || 0}
@@ -171,24 +180,40 @@ const CourseDetailsPage = ({
                 : `-${100 - Math.floor((data.price / data.salePrice) * 100)} %`}
             </span>
           </div>
-          <h4 className="text-sm font-semibold mb-3">Khóa học bao gồm:</h4>
-          <div className="flex flex-col gap-3 text-sm text-slate-500 mb-5">
-            {/* <div className="flex items-center gap-1">
-              {IconPlay}
-              <p>30 giờ học</p>
-            </div> */}
-            <div className="flex items-center gap-1">
-              <IconPlay />
+          <h4 className="text-base font-semibold mb-3">Khóa học bao gồm:</h4>
+          <div className="flex flex-col gap-3 text-sm text-slate-600 mb-5">
+            <WidgetItem>
+              <div className="size-5">
+                <IconPlay />
+              </div>
+              <p>{totalHours} giờ học</p>
+            </WidgetItem>
+            <WidgetItem>
+              <div className="size-5">
+                <IconPlay />
+              </div>
               <p>Video quay Full HD</p>
-            </div>
+            </WidgetItem>
+            <WidgetItem>
+              <div className="size-5">
+                <IconUser />
+              </div>
+              <p>Có nhóm hỗ trợ</p>
+            </WidgetItem>
+            <WidgetItem>
+              <div className="size-5">
+                <IconStudy />
+              </div>
+              <p>Tài liệu kèm theo</p>
+            </WidgetItem>
           </div>
-          <a
-            href="https://fb.com/tuan.trananh.0509"
-            target="_blank"
+          <Link
+            href={data.ctaLink || "#"}
+            target={data.ctaLink ? "_blank" : "_self"}
             className={cn(primaryButtonClassName, "w-full")}
           >
-            Liên hệ
-          </a>
+            {data.cta || "Đăng ký ngay"}
+          </Link>
         </div>
       </div>
     </div>
@@ -213,6 +238,9 @@ function DetailsItem({
       </div>
     </div>
   );
+}
+function WidgetItem({ children }: { children: React.ReactNode }) {
+  return <div className="flex items-center gap-1">{children}</div>;
 }
 
 function BoxList({ title, data }: { title: string; data: string[] }) {

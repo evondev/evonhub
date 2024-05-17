@@ -28,6 +28,8 @@ export interface ICourse extends Document {
   lecture: Schema.Types.ObjectId[];
   author: Schema.Types.ObjectId;
   views: number;
+  cta: string;
+  ctaLink: string;
   createdAt: Date;
 }
 const courseSchema = new Schema<ICourse>({
@@ -125,6 +127,13 @@ const courseSchema = new Schema<ICourse>({
   views: {
     type: Number,
     default: 0,
+  },
+  cta: {
+    type: String,
+    default: "Mua ngay",
+  },
+  ctaLink: {
+    type: String,
   },
   createdAt: {
     type: Date,

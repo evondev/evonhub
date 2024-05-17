@@ -11,7 +11,7 @@ const page = async ({
 }) => {
   const slug = searchParams.slug;
   const findCourse = await getCourseBySlug(slug);
-  if (!findCourse?.title) return <PageNotFound></PageNotFound>;
+  if (!findCourse?.slug) return <PageNotFound></PageNotFound>;
   return (
     <CourseContent
       data={JSON.parse(JSON.stringify(findCourse))}

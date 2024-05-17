@@ -22,9 +22,11 @@ const page = async ({
   const { userId } = auth();
   const mongoUser = await getUserById({ userId: userId || "" });
   const role = mongoUser?.role;
+  if (!courseDetails) return <PageNotFound />;
   if (
-    !courseDetails?.slug ||
-    (courseDetails.status !== ECourseStatus.APPROVED && role !== Role.ADMIN)
+    mongoUser?._id?.toString() !== courseDetails?.author?.toString() &&
+    ![Role.ADMIN].includes(role) &&
+    courseDetails?.status !== ECourseStatus.APPROVED
   )
     return <PageNotFound />;
   const lessonCount = await getLessonCount(courseDetails._id);

@@ -21,16 +21,32 @@ const IconLecture = (
     />
   </svg>
 );
-const CourseItem = ({
-  data,
-  cta,
-  url,
-}: {
-  data: ICourse;
+interface ICourseItemParams {
+  data: {
+    title: string;
+    slug: string;
+    image: string;
+    createdAt: Date;
+    lecture: {
+      title: string;
+      lessons: {
+        title: string;
+        duration: number;
+      }[];
+    }[];
+    level: ICourse["level"];
+    price: ICourse["price"];
+  };
   cta?: string;
   url?: string;
-}) => {
+}
+const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
   const link = url || `/course/${data.slug}`;
+  const lectures = data.lecture;
+  const totalMinutes = lectures?.reduce((acc, cur) => {
+    return acc + cur?.lessons?.reduce((acc, cur) => acc + cur?.duration, 0);
+  }, 0);
+  const totalHours = Math.floor(totalMinutes / 60);
   return (
     <div className=" bg-white rounded-lg dark:bg-grayDark flex flex-col">
       <Link
@@ -48,9 +64,12 @@ const CourseItem = ({
           className="w-full h-full object-cover rounded-t-xl transition-all"
           sizes="400px"
         ></Image>
-        {/* <span className="absolute right-5 top-5 z-10 text-white inline-flex px-3 py-1 rounded-full bg-green-500 text-xs font-semibold">
-          Mới ra mắt
-        </span> */}
+        {new Date(data.createdAt).getTime() >
+          new Date().getTime() - 7 * 24 * 60 * 60 * 1000 && (
+          <span className="absolute right-5 top-5 z-10 text-white inline-flex px-3 py-1 rounded-full bg-green-500 text-xs font-semibold">
+            Mới ra mắt
+          </span>
+        )}
       </Link>
       <div className="p-5 flex-1 flex flex-col">
         <div className="flex items-center justify-between mb-5 text-sm font-medium">
@@ -70,11 +89,11 @@ const CourseItem = ({
           <div className="flex items-center gap-10 text-sm">
             <div className="flex items-center gap-2">
               {IconLecture}
-              <span>{data.lecture.length} Module</span>
+              <span>{data.lecture.length} Chương</span>
             </div>
             <div className="flex items-center gap-2">
               <IconClock />
-              <span>30 Hours</span>
+              <span>{totalHours} Giờ học</span>
             </div>
           </div>
 

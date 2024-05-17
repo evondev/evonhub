@@ -2,7 +2,7 @@ import CommentManage from "@/components/comment/CommentManage";
 import { getAllComments } from "@/lib/actions/comment.action";
 
 const CommentManagePage = async () => {
-  const commentList = await getAllComments({});
+  const commentList = (await getAllComments({})) || [];
   return (
     <>
       <CommentManage

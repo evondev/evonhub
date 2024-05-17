@@ -208,3 +208,4 @@ export const userPermissions = {
   delete_category: "delete:category",
 } satisfies Record<string, string>;
 export type TUserPermission = keyof typeof userPermissions;
+export const adminRoutes = ["/admin/overview", "/admin/user/manage"];

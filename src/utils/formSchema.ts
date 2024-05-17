@@ -6,6 +6,8 @@ export const updateCourseSchema = z.object({
     message: "Tiêu đề phải có ít nhất 10 ký tự",
   }),
   slug: z.string().optional(),
+  cta: z.string().optional(),
+  ctaLink: z.string().optional(),
   price: z.string().optional(),
   salePrice: z.string().optional(),
   intro: z.string().optional(),
