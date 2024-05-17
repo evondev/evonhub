@@ -1,4 +1,3 @@
-import EmptyData from "@/components/EmptyData";
 import CourseManage from "@/components/course/CourseManage";
 import { getAllCourses } from "@/lib/actions/course.action";
 
@@ -7,7 +6,6 @@ const page = async () => {
     status: undefined,
   });
   if (!courses) return <div>Loading...</div>;
-  if (!courses.length) return <EmptyData></EmptyData>;
   return (
     <CourseManage
       courses={JSON.parse(JSON.stringify(courses)) || []}

@@ -62,6 +62,9 @@ export async function updateCourse({
         message: "Đường dẫn này đã tồn tại!",
       };
     }
+    if (findUser?.role !== Role.ADMIN) {
+      delete updateData.status;
+    }
 
     await Course.findOneAndUpdate({ slug }, updateData, {
       new: true,
@@ -78,6 +81,7 @@ export async function getCourseBySlug(
   try {
     connectToDatabase();
     const { userId } = auth();
+    if (!userId) return undefined;
     const findUser = await User.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
       return undefined;
