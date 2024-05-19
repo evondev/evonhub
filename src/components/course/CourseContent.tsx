@@ -376,7 +376,10 @@ const CourseContent = ({
                                 lessonId={lesson._id}
                                 lesson={lesson}
                                 slug={data.slug}
-                                courseId={data._id}
+                                course={{
+                                  id: data._id,
+                                  slug: data.slug,
+                                }}
                               ></LessonItemUpdate>
                             </AccordionContent>
                           </AccordionItem>

@@ -50,14 +50,18 @@ const LessonPlayer = ({
     <div className="mb-8">
       <FullScreen handle={handle}>
         <div className="relative group aspect-video mb-5">
-          <MuxPlayer
-            streamType="on-demand"
-            playbackId={videoId}
-            onEnded={() => {
-              handleChangeLesson(nextLesson || "");
-            }}
-            className="w-full h-full inline-block align-bottom"
-          />
+          {videoId ? (
+            <MuxPlayer
+              streamType="on-demand"
+              playbackId={videoId}
+              onEnded={() => {
+                handleChangeLesson(nextLesson || "");
+              }}
+              className="w-full h-full inline-block align-bottom"
+            />
+          ) : (
+            <div className="w-full h-full bg-grayDarkest"></div>
+          )}
           <div className="flex my-5 gap-3 justify-end sm:block">
             {prevLesson && (
               <PlayerControl
