@@ -14,6 +14,7 @@ import { getCourseBySlug } from "@/lib/actions/course.action";
 import { getHistoriesByLessonId } from "@/lib/actions/history.action";
 import { getLessonBySlug } from "@/lib/actions/lesson.action";
 import { getUserById } from "@/lib/actions/user.action";
+import { EUserStatus } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 
 const page = async ({
@@ -30,10 +31,12 @@ const page = async ({
   const { userId } = auth();
   if (!userId) return null;
   const mongoUser = await getUserById({ userId });
-  if (!mongoUser || mongoUser.status !== "active") return <EmptyData />;
-  const lessonDetails = await getLessonBySlug(searchParams.slug);
-  if (!lessonDetails) return <PageNotFound />;
+  if (!mongoUser || mongoUser.status !== EUserStatus.ACTIVE)
+    return <EmptyData />;
   const course = await getCourseBySlug(params.course);
+  if (!course) return <PageNotFound />;
+  const lessonDetails = await getLessonBySlug(searchParams.slug, course._id);
+  if (!lessonDetails) return <EmptyData text="Bài học không tồn tại!" />;
   const courseId = course?._id.toString();
   const lectures = course?.lecture || [];
   const allLessons = lectures.reduce((acc, item) => {

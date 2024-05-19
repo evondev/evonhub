@@ -6,6 +6,7 @@ import {
   DeleteLessonParams,
   UpdateLessonParams,
 } from "@/types";
+import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
@@ -89,11 +90,19 @@ export async function getLessonsByLectureId(lectureId: string) {
   }
 }
 export async function getLessonBySlug(
-  slug: string
+  slug: string,
+  course?: string
 ): Promise<ILesson | undefined> {
   try {
     connectToDatabase();
-    const lesson = await Lesson.findOne({ slug, _destroy: false });
+    const query: FilterQuery<typeof Lesson> = {
+      slug,
+      _destroy: false,
+    };
+    if (course) {
+      query.courseId = course;
+    }
+    const lesson = await Lesson.findOne(query);
     return lesson;
   } catch (error) {
     console.log(error);

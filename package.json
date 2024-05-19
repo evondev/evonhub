@@ -45,6 +45,7 @@
     "react-dom": "^18",
     "react-full-screen": "^1.1.1",
     "react-hook-form": "^7.51.3",
+    "react-simple-star-rating": "^5.1.7",
     "react-toastify": "^10.0.5",
     "sass": "^1.76.0",
     "slugify": "^1.6.6",
@@ -54,6 +55,7 @@
     "tailwindcss-animate": "^1.0.7",
     "uploadthing": "^6.9.0",
     "use-immer": "^0.9.0",
+    "videojs-mux": "^4.19.0",
     "zod": "^3.23.3",
     "zustand": "^4.5.2"
   },
