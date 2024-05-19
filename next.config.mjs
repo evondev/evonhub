@@ -2,6 +2,10 @@
 import million from "million/compiler";
 
 const nextConfig = {
+  env: {
+    MUX_TOKEN_ID: process.env.MUX_TOKEN_ID,
+    MUX_TOKEN_SECRET: process.env.MUX_TOKEN_SECRET,
+  },
   images: {
     remotePatterns: [
       {

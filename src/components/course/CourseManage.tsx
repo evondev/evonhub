@@ -85,7 +85,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                     className="w-16 h-16 object-cover rounded flex-shrink-0"
                   />
                   <div>
-                    <div className="flex items-center gap-2 hover:text-primary">
+                    <div className="flex items-start gap-2 hover:text-primary">
                       <Link
                         href={`/admin/course/content?slug=${course.slug}`}
                         target="_blank"

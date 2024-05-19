@@ -3,6 +3,7 @@ import { baseButtonClassName } from "@/constants";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
 import { formUrlQuery } from "@/utils";
+import MuxPlayer from "@mux/mux-player-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 const LessonPlayer = ({
@@ -33,30 +34,42 @@ const LessonPlayer = ({
       );
     }
   };
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const handleChangeLesson = (url: string) => {
+    if (!url) return;
+    const newUrl = formUrlQuery({
+      params: searchParams?.toString() || "",
+      key: "slug",
+      value: url,
+    });
+    router.push(newUrl);
+  };
 
   return (
     <div className="mb-8">
       <FullScreen handle={handle}>
         <div className="relative group">
-          {video.includes("iframe") ? (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: video,
-              }}
-              className="w-full h-full object-cover rounded-lg aspect-video mb-5 [&_iframe]:w-full [&_iframe]:h-full"
-            ></div>
-          ) : (
-            <iframe
-              src={`https://www.youtube.com/embed/${videoId}`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-              className="w-full h-full object-cover rounded-lg aspect-video mb-5"
-            ></iframe>
-          )}
+          <MuxPlayer
+            streamType="on-demand"
+            playbackId={videoId}
+            onEnded={() => {
+              handleChangeLesson(nextLesson || "");
+            }}
+          />
           <div className="flex my-5 gap-3 justify-end sm:block">
-            <PlayerControl action="prev" url={prevLesson}></PlayerControl>
-            <PlayerControl action="next" url={nextLesson}></PlayerControl>
+            {prevLesson && (
+              <PlayerControl
+                action="prev"
+                onClick={() => handleChangeLesson(prevLesson)}
+              ></PlayerControl>
+            )}
+            {nextLesson && (
+              <PlayerControl
+                action="next"
+                onClick={() => handleChangeLesson(nextLesson)}
+              ></PlayerControl>
+            )}
           </div>
         </div>
       </FullScreen>
@@ -90,26 +103,15 @@ const LessonPlayer = ({
   );
 };
 function PlayerControl({
-  url = "",
+  onClick,
   action,
 }: {
-  url?: string;
+  onClick: () => void;
   action: "prev" | "next";
 }) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const handleChangeLesson = (url: string) => {
-    const newUrl = formUrlQuery({
-      params: searchParams?.toString() || "",
-      key: "slug",
-      value: url,
-    });
-    router.push(newUrl);
-  };
-  if (!url) return null;
   return (
     <button
-      onClick={() => handleChangeLesson(url)}
+      onClick={onClick}
       className={cn(
         "flex size-10 rounded items-center bg-white justify-center sm:absolute sm:top-1/2 sm:-translate-y-1/2 z-10 hover:!bg-primary hover:!text-white transition-all dark:bg-grayDarker",
         action === "prev" ? "left-5" : "right-5"

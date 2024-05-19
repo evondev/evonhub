@@ -46,7 +46,7 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
   const totalMinutes = lectures?.reduce((acc, cur) => {
     return acc + cur?.lessons?.reduce((acc, cur) => acc + cur?.duration, 0);
   }, 0);
-  const totalHours = Math.floor(totalMinutes / 60);
+  const totalHours = Math.floor(totalMinutes / 60) || 0;
   return (
     <div className=" bg-white rounded-lg dark:bg-grayDark flex flex-col">
       <Link

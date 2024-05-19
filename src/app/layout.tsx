@@ -1,10 +1,9 @@
 import Providers from "@/components/Providers";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { getUserById } from "@/lib/actions/user.action";
 import { ClerkProvider } from "@clerk/nextjs";
-import { auth } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
+import Script from "next/script";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.scss";
@@ -22,8 +21,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { userId } = auth();
-  const mongoUser = await getUserById({ userId: userId || "" });
   return (
     <ClerkProvider>
       <html lang="en">
@@ -35,16 +32,14 @@ export default async function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <Providers
-                initialUser={
-                  mongoUser ? JSON.parse(JSON.stringify(mongoUser)) : {}
-                }
-              >
-                {children}
-              </Providers>
+              <Providers>{children}</Providers>
             </ThemeProvider>
           </div>
           <ToastContainer autoClose={1500}></ToastContainer>
+          <Script
+            id="mux-uploader"
+            src="https://cdn.jsdelivr.net/npm/@mux/mux-uploader@1.0.0-beta.6"
+          ></Script>
         </body>
       </html>
     </ClerkProvider>
