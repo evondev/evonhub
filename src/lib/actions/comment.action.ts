@@ -1,5 +1,7 @@
 "use server";
 import Comment from "@/database/comment.model";
+import Course from "@/database/course.model";
+import Lesson from "@/database/lesson.model";
 import User from "@/database/user.model";
 import {
   CreateCommentParams,
@@ -38,8 +40,18 @@ export async function getAllComments(params: GetAllCommentsParams) {
       query.user = findUser._id.toString();
     }
     const comments = await Comment.find(query)
-      .populate("user")
-      .populate("lesson");
+      .populate({
+        path: "user",
+        model: User,
+      })
+      .populate({
+        path: "lesson",
+        model: Lesson,
+      })
+      .populate({
+        path: "course",
+        model: Course,
+      });
     return comments;
   } catch (error) {
     console.log(error);

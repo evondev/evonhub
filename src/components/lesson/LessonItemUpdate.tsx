@@ -9,11 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  baseButtonClassName,
-  editorOptions,
-  primaryButtonClassName,
-} from "@/constants";
+import { editorOptions } from "@/constants";
 import { updateLesson } from "@/lib/actions/lesson.action";
 import { cn } from "@/lib/utils";
 import { Editor } from "@tinymce/tinymce-react";
@@ -32,7 +28,8 @@ const formSchema = z.object({
   title: z.string().optional(),
   duration: z.number().optional(),
 });
-
+const btnClassName =
+  "text-sm py-2 px-3 h-10 rounded-md font-semibold w-[100px] flex items-center justify-center";
 const LessonItemUpdate = ({
   lessonId,
   slug,
@@ -168,7 +165,10 @@ const LessonItemUpdate = ({
         />
         <div className="flex items-center justify-end gap-3">
           <Button
-            className={cn(primaryButtonClassName)}
+            className={cn(
+              btnClassName,
+              " bg-slate-900 text-white hover:opacity-85 dark:bg-white dark:text-slate-900"
+            )}
             type="submit"
             isLoading={isSubmitting}
           >
@@ -178,8 +178,8 @@ const LessonItemUpdate = ({
             href={`/lesson?slug=${lesson.slug}`}
             target="_blank"
             className={cn(
-              baseButtonClassName,
-              "hover:bg-gray-100 dark:hover:bg-grayDarkest"
+              btnClassName,
+              "border border-gray-200 hover:bg-gray-100 dark:border-0 dark:hover:bg-transparent dark:hover:opacity-90"
             )}
           >
             Xem trước

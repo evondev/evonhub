@@ -70,8 +70,14 @@ export interface ICommentParams {
     username: string;
     avatar: string;
   };
-  course: string;
-  lesson: string;
+  course: {
+    title: string;
+    slug: string;
+  };
+  lesson: {
+    title: string;
+    slug: string;
+  };
   status: ECommonStatus;
   createdAt: Date;
 }

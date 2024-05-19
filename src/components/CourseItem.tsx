@@ -41,7 +41,7 @@ interface ICourseItemParams {
   url?: string;
 }
 const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
-  const link = `/${data.slug}${url}` || `/course/${data.slug}`;
+  const link = `/${data.slug}${url || ""}` || `/course/${data.slug}`;
   const lectures = data.lecture;
   const totalMinutes = lectures?.reduce((acc, cur) => {
     return acc + cur?.lessons?.reduce((acc, cur) => acc + cur?.duration, 0);

@@ -17,8 +17,9 @@ import { deleteComment, updateComment } from "@/lib/actions/comment.action";
 import { cn } from "@/lib/utils";
 import { ICommentParams } from "@/types";
 import { ECommonStatus } from "@/types/enums";
-import { formUrlQuery } from "@/utils";
+import { formUrlQuery, formatDate } from "@/utils";
 import { debounce } from "lodash";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
@@ -82,8 +83,9 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
             <TableHead>
               <Checkbox />
             </TableHead>
-            <TableHead>Username</TableHead>
+            <TableHead>Thông tin</TableHead>
             <TableHead>Nội dung</TableHead>
+            <TableHead>Bài học</TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead className="text-center">Hành động</TableHead>
           </TableRow>
@@ -101,9 +103,28 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
               <TableCell>
                 <Checkbox />
               </TableCell>
-              <TableCell>{comment.user?.username}</TableCell>
+              <TableCell>
+                <div className="flex flex-col">
+                  <h4 className="font-bold text-base">
+                    {comment.user?.username}
+                  </h4>
+                  <span className="text-slate-400 font-medium">
+                    {formatDate(comment.createdAt)}
+                  </span>
+                </div>
+              </TableCell>
               <TableCell>
                 <div className="max-w-60 line-clamp-4">{comment.content}</div>
+              </TableCell>
+              <TableCell>
+                <h4 className="font-bold">{comment.course?.title}</h4>
+                <Link
+                  href={`/${comment.course.slug}/lesson?slug=${comment.lesson.slug}`}
+                  target="_blank"
+                  className="transition-all underline text-primary"
+                >
+                  {comment.lesson?.title}
+                </Link>
               </TableCell>
               <TableCell>
                 <button

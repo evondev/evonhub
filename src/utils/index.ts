@@ -65,3 +65,6 @@ export const formUrlQuery = ({ params, key, value }: UrlQueryParams) => {
     { skipNull: true }
   );
 };
+export const formatDate = (date: Date): string => {
+  return new Date(date).toLocaleDateString("vi-VN");
+};
