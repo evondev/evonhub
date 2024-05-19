@@ -31,10 +31,7 @@ const page = async ({
   if (!lessonDetails) return <PageNotFound />;
   const courseId = lessonDetails.courseId;
   const course = await getCourseById(courseId.toString());
-  let videoId = lessonDetails.video.includes("?v=")
-    ? lessonDetails.video.split("?v=").at(-1)
-    : lessonDetails.video.split("/").at(-1);
-  videoId = videoId?.split("&").at(0);
+  let videoId = lessonDetails.video;
   const lectures = course?.lecture || [];
   const allLessons = lectures.reduce((acc, item) => {
     return acc.concat(item.lessons);

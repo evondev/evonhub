@@ -16,7 +16,6 @@ import {
 } from "@/constants";
 import { updateLesson } from "@/lib/actions/lesson.action";
 import { cn } from "@/lib/utils";
-import MuxUploader from "@mux/mux-uploader-react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -112,41 +111,23 @@ const LessonItemUpdate = ({
             </FormItem>
           )}
         />
-        <MuxUploader
-          endpoint={async () => {
-            const res = await fetch("https://api.mux.com/video/v1/uploads", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization:
-                  "Basic " +
-                  btoa(
-                    `${process.env.MUX_TOKEN_ID}:${process.env.MUX_TOKEN_SECRET}`
-                  ),
-              },
-              body: JSON.stringify({
-                cors_origin: "*",
-                new_asset_settings: {
-                  playback_policy: ["public"],
-                  encoding_tier: "baseline",
-                },
-              }),
-            });
-            return res.text();
-          }}
-        />
-        {/* <FormField
+        <FormField
           control={form.control}
           name="video"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Video URL</FormLabel>
+              <FormLabel>Video Id</FormLabel>
               <FormControl>
-                <Input type="file"/>
+                <Input
+                  type="text"
+                  className="bgDarkestMode"
+                  placeholder="Video Id"
+                  {...field}
+                />
               </FormControl>
             </FormItem>
           )}
-        /> */}
+        />
         <FormField
           control={form.control}
           name="content"
