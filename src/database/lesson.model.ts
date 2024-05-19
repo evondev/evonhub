@@ -14,6 +14,7 @@ export interface ILesson extends Document {
   lectureId: Schema.Types.ObjectId;
   views: number;
   createdAt: Date;
+  _destroy?: boolean;
 }
 const lessonSchema = new Schema<ILesson>({
   title: {
@@ -62,6 +63,10 @@ const lessonSchema = new Schema<ILesson>({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  _destroy: {
+    type: Boolean,
+    default: false,
   },
 });
 const Lesson = models.Lesson || mongoose.model("Lesson", lessonSchema);

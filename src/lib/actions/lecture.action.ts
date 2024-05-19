@@ -30,11 +30,11 @@ export async function deleteLecture({
     if (!course) {
       throw new Error("Không tìm thấy khóa học");
     }
-    await Lecture.findByIdAndDelete(lectureId);
-    course.lecture = course.lecture.filter(
-      (id: string) => id.toString() !== lectureId
-    );
-    await course.save();
+    await Lecture.findByIdAndUpdate(lectureId, { _destroy: true });
+    // course.lecture = course.lecture.filter(
+    //   (id: string) => id.toString() !== lectureId
+    // );
+    // await course.save();
     revalidatePath(path);
   } catch (error) {
     console.log(error);

@@ -9,7 +9,7 @@ export interface ICourse extends Document {
   salePrice: number;
   desc: string;
   content: string;
-  rating: Schema.Types.ObjectId[];
+  rating: number[];
   image: string;
   intro: string;
   status: ECourseStatus;
@@ -55,12 +55,10 @@ const courseSchema = new Schema<ICourse>({
   content: {
     type: String,
   },
-  rating: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Rating",
-    },
-  ],
+  rating: {
+    type: [Number],
+    default: [5],
+  },
   image: {
     type: String,
     default: "/default.jpg",

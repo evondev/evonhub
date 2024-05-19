@@ -214,6 +214,7 @@ const CourseContent = ({
         data: {
           title: lessonData.title || lesson.title,
           slug: convertSlug(lessonData.title || lesson.title),
+          courseId: data._id,
         },
       });
       toast.success("Bài học đã được cập nhật thành công");
@@ -375,6 +376,7 @@ const CourseContent = ({
                                 lessonId={lesson._id}
                                 lesson={lesson}
                                 slug={data.slug}
+                                courseId={data._id}
                               ></LessonItemUpdate>
                             </AccordionContent>
                           </AccordionItem>

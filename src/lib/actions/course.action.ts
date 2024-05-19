@@ -107,16 +107,18 @@ export async function getCourseBySlugUser(
 }
 export async function getCourseBySlug(
   slug: string
-): Promise<ICourse | undefined> {
+): Promise<CourseParams | undefined> {
   try {
     connectToDatabase();
     let searchQuery: any = {};
     searchQuery.slug = slug;
     const course = await Course.findOne(searchQuery).populate({
       path: "lecture",
+      match: { _destroy: false },
       populate: {
         path: "lessons",
         model: Lesson,
+        match: { _destroy: false },
       },
     });
 

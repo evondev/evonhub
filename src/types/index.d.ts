@@ -38,7 +38,7 @@ export interface UpdateCourseParams {
   path?: string;
   courseSlug?: string;
 }
-export interface CourseParams {
+export interface CourseParams extends Omit<ICourse, "lecture"> {
   lecture: {
     id: string;
     title: string;

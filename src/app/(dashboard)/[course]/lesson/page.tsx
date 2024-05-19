@@ -10,7 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { getAllComments } from "@/lib/actions/comment.action";
-import { getCourseById } from "@/lib/actions/course.action";
+import { getCourseBySlug } from "@/lib/actions/course.action";
 import { getHistoriesByLessonId } from "@/lib/actions/history.action";
 import { getLessonBySlug } from "@/lib/actions/lesson.action";
 import { getUserById } from "@/lib/actions/user.action";
@@ -18,7 +18,11 @@ import { auth } from "@clerk/nextjs/server";
 
 const page = async ({
   searchParams,
+  params,
 }: {
+  params: {
+    course: string;
+  };
   searchParams: {
     slug: string;
   };
@@ -29,9 +33,8 @@ const page = async ({
   if (!mongoUser || mongoUser.status !== "active") return <EmptyData />;
   const lessonDetails = await getLessonBySlug(searchParams.slug);
   if (!lessonDetails) return <PageNotFound />;
-  const courseId = lessonDetails.courseId;
-  const course = await getCourseById(courseId.toString());
-  let videoId = lessonDetails.video;
+  const course = await getCourseBySlug(params.course);
+  const courseId = course?._id.toString();
   const lectures = course?.lecture || [];
   const allLessons = lectures.reduce((acc, item) => {
     return acc.concat(item.lessons);
@@ -41,6 +44,7 @@ const page = async ({
   );
   const nextLesson = allLessons[currentLessonIndex + 1]?.slug;
   const prevLesson = allLessons[currentLessonIndex - 1]?.slug;
+  let videoId = lessonDetails.video;
   const comments = await getAllComments({
     lesson: lessonDetails._id.toString(),
     status: "approved",

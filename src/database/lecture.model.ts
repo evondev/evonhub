@@ -6,6 +6,7 @@ export interface ILecture extends Document {
   lessons: Schema.Types.ObjectId[];
   courseId: Schema.Types.ObjectId;
   order: number;
+  _destroy?: boolean;
   createdAt: Date;
 }
 const lectureSchema = new Schema<ILecture>({
@@ -30,6 +31,10 @@ const lectureSchema = new Schema<ILecture>({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  _destroy: {
+    type: Boolean,
+    default: false,
   },
 });
 const Lecture = models.Lecture || mongoose.model("Lecture", lectureSchema);

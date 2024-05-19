@@ -16,7 +16,10 @@ export async function addLesson(params: CreateLessonParams) {
     if (!findLecture) {
       throw new Error("Lecture not found");
     }
-    const existLessonSlug = await Lesson.findOne({ slug: params.slug });
+    const existLessonSlug = await Lesson.findOne({
+      slug: params.slug,
+      courseId: params.courseId,
+    });
     if (existLessonSlug) {
       throw new Error("Lesson slug already exists");
     }
@@ -38,15 +41,15 @@ export async function deleteLesson({
 }: DeleteLessonParams) {
   try {
     connectToDatabase();
-    const findLecture = await Lecture.findById(lectureId);
-    if (!findLecture) {
-      throw new Error("Không tìm thấy chương học");
-    }
-    await Lesson.findByIdAndDelete(lessonId);
-    findLecture.lessons = findLecture.lessons.filter(
-      (id: string) => id.toString() !== lessonId
-    );
-    await findLecture.save();
+    // const findLecture = await Lecture.findById(lectureId);
+    // if (!findLecture) {
+    //   throw new Error("Không tìm thấy chương học");
+    // }
+    await Lesson.findByIdAndUpdate(lessonId, { _destroy: true });
+    // findLecture.lessons = findLecture.lessons.filter(
+    //   (id: string) => id.toString() !== lessonId
+    // );
+    // await findLecture.save();
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -61,7 +64,7 @@ export async function updateLesson({
     connectToDatabase();
     const allLesson = await Lesson.find();
     const existLessonSlug = allLesson.find(
-      (lesson) => lesson.slug === data.slug
+      (lesson) => lesson.slug === data.slug && lesson.courseId === data.courseId
     );
     if (existLessonSlug && existLessonSlug._id.toString() !== lessonId) {
       return {
@@ -90,7 +93,7 @@ export async function getLessonBySlug(
 ): Promise<ILesson | undefined> {
   try {
     connectToDatabase();
-    const lesson = await Lesson.findOne({ slug });
+    const lesson = await Lesson.findOne({ slug, _destroy: false });
     return lesson;
   } catch (error) {
     console.log(error);
@@ -101,7 +104,7 @@ export async function getLessonByCourseId(
 ): Promise<ILesson[] | undefined> {
   try {
     connectToDatabase();
-    const lessons = await Lesson.find({ courseId });
+    const lessons = await Lesson.find({ courseId, _destroy: false });
     return lessons;
   } catch (error) {
     console.log(error);
@@ -113,7 +116,7 @@ export async function getLessonCount(
   try {
     connectToDatabase();
     // count all lessons in course
-    const count = await Lesson.countDocuments({ courseId });
+    const count = await Lesson.countDocuments({ courseId, _destroy: false });
     return count;
   } catch (error) {
     console.log(error);

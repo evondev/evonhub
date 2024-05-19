@@ -37,6 +37,7 @@ const LessonItemUpdate = ({
   lessonId,
   slug,
   lesson,
+  courseId,
 }: {
   lessonId: string;
   slug: string;
@@ -47,6 +48,7 @@ const LessonItemUpdate = ({
     title: string;
     duration: number;
   };
+  courseId: string;
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const editorRef = useRef(null);
@@ -75,6 +77,7 @@ const LessonItemUpdate = ({
               locale: "vi",
               remove: /[*+~.()'"!:@]/g,
             }),
+          courseId,
         },
       });
       if (res?.type === "error" && res?.message) {

@@ -4,6 +4,7 @@ export interface IRating extends Document {
   user: Schema.Types.ObjectId;
   course: Schema.Types.ObjectId;
   rating: number;
+  content: string;
   createdAt: Date;
 }
 const ratingSchema = new Schema<IRating>({
@@ -22,6 +23,10 @@ const ratingSchema = new Schema<IRating>({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  content: {
+    type: String,
+    required: true,
   },
 });
 const Rating = models.Rating || model("Rating", ratingSchema);
