@@ -18,7 +18,7 @@ export default async function DashboardLayout({
     <AuthProvider
       initialUser={mongoUser ? JSON.parse(JSON.stringify(mongoUser)) : {}}
     >
-      <main className="grid grid-cols-1 xl:width-[calc(100%-300px)] overflow-hidden ml-auto min-h-screen relative items-start">
+      <main className="grid grid-cols-1 xl:w-[calc(100%-300px)] overflow-hidden ml-auto min-h-screen relative items-start">
         <Sidebar role={role}></Sidebar>
         <section className="px-5 lg:px-8 pb-10">
           <Header></Header>
