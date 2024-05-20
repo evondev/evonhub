@@ -57,7 +57,7 @@ export const menuLinks: TMenuLink[] = [
   },
 ];
 export const baseButtonClassName =
-  "rounded-md h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";
+  "rounded-md h-10 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";
 
 export const primaryButtonClassName = `bg-primary text-white gradientPrimary gradientPrimaryHover ${baseButtonClassName}`;
 
@@ -149,26 +149,32 @@ export const courseLevel: Record<ECourseLevel, string> = {
 export const reactions: {
   icon: string;
   value: EReactionType;
+  rating: number;
 }[] = [
   {
     icon: "/reactions/awesome.png",
     value: EReactionType.AWESOME,
+    rating: 5,
   },
   {
     icon: "/reactions/good.png",
     value: EReactionType.GOOD,
+    rating: 4,
   },
   {
     icon: "/reactions/meh.png",
     value: EReactionType.MEH,
+    rating: 3,
   },
   {
     icon: "/reactions/bad.png",
     value: EReactionType.BAD,
+    rating: 2,
   },
   {
     icon: "/reactions/terrible.png",
     value: EReactionType.TERRIBLE,
+    rating: 1,
   },
 ];
 

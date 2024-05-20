@@ -3,6 +3,7 @@ import EmptyData from "@/components/EmptyData";
 import CommentForm from "@/components/comment/CommentForm";
 import LessonItem from "@/components/course/LessonItem";
 import LessonPlayer from "@/components/course/LessonPlayer";
+import RatingForm from "@/components/rating/RatingForm";
 import {
   Accordion,
   AccordionContent,
@@ -72,6 +73,10 @@ const page = async ({
           nextLesson={nextLesson}
           prevLesson={prevLesson}
         ></LessonPlayer>
+        <RatingForm
+          userId={mongoUser._id.toString()}
+          courseId={lessonDetails.courseId.toString()}
+        ></RatingForm>
         <CommentForm
           userId={mongoUser._id.toString()}
           courseId={lessonDetails.courseId.toString()}

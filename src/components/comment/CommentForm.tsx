@@ -19,7 +19,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
-import ReactLesson from "../reaction/ReactLesson";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import CommentItem from "./CommentItem";
@@ -104,11 +103,11 @@ const CommentForm = ({
   };
   return (
     <div className="mt-8">
-      <ReactLesson
+      {/* <ReactLesson
         handleReaction={handleReaction}
         lessonId={lessonId}
         userId={userId}
-      ></ReactLesson>
+      ></ReactLesson> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
           <FormField

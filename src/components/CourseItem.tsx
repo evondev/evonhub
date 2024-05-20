@@ -36,6 +36,7 @@ interface ICourseItemParams {
     }[];
     level: ICourse["level"];
     price: ICourse["price"];
+    rating: ICourse["rating"];
   };
   cta?: string;
   url?: string;
@@ -43,7 +44,6 @@ interface ICourseItemParams {
 const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
   const link = url ? `/${data.slug}${url}` : `/course/${data.slug}`;
   const lectures = data.lecture;
-  console.log("CourseItem ~ lectures:", lectures);
   const totalLessons = lectures?.reduce(
     (acc, cur) => acc + cur?.lessons?.length,
     0
@@ -52,6 +52,8 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
     return acc + cur?.lessons?.reduce((acc, cur) => acc + cur?.duration, 0);
   }, 0);
   const totalHours = Math.floor(totalMinutes / 60) || 0;
+  const rating =
+    data.rating.reduce((acc, cur) => acc + cur, 0) / data.rating.length;
   return (
     <div className=" bg-white rounded-lg dark:bg-grayDark flex flex-col">
       <Link
@@ -84,7 +86,7 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
           </div>
           <div className="flex items-center gap-2">
             <IconStar className="size-4 fill-secondary" />
-            <span>5.0</span>
+            <span>{rating.toFixed(1)}</span>
           </div>
         </div>
         <Link href={link} className="text-xl font-bold mb-5 line-clamp-3 block">
