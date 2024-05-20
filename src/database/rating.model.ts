@@ -18,7 +18,7 @@ const ratingSchema = new Schema<IRating>({
   },
   rating: {
     type: Number,
-    required: true,
+    default: 5,
   },
   createdAt: {
     type: Date,
@@ -26,7 +26,6 @@ const ratingSchema = new Schema<IRating>({
   },
   content: {
     type: String,
-    required: true,
   },
 });
 const Rating = models.Rating || model("Rating", ratingSchema);

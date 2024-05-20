@@ -41,8 +41,13 @@ interface ICourseItemParams {
   url?: string;
 }
 const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
-  const link = `/${data.slug}${url || ""}` || `/course/${data.slug}`;
+  const link = url ? `/${data.slug}${url}` : `/course/${data.slug}`;
   const lectures = data.lecture;
+  console.log("CourseItem ~ lectures:", lectures);
+  const totalLessons = lectures?.reduce(
+    (acc, cur) => acc + cur?.lessons?.length,
+    0
+  );
   const totalMinutes = lectures?.reduce((acc, cur) => {
     return acc + cur?.lessons?.reduce((acc, cur) => acc + cur?.duration, 0);
   }, 0);
@@ -89,7 +94,7 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
           <div className="flex items-center gap-10 text-sm">
             <div className="flex items-center gap-2">
               {IconLecture}
-              <span>{data.lecture.length} Chương</span>
+              <span>{totalLessons || 0} Bài học</span>
             </div>
             <div className="flex items-center gap-2">
               <IconClock />

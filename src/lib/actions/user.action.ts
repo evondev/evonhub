@@ -1,5 +1,7 @@
 "use server";
 import Course from "@/database/course.model";
+import Lecture from "@/database/lecture.model";
+import Lesson from "@/database/lesson.model";
 import User, { IUser } from "@/database/user.model";
 import {
   CreateUserParams,
@@ -80,11 +82,32 @@ export async function getUserById({ userId }: { userId: string }) {
     let user = await User.findOne({ clerkId: userId }).populate({
       model: Course,
       path: "courses",
+      populate: {
+        path: "lecture",
+        model: Lecture,
+        select: "_id",
+        populate: {
+          path: "lessons",
+          model: Lesson,
+          select: "_id",
+        },
+      },
     });
     if (!user) {
       user = await User.findById(userId).populate({
         model: Course,
         path: "courses",
+        populate: {
+          path: "lecture",
+          model: Lecture,
+          select: "_id",
+
+          populate: {
+            path: "lessons",
+            model: Lesson,
+            select: "_id",
+          },
+        },
       });
     }
     return user;

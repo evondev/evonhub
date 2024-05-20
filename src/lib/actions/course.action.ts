@@ -121,6 +121,7 @@ export async function getCourseBySlug(
         match: { _destroy: false },
       },
     });
+    console.log("course ~ course:", course);
 
     return course;
   } catch (error) {

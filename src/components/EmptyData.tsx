@@ -7,8 +7,8 @@ const EmptyData = ({ text }: { text?: string }) => {
       <Image
         alt=""
         src="/content.svg"
-        width={120}
-        height={120}
+        width={50}
+        height={50}
         className="mx-auto mb-5"
       />
       {text ||
