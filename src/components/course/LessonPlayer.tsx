@@ -9,11 +9,9 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen";
 const LessonPlayer = ({
   lessonDetails,
   videoId = "",
-  video = "",
   nextLesson,
   prevLesson,
 }: {
-  video: string;
   lessonDetails: {
     title: string;
     content: string;

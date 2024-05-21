@@ -112,34 +112,20 @@ export async function getCourseBySlug(
     connectToDatabase();
     let searchQuery: any = {};
     searchQuery.slug = slug;
-    const course = await Course.findOne(searchQuery).populate({
-      path: "lecture",
-      match: { _destroy: false },
-      populate: {
-        path: "lessons",
-        model: Lesson,
+    const course = await Course.findOne(searchQuery)
+      .select("title info desc level views intro image")
+      .populate({
+        path: "lecture",
+        select: "title",
         match: { _destroy: false },
-      },
-    });
-    console.log("course ~ course:", course);
+        populate: {
+          path: "lessons",
+          select: "title duration",
+          model: Lesson,
+          match: { _destroy: false },
+        },
+      });
 
-    return course;
-  } catch (error) {
-    console.log("error:", error);
-  }
-}
-export async function getCourseById(
-  id: string
-): Promise<CourseParams | undefined> {
-  try {
-    connectToDatabase();
-    const course = await Course.findById(id).populate({
-      path: "lecture",
-      populate: {
-        path: "lessons",
-        model: Lesson,
-      },
-    });
     return course;
   } catch (error) {
     console.log("error:", error);
@@ -166,7 +152,9 @@ export async function getAllCoursesUser(
     if (findUser && findUser?.role !== Role.ADMIN) {
       searchQuery.author = findUser._id;
     }
-    const courses = await Course.find(searchQuery);
+    const courses = (await Course.find(searchQuery)
+      .select("title slug image createdAt status price _id")
+      .lean()) as any;
     return courses;
   } catch (error) {}
 }
@@ -179,14 +167,9 @@ export async function getAllCourses(
     if (params.status) {
       searchQuery.status = params.status;
     }
-    const courses = await Course.find(searchQuery).populate({
-      path: "lecture",
-      model: Lecture,
-      populate: {
-        path: "lessons",
-        model: Lesson,
-      },
-    });
+    const courses = (await Course.find(searchQuery)
+      .select("title slug image level rating price")
+      .lean()) as any;
     return courses;
   } catch (error) {}
 }

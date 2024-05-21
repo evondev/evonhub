@@ -1,7 +1,6 @@
 import {
   IconComment,
   IconCourseManage,
-  IconCube,
   IconPlay,
   IconStudy,
   IconUser,
@@ -16,12 +15,12 @@ import {
 } from "@/types/enums";
 
 export const menuLinks: TMenuLink[] = [
-  {
-    title: "Overview",
-    icon: <IconCube></IconCube>,
-    url: "/admin/overview",
-    isAdmin: true,
-  },
+  // {
+  //   title: "Overview",
+  //   icon: <IconCube></IconCube>,
+  //   url: "/admin/overview",
+  //   isAdmin: true,
+  // },
   {
     title: "Khu vực học tập",
     icon: <IconStudy></IconStudy>,
@@ -55,9 +54,14 @@ export const menuLinks: TMenuLink[] = [
     icon: <IconUser></IconUser>,
     url: "/profile",
   },
+  {
+    title: "evondev",
+    icon: <IconUser></IconUser>,
+    url: "/evondev",
+  },
 ];
 export const baseButtonClassName =
-  "rounded-md h-10 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";
+  "rounded-md h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";
 
 export const primaryButtonClassName = `bg-primary text-white gradientPrimary gradientPrimaryHover ${baseButtonClassName}`;
 

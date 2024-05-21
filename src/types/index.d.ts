@@ -83,7 +83,6 @@ export interface ICommentParams {
 }
 export interface CreateCommentParams {
   content: string;
-  user: string;
   course: string;
   path?: string;
   lesson: string;

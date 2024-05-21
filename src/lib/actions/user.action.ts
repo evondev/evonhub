@@ -1,7 +1,5 @@
 "use server";
 import Course from "@/database/course.model";
-import Lecture from "@/database/lecture.model";
-import Lesson from "@/database/lesson.model";
 import User, { IUser } from "@/database/user.model";
 import {
   CreateUserParams,
@@ -79,37 +77,7 @@ export async function getUserById({ userId }: { userId: string }) {
   try {
     connectToDatabase();
     if (!userId) return undefined;
-    let user = await User.findOne({ clerkId: userId }).populate({
-      model: Course,
-      path: "courses",
-      populate: {
-        path: "lecture",
-        model: Lecture,
-        select: "_id",
-        populate: {
-          path: "lessons",
-          model: Lesson,
-          select: "_id",
-        },
-      },
-    });
-    if (!user) {
-      user = await User.findById(userId).populate({
-        model: Course,
-        path: "courses",
-        populate: {
-          path: "lecture",
-          model: Lecture,
-          select: "_id",
-
-          populate: {
-            path: "lessons",
-            model: Lesson,
-            select: "_id",
-          },
-        },
-      });
-    }
+    let user = (await User.findOne({ clerkId: userId }).lean()) as any;
     return user;
   } catch (error) {
     console.log(error);
@@ -147,9 +115,13 @@ export async function getAllUsers(
       ];
       limit = 5000;
     }
-    const users = await User.find(query).skip(skipAmount).limit(limit).sort({
-      joinedAt: -1,
-    });
+    const users = await User.find(query)
+      .select("avatar name username status createdAt email")
+      .skip(skipAmount)
+      .limit(limit)
+      .sort({
+        createdAt: -1,
+      });
     const totalUsers = await User.countDocuments(query);
     const isNext = totalUsers > skipAmount + users.length;
     return {

@@ -1,16 +1,21 @@
 "use server";
 import History from "@/database/history.model";
 import { connectToDatabase } from "../mongoose";
+interface IHistoryLesson {
+  lesson: string;
+}
 export async function getHistoriesByLessonId({
   lessonId,
 }: {
   lessonId: string;
-}) {
+}): Promise<IHistoryLesson[] | undefined> {
   try {
     connectToDatabase();
-    const histories = await History.find({
+    const histories = (await History.find({
       lesson: lessonId,
-    });
+    })
+      .select("lesson")
+      .lean()) as any;
     return histories;
   } catch (error) {
     console.log("error:", error);

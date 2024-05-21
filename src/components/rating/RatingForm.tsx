@@ -14,6 +14,7 @@ import {
 } from "@/constants";
 import createRating from "@/lib/actions/rating.action";
 import { cn } from "@/lib/utils";
+import { useGlobalStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useState } from "react";
@@ -35,13 +36,8 @@ const ratingSchema = z.object({
     message: "Nội dung phải có ít nhất 5 ký tự",
   }),
 });
-const RatingForm = ({
-  userId,
-  courseId,
-}: {
-  userId: string;
-  courseId: string;
-}) => {
+const RatingForm = ({ courseId }: { courseId: string }) => {
+  const { currentUser } = useGlobalStore();
   const [rating, setRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
@@ -65,7 +61,7 @@ const RatingForm = ({
         rate: rating,
         content: values.content,
         courseId,
-        userId,
+        userId: currentUser?._id,
         path: `/`,
       });
       if (res?.message) {

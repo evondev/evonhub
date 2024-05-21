@@ -12,7 +12,6 @@ const CommentItem = ({
 }: {
   comment: ICommentParams;
   data: {
-    userId: string;
     courseId: string;
     lessonId: string;
     path: string;
