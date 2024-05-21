@@ -113,7 +113,7 @@ export async function getCourseBySlug(
     let searchQuery: any = {};
     searchQuery.slug = slug;
     const course = await Course.findOne(searchQuery)
-      .select("title info desc level views intro image")
+      .select("title info desc level views intro image price salePrice")
       .populate({
         path: "lecture",
         select: "title",
