@@ -1,7 +1,6 @@
 import {
   IconComment,
   IconCourseManage,
-  IconCube,
   IconPlay,
   IconStudy,
   IconUser,
@@ -16,12 +15,12 @@ import {
 } from "@/types/enums";
 
 export const menuLinks: TMenuLink[] = [
-  {
-    title: "Overview",
-    icon: <IconCube></IconCube>,
-    url: "/admin/overview",
-    isAdmin: true,
-  },
+  // {
+  //   title: "Overview",
+  //   icon: <IconCube></IconCube>,
+  //   url: "/admin/overview",
+  //   isAdmin: true,
+  // },
   {
     title: "Khu vực học tập",
     icon: <IconStudy></IconStudy>,

@@ -7,6 +7,7 @@ import {
   ReplyCommentParams,
   UpdateCommentParams,
 } from "@/types";
+import { Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -38,6 +39,9 @@ export async function getAllComments(params: GetAllCommentsParams) {
     }
     if (params.status) {
       query.status = params.status;
+    }
+    if (![Role.ADMIN].includes(findUser?.role)) {
+      query.user = findUser._id;
     }
     const comments = (await Comment.find(query)
       .populate({

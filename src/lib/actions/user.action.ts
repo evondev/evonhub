@@ -115,9 +115,13 @@ export async function getAllUsers(
       ];
       limit = 5000;
     }
-    const users = await User.find(query).skip(skipAmount).limit(limit).sort({
-      joinedAt: -1,
-    });
+    const users = await User.find(query)
+      .select("avatar name username status createdAt email")
+      .skip(skipAmount)
+      .limit(limit)
+      .sort({
+        createdAt: -1,
+      });
     const totalUsers = await User.countDocuments(query);
     const isNext = totalUsers > skipAmount + users.length;
     return {

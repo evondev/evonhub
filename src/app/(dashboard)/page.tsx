@@ -3,6 +3,7 @@ import Dashboard from "@/pages/Dashboard";
 
 async function Home() {
   const data = (await getUserStudyCourse()) || [];
+  if (!data || !data.courses || !data.lessons) return null;
   const courseList = JSON.parse(JSON.stringify(data.courses));
   const lessonList = JSON.parse(JSON.stringify(data.lessons));
 
