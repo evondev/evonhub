@@ -1,4 +1,5 @@
 "use server";
+import Course from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson, { ILesson } from "@/database/lesson.model";
 import {
@@ -89,20 +90,18 @@ export async function getLessonsByLectureId(lectureId: string) {
     console.log(error);
   }
 }
-export async function getLessonBySlug(
-  slug: string,
-  course?: string
-): Promise<ILesson | undefined> {
+export async function getLessonBySlug(slug: string, course?: string) {
   try {
     connectToDatabase();
     const query: FilterQuery<typeof Lesson> = {
       slug,
       _destroy: false,
     };
-    if (course) {
-      query.courseId = course;
-    }
-    const lesson = await Lesson.findOne(query);
+    const findCourse = await Course.findOne({ slug: course });
+    if (findCourse) query.courseId = findCourse._id.toString();
+    const lesson = (await Lesson.findOne(query)
+      .select("title content video courseId lectureId")
+      .lean()) as ILesson;
     return lesson;
   } catch (error) {
     console.log(error);
@@ -137,6 +136,26 @@ export async function getCourseIdByLesson(slug: string) {
     const lesson = await Lesson.findOne({ slug });
     if (!lesson) return;
     return lesson.courseId;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function getAllLessonByCourseId(courseId: string) {
+  try {
+    connectToDatabase();
+    const lesson = await Lesson.find({ courseId }).select("title slug");
+    if (!lesson) return [];
+    return lesson;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function getAllLectureByCourseId(courseId: string) {
+  try {
+    connectToDatabase();
+    const lecture = await Lecture.find({ courseId }).select("title slug");
+    if (!lecture) return [];
+    return lecture;
   } catch (error) {
     console.log(error);
   }

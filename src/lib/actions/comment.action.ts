@@ -1,7 +1,5 @@
 "use server";
 import Comment from "@/database/comment.model";
-import Course from "@/database/course.model";
-import Lesson from "@/database/lesson.model";
 import User from "@/database/user.model";
 import {
   CreateCommentParams,
@@ -9,7 +7,6 @@ import {
   ReplyCommentParams,
   UpdateCommentParams,
 } from "@/types";
-import { Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -17,7 +14,13 @@ import { connectToDatabase } from "../mongoose";
 export async function createComment(params: CreateCommentParams) {
   try {
     connectToDatabase();
-    await Comment.create(params);
+    const { userId } = auth();
+    const findUser = await User.findOne({ clerkId: userId });
+    if (!findUser) return;
+    await Comment.create({
+      ...params,
+      user: findUser._id,
+    });
     revalidatePath(params.path || "/");
   } catch (error) {
     console.log(error);
@@ -36,22 +39,14 @@ export async function getAllComments(params: GetAllCommentsParams) {
     if (params.status) {
       query.status = params.status;
     }
-    if (findUser && findUser?.role !== Role.ADMIN) {
-      query.user = findUser._id.toString();
-    }
-    const comments = await Comment.find(query)
+    const comments = (await Comment.find(query)
       .populate({
         path: "user",
         model: User,
+        select: "username avatar",
       })
-      .populate({
-        path: "lesson",
-        model: Lesson,
-      })
-      .populate({
-        path: "course",
-        model: Course,
-      });
+      .lean()) as any;
+
     return comments;
   } catch (error) {
     console.log(error);

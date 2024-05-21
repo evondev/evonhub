@@ -3,7 +3,7 @@ import { ICourse } from "@/database/course.model";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { IconClock, IconLevel, IconStar } from "./icons";
+import { IconLevel, IconStar } from "./icons";
 
 const IconLecture = (
   <svg
@@ -26,14 +26,6 @@ interface ICourseItemParams {
     title: string;
     slug: string;
     image: string;
-    createdAt: Date;
-    lecture: {
-      title: string;
-      lessons: {
-        title: string;
-        duration: number;
-      }[];
-    }[];
     level: ICourse["level"];
     price: ICourse["price"];
     rating: ICourse["rating"];
@@ -43,26 +35,12 @@ interface ICourseItemParams {
 }
 const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
   const link = url ? `/${data.slug}${url}` : `/course/${data.slug}`;
-  const lectures = data.lecture;
-  const totalLessons = lectures?.reduce(
-    (acc, cur) => acc + cur?.lessons?.length,
-    0
-  );
-  const totalMinutes = lectures?.reduce((acc, cur) => {
-    return acc + cur?.lessons?.reduce((acc, cur) => acc + cur?.duration, 0);
-  }, 0);
-  const totalHours = Math.floor(totalMinutes / 60) || 0;
   const rating =
-    data.rating.reduce((acc, cur) => acc + cur, 0) / data.rating.length;
+    data?.rating?.reduce((acc, cur) => acc + cur, 0) / data?.rating?.length ||
+    5.0;
   return (
-    <div className=" bg-white rounded-lg dark:bg-grayDark flex flex-col">
-      <Link
-        href={link}
-        className="relative h-[200px] block group rounded-xl"
-        style={{
-          transform: "translate3d(0, 0, 0) translateZ(0)",
-        }}
-      >
+    <div className=" bg-white rounded-lg dark:bg-grayDark flex flex-col hover:shadow transition-all">
+      <Link href={link} className="relative h-[180px] block group rounded-xl">
         <Image
           src={data.image}
           fill
@@ -71,15 +49,9 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
           className="w-full h-full object-cover rounded-t-xl transition-all"
           sizes="400px"
         ></Image>
-        {new Date(data.createdAt).getTime() >
-          new Date().getTime() - 7 * 24 * 60 * 60 * 1000 && (
-          <span className="absolute right-5 top-5 z-10 text-white inline-flex px-3 py-1 rounded-full bg-green-500 text-xs font-semibold">
-            Mới ra mắt
-          </span>
-        )}
       </Link>
       <div className="p-5 flex-1 flex flex-col">
-        <div className="flex items-center justify-between mb-5 text-sm font-medium">
+        <div className="flex items-center justify-between mb-3 text-sm font-medium">
           <div className="flex items-center gap-2">
             <IconLevel />
             <span>{courseLevel[data.level]}</span>
@@ -93,17 +65,6 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
           {data.title}
         </Link>
         <div className="mt-auto flex flex-col gap-8">
-          <div className="flex items-center gap-10 text-sm">
-            <div className="flex items-center gap-2">
-              {IconLecture}
-              <span>{totalLessons || 0} Bài học</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <IconClock />
-              <span>{totalHours} Giờ học</span>
-            </div>
-          </div>
-
           <div className="font-bold text-secondary text-base">
             {formatThoundsand(data.price)} VNĐ
           </div>

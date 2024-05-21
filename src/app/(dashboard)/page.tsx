@@ -1,26 +1,11 @@
-import { getLessonByCourseId } from "@/lib/actions/lesson.action";
-import { getUserById } from "@/lib/actions/user.action";
+import { getUserStudyCourse } from "@/lib/actions/general.action";
 import Dashboard from "@/pages/Dashboard";
-import { auth } from "@clerk/nextjs/server";
 
 async function Home() {
-  const { userId } = auth();
-  if (!userId) return null;
-  const mongoUser = await getUserById({ userId });
-  if (!mongoUser) return null;
-  const courses = JSON.parse(JSON.stringify(mongoUser.courses));
-  const allPromise = Promise.all(
-    courses.map(async (item: any) => {
-      return getLessonByCourseId(item._id);
-    })
-  );
-  const lessons = await allPromise;
+  const data = (await getUserStudyCourse()) || [];
+  const courseList = JSON.parse(JSON.stringify(data.courses));
+  const lessonList = JSON.parse(JSON.stringify(data.lessons));
 
-  return (
-    <Dashboard
-      lessons={lessons[0] ? JSON.parse(JSON.stringify(lessons[0])) : []}
-      courses={courses}
-    ></Dashboard>
-  );
+  return <Dashboard lessons={lessonList} courses={courseList}></Dashboard>;
 }
 export default Home;

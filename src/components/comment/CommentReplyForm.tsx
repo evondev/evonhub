@@ -26,7 +26,6 @@ const CommentReplyForm = ({
   data,
 }: {
   data: {
-    userId: string;
     courseId: string;
     lessonId: string;
     commentId: string;
@@ -47,7 +46,6 @@ const CommentReplyForm = ({
     try {
       await createComment({
         content: values.content,
-        user: data.userId,
         course: data.courseId,
         lesson: data.lessonId,
         path: data.path,

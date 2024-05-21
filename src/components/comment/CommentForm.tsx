@@ -9,10 +9,8 @@ import {
 } from "@/components/ui/form";
 import { primaryButtonClassName } from "@/constants";
 import { createComment } from "@/lib/actions/comment.action";
-import { createReaction } from "@/lib/actions/reaction.action";
 import { cn } from "@/lib/utils";
 import { ICommentParams } from "@/types";
-import { EReactionType } from "@/types/enums";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -45,12 +43,10 @@ const IconSend = (
   </svg>
 );
 const CommentForm = ({
-  userId,
   courseId,
   comments,
   lessonId,
 }: {
-  userId: string;
   courseId: string;
   comments: ICommentParams[];
   lessonId: string;
@@ -71,7 +67,6 @@ const CommentForm = ({
     try {
       await createComment({
         content: values.content,
-        user: userId,
         course: courseId,
         lesson: lessonId,
         path,
@@ -85,29 +80,8 @@ const CommentForm = ({
     }
   }
 
-  const handleReaction = async (reaction: EReactionType) => {
-    try {
-      const res = await createReaction({
-        type: reaction,
-        userId,
-        lessonId,
-        path: `/lesson?slug=${searchParams?.get("slug")}`,
-      });
-      if (res?.type === "error") {
-        return toast.error(res.message);
-      }
-      toast.success(`Bạn đã đánh giá ${reaction} cho bài học này`);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <div className="mt-8">
-      {/* <ReactLesson
-        handleReaction={handleReaction}
-        lessonId={lessonId}
-        userId={userId}
-      ></ReactLesson> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
           <FormField
@@ -148,7 +122,6 @@ const CommentForm = ({
                 <CommentItem
                   comment={comment}
                   data={{
-                    userId,
                     courseId,
                     lessonId,
                     path,
@@ -161,7 +134,6 @@ const CommentForm = ({
                       key={reply._id.toString()}
                       comment={reply}
                       data={{
-                        userId,
                         courseId,
                         lessonId,
                         path,

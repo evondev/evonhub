@@ -179,14 +179,9 @@ export async function getAllCourses(
     if (params.status) {
       searchQuery.status = params.status;
     }
-    const courses = await Course.find(searchQuery).populate({
-      path: "lecture",
-      model: Lecture,
-      populate: {
-        path: "lessons",
-        model: Lesson,
-      },
-    });
+    const courses = (await Course.find(searchQuery)
+      .select("title slug image level rating price")
+      .lean()) as any;
     return courses;
   } catch (error) {}
 }
