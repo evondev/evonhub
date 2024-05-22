@@ -19,10 +19,10 @@ const page = async ({
   const slug = params.slug;
   await udpateCourseViews(slug);
   const courseDetails = await getCourseBySlug(slug);
+  if (!courseDetails) return <PageNotFound />;
   const { userId } = auth();
   const mongoUser = await getUserById({ userId: userId || "" });
   const role = mongoUser?.role;
-  if (!courseDetails) return <PageNotFound />;
   if (
     mongoUser?._id?.toString() !== courseDetails?.author?.toString() &&
     ![Role.ADMIN].includes(role) &&

@@ -1,6 +1,7 @@
 import PageNotFound from "@/app/not-found";
 import {
   IconClock,
+  IconCube,
   IconLevel,
   IconPlay,
   IconStudy,
@@ -25,6 +26,25 @@ import { cn } from "@/lib/utils";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
+
+const techStack = [
+  "NextJS14",
+  "Typescript",
+  "TailwindCSS",
+  "Shadcn",
+  "Clerk",
+  "Mongoose",
+  "Git",
+  "Github",
+  "React hook form",
+  "Toastify",
+  "Uploadthing",
+  "Player",
+  "TinyMCE",
+  "Sweetalert",
+  "Zustand",
+  "And more...",
+];
 
 const CourseDetailsPage = ({
   data,
@@ -86,6 +106,21 @@ const CourseDetailsPage = ({
               {data.desc}
             </p>
           </div>
+          {data.slug.includes("nextjs") && (
+            <div className="flex flex-col gap-5">
+              <h2 className="text-xl font-bold">Công nghệ sử dụng</h2>
+              <div className="flex flex-wrap gap-4 text-sm">
+                {techStack.map((item, index) => (
+                  <div className="flex items-center gap-2" key={item}>
+                    <div className="size-5 text-primary">
+                      <IconCube />
+                    </div>
+                    <span className="font-semibold">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Chi tiết</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
@@ -137,23 +172,25 @@ const CourseDetailsPage = ({
 
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Q/A</h2>
-            {data.info.qa.map((item, index) => (
-              <Accordion
-                type="single"
-                collapsible
-                className="w-full"
-                key={item.question}
-              >
-                <AccordionItem value="item-1">
-                  <AccordionTrigger className="font-semibold mb-2">
-                    {item.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="font-medium bg-white rounded-lg dark:bg-grayDarker  dark:text-text5">
-                    {item.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            ))}
+            <div className="flex flex-col gap-3">
+              {data.info.qa.map((item, index) => (
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="w-full"
+                  key={item.question}
+                >
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger className="font-semibold mb-2">
+                      {item.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="font-medium bg-white rounded-lg dark:bg-grayDarker  dark:text-text5">
+                      {item.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -210,7 +247,7 @@ const CourseDetailsPage = ({
           <Link
             href={data.ctaLink || "#"}
             target={data.ctaLink ? "_blank" : "_self"}
-            className={cn(primaryButtonClassName, "w-full")}
+            className={cn(primaryButtonClassName, "w-full bg-secondary")}
           >
             {data.cta || "Đăng ký ngay"}
           </Link>

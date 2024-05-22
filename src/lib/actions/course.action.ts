@@ -169,7 +169,7 @@ export async function getAllCourses(
       searchQuery.status = params.status;
     }
     const courses = (await Course.find(searchQuery)
-      .select("title slug image level rating price")
+      .select("title slug image level rating price salePrice")
       .lean()) as any;
     return courses;
   } catch (error) {}

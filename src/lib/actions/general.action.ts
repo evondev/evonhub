@@ -28,7 +28,7 @@ export async function getUserStudyCourse(): Promise<any | undefined> {
       },
       {
         $lookup: {
-          from: "courses", // tên collection của Course
+          from: "courses",
           localField: "courses",
           foreignField: "_id",
           as: "courses",
@@ -44,6 +44,7 @@ export async function getUserStudyCourse(): Promise<any | undefined> {
                 rating: 1,
                 level: 1,
                 price: 1,
+                salePrice: 1,
               },
             },
           ],

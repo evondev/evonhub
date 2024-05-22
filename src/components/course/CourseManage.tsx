@@ -142,7 +142,6 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                     <>
                       <Link
                         href={`/admin/course/update?slug=${course.slug}`}
-                        target="_blank"
                         className={cn(actionClassName)}
                       >
                         <IconEdit></IconEdit>

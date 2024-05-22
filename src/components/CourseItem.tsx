@@ -1,10 +1,11 @@
 import { courseLevel } from "@/constants";
 import { ICourse } from "@/database/course.model";
+import { cn } from "@/lib/utils";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { IconLevel, IconStar } from "./icons";
+import { IconLevel, IconLongArrowRight, IconStar } from "./icons";
 import CourseItemWrapperSkeleton from "./loading/CourseItemWrapperSkeleton";
 
 const IconLecture = (
@@ -31,6 +32,8 @@ interface ICourseItemParams {
     level: ICourse["level"];
     price: ICourse["price"];
     rating: ICourse["rating"];
+    salePrice: number;
+    lecture: any[];
   };
   cta?: string;
   url?: string;
@@ -42,38 +45,52 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
     5.0;
   return (
     <Suspense fallback={<CourseItemWrapperSkeleton />}>
-      <div className=" bg-white rounded-lg dark:bg-grayDark flex flex-col hover:shadow transition-all">
-        <Link href={link} className="relative h-[180px] block group rounded-xl">
+      <div className=" bg-white rounded-lg dark:bg-grayDark flex flex-col hover:shadow transition-all relative group">
+        <Link href={link} className="absolute inset-0 z-10"></Link>
+        <div className="relative h-[180px] block group rounded-xl p-2">
           <Image
             src={data.image}
-            fill
             priority
             alt=""
-            className="w-full h-full object-cover rounded-t-xl transition-all"
+            width={800}
+            height={360}
+            className="w-full h-full object-cover rounded-md transition-all"
             sizes="400px"
           ></Image>
-        </Link>
+        </div>
         <div className="p-5 flex-1 flex flex-col">
           <div className="flex items-center justify-between mb-3 text-sm font-medium">
             <div className="flex items-center gap-2">
               <IconLevel />
-              <span>{courseLevel[data.level]}</span>
+              <span>Trình độ - {courseLevel[data.level]}</span>
             </div>
             <div className="flex items-center gap-2">
               <IconStar className="size-4 fill-secondary" />
-              <span>{rating.toFixed(1)}</span>
+              <span>Đánh giá - {rating.toFixed(1)}</span>
             </div>
           </div>
-          <Link
-            href={link}
-            className="text-xl font-bold mb-5 line-clamp-3 block"
-          >
+          <h3 className="text-xl font-extrabold mb-5 line-clamp-3 block">
             {data.title}
-          </Link>
-          <div className="mt-auto flex flex-col gap-8">
-            <div className="font-bold text-secondary text-base">
-              {formatThoundsand(data.price)} VNĐ
+          </h3>
+          <div className="mt-auto flex ">
+            <div className="flex items-center gap-2 text-sm">
+              <div className="font-bold text-secondary">
+                {formatThoundsand(data.price)} VNĐ
+              </div>
+              <div className=" text-slate-400 line-through">
+                {formatThoundsand(data.salePrice)} VNĐ
+              </div>
             </div>
+            <button
+              type="button"
+              className={cn(
+                "size-10 bg-primary rounded-lg ml-auto flex items-center justify-center text-white group p-1"
+              )}
+            >
+              <div className="transition-all group-hover:translate-x-[2px]">
+                <IconLongArrowRight />
+              </div>
+            </button>
           </div>
         </div>
       </div>
