@@ -105,7 +105,7 @@ const CommentForm = ({
               isLoading={isSubmitting}
               className={cn(
                 primaryButtonClassName,
-                "group w-[120px] gap-2 group"
+                "group w-[125px] gap-2 group"
               )}
             >
               Gửi {IconSend}

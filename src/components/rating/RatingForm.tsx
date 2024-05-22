@@ -82,7 +82,7 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
         <DialogTrigger
           className={cn(
             baseButtonClassName,
-            "bg-secondary text-white gap-2 flex ml-auto"
+            "bg-secondary text-white gap-2 flex ml-auto w-[125px]"
           )}
           onClick={() => setOpen(true)}
         >
