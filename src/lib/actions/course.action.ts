@@ -62,13 +62,12 @@ export async function updateCourse({
         message: "Đường dẫn này đã tồn tại!",
       };
     }
+
     if (findUser?.role !== Role.ADMIN) {
       delete updateData.status;
     }
 
-    await Course.findOneAndUpdate({ slug }, updateData, {
-      new: true,
-    });
+    await Course.findOneAndUpdate({ slug }, updateData);
 
     revalidatePath(path || `/admin/course/update?slug=${slug}`);
   } catch (error) {
@@ -113,7 +112,9 @@ export async function getCourseBySlug(
     let searchQuery: any = {};
     searchQuery.slug = slug;
     const course = await Course.findOne(searchQuery)
-      .select("title info desc level views intro image price salePrice")
+      .select(
+        "title info desc level views intro image price salePrice status slug cta ctaLink"
+      )
       .populate({
         path: "lecture",
         select: "title",

@@ -12,7 +12,7 @@ const Dashboard = ({
   return (
     <div>
       <h1 className="text-3xl font-extrabold mb-8">Khu vực học tập</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-10">
         {courses.length > 0 &&
           courses?.map((course, index) => (
             <CourseItem

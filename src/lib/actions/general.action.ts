@@ -12,16 +12,52 @@ export async function getUserStudyCourse(): Promise<any | undefined> {
     connectToDatabase();
     const { userId } = auth();
     if (!userId) return [];
-    const user = (await User.findOne({ clerkId: userId })
-      .select("courses")
-      .populate({
-        path: "courses",
-        model: "Course",
-        select: "title slug image rating level price",
-        match: { status: ECourseStatus.APPROVED },
-      })
-      .lean()) as any;
-    const courses = user.courses;
+
+    // const user = (await User.findOne({ clerkId: userId })
+    //   .select("courses")
+    //   .populate({
+    //     path: "courses",
+    //     model: "Course",
+    //     select: "title slug image rating level price",
+    //     match: { status: ECourseStatus.APPROVED },
+    //   })
+    //   .lean()) as any;
+    const user = (await User.aggregate([
+      {
+        $match: { clerkId: userId },
+      },
+      {
+        $lookup: {
+          from: "courses", // tên collection của Course
+          localField: "courses",
+          foreignField: "_id",
+          as: "courses",
+          pipeline: [
+            {
+              $match: { status: ECourseStatus.APPROVED },
+            },
+            {
+              $project: {
+                title: 1,
+                slug: 1,
+                image: 1,
+                rating: 1,
+                level: 1,
+                price: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          courses: 1,
+        },
+      },
+    ]).exec()) as any;
+    // const startTime = new Date().getTime();
+    // const endTime = new Date().getTime() - startTime;
+    const courses = user[0].courses;
     const allPromise = Promise.all(
       courses.map(async (item: any) => {
         return Lesson.find({ courseId: item._id }).select("slug").lean();
