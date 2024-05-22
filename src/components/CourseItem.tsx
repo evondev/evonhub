@@ -3,7 +3,9 @@ import { ICourse } from "@/database/course.model";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { IconLevel, IconStar } from "./icons";
+import CourseItemWrapperSkeleton from "./loading/CourseItemWrapperSkeleton";
 
 const IconLecture = (
   <svg
@@ -39,38 +41,43 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
     data?.rating?.reduce((acc, cur) => acc + cur, 0) / data?.rating?.length ||
     5.0;
   return (
-    <div className=" bg-white rounded-lg dark:bg-grayDark flex flex-col hover:shadow transition-all">
-      <Link href={link} className="relative h-[180px] block group rounded-xl">
-        <Image
-          src={data.image}
-          fill
-          priority
-          alt=""
-          className="w-full h-full object-cover rounded-t-xl transition-all"
-          sizes="400px"
-        ></Image>
-      </Link>
-      <div className="p-5 flex-1 flex flex-col">
-        <div className="flex items-center justify-between mb-3 text-sm font-medium">
-          <div className="flex items-center gap-2">
-            <IconLevel />
-            <span>{courseLevel[data.level]}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <IconStar className="size-4 fill-secondary" />
-            <span>{rating.toFixed(1)}</span>
-          </div>
-        </div>
-        <Link href={link} className="text-xl font-bold mb-5 line-clamp-3 block">
-          {data.title}
+    <Suspense fallback={<CourseItemWrapperSkeleton />}>
+      <div className=" bg-white rounded-lg dark:bg-grayDark flex flex-col hover:shadow transition-all">
+        <Link href={link} className="relative h-[180px] block group rounded-xl">
+          <Image
+            src={data.image}
+            fill
+            priority
+            alt=""
+            className="w-full h-full object-cover rounded-t-xl transition-all"
+            sizes="400px"
+          ></Image>
         </Link>
-        <div className="mt-auto flex flex-col gap-8">
-          <div className="font-bold text-secondary text-base">
-            {formatThoundsand(data.price)} VNĐ
+        <div className="p-5 flex-1 flex flex-col">
+          <div className="flex items-center justify-between mb-3 text-sm font-medium">
+            <div className="flex items-center gap-2">
+              <IconLevel />
+              <span>{courseLevel[data.level]}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <IconStar className="size-4 fill-secondary" />
+              <span>{rating.toFixed(1)}</span>
+            </div>
+          </div>
+          <Link
+            href={link}
+            className="text-xl font-bold mb-5 line-clamp-3 block"
+          >
+            {data.title}
+          </Link>
+          <div className="mt-auto flex flex-col gap-8">
+            <div className="font-bold text-secondary text-base">
+              {formatThoundsand(data.price)} VNĐ
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Suspense>
   );
 };
 
