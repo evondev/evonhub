@@ -14,6 +14,7 @@ export interface ILesson extends Document {
   lectureId: Schema.Types.ObjectId;
   views: number;
   createdAt: Date;
+  assetId?: string;
   _destroy?: boolean;
 }
 const lessonSchema = new Schema<ILesson>({
@@ -59,6 +60,9 @@ const lessonSchema = new Schema<ILesson>({
   views: {
     type: Number,
     default: 0,
+  },
+  assetId: {
+    type: String,
   },
   createdAt: {
     type: Date,

@@ -1,4 +1,5 @@
 import { ICourse } from "@/database/course.model";
+import { ILesson } from "@/database/lesson.model";
 import { IUser } from "@/database/user.model";
 import { ECommonStatus, EReactionType, EUserStatus } from "@/types/enums";
 

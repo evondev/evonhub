@@ -27,6 +27,7 @@ const formSchema = z.object({
   slug: z.string().optional(),
   title: z.string().optional(),
   duration: z.number().optional(),
+  assetId: z.string().optional(),
 });
 const btnClassName =
   "text-sm py-2 px-3 h-10 rounded-md font-semibold w-[100px] flex items-center justify-center";
@@ -44,6 +45,7 @@ const LessonItemUpdate = ({
     slug: string;
     title: string;
     duration: number;
+    assetId?: string;
   };
   course: {
     id: string;
@@ -60,6 +62,7 @@ const LessonItemUpdate = ({
       slug: lesson.slug,
       title: lesson.title,
       duration: lesson.duration,
+      assetId: lesson.assetId,
     },
   });
   async function onSubmitLesson(values: z.infer<typeof formSchema>) {
@@ -77,7 +80,7 @@ const LessonItemUpdate = ({
               locale: "vi",
               remove: /[*+~.()'"!:@]/g,
             }),
-          courseId: course.id,
+          courseId: course.id as any,
         },
       });
       if (res?.type === "error" && res?.message) {
@@ -125,6 +128,23 @@ const LessonItemUpdate = ({
                   type="text"
                   className="bgDarkestMode"
                   placeholder="Video Id"
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="assetId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Asset Id</FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  className="bgDarkestMode"
+                  placeholder="Asset Id"
                   {...field}
                 />
               </FormControl>

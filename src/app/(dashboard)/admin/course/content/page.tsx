@@ -1,6 +1,6 @@
 import PageNotFound from "@/app/not-found";
 import CourseContent from "@/components/course/CourseContent";
-import { getCourseBySlug } from "@/lib/actions/course.action";
+import { getCourseUpdateOutline } from "@/lib/actions/admin.action";
 
 const page = async ({
   searchParams,
@@ -10,7 +10,7 @@ const page = async ({
   };
 }) => {
   const slug = searchParams.slug;
-  const findCourse = await getCourseBySlug(slug);
+  const findCourse = await getCourseUpdateOutline(slug);
   if (!findCourse?.slug) return <PageNotFound></PageNotFound>;
   return (
     <CourseContent
