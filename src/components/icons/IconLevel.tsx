@@ -1,4 +1,6 @@
-const IconLevel = () => {
+import { ComponentProps } from "react";
+
+const IconLevel = (props: ComponentProps<"svg">) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,6 +9,7 @@ const IconLevel = () => {
       strokeWidth={1.5}
       stroke="currentColor"
       className="size-4"
+      {...props}
     >
       <path
         strokeLinecap="round"

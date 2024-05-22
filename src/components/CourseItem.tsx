@@ -61,12 +61,12 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
         <div className="p-5 flex-1 flex flex-col">
           <div className="flex items-center justify-between mb-3 text-sm font-medium">
             <div className="flex items-center gap-2">
-              <IconLevel />
-              <span>Trình độ - {courseLevel[data.level]}</span>
+              <IconLevel className="size-4 fill-secondary stroke-secondary" />
+              <span>{courseLevel[data.level]}</span>
             </div>
             <div className="flex items-center gap-2">
               <IconStar className="size-4 fill-secondary" />
-              <span>Đánh giá - {rating.toFixed(1)}</span>
+              <span>{rating.toFixed(1)}</span>
             </div>
           </div>
           <h3 className="text-xl font-extrabold mb-5 line-clamp-3 block">
