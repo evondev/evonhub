@@ -12,6 +12,11 @@ const Navigation = ({ role }: { role: string }) => {
     <div className="xl:hidden">
       <ul className="flex justify-center gap-5 fixed bottom-0 left-0 right-0 z-10 p-2 dark:bg-grayDarker bg-white">
         {menuLinks.map((link) => {
+          if (
+            (link.url.includes("coaching") || link.url.includes("hub")) &&
+            role === Role.ADMIN
+          )
+            return null;
           if (link.isAdmin && role !== Role.ADMIN) return null;
           return (
             <li key={link.title}>
