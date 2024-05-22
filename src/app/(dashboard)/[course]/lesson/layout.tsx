@@ -1,4 +1,7 @@
-import React from "react";
+import CommentLoadingSkeleton from "@/components/loading/CommentLoadingSkeleton";
+import LessonContentSkeleton from "@/components/loading/LessonContentSkeleton";
+import PlayerLoadingSkeleton from "@/components/loading/PlayerLoadingSkeleton";
+import React, { Suspense } from "react";
 
 const layout = ({
   player,
@@ -17,11 +20,19 @@ const layout = ({
       id="lesson-study"
     >
       <div>
-        {player}
-        {rating}
-        {comment}
+        <Suspense fallback={<PlayerLoadingSkeleton />}>{player}</Suspense>
+        <Suspense
+          fallback={
+            <div className="h-12 skeleton w-[120px] mb-8 ml-auto rounded-lg"></div>
+          }
+        >
+          {rating}
+        </Suspense>
+        <Suspense fallback={<CommentLoadingSkeleton />}>{comment}</Suspense>
       </div>
-      <div id="lesson-content-aside">{content}</div>
+      <Suspense fallback={<LessonContentSkeleton />}>
+        <div id="lesson-content-aside">{content}</div>
+      </Suspense>
     </div>
   );
 };
