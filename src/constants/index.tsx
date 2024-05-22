@@ -1,6 +1,7 @@
 import {
   IconComment,
   IconCourseManage,
+  IconCube,
   IconPlay,
   IconStudy,
   IconUser,
@@ -54,10 +55,20 @@ export const menuLinks: TMenuLink[] = [
     icon: <IconUser></IconUser>,
     url: "/profile",
   },
+  // {
+  //   title: "evondev",
+  //   icon: <IconUser></IconUser>,
+  //   url: "/evondev",
+  // },
   {
-    title: "evondev",
+    title: "Coaching 101",
     icon: <IconUser></IconUser>,
-    url: "/evondev",
+    url: "/coaching101",
+  },
+  {
+    title: "Hub",
+    icon: <IconCube></IconCube>,
+    url: "/hub",
   },
 ];
 export const baseButtonClassName =
