@@ -47,14 +47,14 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
     <Suspense fallback={<CourseItemWrapperSkeleton />}>
       <div className=" bg-white rounded-lg dark:bg-grayDark flex flex-col hover:shadow transition-all relative group">
         <Link href={link} className="absolute inset-0 z-10"></Link>
-        <div className="relative h-[180px] block group rounded-xl p-2">
+        <div className="relative h-[180px] block group rounded-lg">
           <Image
             src={data.image}
             priority
             alt=""
             width={800}
             height={360}
-            className="w-full h-full object-cover rounded-md transition-all"
+            className="w-full h-full object-cover rounded-lg transition-all"
             sizes="400px"
           ></Image>
         </div>
