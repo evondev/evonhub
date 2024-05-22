@@ -214,7 +214,7 @@ const CourseContent = ({
         data: {
           title: lessonData.title || lesson.title,
           slug: convertSlug(lessonData.title || lesson.title),
-          courseId: data._id,
+          courseId: data._id as any,
         },
       });
       toast.success("Bài học đã được cập nhật thành công");
