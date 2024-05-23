@@ -119,7 +119,7 @@ export async function getAllUsers(
         $in: await Course.find({ _destroy: false }).distinct("_id"),
       };
     }
-    const users = await User.find(query)
+    const users = (await User.find(query)
       .select("avatar name username status createdAt email")
       .populate({
         path: "courses",
@@ -131,7 +131,9 @@ export async function getAllUsers(
       .limit(limit)
       .sort({
         createdAt: -1,
-      });
+      })
+      .lean()) as any;
+    console.log("users:", users);
     const totalUsers = await User.countDocuments(query);
     const isNext = totalUsers > skipAmount + users.length;
     return {

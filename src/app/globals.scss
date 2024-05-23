@@ -47,9 +47,13 @@
     background-size: 100% 100%;
   }
   .table-responsive {
+    th {
+      @apply text-nowrap;
+    }
     @media screen and (max-width: 767.98px) {
       th:not(:first-child),
-      td:not(:first-child) {
+      th:not(.star),
+      td:not(.star) td:not(:first-child) {
         padding-left: 75px;
       }
     }

@@ -102,7 +102,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
         <h1 className="font-bold text-xl">{user.username}</h1>
       </div>
       <h2 className="font-bold text-xl mb-5">Thêm khóa học</h2>
-      <div className="grid grid-cols-2 gap-8 items-start mb-8">
+      <div className="grid lg:grid-cols-2 gap-8 items-start mb-8">
         <div className="flex items-center gap-5">
           <Select onValueChange={(value) => setSelectCourse(value)}>
             <SelectTrigger>
@@ -118,22 +118,37 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
           </Select>
           <Button
             type="button"
-            className={primaryButtonClassName}
+            className={
+              "size-12 rounded flex items-center justify-center bg-secondary text-white p-1 flex-shrink-0"
+            }
             onClick={handleAddCourseToUser}
             isLoading={isSubmitting}
           >
-            Thêm khóa học
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
           </Button>
         </div>
         <div className="flex flex-col">
           {user.courses.map((course: any, index: number) => (
             <div
-              className="flex items-center justify-between mb-5 pb-5 border-b border-dashed last:border-0 last:pb-0 last:mb-0"
+              className="flex items-center justify-between mb-2 pb-2 lg:mb-5 lg:pb-5 border-b border-dashed last:border-0 last:pb-0 last:mb-0 text-sm"
               key={index}
             >
               <h3 className="font-semibold">{course.title}</h3>
               <Button
-                className="h-12 px-5 flex items-center justify-center underline font-semibold text-base"
+                className="h-12 px-5 flex items-center justify-center underline font-semibold"
                 onClick={() =>
                   handleRemoveCourseFromUser(course._id.toString())
                 }
@@ -146,7 +161,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
       </div>
       <h2 className="font-bold text-xl mb-5">Phân quyền</h2>
       <div className="bg-white rounded-lg p-5 dark:bg-grayDarker mb-5">
-        <div className="grid grid-cols-4 gap-5">
+        <div className="grid lg:grid-cols-4 gap-5">
           {Object.keys(userPermissions).map((key) => (
             <div
               className="grid grid-cols-[200px,1fr] items-center gap-2 capitalize"

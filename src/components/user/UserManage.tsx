@@ -183,10 +183,10 @@ const UserManage = ({
       <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
-            <TableHead>
+            <TableHead className="star">
               <Checkbox />
             </TableHead>
-            <TableHead></TableHead>
+            <TableHead className="star"></TableHead>
             <TableHead>Thông tin</TableHead>
             <TableHead>Khóa học</TableHead>
             <TableHead>Trạng thái</TableHead>
@@ -196,12 +196,12 @@ const UserManage = ({
         <TableBody>
           {users.map((item) => (
             <TableRow key={item.username}>
-              <TableCell>
+              <TableCell className="star">
                 <Checkbox />
               </TableCell>
-              <TableCell>
+              <TableCell className="star">
                 {item.courses.length > 0 && (
-                  <IconStar className="size-6 text-secondary" />
+                  <IconStar className="size-6 text-secondary max-w-none" />
                 )}
               </TableCell>
               <TableCell>
@@ -226,7 +226,7 @@ const UserManage = ({
                 </div>
               </TableCell>
               <TableCell>
-                <div className="flex flex-col gap-2 max-w-[200px]">
+                <div className="flex flex-col gap-2 lg:max-w-[200px]">
                   {item.courses.map((course, index) => (
                     <Link
                       href={`/course/${course.slug}`}
@@ -234,7 +234,9 @@ const UserManage = ({
                       className="flex items-center gap-1 "
                     >
                       <IconStudy className="size-4 flex-shrink-0" />
-                      <div className="line-clamp-1">{course.title}</div>
+                      <div className="lg:line-clamp-1 whitespace-nowrap">
+                        {course.title}
+                      </div>
                     </Link>
                   ))}
                 </div>
@@ -243,13 +245,13 @@ const UserManage = ({
                 <button
                   className={cn(
                     courseStatusClassName,
-                    userStatus[item.status].className
+                    userStatus[item.status]?.className
                   )}
                   onClick={() =>
                     handleChangeUserStatus(item.clerkId, item.status)
                   }
                 >
-                  {userStatus[item.status].text}
+                  {userStatus[item.status]?.text}
                 </button>
               </TableCell>
               <TableCell>

@@ -47,7 +47,7 @@ const Header = () => {
         ) : (
           <Link
             href="/sign-in"
-            className="py-3 flex items-center justify-center gap-2 px-5 h-12 w-12 lg:w-auto rounded-lg bg-primary text-white font-semibold"
+            className="py-3 flex items-center justify-center gap-2 lg:px-5 h-12 w-12 lg:w-auto rounded-lg bg-primary text-white font-semibold"
           >
             <span>
               <svg
