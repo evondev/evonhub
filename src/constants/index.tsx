@@ -77,7 +77,7 @@ export const baseButtonClassName =
 export const primaryButtonClassName = `bg-primary text-white gradientPrimary gradientPrimaryHover ${baseButtonClassName}`;
 
 export const actionClassName =
-  "size-8 flex items-center justify-center bg-gray-100 dark:bg-grayDarkest rounded-lg  p-2 transition-all  hover:text-gray-500 dark:hover:text-opacity-80";
+  "size-8 flex items-center justify-center bg-gray-100 dark:bg-grayDarkest rounded  p-2 transition-all  hover:text-gray-500 dark:hover:text-opacity-80";
 
 export const boxDetailClassName =
   "rounded-lg p-5 bg-white dark:bg-grayDarker flex flex-col items-start gap-1";

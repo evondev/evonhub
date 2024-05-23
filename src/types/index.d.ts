@@ -62,6 +62,7 @@ export interface GetUsersParams {
   pageSize?: number;
   searchQuery?: string;
   filter?: string;
+  paidUser?: boolean;
 }
 export interface ICommentParams {
   _id: string;

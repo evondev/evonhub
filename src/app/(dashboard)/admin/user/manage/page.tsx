@@ -7,11 +7,13 @@ const page = async ({
   searchParams: {
     page: number;
     search: string;
+    paidUser: boolean;
   };
 }) => {
   const data = await getAllUsers({
     searchQuery: searchParams?.search,
     page: searchParams.page ? +searchParams.page : 1,
+    paidUser: searchParams?.paidUser,
   });
   if (!data?.users) return null;
   return (

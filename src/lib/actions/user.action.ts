@@ -59,8 +59,7 @@ export async function deleteUser(params: DeleteUserParams) {
     connectToDatabase();
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
-    if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
-      return undefined;
+    if (findUser && ![Role.ADMIN].includes(findUser?.role)) return undefined;
     const user = await User.findOne({ clerkId: params.clerkId });
     if (!user) {
       throw new Error("User not found");
@@ -103,7 +102,7 @@ export async function getAllUsers(
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN].includes(findUser?.role)) return undefined;
-    const { page = 1, pageSize = 10, searchQuery } = params;
+    const { page = 1, pageSize = 10, searchQuery, paidUser } = params;
     const skipAmount = (page - 1) * pageSize;
     const query: FilterQuery<typeof User> = {};
     let limit = pageSize;
@@ -115,8 +114,19 @@ export async function getAllUsers(
       ];
       limit = 5000;
     }
+    if (paidUser) {
+      query.courses = {
+        $in: await Course.find({ _destroy: false }).distinct("_id"),
+      };
+    }
     const users = await User.find(query)
       .select("avatar name username status createdAt email")
+      .populate({
+        path: "courses",
+        model: Course,
+        select: "title slug",
+        match: { _destroy: false },
+      })
       .skip(skipAmount)
       .limit(limit)
       .sort({
