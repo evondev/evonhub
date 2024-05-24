@@ -2,6 +2,7 @@ import CommentLoadingSkeleton from "@/components/loading/CommentLoadingSkeleton"
 import LessonContentSkeleton from "@/components/loading/LessonContentSkeleton";
 import PlayerLoadingSkeleton from "@/components/loading/PlayerLoadingSkeleton";
 import React, { Suspense } from "react";
+export const maxDuration = 60;
 
 const layout = ({
   player,

@@ -213,7 +213,7 @@ export async function updateCourseWithLecture(params: {
     console.log(error);
   }
 }
-export async function udpateCourseViews(slug: string) {
+export async function updateCourseViews(slug: string) {
   try {
     connectToDatabase();
     await Course.findOneAndUpdate({ slug }, { $inc: { views: 1 } });

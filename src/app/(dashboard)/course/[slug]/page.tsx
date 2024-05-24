@@ -1,13 +1,9 @@
 import PageNotFound from "@/app/not-found";
-import {
-  getCourseBySlug,
-  udpateCourseViews,
-} from "@/lib/actions/course.action";
+import { updateCourseViews } from "@/lib/actions/course.action";
+import { getCourseDetailsBySlug } from "@/lib/actions/general.action";
 import { getLessonCount } from "@/lib/actions/lesson.action";
-import { getUserById } from "@/lib/actions/user.action";
 import CourseDetailsPage from "@/pages/CourseDetailsPage";
-import { ECourseStatus, Role } from "@/types/enums";
-import { auth } from "@clerk/nextjs/server";
+export const maxDuration = 60;
 
 const page = async ({
   params,
@@ -17,18 +13,9 @@ const page = async ({
   };
 }) => {
   const slug = params.slug;
-  await udpateCourseViews(slug);
-  const courseDetails = await getCourseBySlug(slug);
+  await updateCourseViews(slug);
+  const courseDetails = await getCourseDetailsBySlug(slug);
   if (!courseDetails) return <PageNotFound />;
-  const { userId } = auth();
-  const mongoUser = await getUserById({ userId: userId || "" });
-  const role = mongoUser?.role;
-  if (
-    mongoUser?._id?.toString() !== courseDetails?.author?.toString() &&
-    ![Role.ADMIN].includes(role) &&
-    courseDetails?.status !== ECourseStatus.APPROVED
-  )
-    return <PageNotFound />;
   const lessonCount = await getLessonCount(courseDetails._id);
   return (
     <CourseDetailsPage

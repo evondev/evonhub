@@ -1,3 +1,4 @@
+"use client";
 import PageNotFound from "@/app/not-found";
 import {
   IconClock,
@@ -23,6 +24,8 @@ import {
 } from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { cn } from "@/lib/utils";
+import { useGlobalStore } from "@/store";
+import { ECourseStatus, Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -64,13 +67,17 @@ const CourseDetailsPage = ({
   };
   lessonCount: number;
 }) => {
+  const { userRole } = useGlobalStore();
   if (!data) return <PageNotFound />;
+  if (data.status !== ECourseStatus.APPROVED && userRole !== Role.ADMIN)
+    return <PageNotFound />;
   const lectures = data?.lecture || [];
   const totalMinutes = lectures.reduce((acc, cur) => {
     return acc + cur.lessons.reduce((acc, cur) => acc + cur.duration, 0);
   }, 0);
   const totalHours = Math.floor(totalMinutes / 60);
   const totalMinutesLeft = totalMinutes % 60;
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,1.2fr)] gap-8 items-start relative">
       <div>
@@ -90,8 +97,10 @@ const CourseDetailsPage = ({
           ) : (
             <Image
               alt=""
-              fill
+              width={700}
+              height={400}
               src={data.image}
+              priority
               className="w-full h-full object-cover rounded-lg"
             />
           )}

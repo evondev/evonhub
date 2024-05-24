@@ -3,6 +3,7 @@ import Course from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
 import User from "@/database/user.model";
+import { CourseParams } from "@/types";
 import { ECourseStatus } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import { connectToDatabase } from "../mongoose";
@@ -12,16 +13,6 @@ export async function getUserStudyCourse(): Promise<any | undefined> {
     connectToDatabase();
     const { userId } = auth();
     if (!userId) return [];
-
-    // const user = (await User.findOne({ clerkId: userId })
-    //   .select("courses")
-    //   .populate({
-    //     path: "courses",
-    //     model: "Course",
-    //     select: "title slug image rating level price",
-    //     match: { status: ECourseStatus.APPROVED },
-    //   })
-    //   .lean()) as any;
     const user = (await User.aggregate([
       {
         $match: { clerkId: userId },
@@ -102,4 +93,36 @@ export async function getLessonDetailsContent({
       });
     return lectureList || [];
   } catch (error) {}
+}
+
+export async function getCourseDetailsBySlug(
+  slug: string
+): Promise<CourseParams | undefined> {
+  try {
+    connectToDatabase();
+    let searchQuery: any = {};
+    searchQuery.slug = slug;
+    const course = await Course.findOne(searchQuery)
+      .select(
+        "title info desc level views intro image price salePrice status slug cta ctaLink"
+      )
+      .lean()
+      .populate({
+        path: "lecture",
+        select: "title",
+        match: { _destroy: false },
+        options: { lean: true },
+        populate: {
+          path: "lessons",
+          select: "title duration",
+          model: Lesson,
+          match: { _destroy: false },
+          options: { lean: true },
+        },
+      });
+
+    return course as any;
+  } catch (error) {
+    console.log("error:", error);
+  }
 }

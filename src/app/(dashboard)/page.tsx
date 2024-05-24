@@ -1,6 +1,6 @@
 import { getUserStudyCourse } from "@/lib/actions/general.action";
 import Dashboard from "@/pages/Dashboard";
-
+export const maxDuration = 60;
 async function Home() {
   const data = (await getUserStudyCourse()) || [];
   if (!data || !data.courses || !data.lessons) return null;
