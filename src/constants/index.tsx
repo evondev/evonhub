@@ -53,6 +53,7 @@ export const menuLinks: TMenuLink[] = [
     title: "Profile",
     icon: <IconUser></IconUser>,
     url: "/profile",
+    isAuth: true,
   },
   // {
   //   title: "evondev",

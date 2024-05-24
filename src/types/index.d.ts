@@ -8,6 +8,7 @@ export type TMenuLink = {
   icon: React.ReactNode;
   url: string;
   isAdmin?: boolean;
+  isAuth?: boolean;
 };
 export interface CreateUserParams {
   clerkId: string;

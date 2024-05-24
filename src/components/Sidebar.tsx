@@ -1,5 +1,6 @@
 "use client";
 import { adminRoutes, menuLinks } from "@/constants";
+import { useGlobalStore } from "@/store";
 import { Role } from "@/types/enums";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,6 +8,7 @@ import { usePathname } from "next/navigation";
 import MenuLink from "./MenuLink";
 
 const Sidebar = ({ role }: { role: string }) => {
+  const { currentUser } = useGlobalStore();
   const pathname = usePathname();
   const isActiveLink = (url: string) => pathname === url;
   return (
@@ -29,6 +31,7 @@ const Sidebar = ({ role }: { role: string }) => {
             return null;
           if (link.isAdmin && ![Role.ADMIN, Role.EXPERT].includes(role as Role))
             return null;
+          if (link.isAuth && !currentUser?._id) return null;
           return (
             <li key={link.title}>
               <MenuLink link={link} isActiveLink={isActiveLink}></MenuLink>

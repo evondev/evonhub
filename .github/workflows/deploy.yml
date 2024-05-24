@@ -1,33 +1,25 @@
-name: Deploy to Digital Ocean
+name: Evonhub CI
 
 on:
   push:
-    branches:
-      - main
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '20'
-      - name: Install dependencies
-        run: npm install
-      - name: Build
-        run: npm run build
-      - name: Deploy to Droplet via SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DROPLET_IP }}
-          username: ${{ secrets.DROPLET_USERNAME }}
-          key: ${{ secrets.DROPLET_SSH_KEY }}
-          script: |
-            cd /path/to/your/app
-            git pull
-            npm install
-            npm run build
-            pm2 restart your-app
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x, 20.x]
+  steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: "npm"
+    - run: |
+        npm install
+        npm run build
