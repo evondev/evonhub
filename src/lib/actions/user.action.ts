@@ -133,7 +133,6 @@ export async function getAllUsers(
         createdAt: -1,
       })
       .lean()) as any;
-    console.log("users:", users);
     const totalUsers = await User.countDocuments(query);
     const isNext = totalUsers > skipAmount + users.length;
     return {
