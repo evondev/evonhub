@@ -157,14 +157,14 @@ const CourseDetailsPage = ({
                 key={item._id}
               >
                 <AccordionItem value="item-1">
-                  <AccordionTrigger className="font-semibold dark:text-text5">
+                  <AccordionTrigger className="font-bold dark:text-text5">
                     {item.title}
                   </AccordionTrigger>
                   <AccordionContent className="bg-white dark:bg-grayDarker rounded-lg mt-5">
                     {item.lessons.map((lesson, index) => (
                       <div
                         key={lesson._id}
-                        className="mb-5 pb-5 border-b border-dashed last:pb-0 last:mb-0 last:border-b-0 font-medium flex items-center gap-2 dark:text-text5
+                        className="text-sm mb-5 pb-5 border-b border-dashed last:pb-0 last:mb-0 last:border-b-0 font-medium flex items-center gap-2 dark:text-text5
                         "
                       >
                         <IconPlay />
@@ -190,10 +190,10 @@ const CourseDetailsPage = ({
                   key={item.question}
                 >
                   <AccordionItem value="item-1">
-                    <AccordionTrigger className="font-semibold mb-2">
+                    <AccordionTrigger className="font-bold mb-2">
                       {item.question}
                     </AccordionTrigger>
-                    <AccordionContent className="font-medium bg-white rounded-lg dark:bg-grayDarker  dark:text-text5">
+                    <AccordionContent className="font-medium bg-white rounded-lg dark:bg-grayDarker  dark:text-text5 text-sm">
                       {item.answer}
                     </AccordionContent>
                   </AccordionItem>

@@ -39,7 +39,7 @@ const page = async ({
           defaultValue={lessonDetails.lectureId.toString()}
         >
           <AccordionItem value={item.id}>
-            <AccordionTrigger className="font-semibold dark:text-text5 ">
+            <AccordionTrigger className="font-bold dark:text-text5 ">
               <div className="line-clamp-1">{item.title}</div>
             </AccordionTrigger>
             <AccordionContent className="bg-white dark:bg-grayDarker rounded-lg mt-5">

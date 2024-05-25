@@ -1,4 +1,6 @@
-const IconViews = () => {
+import { ComponentProps } from "react";
+
+const IconViews = (props: ComponentProps<"svg">) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,6 +9,7 @@ const IconViews = () => {
       strokeWidth={1.5}
       stroke="currentColor"
       className="size-4"
+      {...props}
     >
       <path
         strokeLinecap="round"

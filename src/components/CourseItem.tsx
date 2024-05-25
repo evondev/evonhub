@@ -1,12 +1,13 @@
-import { courseLevel } from "@/constants";
+import { courseLevel, primaryButtonClassName } from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { cn } from "@/lib/utils";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { IconLevel, IconLongArrowRight, IconStar } from "./icons";
+import { IconLevel, IconStar, IconViews } from "./icons";
 import CourseItemWrapperSkeleton from "./loading/CourseItemWrapperSkeleton";
+import { Button } from "./ui/button";
 
 const IconLecture = (
   <svg
@@ -34,6 +35,7 @@ interface ICourseItemParams {
     rating: ICourse["rating"];
     salePrice: number;
     lecture: any[];
+    views: number;
   };
   cta?: string;
   url?: string;
@@ -59,36 +61,39 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
           ></Image>
         </div>
         <div className="p-5 flex-1 flex flex-col">
-          <div className="flex items-center justify-between mb-3 text-sm font-medium">
-            <div className="flex items-center gap-2">
-              <IconLevel className="size-4 fill-current" />
-              <span>{courseLevel[data.level]}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <IconStar className="size-4" />
-              <span>{rating.toFixed(1)}</span>
+          <div className="flex items-center mb-3 justify-between">
+            <span className="inline-flex py-1 px-3 rounded-md text-sm font-semibold bg-gray-100 text-gray-500 self-start dark:bg-white dark:bg-opacity-15 dark:text-white dark:text-opacity-80">
+              Frontend
+            </span>
+            <div className="flex items-center">
+              <div className="flex items-center gap-2">
+                <div className="font-bold text-secondary">
+                  {formatThoundsand(data.price)} VNĐ
+                </div>
+              </div>
             </div>
           </div>
-          <h3 className="text-xl font-extrabold mb-5 line-clamp-3 block">
+          <h3 className="text-xl font-bold mb-5 line-clamp-3 block">
             {data.title}
           </h3>
-          <div className="mt-auto flex ">
-            <div className="flex items-center gap-2">
-              <div className="font-bold text-secondary">
-                {formatThoundsand(data.price)} VNĐ
+          <div className="mt-auto">
+            <div className="flex items-center gap-3 text-sm font-medium mb-5 text-gray-500 dark:text-white dark:text-opacity-60">
+              <div className="flex items-center gap-2">
+                <IconLevel className="size-4" />
+                <span>{courseLevel[data.level]}</span>
               </div>
-              <div className=" text-slate-400 line-through text-sm">
-                {formatThoundsand(data.salePrice)} VNĐ
+              <div className="flex items-center gap-2">
+                <IconStar className="size-4 stroke-current fill-transparent" />
+                <span>{rating.toFixed(1)}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <IconViews className="size-4 stroke-current fill-transparent" />
+                <span>{data.views}</span>
               </div>
             </div>
-            <button
-              type="button"
-              className={cn(
-                "size-10 bg-primary rounded-lg ml-auto flex items-center justify-center text-white group p-1"
-              )}
-            >
-              <IconLongArrowRight />
-            </button>
+            <Button className={cn(primaryButtonClassName, "w-full")}>
+              {!url ? "Xem chi tiết" : "Học tiếp"}
+            </Button>
           </div>
         </div>
       </div>

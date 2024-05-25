@@ -14,7 +14,7 @@ export async function getUserStudyCourse(
     connectToDatabase();
     const user = await User.findOne({ clerkId: userId }).populate({
       path: "courses",
-      select: "title slug image rating level price salePrice",
+      select: "title slug image rating level price salePrice views",
       match: { status: ECourseStatus.APPROVED },
     });
 
