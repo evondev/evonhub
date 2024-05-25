@@ -49,9 +49,7 @@ export async function getLessonDetailsContent({
 }): Promise<IGetLessonContent[] | undefined> {
   try {
     connectToDatabase();
-    const findCourse = (await Course.findOne({ slug: courseSlug })
-      .select("_id")
-      .lean()) as any;
+    const findCourse = await Course.findOne({ slug: courseSlug }).select("_id");
     if (!findCourse) return [];
     const lectureList = await Lecture.find({ courseId: findCourse._id })
       .select("title lessons")
@@ -75,7 +73,6 @@ export async function getCourseDetailsBySlug(
       .select(
         "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords"
       )
-      .lean()
       .populate({
         path: "lecture",
         select: "title",
@@ -90,7 +87,7 @@ export async function getCourseDetailsBySlug(
         },
       });
 
-    return course as any;
+    return course;
   } catch (error) {
     console.log("error:", error);
   }

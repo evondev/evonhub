@@ -11,11 +11,9 @@ export async function getHistoriesByLessonId({
 }): Promise<IHistoryLesson[] | undefined> {
   try {
     connectToDatabase();
-    const histories = (await History.find({
+    const histories = await History.find({
       lesson: lessonId,
-    })
-      .select("lesson")
-      .lean()) as any;
+    }).select("lesson");
     return histories;
   } catch (error) {
     console.log("error:", error);

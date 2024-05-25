@@ -99,9 +99,9 @@ export async function getLessonBySlug(slug: string, course?: string) {
     };
     const findCourse = await Course.findOne({ slug: course });
     if (findCourse) query.courseId = findCourse._id.toString();
-    const lesson = (await Lesson.findOne(query)
-      .select("title content video courseId lectureId")
-      .lean()) as ILesson;
+    const lesson = await Lesson.findOne(query).select(
+      "title content video courseId lectureId"
+    );
     return lesson;
   } catch (error) {
     console.log(error);

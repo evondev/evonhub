@@ -43,13 +43,11 @@ export async function getAllComments(params: GetAllCommentsParams) {
     if (![Role.ADMIN].includes(findUser?.role)) {
       query.user = findUser._id;
     }
-    const comments = (await Comment.find(query)
-      .populate({
-        path: "user",
-        model: User,
-        select: "username avatar",
-      })
-      .lean()) as any;
+    const comments = await Comment.find(query).populate({
+      path: "user",
+      model: User,
+      select: "username avatar",
+    });
 
     return comments;
   } catch (error) {

@@ -42,7 +42,7 @@ export async function updateOrder(params: UpdateOrderParams) {
 export async function getAllOrders() {
   try {
     connectToDatabase();
-    const orders = (await Order.find()
+    const orders = await Order.find()
       .populate({
         path: "course",
         model: Course,
@@ -52,8 +52,7 @@ export async function getAllOrders() {
         path: "user",
         model: User,
         select: "username",
-      })
-      .lean()) as any;
+      });
     return orders;
   } catch (error) {
     console.log(error);
