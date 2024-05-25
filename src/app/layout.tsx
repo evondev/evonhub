@@ -1,6 +1,7 @@
 import Providers from "@/components/Providers";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
@@ -52,6 +53,7 @@ export default async function RootLayout({
             src="https://cdn.jsdelivr.net/npm/@mux/mux-uploader@1.0.0-beta.6"
           ></Script>
           <SpeedInsights></SpeedInsights>
+          <Analytics></Analytics>
         </body>
       </html>
     </ClerkProvider>

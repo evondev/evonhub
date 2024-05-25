@@ -168,9 +168,9 @@ export async function getAllCourses(
     if (params.status) {
       searchQuery.status = params.status;
     }
-    const courses = (await Course.find(searchQuery)
-      .select("title slug image level rating price salePrice")
-      .lean()) as any;
+    const courses = await Course.find(searchQuery).select(
+      "title slug image level rating price salePrice"
+    );
     return courses;
   } catch (error) {}
 }
