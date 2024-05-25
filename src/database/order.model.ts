@@ -3,6 +3,7 @@ import mongoose, { Schema, models } from "mongoose";
 
 export interface IOrder extends Document {
   _id: string;
+  code: string;
   user: Schema.Types.ObjectId;
   course: Schema.Types.ObjectId;
   createdAt: Date;
@@ -36,6 +37,10 @@ const orderSchema = new Schema<IOrder>({
   },
   total: {
     type: Number,
+  },
+  code: {
+    type: String,
+    required: true,
   },
   createdAt: {
     type: Date,

@@ -188,6 +188,7 @@ export async function addCourseToUser({
       amount: coursePrice,
       total: coursePrice - discount,
       discount,
+      status: EOrderStatus.APPROVED,
     });
     revalidatePath(path);
   } catch (error) {
@@ -211,13 +212,13 @@ export async function removeCourseFromUser({
     }
     user.courses = user.courses.filter((c: any) => c.toString() !== courseId);
     await user.save();
+    revalidatePath(path);
     const findOrder = await Order.findOne({ user: user._id, course: courseId });
     if (findOrder) {
       await Order.findByIdAndUpdate(findOrder._id, {
         status: EOrderStatus.REJECTED,
       });
     }
-    revalidatePath(path);
   } catch (error) {
     console.log(error);
   }
