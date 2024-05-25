@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import { IconDelete } from "../icons";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
+import { Input } from "../ui/input";
 import {
   Select,
   SelectContent,
@@ -72,7 +73,11 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
     try {
       const res = await addCourseToUser({
         userId: user.clerkId,
-        courseId: selectCourse,
+        course: {
+          id: selectCourse?._id.toString(),
+          price: selectCourse?.price,
+          discount,
+        },
         path: `/admin/user/update?username=${user.username}`,
       });
       if (res?.type === "error") {
@@ -103,7 +108,8 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
       setIsUpdatePermissions(false);
     }
   };
-  const [selectCourse, setSelectCourse] = useState("");
+  const [selectCourse, setSelectCourse] = useState<any>(null);
+  const [discount, setDiscount] = useState(0);
   const [userRole, setUserRole] = useState(user.role);
   const [selectPermissions, setSelectPermissions] = useState<string[]>(
     user.permissions || []
@@ -124,18 +130,29 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
       <h2 className="font-bold text-xl mb-5">Thêm khóa học</h2>
       <div className="flex flex-col gap-5 mb-8">
         <div className="flex items-center gap-5">
-          <Select onValueChange={(value) => setSelectCourse(value)}>
+          <Select
+            onValueChange={(value) => setSelectCourse(value)}
+            defaultValue={selectCourse}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Chọn khóa học" />
             </SelectTrigger>
             <SelectContent>
               {courses.map((course) => (
-                <SelectItem key={course._id} value={course._id.toString()}>
+                <SelectItem key={course._id} value={course}>
                   {course.title}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+          <div>
+            <Input
+              placeholder="Discount"
+              type="number"
+              onChange={(e) => setDiscount(Number(e.target.value))}
+              className="w-40"
+            />
+          </div>
           <Button
             type="button"
             className={
@@ -197,19 +214,20 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
       </div>
       <h2 className="font-bold text-xl mb-5">Vai trò</h2>
       <div className="flex items-center gap-5">
-        <Select
-          onValueChange={(value) => setUserRole(value)}
-          defaultValue={userRole}
-        >
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Vai trò" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={Role.USER}>Thành viên</SelectItem>
-            <SelectItem value={Role.EXPERT}>Expert</SelectItem>
-          </SelectContent>
-        </Select>
-
+        <div className="w-40">
+          <Select
+            onValueChange={(value) => setUserRole(value)}
+            defaultValue={userRole}
+          >
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Vai trò" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={Role.USER}>Thành viên</SelectItem>
+              <SelectItem value={Role.EXPERT}>Expert</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Button
           onClick={handleUpdatePermissions}
           className={cn(primaryButtonClassName, "w-fit flex")}

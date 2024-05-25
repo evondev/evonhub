@@ -67,3 +67,8 @@ export enum EUserPermission {
   DELETE_CATEGORY = "delete:category",
   CREATE_REACTION = "create:reaction",
 }
+export enum EOrderStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}

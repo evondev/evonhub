@@ -1,8 +1,10 @@
 import {
   IconComment,
   IconCourseManage,
+  IconOrder,
   IconPlay,
   IconStudy,
+  IconTutorial,
   IconUser,
   IconUsers,
 } from "@/components/icons";
@@ -48,6 +50,17 @@ export const menuLinks: TMenuLink[] = [
     icon: <IconComment></IconComment>,
     url: "/admin/comment/manage",
     isAdmin: true,
+  },
+  {
+    title: "Quản lý đơn hàng",
+    icon: <IconOrder></IconOrder>,
+    url: "/admin/order/manage",
+    isAdmin: true,
+  },
+  {
+    title: "Hướng dẫn mua",
+    icon: <IconTutorial></IconTutorial>,
+    url: "/how-to-buy",
   },
   {
     title: "Profile",

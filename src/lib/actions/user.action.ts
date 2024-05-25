@@ -1,5 +1,6 @@
 "use server";
 import Course from "@/database/course.model";
+import Order from "@/database/order.model";
 import User, { IUser } from "@/database/user.model";
 import {
   CreateUserParams,
@@ -7,11 +8,12 @@ import {
   GetUsersParams,
   UpdateUserParams,
 } from "@/types";
-import { EUserStatus, Role } from "@/types/enums";
+import { EOrderStatus, EUserStatus, Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
+import { createOrder } from "./order.action";
 
 export async function createUser(userData: CreateUserParams) {
   try {
@@ -151,15 +153,20 @@ export async function getAllUsers(
     console.log(error);
   }
 }
+interface AddCourseToUserParams {
+  userId: string;
+  course: {
+    id: string;
+    price: number;
+    discount?: number;
+  };
+  path: string;
+}
 export async function addCourseToUser({
   userId,
-  courseId,
   path,
-}: {
-  userId: string;
-  courseId: string;
-  path: string;
-}) {
+  course: { id: courseId, price: coursePrice, discount = 0 },
+}: AddCourseToUserParams) {
   try {
     connectToDatabase();
     const user = await User.findOne({ clerkId: userId });
@@ -175,6 +182,13 @@ export async function addCourseToUser({
     }
     user.courses.push(courseId);
     await user.save();
+    await createOrder({
+      user: user._id,
+      course: courseId,
+      amount: coursePrice,
+      total: coursePrice - discount,
+      discount,
+    });
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -197,6 +211,12 @@ export async function removeCourseFromUser({
     }
     user.courses = user.courses.filter((c: any) => c.toString() !== courseId);
     await user.save();
+    const findOrder = await Order.findOne({ user: user._id, course: courseId });
+    if (findOrder) {
+      await Order.findByIdAndUpdate(findOrder._id, {
+        status: EOrderStatus.REJECTED,
+      });
+    }
     revalidatePath(path);
   } catch (error) {
     console.log(error);

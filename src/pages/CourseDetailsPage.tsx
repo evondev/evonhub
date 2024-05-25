@@ -211,7 +211,7 @@ const CourseDetailsPage = ({
                 <strong className="text-xl text-primary">Miễn phí</strong>
               ) : (
                 <>
-                  <strong className="text-xl">
+                  <strong className="text-xl text-secondary">
                     {formatThoundsand(data.price)} VNĐ
                   </strong>
                   <span className="text-sm line-through text-slate-400">
@@ -286,7 +286,11 @@ function DetailsItem({
   );
 }
 function WidgetItem({ children }: { children: React.ReactNode }) {
-  return <div className="flex items-center gap-1">{children}</div>;
+  return (
+    <div className="flex items-center gap-1 dark:text-white dark:text-opacity-80">
+      {children}
+    </div>
+  );
 }
 
 function BoxList({ title, data }: { title: string; data: string[] }) {
