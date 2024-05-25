@@ -5,26 +5,23 @@ import Lesson from "@/database/lesson.model";
 import User from "@/database/user.model";
 import { CourseParams } from "@/types";
 import { ECourseStatus } from "@/types/enums";
-import { auth } from "@clerk/nextjs/server";
 import { connectToDatabase } from "../mongoose";
 
-export async function getUserStudyCourse(): Promise<any | undefined> {
+export async function getUserStudyCourse(
+  userId: string
+): Promise<any | undefined> {
   try {
     connectToDatabase();
-    const { userId } = auth();
-    if (!userId) return [];
-    const user = (await User.findOne({ clerkId: userId })
-      .populate({
-        path: "courses",
-        select: "title slug image rating level price salePrice",
-        match: { status: ECourseStatus.APPROVED },
-      })
-      .lean()) as any;
+    const user = await User.findOne({ clerkId: userId }).populate({
+      path: "courses",
+      select: "title slug image rating level price salePrice",
+      match: { status: ECourseStatus.APPROVED },
+    });
 
     const courses = user.courses;
     const allPromise = Promise.all(
       courses.map(async (item: any) => {
-        return Lesson.find({ courseId: item._id }).select("slug").lean();
+        return Lesson.find({ courseId: item._id }).select("slug");
       })
     );
     const lessons = await allPromise;

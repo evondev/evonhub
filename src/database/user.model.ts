@@ -81,5 +81,6 @@ const UserSchema = new Schema({
     },
   ],
 });
+UserSchema.index({ clerkId: 1 }, { unique: true });
 const User = models.User || model("User", UserSchema);
 export default User;

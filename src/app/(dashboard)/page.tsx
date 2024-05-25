@@ -1,8 +1,11 @@
 import { getUserStudyCourse } from "@/lib/actions/general.action";
 import Dashboard from "@/pages/Dashboard";
+import { auth } from "@clerk/nextjs/server";
 export const maxDuration = 60;
 async function Home() {
-  const data = (await getUserStudyCourse()) || [];
+  const { userId } = auth();
+  if (!userId) return null;
+  const data = (await getUserStudyCourse(userId)) || {};
   if (!data || !data.courses || !data.lessons) return null;
   const courseList = JSON.parse(JSON.stringify(data.courses));
   const lessonList = JSON.parse(JSON.stringify(data.lessons));
