@@ -61,11 +61,11 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
         <div className="p-5 flex-1 flex flex-col">
           <div className="flex items-center justify-between mb-3 text-sm font-medium">
             <div className="flex items-center gap-2">
-              <IconLevel className="size-4 fill-secondary stroke-secondary" />
+              <IconLevel className="size-4 fill-current" />
               <span>{courseLevel[data.level]}</span>
             </div>
             <div className="flex items-center gap-2">
-              <IconStar className="size-4 fill-secondary" />
+              <IconStar className="size-4" />
               <span>{rating.toFixed(1)}</span>
             </div>
           </div>
@@ -73,11 +73,11 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
             {data.title}
           </h3>
           <div className="mt-auto flex ">
-            <div className="flex items-center gap-2 text-sm">
+            <div className="flex items-center gap-2">
               <div className="font-bold text-secondary">
                 {formatThoundsand(data.price)} VNĐ
               </div>
-              <div className=" text-slate-400 line-through">
+              <div className=" text-slate-400 line-through text-sm">
                 {formatThoundsand(data.salePrice)} VNĐ
               </div>
             </div>
