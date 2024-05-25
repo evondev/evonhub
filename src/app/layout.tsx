@@ -12,9 +12,19 @@ import "./globals.scss";
 const manrope = Manrope({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "EvonHub",
+  metadataBase: new URL("https://evonhub.dev"),
+  title: "EvonHub - Nền tảng học lập trình trực tuyến",
   description:
-    "EvonHub is a platform for developers to learn, share, and grow together.",
+    "Nền tảng học lập trình trực tuyến với các khóa học từ cơ bản đến nâng cao về Frontend dành cho người mới bắt đầu và người đã có kinh nghiệm. Được phát triển và xây dựng bởi Evondev.",
+  keywords:
+    "evonhub, evondev, học lập trình, khóa học lập trình, frontend, khóa học frontend, khóa học html css, khóa học javascript, khóa học reactjs, khóa học nextjs, khóa học html, khóa học css, khóa học figma, khóa học ui ux",
+  applicationName: "EvonHub",
+  openGraph: {
+    title: "EvonHub - Nền tảng học lập trình trực tuyến",
+    description:
+      "Nền tảng học lập trình trực tuyến với các khóa học từ cơ bản đến nâng cao về Frontend dành cho người mới bắt đầu và người đã có kinh nghiệm. Được phát triển và xây dựng bởi Evondev.",
+    images: ["/cover.jpg"],
+  },
 };
 
 export default async function RootLayout({

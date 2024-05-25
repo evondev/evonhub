@@ -62,6 +62,7 @@ export default function UpdateCourseForm({
       status: data.status,
       cta: data.cta,
       ctaLink: data.ctaLink,
+      seoKeywords: data.seoKeywords,
     },
   });
   const [infoData, setInfoData] = useImmer({
@@ -249,6 +250,32 @@ export default function UpdateCourseForm({
                 <FormLabel>Intro URL</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="Intro URL" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div></div>
+          {/* <FormField
+            control={form.control}
+            name="label"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Label</FormLabel>
+                <FormControl>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+          <FormField
+            control={form.control}
+            name="seoKeywords"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>SEO keywords</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="SEO keywords" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

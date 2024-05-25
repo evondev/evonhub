@@ -3,15 +3,35 @@ import { updateCourseViews } from "@/lib/actions/course.action";
 import { getCourseDetailsBySlug } from "@/lib/actions/general.action";
 import { getLessonCount } from "@/lib/actions/lesson.action";
 import CourseDetailsPage from "@/pages/CourseDetailsPage";
+import { Metadata, ResolvingMetadata } from "next";
 export const maxDuration = 60;
 
-const page = async ({
-  params,
-}: {
+interface Props {
   params: {
     slug: string;
   };
-}) => {
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = params.slug;
+
+  const courseDetails = await getCourseDetailsBySlug(slug);
+
+  return {
+    title: courseDetails?.title,
+    description: courseDetails?.desc,
+    keywords: courseDetails?.seoKeywords,
+    openGraph: {
+      title: courseDetails?.title,
+      description: courseDetails?.desc,
+      images: [courseDetails?.image || "/cover.jpg"],
+    },
+  };
+}
+const page = async ({ params }: Props) => {
   const slug = params.slug;
   await updateCourseViews(slug);
   const courseDetails = await getCourseDetailsBySlug(slug);

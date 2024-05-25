@@ -113,7 +113,7 @@ export async function getCourseBySlug(
     searchQuery.slug = slug;
     const course = await Course.findOne(searchQuery)
       .select(
-        "title info desc level views intro image price salePrice status slug cta ctaLink"
+        "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords"
       )
       .populate({
         path: "lecture",
