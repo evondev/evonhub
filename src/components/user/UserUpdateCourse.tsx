@@ -10,10 +10,12 @@ import {
   updateUserByUsername,
 } from "@/lib/actions/user.action";
 import { cn } from "@/lib/utils";
+import { Role } from "@/types/enums";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { IconDelete } from "../icons";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -24,6 +26,22 @@ import {
   SelectValue,
 } from "../ui/select";
 
+const IconPlus = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M12 4.5v15m7.5-7.5h-15"
+    />
+  </svg>
+);
 const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleRemoveCourseFromUser = async (courseId: string) => {
@@ -75,6 +93,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
         username: user.username,
         updateData: {
           permissions: selectPermissions,
+          role: userRole,
         },
       });
       toast.success("Cập nhật quyền thành công");
@@ -85,6 +104,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
     }
   };
   const [selectCourse, setSelectCourse] = useState("");
+  const [userRole, setUserRole] = useState(user.role);
   const [selectPermissions, setSelectPermissions] = useState<string[]>(
     user.permissions || []
   );
@@ -102,7 +122,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
         <h1 className="font-bold text-xl">{user.username}</h1>
       </div>
       <h2 className="font-bold text-xl mb-5">Thêm khóa học</h2>
-      <div className="grid lg:grid-cols-2 gap-8 items-start mb-8">
+      <div className="flex flex-col gap-5 mb-8">
         <div className="flex items-center gap-5">
           <Select onValueChange={(value) => setSelectCourse(value)}>
             <SelectTrigger>
@@ -119,41 +139,28 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
           <Button
             type="button"
             className={
-              "size-12 rounded flex items-center justify-center bg-secondary text-white p-1 flex-shrink-0"
+              "size-12 rounded flex items-center justify-center bg-primary text-white p-1 flex-shrink-0"
             }
             onClick={handleAddCourseToUser}
             isLoading={isSubmitting}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
-            </svg>
+            {IconPlus}
           </Button>
         </div>
         <div className="flex flex-col">
           {user.courses.map((course: any, index: number) => (
             <div
-              className="flex items-center justify-between mb-2 pb-2 lg:mb-5 lg:pb-5 border-b border-dashed last:border-0 last:pb-0 last:mb-0 text-sm"
+              className="flex items-center justify-between p-3 rounded bg-white text-sm dark:bg-grayDarker"
               key={index}
             >
               <h3 className="font-semibold">{course.title}</h3>
               <Button
-                className="h-12 px-5 flex items-center justify-center underline font-semibold"
+                className="flex w-8 h-8 p-0 items-center gap-2 rounded bg-red-100 text-red-500 font-semibold hover:opacity-85"
                 onClick={() =>
                   handleRemoveCourseFromUser(course._id.toString())
                 }
               >
-                Xóa
+                <IconDelete />
               </Button>
             </div>
           ))}
@@ -161,10 +168,10 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
       </div>
       <h2 className="font-bold text-xl mb-5">Phân quyền</h2>
       <div className="bg-white rounded-lg p-5 dark:bg-grayDarker mb-5">
-        <div className="grid lg:grid-cols-4 gap-5">
+        <div className="flex flex-wrap gap-5">
           {Object.keys(userPermissions).map((key) => (
             <div
-              className="grid grid-cols-[200px,1fr] items-center gap-2 capitalize"
+              className="flex items-center gap-2 capitalize font-medium text-sm"
               key={key}
             >
               <span>{key}</span>
@@ -189,14 +196,28 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
         </div>
       </div>
       <h2 className="font-bold text-xl mb-5">Vai trò</h2>
+      <div className="flex items-center gap-5">
+        <Select
+          onValueChange={(value) => setUserRole(value)}
+          defaultValue={userRole}
+        >
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Vai trò" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={Role.USER}>Thành viên</SelectItem>
+            <SelectItem value={Role.EXPERT}>Expert</SelectItem>
+          </SelectContent>
+        </Select>
 
-      <Button
-        onClick={handleUpdatePermissions}
-        className={cn(primaryButtonClassName, "ml-auto w-fit flex")}
-        isLoading={isUpdatePermissions}
-      >
-        Cập nhật
-      </Button>
+        <Button
+          onClick={handleUpdatePermissions}
+          className={cn(primaryButtonClassName, "w-fit flex")}
+          isLoading={isUpdatePermissions}
+        >
+          Cập nhật
+        </Button>
+      </div>
     </>
   );
 };

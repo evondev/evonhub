@@ -30,7 +30,7 @@ const formSchema = z.object({
   assetId: z.string().optional(),
 });
 const btnClassName =
-  "text-sm py-2 px-3 h-10 rounded-md font-semibold w-[100px] flex items-center justify-center";
+  "text-xs py-2 px-3 h-10 rounded-md font-semibold w-[100px] flex items-center justify-center";
 const LessonItemUpdate = ({
   lessonId,
   slug,
@@ -110,7 +110,7 @@ const LessonItemUpdate = ({
               <FormControl>
                 <Input
                   placeholder="Đường dẫn bài học"
-                  className="bgDarkestMode"
+                  className=""
                   {...field}
                 />
               </FormControl>
@@ -126,7 +126,7 @@ const LessonItemUpdate = ({
               <FormControl>
                 <Input
                   type="text"
-                  className="bgDarkestMode"
+                  className=""
                   placeholder="Video Id"
                   {...field}
                 />
@@ -141,12 +141,7 @@ const LessonItemUpdate = ({
             <FormItem>
               <FormLabel>Asset Id</FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  className="bgDarkestMode"
-                  placeholder="Asset Id"
-                  {...field}
-                />
+                <Input type="text" placeholder="Asset Id" {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -162,6 +157,7 @@ const LessonItemUpdate = ({
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                   // @ts-ignore
                   onInit={(evt, editor) => (editorRef.current = editor)}
+                  value={field.value}
                   {...editorOptions(field, theme)}
                 />
               </FormControl>
@@ -179,7 +175,7 @@ const LessonItemUpdate = ({
                 <Input
                   type="number"
                   placeholder="Số (phút)"
-                  className="bgDarkestMode w-24"
+                  className=" w-24"
                   {...field}
                 />
               </FormControl>
@@ -200,10 +196,7 @@ const LessonItemUpdate = ({
           <Link
             href={`/${course.slug}/lesson?slug=${lesson.slug}`}
             target="_blank"
-            className={cn(
-              btnClassName,
-              "border border-gray-200 hover:bg-gray-100 dark:border-0 dark:hover:bg-transparent dark:hover:opacity-90"
-            )}
+            className={cn(btnClassName)}
           >
             Xem trước
           </Link>

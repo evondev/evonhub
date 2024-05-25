@@ -74,7 +74,7 @@ export const menuLinks: TMenuLink[] = [
 export const baseButtonClassName =
   "rounded-md h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";
 
-export const primaryButtonClassName = `bg-primary text-white gradientPrimary gradientPrimaryHover ${baseButtonClassName}`;
+export const primaryButtonClassName = `bg-primary text-white gradientPrimary gradientPrimaryHover button-styles ${baseButtonClassName}`;
 
 export const actionClassName =
   "size-8 flex items-center justify-center bg-gray-100 dark:bg-grayDarkest rounded  p-2 transition-all  hover:text-gray-500 dark:hover:text-opacity-80";

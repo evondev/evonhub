@@ -126,7 +126,7 @@ export default function UpdateCourseForm({
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tiêu đề*</FormLabel>
+                <FormLabel>Tiêu đề *</FormLabel>
                 <FormControl>
                   <Input placeholder="Tiêu đề" {...field} />
                 </FormControl>
@@ -197,10 +197,7 @@ export default function UpdateCourseForm({
               <FormItem>
                 <FormLabel>CTA Link</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="https://fb.com/someone"
-                    {...field}
-                  />
+                  <Input placeholder="https://fb.com/someone" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

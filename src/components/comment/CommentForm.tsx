@@ -29,17 +29,11 @@ const commentSchema = z.object({
 const IconSend = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="size-4 group-hover:translate-x-1 transition-all"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+    className="size-4 group-hover:translate-x-2 transition-all"
   >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
-    />
+    <path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.925A1.5 1.5 0 005.135 9.25h6.115a.75.75 0 010 1.5H5.135a1.5 1.5 0 00-1.442 1.086l-1.414 4.926a.75.75 0 00.826.95 28.896 28.896 0 0015.293-7.154.75.75 0 000-1.115A28.897 28.897 0 003.105 2.289z" />
   </svg>
 );
 const CommentForm = ({

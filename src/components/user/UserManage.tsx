@@ -214,7 +214,7 @@ const UserManage = ({
                     className="w-12 h-12 object-cover rounded-full flex-shrink-0"
                   />
                   <div>
-                    <h4 className="font-bold text-base line-clamp-2 whitespace-nowrap max-w-[100px] lg:max-w-[400px] block">
+                    <h4 className="font-bold text-base line-clamp-2 whitespace-nowrap max-w-[150px] lg:max-w-[400px] block">
                       {item.name}
                     </h4>
                     <h5>{item.username}</h5>
@@ -226,7 +226,7 @@ const UserManage = ({
                 </div>
               </TableCell>
               <TableCell>
-                <div className="flex flex-col gap-2 lg:max-w-[200px]">
+                <div className="flex flex-col gap-2">
                   {item.courses.map((course, index) => (
                     <Link
                       href={`/course/${course.slug}`}
@@ -234,7 +234,7 @@ const UserManage = ({
                       className="flex items-center gap-1 "
                     >
                       <IconStudy className="size-4 flex-shrink-0" />
-                      <div className="lg:line-clamp-1 whitespace-nowrap">
+                      <div className="max-w-[200px] line-clamp-1">
                         {course.title}
                       </div>
                     </Link>
@@ -257,7 +257,7 @@ const UserManage = ({
               <TableCell>
                 <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
                   <Link
-                    href={`/admin/user/update?username=${item.username}`}
+                    href={`/admin/user/update?email=${item.email}`}
                     className={cn(actionClassName)}
                   >
                     <IconEdit></IconEdit>

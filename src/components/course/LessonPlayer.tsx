@@ -58,7 +58,7 @@ const LessonPlayer = ({
               className="w-full h-full inline-block align-bottom"
             />
           ) : (
-            <div className="w-full h-full bg-grayDarkest"></div>
+            <div className="w-full h-full bg-white dark:bg-grayDarker rounded-lg"></div>
           )}
           <div className="flex my-5 gap-3 justify-end sm:block">
             {prevLesson && (
@@ -100,8 +100,13 @@ const LessonPlayer = ({
           Toàn màn hình
         </button>
       </div>
-      <h1 className="font-bold text-2xl mb-5">{lessonDetails.title}</h1>
-      <div className="lesson-content">{lessonDetails.content}</div>
+      <h1 className="font-extrabold text-2xl mb-5">{lessonDetails.title}</h1>
+      <div className="lesson-content bg-white p-5 rounded-lg dark:bg-grayDarker text-sm">
+        <div
+          dangerouslySetInnerHTML={{ __html: lessonDetails.content }}
+          className="prose dark:prose-dark"
+        ></div>
+      </div>
     </div>
   );
 };

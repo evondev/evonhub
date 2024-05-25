@@ -82,10 +82,17 @@ export async function getUserById({ userId }: { userId: string }) {
     console.log(error);
   }
 }
-export async function getUserByUsername({ username }: { username: string }) {
+export async function getUserByUsername(params: {
+  username: string;
+  email?: string;
+}) {
   try {
     connectToDatabase();
-    const user = await User.findOne({ username }).populate({
+    const { username, email } = params;
+    let query: any = {};
+    if (username) query.username = username;
+    if (email) query.email = email;
+    const user = await User.findOne(query).populate({
       path: "courses",
       model: Course,
     });

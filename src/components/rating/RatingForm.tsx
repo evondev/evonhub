@@ -82,37 +82,36 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
         <DialogTrigger
           className={cn(
             baseButtonClassName,
-            "bg-secondary text-white gap-2 flex ml-auto w-[125px]"
+            "bg-secondary text-white gap-2 flex ml-auto w-[125px] button-styles group"
           )}
           onClick={() => setOpen(true)}
         >
-          <IconStar className="size-4" />
+          <IconStar className="size-4 group-hover:animate-spin" />
           Đánh giá
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="font-bold mb-5 text-xl">
-              Chia sẻ cảm nhận của bạn
+            <DialogTitle className="font-extrabold mb-5 text-xl">
+              Đánh giá
             </DialogTitle>
             <DialogDescription className="flex flex-col gap-5">
               <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
-                <div className="flex items-center gap-5 justify-center mb-2">
+                <div className="flex items-center gap-5 justify-between mb-5">
                   {reactions.map((reaction) => (
                     <button
                       key={reaction.value}
                       className={cn(
-                        "flex flex-col gap-2 text-xs justify-center items-center group font-semibold hover:-translate-y-3 transition-all",
-                        rating === reaction.rating ? "-translate-y-3" : ""
+                        "flex flex-col gap-2 text-xs justify-center items-center group font-semibold"
                       )}
                       type="button"
                       onClick={() => setRating(reaction.rating)}
                     >
                       <span
                         className={cn(
-                          "size-10 p-2 rounded-full flex items-center justify-center text-sm",
+                          "size-12 p-2 rounded-full flex items-center justify-center text-sm",
                           rating === reaction.rating
                             ? "bg-[#FEE272]"
-                            : "bg-white dark:bg-grayDarker"
+                            : "bg-gray-200 dark:bg-gray-100 dark:bg-opacity-10"
                         )}
                       >
                         <Image
@@ -124,10 +123,7 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
                       </span>
                       <span
                         className={cn(
-                          "transition-all group-hover:opacity-100 group-hover:visible",
-                          rating === reaction.rating
-                            ? "opacity-100 visible"
-                            : "opacity-0 invisible"
+                          "grayPrimary dark:text-white transition-all group-hover:opacity-100 group-hover:visible"
                         )}
                       >
                         {reaction.value}
@@ -144,7 +140,7 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
                         <Textarea
                           {...field}
                           placeholder="Cảm nhận của bạn..."
-                          className="h-[120px] border-gray-200"
+                          className="h-[200px]"
                         />
                       </FormControl>
                       <FormMessage className="text-red-400" />
@@ -153,10 +149,10 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
                 />
                 <div className="mt-5 flex justify-end">
                   <Button
-                    className={cn(primaryButtonClassName, "w-[120px]")}
+                    className={cn(primaryButtonClassName, "w-full")}
                     isLoading={isSubmitting}
                   >
-                    Đánh giá
+                    Gửi
                   </Button>
                 </div>
               </form>

@@ -9,10 +9,12 @@ const page = async ({
 }: {
   searchParams: {
     username: string;
+    email?: string;
   };
 }) => {
   const user = await getUserByUsername({
     username: searchParams.username,
+    email: searchParams.email,
   });
   const allCoures = await getAllCourses({
     status: ECourseStatus.APPROVED,
