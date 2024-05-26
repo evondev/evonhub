@@ -48,9 +48,7 @@ export async function updateUserByUsername(params: any) {
     if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
       return undefined;
     const { username, updateData } = params;
-    await User.findOneAndUpdate({ username }, updateData, {
-      new: true,
-    });
+    await User.findOneAndUpdate({ username }, updateData);
     // revalidatePath(path);
   } catch (error) {
     console.log(error);

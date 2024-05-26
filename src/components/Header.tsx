@@ -2,7 +2,34 @@
 import { UserButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
+import Notification from "./noti/Notification";
 
+const IconSearch = (
+  <svg
+    width={22}
+    height={22}
+    viewBox="0 0 22 22"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx={11}
+      cy="10.5"
+      r="8.5"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M16.5 17L19.5 20"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 const Header = () => {
   const auth = useAuth();
   return (
@@ -13,37 +40,16 @@ const Header = () => {
           placeholder="Search..."
           className="bg-transparent w-full text-sm dark:text-white"
         />
-        <button className="text-grayb2">
-          <svg
-            width={22}
-            height={22}
-            viewBox="0 0 22 22"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle
-              cx={11}
-              cy="10.5"
-              r="8.5"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M16.5 17L19.5 20"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
+        <button className="text-grayb2">{IconSearch}</button>
       </div>
       <div className="flex items-center gap-5">
         <ModeToggle></ModeToggle>
         {auth?.userId ? (
-          <UserButton afterSignOutUrl="/" />
+          <div className="flex items-center gap-5">
+            <Notification></Notification>
+
+            <UserButton afterSignOutUrl="/" />
+          </div>
         ) : (
           <Link
             href="/sign-in"

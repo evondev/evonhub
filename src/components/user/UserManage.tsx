@@ -130,6 +130,7 @@ const UserManage = ({
     } catch (error) {}
   };
   const handleChangePage = (action: "prev" | "next") => {
+    if (page === 1 && action === "prev") return;
     if (action === "prev") {
       setPage((prev) => prev - 1);
     } else {

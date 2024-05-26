@@ -183,6 +183,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
             >
               <h3 className="font-semibold">{course.title}</h3>
               <Button
+                type="button"
                 className="flex w-8 h-8 p-0 items-center gap-2 rounded bg-red-100 text-red-500 font-semibold hover:opacity-85"
                 onClick={() =>
                   handleRemoveCourseFromUser(course._id.toString())
@@ -197,7 +198,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
       <h2 className="font-bold text-xl mb-5">Phân quyền</h2>
       <div className="bg-white rounded-lg p-5 dark:bg-grayDarker mb-5">
         <div className="flex flex-wrap gap-5">
-          {Object.keys(userPermissions).map((key) => (
+          {Object.values(userPermissions).map((key) => (
             <div
               className="flex items-center gap-2 capitalize font-medium text-sm"
               key={key}
