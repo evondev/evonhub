@@ -12,6 +12,7 @@ export async function generateMetadata() {
         "Trong bài này mình sẽ hướng dẫn các bạn cách mua khóa học tại EvonHub",
       keywords:
         "evonhub, hướng dẫn mua khóa học tại evonhub, khóa học frontend, khóa học evonhub",
+      images: ["/seo-cover.jpg"],
     },
   };
 }

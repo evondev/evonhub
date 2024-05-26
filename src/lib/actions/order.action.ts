@@ -54,7 +54,8 @@ export async function getAllOrders() {
         path: "user",
         model: User,
         select: "username email",
-      });
+      })
+      .sort({ createdAt: -1 });
     return orders;
   } catch (error) {
     console.log(error);

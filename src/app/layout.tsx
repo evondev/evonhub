@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     title: "EvonHub - Nền tảng học lập trình trực tuyến",
     description:
       "Nền tảng học lập trình trực tuyến với các khóa học từ cơ bản đến nâng cao về Frontend dành cho người mới bắt đầu và người đã có kinh nghiệm. Được phát triển và xây dựng bởi Evondev.",
-    images: ["/cover.jpg"],
+    images: ["/seo-cover.jpg"],
   },
 };
 
