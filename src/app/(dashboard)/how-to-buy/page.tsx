@@ -26,7 +26,9 @@ const page = () => {
         Các bạn bấm vào mục <strong>Khám phá</strong> để tìm kiếm khóa học. Sau
         đó bấm vào khóa học để xem thông tin. Các bạn sẽ thấy giá khóa học{" "}
         <strong className="text-secondary">màu cam</strong>.
-        <Image src="/tut1.png" alt="bank" width={300} height={600}></Image>
+        <p className="my-5">
+          <Image src="/tut1.png" alt="bank" width={300} height={600}></Image>
+        </p>
         Các bạn chuyển khoản vào tài khoản dưới với nội dung{" "}
         <strong>khóa học + email</strong>
       </div>
