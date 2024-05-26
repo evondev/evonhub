@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const page = () => {
   return (
-    <div>
+    <div className="">
       <h1 className="font-extrabold mb-5 text-3xl">
         Hướng dẫn mua khóa học tại Evonhub
       </h1>
@@ -21,12 +21,16 @@ const page = () => {
         <Image src="/acb.jpeg" alt="bank" width={300} height={600}></Image>
       </div>
       <div className="mb-5">
-        Sau đó các bạn nhấn vào nút{" "}
-        <strong className="text-secondary">màu cam</strong> để liên hệ mình nhé.
-        Nhớ tạo tài khoản và gửi email cho mình để mình kiểm tra nha.
-      </div>
-      <div>
-        <Image src="/tut2.png" alt="bank" width={300} height={600}></Image>
+        Khi mình nhận được thanh toán, mình sẽ chủ động thêm khóa học vào tài
+        khoản cho các bạn. Nếu sau 24h mà không nhận được khóa học, các bạn vui
+        lòng liên hệ mình fb cá nhân mình tại:{" "}
+        <a
+          href="https://fb.com/tuan.trananh.0509"
+          target="_blank"
+          className="text-primary font-bold"
+        >
+          https://fb.com/tuan.trananh.0509
+        </a>
       </div>
     </div>
   );

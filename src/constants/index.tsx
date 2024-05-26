@@ -12,6 +12,7 @@ import { TMenuLink } from "@/types";
 import {
   ECommonStatus,
   ECourseLevel,
+  EOrderStatus,
   EReactionType,
   EUserStatus,
 } from "@/types/enums";
@@ -112,6 +113,26 @@ export const courseStatus = {
     className: "bg-orange-500 bg-opacity-10 text-orange-500",
   },
   rejected: {
+    text: "Bị từ chối",
+    className: "bg-red-500 bg-opacity-10 text-red-500",
+  },
+};
+export const orderStatus: Record<
+  EOrderStatus,
+  {
+    text: string;
+    className: string;
+  }
+> = {
+  APPROVED: {
+    text: "Đã duyệt",
+    className: "bg-green-500 bg-opacity-10 text-green-500",
+  },
+  PENDING: {
+    text: "Chờ duyệt",
+    className: "bg-orange-500 bg-opacity-10 text-orange-500",
+  },
+  REJECTED: {
     text: "Bị từ chối",
     className: "bg-red-500 bg-opacity-10 text-red-500",
   },
