@@ -13,7 +13,7 @@ const Navigation = ({ role }: { role: string }) => {
       <ul className="flex justify-center gap-5 fixed bottom-0 left-0 right-0 z-10 p-2 dark:bg-grayDarker bg-white">
         {menuLinks.map((link) => {
           if (
-            (link.url.includes("coaching") || link.url.includes("hub")) &&
+            (link.url.includes("how-to") || link.url.includes("profile")) &&
             role === Role.ADMIN
           )
             return null;
