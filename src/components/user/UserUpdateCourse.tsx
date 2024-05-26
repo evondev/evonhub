@@ -11,14 +11,15 @@ import {
 } from "@/lib/actions/user.action";
 import { cn } from "@/lib/utils";
 import { Role } from "@/types/enums";
+import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import { useState } from "react";
+import { NumericFormat } from "react-number-format";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { IconDelete } from "../icons";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
-import { Input } from "../ui/input";
 import {
   Select,
   SelectContent,
@@ -79,12 +80,13 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
         icon: "warning",
       }).then(async (result) => {
         if (result.isConfirmed) {
+          const discountValue = Number(discount?.toString()?.replace(/,/g, ""));
           const res = await addCourseToUser({
             userId: user.clerkId,
             course: {
               id: selectCourse?._id.toString(),
               price: selectCourse?.price,
-              discount,
+              discount: discountValue,
             },
             path: `/admin/user/update?username=${user.username}`,
           });
@@ -119,7 +121,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
     }
   };
   const [selectCourse, setSelectCourse] = useState<any>(null);
-  const [discount, setDiscount] = useState(200_000);
+  const [discount, setDiscount] = useState<number | string>(200_000);
   const [userRole, setUserRole] = useState(user.role);
   const [selectPermissions, setSelectPermissions] = useState<string[]>(
     user.permissions || []
@@ -136,6 +138,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
           priority
         />
         <h1 className="font-bold text-xl">{user.username}</h1>
+        <p>{user.email}</p>
       </div>
       <h2 className="font-bold text-xl mb-5">Thêm khóa học</h2>
       <div className="flex flex-col gap-5 mb-8">
@@ -151,17 +154,22 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
               {courses.map((course) => (
                 <SelectItem key={course._id} value={course}>
                   {course.title}
+                  <strong className="ml-5 text-secondary">
+                    {formatThoundsand(course.price)} VNĐ
+                  </strong>
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
           <div>
-            <Input
-              placeholder="Discount"
-              type="number"
-              onChange={(e) => setDiscount(Number(e.target.value))}
-              className="w-40"
-              defaultValue={discount}
+            <NumericFormat
+              valueIsNumericString
+              thousandSeparator
+              className={cn(
+                "flex h-12 file:border-0 file:bg-transparent file:text-sm file:font-medium   focus-primary form-styles w-40"
+              )}
+              defaultValue={discount as any}
+              onChange={(e) => setDiscount(e.target.value)}
             />
           </div>
           <Button
@@ -181,7 +189,12 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
               className="flex items-center justify-between p-3 rounded bg-white text-sm dark:bg-grayDarker"
               key={index}
             >
-              <h3 className="font-semibold">{course.title}</h3>
+              <h3 className="font-semibold">
+                {course.title}
+                <strong className="text-secondary ml-5">
+                  {formatThoundsand(course.price)} VNĐ
+                </strong>
+              </h3>
               <Button
                 type="button"
                 className="flex w-8 h-8 p-0 items-center gap-2 rounded bg-red-100 text-red-500 font-semibold hover:opacity-85"
