@@ -71,19 +71,29 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
   const handleAddCourseToUser = async () => {
     setIsSubmitting(true);
     try {
-      const res = await addCourseToUser({
-        userId: user.clerkId,
-        course: {
-          id: selectCourse?._id.toString(),
-          price: selectCourse?.price,
-          discount,
-        },
-        path: `/admin/user/update?username=${user.username}`,
+      Swal.fire({
+        title: "Bạn đã xem giá tiền và discount chưa?",
+        showCancelButton: true,
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Hủy",
+        icon: "warning",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const res = await addCourseToUser({
+            userId: user.clerkId,
+            course: {
+              id: selectCourse?._id.toString(),
+              price: selectCourse?.price,
+              discount,
+            },
+            path: `/admin/user/update?username=${user.username}`,
+          });
+          if (res?.type === "error") {
+            return toast.error(res.message);
+          }
+          toast.success("Thêm khóa học thành công");
+        }
       });
-      if (res?.type === "error") {
-        return toast.error(res.message);
-      }
-      toast.success("Thêm khóa học thành công");
     } catch (error) {
       console.log(error);
     } finally {
@@ -109,7 +119,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
     }
   };
   const [selectCourse, setSelectCourse] = useState<any>(null);
-  const [discount, setDiscount] = useState(0);
+  const [discount, setDiscount] = useState(200_000);
   const [userRole, setUserRole] = useState(user.role);
   const [selectPermissions, setSelectPermissions] = useState<string[]>(
     user.permissions || []
@@ -151,6 +161,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
               type="number"
               onChange={(e) => setDiscount(Number(e.target.value))}
               className="w-40"
+              defaultValue={discount}
             />
           </div>
           <Button

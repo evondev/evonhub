@@ -1,5 +1,20 @@
 import Image from "next/image";
-
+export async function generateMetadata() {
+  return {
+    title: "Hướng dẫn mua khóa học tại Evonhub",
+    description:
+      "Trong bài này mình sẽ hướng dẫn các bạn cách mua khóa học tại EvonHub",
+    keywords:
+      "evonhub, hướng dẫn mua khóa học tại evonhub, khóa học frontend, khóa học evonhub",
+    openGraph: {
+      title: "Hướng dẫn mua khóa học tại Evonhub",
+      description:
+        "Trong bài này mình sẽ hướng dẫn các bạn cách mua khóa học tại EvonHub",
+      keywords:
+        "evonhub, hướng dẫn mua khóa học tại evonhub, khóa học frontend, khóa học evonhub",
+    },
+  };
+}
 const page = () => {
   return (
     <div className="">
