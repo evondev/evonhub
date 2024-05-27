@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import slugify from "slugify";
@@ -94,6 +94,15 @@ const LessonItemUpdate = ({
       setIsSubmitting(false);
     }
   }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const editor = editorRef.current as any;
+      if (editor) {
+        editor.setContent(lesson.content);
+      }
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [lesson.content]);
   return (
     <Form {...form}>
       <form
