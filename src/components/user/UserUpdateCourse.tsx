@@ -137,8 +137,10 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
           className="rounded-full"
           priority
         />
-        <h1 className="font-bold text-xl">{user.username}</h1>
-        <p>{user.email}</p>
+        <div className="flex flex-col gap-1">
+          <h1 className="font-bold text-xl">{user.username}</h1>
+          <p>{user.email}</p>
+        </div>
       </div>
       <h2 className="font-bold text-xl mb-5">Thêm khóa học</h2>
       <div className="flex flex-col gap-5 mb-8">
@@ -183,10 +185,10 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
             {IconPlus}
           </Button>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-3">
           {user.courses.map((course: any, index: number) => (
             <div
-              className="flex items-center justify-between p-3 rounded bg-white text-sm dark:bg-grayDarker"
+              className="flex items-center justify-between p-3 rounded bg-white text-sm dark:bg-grayDarker gap-3"
               key={index}
             >
               <h3 className="font-semibold">
@@ -197,7 +199,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
               </h3>
               <Button
                 type="button"
-                className="flex w-8 h-8 p-0 items-center gap-2 rounded bg-red-100 text-red-500 font-semibold hover:opacity-85"
+                className="flex w-8 h-8 p-0 items-center gap-2 rounded bg-red-100 text-red-500 font-semibold hover:opacity-85 flex-shrink-0"
                 onClick={() =>
                   handleRemoveCourseFromUser(course._id.toString())
                 }
