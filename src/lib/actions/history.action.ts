@@ -3,6 +3,8 @@ import History from "@/database/history.model";
 import { connectToDatabase } from "../mongoose";
 interface IHistoryLesson {
   lesson: string;
+  user: string;
+  course: string;
 }
 export async function getHistoriesByLessonId({
   lessonId,
@@ -13,7 +15,7 @@ export async function getHistoriesByLessonId({
     connectToDatabase();
     const histories = await History.find({
       lesson: lessonId,
-    }).select("lesson");
+    }).select("lesson user course");
     return histories;
   } catch (error) {
     console.log("error:", error);

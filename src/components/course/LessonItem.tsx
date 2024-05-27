@@ -1,7 +1,6 @@
 "use client";
 import { completeLesson } from "@/lib/actions/history.action";
 import { cn } from "@/lib/utils";
-import { useGlobalStore } from "@/store";
 import { formUrlQuery } from "@/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconPlay } from "../icons";
@@ -21,10 +20,9 @@ const LessonItem = ({
   data?: {
     courseId: string;
     lessonId: string;
+    userId: string;
   };
 }) => {
-  const { currentUser } = useGlobalStore();
-  const userId = currentUser?.id;
   const base = cn(
     "mb-5 pb-5 border-b border-dashed dark:border-b-slate-500 last:pb-0 last:mb-0 last:border-b-0 flex items-center gap-2 dark:text-text5 cursor-pointer text-sm",
     isActive ? "text-primary font-bold dark:text-primary" : "font-medium"
@@ -44,7 +42,7 @@ const LessonItem = ({
     try {
       await completeLesson({
         lessonId: data.lessonId,
-        userId,
+        userId: data.userId,
         courseId: data.courseId,
       });
     } catch (error) {

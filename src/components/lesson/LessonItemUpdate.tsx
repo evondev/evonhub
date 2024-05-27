@@ -110,51 +110,72 @@ const LessonItemUpdate = ({
         className="flex flex-col gap-6"
         autoComplete="off"
       >
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Đường dẫn bài học</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Đường dẫn bài học"
-                  className=""
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="video"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Video Id</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  className=""
-                  placeholder="Video Id"
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="assetId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Asset Id</FormLabel>
-              <FormControl>
-                <Input type="text" placeholder="Asset Id" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-[minmax(0,1fr),49%] gap-5">
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Đường dẫn bài học</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Đường dẫn bài học"
+                    className=""
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="duration"
+            render={({ field }) => (
+              <FormItem className="w-32">
+                <FormLabel>Thời gian (phút)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Số (phút)"
+                    className=" w-24"
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-5">
+          <FormField
+            control={form.control}
+            name="video"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Video Id</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    className=""
+                    placeholder="Video Id"
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="assetId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Asset Id</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="Asset Id" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="content"
@@ -174,23 +195,7 @@ const LessonItemUpdate = ({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="duration"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Thời gian (phút)</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Số (phút)"
-                  className=" w-24"
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+
         <div className="flex items-center justify-end gap-3">
           <Button
             className={cn(

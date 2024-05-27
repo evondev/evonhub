@@ -8,6 +8,8 @@ import {
 import { getLessonDetailsContent } from "@/lib/actions/general.action";
 import { getHistoriesByLessonId } from "@/lib/actions/history.action";
 import { getLessonBySlug } from "@/lib/actions/lesson.action";
+import { getUserById } from "@/lib/actions/user.action";
+import { auth } from "@clerk/nextjs/server";
 
 const page = async ({
   params,
@@ -20,6 +22,9 @@ const page = async ({
     slug: string;
   };
 }) => {
+  const { userId } = auth();
+  const mongoUser = await getUserById({ userId: userId || "" });
+
   const lessonDetails = await getLessonBySlug(searchParams.slug, params.course);
   if (!lessonDetails) return null;
   const courseId = lessonDetails.courseId.toString();
@@ -52,11 +57,15 @@ const page = async ({
                   }
                   isActive={lesson.slug === searchParams.slug}
                   isCompleted={historyLessons?.some(
-                    (item) => item.lesson.toString() === lesson._id.toString()
+                    (item) =>
+                      item.lesson.toString() === lesson._id.toString() &&
+                      item.user.toString() === mongoUser?._id.toString() &&
+                      item.course.toString() === courseId
                   )}
                   data={{
                     courseId: courseId.toString(),
                     lessonId: lesson._id.toString(),
+                    userId: mongoUser?._id.toString(),
                   }}
                 ></LessonItem>
               ))}
