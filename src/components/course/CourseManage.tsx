@@ -44,7 +44,9 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
   return (
     <div className="hidden lg:block">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-extrabold">Quản lý khóa học</h1>
+        <h1 className="text-xlg lg:text-3xl font-extrabold">
+          Quản lý khóa học
+        </h1>
         <Link href="/admin/course/add-new" className={primaryButtonClassName}>
           Tạo khóa học mới
         </Link>
@@ -85,7 +87,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                     className="w-16 h-16 object-cover rounded flex-shrink-0"
                   />
                   <div>
-                    <div className="flex items-start gap-2 group">
+                    <div className="flex items-start gap-2">
                       <Link
                         href={`/admin/course/content?slug=${course.slug}`}
                         target="_blank"
@@ -93,20 +95,6 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                       >
                         {course.title}
                       </Link>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6 group-hover:text-primary transition-all"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-                        />
-                      </svg>
                     </div>
                     <p className="text-sm text-gray-400">
                       {new Date(course.createdAt).toLocaleDateString("vi-VN")}

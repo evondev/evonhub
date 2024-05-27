@@ -164,13 +164,16 @@ div[role="dialog"] {
 }
 // content
 .lesson-content {
+  @apply text-base font-medium;
   p,
-  li,
   ul,
   ol,
   img,
   figure {
     @apply mb-5;
+  }
+  li {
+    @apply mb-2;
   }
   ul,
   ol {
@@ -185,10 +188,10 @@ div[role="dialog"] {
   h2,
   h3,
   h4 {
-    @apply font-bold mb-10 text-lg lg:text-xl;
+    @apply font-bold mb-5 text-lg lg:text-xl;
   }
   a {
-    @apply text-primary;
+    @apply text-secondary;
   }
 }
 // slider css

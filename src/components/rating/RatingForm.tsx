@@ -82,12 +82,12 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
         <DialogTrigger
           className={cn(
             baseButtonClassName,
-            "bg-secondary text-white gap-2 flex ml-auto w-[125px] button-styles group"
+            "bg-secondary text-white gap-2 flex ml-auto  button-styles group"
           )}
           onClick={() => setOpen(true)}
         >
           <IconStar className="size-4 group-hover:animate-spin" />
-          Đánh giá
+          Đánh giá khóa học
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -139,7 +139,7 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
                       <FormControl>
                         <Textarea
                           {...field}
-                          placeholder="Cảm nhận của bạn..."
+                          placeholder="Cảm nhận của bạn về khóa học này"
                           className="h-[200px]"
                         />
                       </FormControl>

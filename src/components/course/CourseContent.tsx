@@ -1,5 +1,5 @@
 "use client";
-import { IconDelete, IconEdit } from "@/components/icons";
+import { IconCube, IconDelete, IconEdit, IconPlay } from "@/components/icons";
 import {
   Accordion,
   AccordionContent,
@@ -239,10 +239,8 @@ const CourseContent = ({
   };
 
   return (
-    <div>
-      <h1 className="font-extrabold text-3xl mb-8 text-primary">
-        {data.title}
-      </h1>
+    <div className="hidden lg:block">
+      <h1 className="font-extrabold text-3xl mb-8">{data.title}</h1>
       {lectureList.map((lecture, index) => {
         const lessons = lecture.lessons;
         return (
@@ -281,8 +279,9 @@ const CourseContent = ({
               </>
             ) : (
               <>
-                <div className="p-4 rounded-lg bg-white dark:bg-grayDarker flex items-center justify-between mb-5 font-semibold text-sm">
+                <div className="p-4 rounded-lg bg-white dark:bg-grayDarker flex items-center justify-between mb-5 font-bold text-sm">
                   <div className="flex items-center gap-2">
+                    <IconCube />
                     <strong>Chương {index + 1}:</strong>
                     <p>{lecture.title}</p>
                     <button
@@ -352,8 +351,11 @@ const CourseContent = ({
                         >
                           <AccordionItem value={lesson.title}>
                             <AccordionTrigger>
-                              <div className="flex items-center gap-3 text-sm font-medium">
-                                <div>{lesson.title}</div>
+                              <div className="flex items-center gap-3 text-sm font-semibold">
+                                <div className="flex items-center gap-1">
+                                  <IconPlay />
+                                  <div>{lesson.title}</div>
+                                </div>
                                 <span
                                   className="size-5 flex items-center justify-center hover:text-blue-400"
                                   onClick={() => setEditLessonIndex(lesson._id)}
@@ -391,7 +393,7 @@ const CourseContent = ({
                     <Button
                       className={cn(
                         baseButtonClassName,
-                        "w-[140px] border border-current dark:hover:border-gray-700  ml-auto block h-10 my-5 dark:border-grayDarker hover:border-gray-400"
+                        "w-[140px] ml-auto bg-primary text-white button-styles"
                       )}
                       onClick={() => handleAddLesson(lecture._id)}
                       isLoading={isSubmitting.lesson}
@@ -410,7 +412,7 @@ const CourseContent = ({
         <Button
           className={cn(
             baseButtonClassName,
-            "w-[160px] border border-current hover:border-gray-400 dark:hover:border-gray-700 dark:border-grayDarker"
+            "w-[160px] bg-secondary text-white button-styles"
           )}
           onClick={handleAddLecture}
           isLoading={isSubmitting.lecture}

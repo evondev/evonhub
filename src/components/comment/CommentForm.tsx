@@ -86,7 +86,7 @@ const CommentForm = ({
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="Viết bình luận của bạn..."
+                    placeholder="Chia sẻ cảm nghĩ của bạn về bài học này giúp mình nha."
                     className="resize-none min-h-[200px]"
                   />
                 </FormControl>
