@@ -3,7 +3,7 @@ import GoBack from "@/components/GoBack";
 const PageNotFound = () => {
   return (
     <div className="py-5 lg:py-20">
-      <h1 className="text-3xl lg:text-5xl mb-5 font-extrabold text-center flex flex-col gap-5 items-center">
+      <h1 className="text-3xl lg:text-5xl mb-5 font-bold text-center flex flex-col gap-5 items-center">
         <span className="text-gradient inline-block text-7xl">404</span>
         <span>Không tìm thấy trang</span>
       </h1>

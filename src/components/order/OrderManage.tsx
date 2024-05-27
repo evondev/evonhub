@@ -36,9 +36,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
   return (
     <>
       <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
-        <h1 className="text-2xl lg:text-3xl font-extrabold">
-          Quản lý đơn hàng
-        </h1>
+        <h1 className="text-2xl lg:text-3xl font-bold">Quản lý đơn hàng</h1>
         <Input
           placeholder="Tìm kiếm đơn hàng"
           className="w-full lg:w-[300px]"

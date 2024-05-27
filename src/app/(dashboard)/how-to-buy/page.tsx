@@ -19,7 +19,7 @@ export async function generateMetadata() {
 const page = () => {
   return (
     <div className="">
-      <h1 className="font-extrabold mb-5 text-3xl">
+      <h1 className="font-bold mb-5 text-3xl">
         Hướng dẫn mua khóa học tại Evonhub
       </h1>
       <div className="mb-5">

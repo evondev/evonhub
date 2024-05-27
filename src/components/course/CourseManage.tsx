@@ -44,9 +44,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
   return (
     <div className="hidden lg:block">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-xlg lg:text-3xl font-extrabold">
-          Quản lý khóa học
-        </h1>
+        <h1 className="text-xlg lg:text-3xl font-bold">Quản lý khóa học</h1>
         <Link href="/admin/course/add-new" className={primaryButtonClassName}>
           Tạo khóa học mới
         </Link>

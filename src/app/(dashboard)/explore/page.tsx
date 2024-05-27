@@ -1,3 +1,4 @@
+import HeadingNChild from "@/components/HeadingNChild";
 import { getAllCourses } from "@/lib/actions/course.action";
 import Courses from "@/pages/Courses";
 import { ECourseStatus } from "@/types/enums";
@@ -9,10 +10,11 @@ const page = async () => {
   });
   return (
     <>
-      <h1 className="text-2xl lg:text-3xl font-extrabold mb-8">Khám phá</h1>
-      <Courses
-        data={courses ? JSON.parse(JSON.stringify(courses)) : []}
-      ></Courses>
+      <HeadingNChild title="Khám phá">
+        <Courses
+          data={courses ? JSON.parse(JSON.stringify(courses)) : []}
+        ></Courses>
+      </HeadingNChild>
     </>
   );
 };

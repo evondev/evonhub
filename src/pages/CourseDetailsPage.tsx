@@ -105,9 +105,7 @@ const CourseDetailsPage = ({
             />
           )}
         </div>
-        <h1 className="font-extrabold text-2xl lg:text-3xl mb-8">
-          {data.title}
-        </h1>
+        <h1 className="font-bold text-2xl lg:text-3xl mb-8">{data.title}</h1>
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Mô tả</h2>

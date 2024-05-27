@@ -1,6 +1,7 @@
 "use client";
 
 import CourseItem from "@/components/CourseItem";
+import HeadingNChild from "@/components/HeadingNChild";
 
 const Dashboard = ({
   courses = [],
@@ -10,11 +11,8 @@ const Dashboard = ({
   lessons: any[];
 }) => {
   return (
-    <div>
-      <h1 className="text-2xl lg:text-3xl font-extrabold mb-8">
-        Khu vực học tập
-      </h1>
-      <div className="grid xl:grid-cols-3 xl:gap-8 courseSlider">
+    <>
+      <HeadingNChild title="Khu vực học tập">
         {courses.length > 0 &&
           courses?.map((course, index) => (
             <CourseItem
@@ -24,8 +22,8 @@ const Dashboard = ({
               url={`/lesson?slug=${lessons?.[index][0]?.slug}`}
             ></CourseItem>
           ))}
-      </div>
-    </div>
+      </HeadingNChild>
+    </>
   );
 };
 

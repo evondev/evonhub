@@ -23,6 +23,9 @@ const config: Config = {
         grayDarker: "#1F2024",
         grayDarkest: "#1A1B1E",
       },
+      screens: {
+        "2xl": "1440px",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

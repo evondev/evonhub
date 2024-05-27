@@ -240,7 +240,7 @@ const CourseContent = ({
 
   return (
     <div className="hidden lg:block">
-      <h1 className="font-extrabold text-3xl mb-8">{data.title}</h1>
+      <h1 className="font-bold text-3xl mb-8">{data.title}</h1>
       {lectureList.map((lecture, index) => {
         const lessons = lecture.lessons;
         return (

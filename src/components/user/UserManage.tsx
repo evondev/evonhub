@@ -146,7 +146,7 @@ const UserManage = ({
   return (
     <div>
       <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
-        <h1 className="text-2xl lg:text-3xl font-extrabold">
+        <h1 className="text-2xl lg:text-3xl font-bold">
           Quản lý thành viên({count})
         </h1>
         <Input

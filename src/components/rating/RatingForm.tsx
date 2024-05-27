@@ -91,7 +91,7 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="font-extrabold mb-5 text-xl">
+            <DialogTitle className="font-bold mb-5 text-xl">
               Đánh giá
             </DialogTitle>
             <DialogDescription className="flex flex-col gap-5">

@@ -17,7 +17,7 @@ function BoxItem({ title, count }: { title: string; count: number }) {
   return (
     <div className="p-5 rounded-lg bg-white dark:bg-grayDarker">
       <h3 className="font-bold text-sm text-slate-500 mb-0.5">{title}</h3>
-      <h4 className="text-xl font-extrabold">{count}</h4>
+      <h4 className="text-xl font-bold">{count}</h4>
     </div>
   );
 }

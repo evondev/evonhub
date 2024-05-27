@@ -68,9 +68,7 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
   return (
     <div>
       <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
-        <h1 className="text-2xl lg:text-3xl font-extrabold">
-          Quản lý thảo luận
-        </h1>
+        <h1 className="text-2xl lg:text-3xl font-bold">Quản lý thảo luận</h1>
         <Input
           placeholder="Tìm kiếm..."
           className="w-full lg:w-[300px]"
