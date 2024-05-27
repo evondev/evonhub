@@ -40,8 +40,8 @@ const Notification = () => {
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-1">
                   <h3 className="font-bold">Hệ thống</h3>
-                  <span className="block size-1 rounded-full bg-gray-600"></span>
-                  <span>6m ago</span>
+                  {/* <span className="block size-1 rounded-full bg-gray-600"></span> */}
+                  {/* <span>6m ago</span> */}
                 </div>
                 <p className="text-slate-600">
                   Tài khoản của bạn vừa mới được thêm khóa học từ hệ thống

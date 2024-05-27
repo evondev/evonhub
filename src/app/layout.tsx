@@ -47,7 +47,10 @@ export default async function RootLayout({
               <Providers>{children}</Providers>
             </ThemeProvider>
           </div>
-          <ToastContainer autoClose={1500}></ToastContainer>
+          <ToastContainer
+            autoClose={1500}
+            position="top-right"
+          ></ToastContainer>
           <Script
             id="mux-uploader"
             src="https://cdn.jsdelivr.net/npm/@mux/mux-uploader@1.0.0-beta.6"
