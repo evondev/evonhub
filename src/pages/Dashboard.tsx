@@ -11,7 +11,9 @@ const Dashboard = ({
 }) => {
   return (
     <div>
-      <h1 className="text-3xl font-extrabold mb-8">Khu vực học tập</h1>
+      <h1 className="text-2xl lg:text-3xl font-extrabold mb-8">
+        Khu vực học tập
+      </h1>
       <div className="grid xl:grid-cols-3 xl:gap-8 courseSlider">
         {courses.length > 0 &&
           courses?.map((course, index) => (

@@ -9,7 +9,7 @@ const page = async () => {
   });
   return (
     <>
-      <h1 className="text-3xl font-extrabold mb-8">Khám phá</h1>
+      <h1 className="text-2xl lg:text-3xl font-extrabold mb-8">Khám phá</h1>
       <Courses
         data={courses ? JSON.parse(JSON.stringify(courses)) : []}
       ></Courses>

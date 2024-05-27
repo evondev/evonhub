@@ -1,5 +1,6 @@
 "use client";
 import { UserButton, useAuth } from "@clerk/nextjs";
+import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
 import Notification from "./noti/Notification";
@@ -34,7 +35,19 @@ const Header = () => {
   const auth = useAuth();
   return (
     <div className="top py-8 flex items-center justify-between gap-5">
-      <div className="rounded-full gap-4 h-12 px-5 bg-white dark:bg-grayDark w-[min(100%,390px)] items-center flex">
+      <Link href="/" className="flex items-center gap-2 lg:hidden">
+        <span className="size-10 rounded-full flex items-center justify-center font-bold text-lg gradientPrimary p-3">
+          <Image
+            width={40}
+            height={40}
+            src="/logo.png"
+            alt="EvonHub"
+            className="object-contain max-w-full"
+          ></Image>
+        </span>
+        <span className="text-lg font-bold">EvonHub</span>
+      </Link>
+      <div className="rounded-full gap-4 h-12 px-5 bg-white dark:bg-grayDark w-[min(100%,390px)] items-center lg:flex hidden">
         <input
           type="text"
           placeholder="Search..."
@@ -42,10 +55,10 @@ const Header = () => {
         />
         <button className="text-grayb2">{IconSearch}</button>
       </div>
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-3">
         <ModeToggle></ModeToggle>
         {auth?.userId ? (
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3">
             <Notification></Notification>
 
             <UserButton afterSignOutUrl="/" />
