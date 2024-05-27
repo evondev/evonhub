@@ -17,7 +17,7 @@ const layout = ({
 }) => {
   return (
     <div
-      className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,1fr)] gap-8 items-start transition-all"
+      className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,400px)] gap-8 items-start transition-all relative"
       id="lesson-study"
     >
       <div>
@@ -32,7 +32,9 @@ const layout = ({
         <Suspense fallback={<CommentLoadingSkeleton />}>{comment}</Suspense>
       </div>
       <Suspense fallback={<LessonContentSkeleton />}>
-        <div id="lesson-content-aside">{content}</div>
+        <div id="lesson-content-aside" className="sticky top-8 right-0">
+          {content}
+        </div>
       </Suspense>
     </div>
   );

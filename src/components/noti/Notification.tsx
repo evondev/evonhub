@@ -29,13 +29,16 @@ const Notification = () => {
       <PopoverTrigger className="size-12 flex items-center justify-center bg-white rounded-lg dark:bg-grayDarker border border-gray-200 dark:border-opacity-10">
         {IconNoti}
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-80 p-0 shadow-sm">
-        <div className="p-3 font-bold text-base border-b border-b-gray-200">
+      <PopoverContent
+        align="end"
+        className="w-80 p-0 shadow-sm dark:bg-grayDarker dark:border-opacity-10 dark:border-gray-200"
+      >
+        <div className="p-3 font-bold text-base border-b border-b-gray-200 dark:border-opacity-10">
           Thông báo
         </div>
         {currentUser?.courses?.length > 0 && (
           <div className="p-3">
-            <div className="flex items-baseline gap-3 text-sm font-medium pb-3 mb-3 border-b border-b-gray-100 border-dashed last:mb-0 last:pb-0 last:border-b-0">
+            <div className="flex items-baseline gap-3 text-sm font-medium pb-3 mb-3 border-b border-b-gray-100 border-dashed dark:border-opacity-10 last:mb-0 last:pb-0 last:border-b-0">
               <span className="rounded-full size-2 bg-green-500 flex-shrink-0"></span>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-1">
@@ -43,7 +46,7 @@ const Notification = () => {
                   {/* <span className="block size-1 rounded-full bg-gray-600"></span> */}
                   {/* <span>6m ago</span> */}
                 </div>
-                <p className="text-slate-600">
+                <p className="text-slate-600 dark:text-slate-200">
                   Tài khoản của bạn vừa mới được thêm khóa học từ hệ thống
                 </p>
               </div>
