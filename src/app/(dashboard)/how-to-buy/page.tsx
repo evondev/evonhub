@@ -30,7 +30,7 @@ const page = () => {
           <Image src="/tut1.png" alt="bank" width={300} height={600}></Image>
         </p>
         Các bạn chuyển khoản vào tài khoản dưới với nội dung{" "}
-        <strong>khóa học email</strong>
+        <strong>khóa học email</strong> mà không cần dấu @ đồ phía sau nha.
       </div>
       <div className="mb-5">
         Ví dụ: <strong>nextjspro evonhub1402</strong>
