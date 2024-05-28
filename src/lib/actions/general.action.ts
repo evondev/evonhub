@@ -56,7 +56,7 @@ export async function getLessonDetailsContent({
       .populate({
         path: "lessons",
         model: Lesson,
-        select: "title slug user course",
+        select: "_id title slug user course",
       });
     return lectureList || [];
   } catch (error) {}

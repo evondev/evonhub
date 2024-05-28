@@ -1,3 +1,4 @@
+"use server";
 import Course from "@/database/course.model";
 import Lesson from "@/database/lesson.model";
 import { CourseParams } from "@/types";

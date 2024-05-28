@@ -6,16 +6,10 @@ interface IHistoryLesson {
   user: string;
   course: string;
 }
-export async function getHistoriesByLessonId({
-  lessonId,
-}: {
-  lessonId: string;
-}): Promise<IHistoryLesson[] | undefined> {
+export async function getHistories(): Promise<IHistoryLesson[] | undefined> {
   try {
     connectToDatabase();
-    const histories = await History.find({
-      lesson: lessonId,
-    }).select("lesson user course");
+    const histories = await History.find().select("lesson user course");
     return histories;
   } catch (error) {
     console.log("error:", error);
@@ -34,6 +28,8 @@ export async function completeLesson({
     connectToDatabase();
     const existHistory = await History.findOne({
       lesson: lessonId,
+      user: userId,
+      course: courseId,
     });
     if (!existHistory) {
       await History.create({

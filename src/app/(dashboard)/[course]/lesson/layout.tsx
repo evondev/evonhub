@@ -20,7 +20,7 @@ const layout = ({
       className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,400px)] gap-8 items-start transition-all relative"
       id="lesson-study"
     >
-      <div className="overflow-hidden">
+      <div className="overflow-hidden p-2">
         <Suspense fallback={<PlayerLoadingSkeleton />}>{player}</Suspense>
         <Suspense
           fallback={
