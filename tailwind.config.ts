@@ -20,7 +20,7 @@ const config: Config = {
         grayef: "#EFEFEF",
         grayb2: "#B2B8C6",
         grayDark: "#1C1F25",
-        grayDarker: "#1F2024",
+        grayDarker: "#1F2026",
         grayDarkest: "#1A1B1E",
       },
       screens: {

@@ -79,6 +79,7 @@
 .button-styles {
   position: relative;
   z-index: 2;
+  overflow: hidden;
   &:before {
     content: "";
     position: absolute;

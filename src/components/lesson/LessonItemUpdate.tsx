@@ -198,10 +198,7 @@ const LessonItemUpdate = ({
 
         <div className="flex items-center justify-end gap-3">
           <Button
-            className={cn(
-              btnClassName,
-              " bg-slate-900 text-white hover:opacity-85 dark:bg-white dark:text-slate-900"
-            )}
+            className={cn(btnClassName, " bg-primary text-white button-styles")}
             type="submit"
             isLoading={isSubmitting}
           >
