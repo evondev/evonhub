@@ -266,14 +266,14 @@ const CourseContent = ({
                   </div>
                   <div className="flex justify-end">
                     <Button
-                      className={primaryButtonClassName}
+                      className={cn(primaryButtonClassName, "h-10")}
                       onClick={() => handleSaveLecture(index)}
                       isLoading={isSubmitting.lecture}
                     >
                       Cập nhật
                     </Button>
                     <button
-                      className={cn(baseButtonClassName)}
+                      className={cn(baseButtonClassName, "h-10")}
                       onClick={() => handleCancelLecture(index)}
                     >
                       Hủy
@@ -291,7 +291,7 @@ const CourseContent = ({
                 >
                   <AccordionItem value={lecture.title}>
                     <AccordionTrigger>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 font-semibold">
                         <IconCube />
                         <strong>Chương {index + 1}:</strong>
                         <p>{lecture.title}</p>
@@ -336,7 +336,10 @@ const CourseContent = ({
                                   </div>
                                   <div className="flex justify-end">
                                     <Button
-                                      className={primaryButtonClassName}
+                                      className={cn(
+                                        primaryButtonClassName,
+                                        "h-10"
+                                      )}
                                       onClick={() =>
                                         handleSaveLesson(lesson._id, lesson)
                                       }
@@ -345,7 +348,10 @@ const CourseContent = ({
                                       Cập nhật
                                     </Button>
                                     <button
-                                      className={cn(baseButtonClassName)}
+                                      className={cn(
+                                        baseButtonClassName,
+                                        "h-10"
+                                      )}
                                       onClick={() => handleCancelLesson(index)}
                                     >
                                       Hủy
