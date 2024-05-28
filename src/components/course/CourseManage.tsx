@@ -88,7 +88,6 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                     <div className="flex items-start gap-2">
                       <Link
                         href={`/admin/course/content?slug=${course.slug}`}
-                        target="_blank"
                         className="font-bold text-base line-clamp-2 max-w-[400px] block"
                       >
                         {course.title}

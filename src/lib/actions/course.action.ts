@@ -111,21 +111,9 @@ export async function getCourseBySlug(
     connectToDatabase();
     let searchQuery: any = {};
     searchQuery.slug = slug;
-    const course = await Course.findOne(searchQuery)
-      .select(
-        "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords"
-      )
-      .populate({
-        path: "lecture",
-        select: "title",
-        match: { _destroy: false },
-        populate: {
-          path: "lessons",
-          select: "title duration",
-          model: Lesson,
-          match: { _destroy: false },
-        },
-      });
+    const course = await Course.findOne(searchQuery).select(
+      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords"
+    );
 
     return course;
   } catch (error) {
