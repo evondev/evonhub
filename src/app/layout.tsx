@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   keywords:
     "evonhub, evondev, học lập trình, khóa học lập trình, frontend, khóa học frontend, khóa học html css, khóa học javascript, khóa học reactjs, khóa học nextjs, khóa học html, khóa học css, khóa học figma, khóa học ui ux",
   applicationName: "EvonHub",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   openGraph: {
     title: "EvonHub - Nền tảng học lập trình trực tuyến",
     description:
