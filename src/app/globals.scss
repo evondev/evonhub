@@ -168,7 +168,8 @@ div[role="dialog"] {
 }
 // content
 .lesson-content {
-  font-size: 15px;
+  line-height: 1.75;
+  @apply text-base;
   p,
   ul,
   ol,
@@ -196,6 +197,9 @@ div[role="dialog"] {
   }
   a {
     @apply text-secondary;
+  }
+  [class^="language-"] {
+    white-space: pre-line;
   }
 }
 // slider css
