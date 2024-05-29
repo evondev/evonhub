@@ -3,7 +3,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
 import Script from "next/script";
 import { ToastContainer } from "react-toastify";
@@ -20,13 +20,18 @@ export const metadata: Metadata = {
   keywords:
     "evonhub, evondev, học lập trình, khóa học lập trình, frontend, khóa học frontend, khóa học html css, khóa học javascript, khóa học reactjs, khóa học nextjs, khóa học html, khóa học css, khóa học figma, khóa học ui ux",
   applicationName: "EvonHub",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   openGraph: {
     title: "EvonHub - Nền tảng học lập trình trực tuyến",
     description:
       "Nền tảng học lập trình trực tuyến với các khóa học từ cơ bản đến nâng cao về Frontend dành cho người mới bắt đầu và người đã có kinh nghiệm. Được phát triển và xây dựng bởi Evondev.",
     images: ["/seo-cover.jpg"],
   },
+};
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default async function RootLayout({

@@ -15,25 +15,25 @@ export const getTimestamp = (createdAt: Date): string => {
 
   if (timeDifference < minute) {
     const seconds = Math.floor(timeDifference / 1000);
-    return `${seconds} ${seconds === 1 ? "second" : "seconds"} ago`;
+    return `${seconds} ${seconds === 1 ? "giây" : "giây"} trước`;
   } else if (timeDifference < hour) {
     const minutes = Math.floor(timeDifference / minute);
-    return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+    return `${minutes} ${minutes === 1 ? "phút" : "phút"} trước`;
   } else if (timeDifference < day) {
     const hours = Math.floor(timeDifference / hour);
-    return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+    return `${hours} ${hours === 1 ? "giờ" : "giờ"} trước`;
   } else if (timeDifference < week) {
     const days = Math.floor(timeDifference / day);
-    return `${days} ${days === 1 ? "day" : "days"} ago`;
+    return `${days} ${days === 1 ? "ngày" : "ngày"} trước`;
   } else if (timeDifference < month) {
     const weeks = Math.floor(timeDifference / week);
-    return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`;
+    return `${weeks} ${weeks === 1 ? "tuần" : "tuần"} trước`;
   } else if (timeDifference < year) {
     const months = Math.floor(timeDifference / month);
-    return `${months} ${months === 1 ? "month" : "months"} ago`;
+    return `${months} ${months === 1 ? "tháng" : "tháng"} trước`;
   } else {
     const years = Math.floor(timeDifference / year);
-    return `${years} ${years === 1 ? "year" : "years"} ago`;
+    return `${years} ${years === 1 ? "năm" : "năm"} trước`;
   }
 };
 export const formatThoundsand = (num: number): string => {

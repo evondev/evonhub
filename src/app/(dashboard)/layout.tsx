@@ -2,6 +2,7 @@ import AuthProvider from "@/components/AuthProvider";
 import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
 import Sidebar from "@/components/Sidebar";
+import { getNotificationByUser } from "@/lib/actions/notification.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
 
@@ -13,6 +14,8 @@ export default async function DashboardLayout({
   const { userId } = auth();
   // if (!userId) redirect("/sign-in");
   const mongoUser = await getUserById({ userId: userId || "" });
+  const notifications = await getNotificationByUser(mongoUser?._id.toString());
+
   const role = mongoUser?.role;
   return (
     <AuthProvider
@@ -21,7 +24,11 @@ export default async function DashboardLayout({
       <main className="grid grid-cols-1 xl:w-[calc(100%-300px)] ml-auto min-h-screen relative items-start">
         <Sidebar role={role}></Sidebar>
         <section className="px-5 lg:px-8 pb-10">
-          <Header></Header>
+          <Header
+            notifications={
+              notifications ? JSON.parse(JSON.stringify(notifications)) : []
+            }
+          ></Header>
           {children}
           <Navigation role={role}></Navigation>
         </section>

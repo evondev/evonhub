@@ -31,7 +31,7 @@ const IconSearch = (
     />
   </svg>
 );
-const Header = () => {
+const Header = ({ notifications }: { notifications: any[] }) => {
   const auth = useAuth();
   return (
     <div className="top py-8 flex items-center justify-between gap-5">
@@ -59,7 +59,7 @@ const Header = () => {
         <ModeToggle></ModeToggle>
         {auth?.userId ? (
           <div className="flex items-center gap-3">
-            <Notification></Notification>
+            <Notification notifications={notifications}></Notification>
 
             <UserButton afterSignOutUrl="/" />
           </div>

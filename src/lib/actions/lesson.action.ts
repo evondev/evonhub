@@ -7,9 +7,11 @@ import {
   DeleteLessonParams,
   UpdateLessonParams,
 } from "@/types";
+import { ECourseStatus } from "@/types/enums";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
+import { sendNotification } from "./notification.action";
 
 export async function addLesson(params: CreateLessonParams) {
   try {
@@ -22,16 +24,26 @@ export async function addLesson(params: CreateLessonParams) {
       slug: params.slug,
       courseId: params.courseId,
     });
-    if (existLessonSlug) {
-      throw new Error("Lesson slug already exists");
-    }
+
     const newLesson = new Lesson({
       ...params,
+      slug: existLessonSlug
+        ? `${params.slug}-${new Date().getTime().toString().slice(-3)}`
+        : params.slug,
     });
     await newLesson.save();
     findLecture.lessons.push(newLesson._id);
     await findLecture.save();
     revalidatePath(`/admin/course/content?slug=${params.slug}`);
+    const course = await Course.findById(params.courseId).select(
+      "title status"
+    );
+    if (!course || course.status !== ECourseStatus.APPROVED) return;
+    await sendNotification({
+      title: "Thông báo",
+      content: `Khóa học <strong>${course.title}</strong> vừa có bài học mới.`,
+      isSendToAll: true,
+    });
   } catch (error) {
     console.log(error);
   }

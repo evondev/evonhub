@@ -201,6 +201,9 @@ div[role="dialog"] {
   [class^="language-"] {
     white-space: pre-line;
   }
+  code {
+    font-size: 14px;
+  }
 }
 // slider css
 @media screen and (max-width: 1279.98px) {
