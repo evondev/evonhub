@@ -19,9 +19,14 @@ export async function generateMetadata() {
 const page = () => {
   return (
     <div className="">
-      <h1 className="font-bold mb-5 text-3xl">
+      <h1 className="font-extrabold mb-5 text-3xl">
         Hướng dẫn mua khóa học tại Evonhub
       </h1>
+      <div className="mb-5 p-3 bg-secondary bg-opacity-10 text-secondary rounded-lg inline-block">
+        <strong>Lưu ý:</strong> Nếu khóa học miễn phí thì nhấn vào nút{" "}
+        <strong className="text-secondary">lụm liền</strong> là xong nha. Nhớ
+        tạo tài khoản và đăng nhập nhé.
+      </div>
       <div className="mb-5">
         Các bạn bấm vào mục <strong>Khám phá</strong> để tìm kiếm khóa học. Sau
         đó bấm vào khóa học để xem thông tin. Các bạn sẽ thấy giá khóa học{" "}

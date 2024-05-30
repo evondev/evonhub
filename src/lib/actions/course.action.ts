@@ -214,7 +214,11 @@ export async function getFreeCourse(slug: string) {
     connectToDatabase();
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
-    if (!findUser) return undefined;
+    if (!findUser)
+      return {
+        type: "error",
+        message: "Vui lòng đăng nhập để đăng ký khóa học",
+      };
     const findCourse = await Course.find({ slug, free: true });
     if (!findCourse) return undefined;
     if (findUser.courses.includes(findCourse[0]._id)) {
