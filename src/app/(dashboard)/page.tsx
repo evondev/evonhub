@@ -1,5 +1,5 @@
+import Dashboard from "@/components/pages/Dashboard";
 import { getUserStudyCourse } from "@/lib/actions/general.action";
-import Dashboard from "@/pages/Dashboard";
 import { auth } from "@clerk/nextjs/server";
 export const maxDuration = 60;
 async function Home() {

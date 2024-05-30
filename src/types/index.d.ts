@@ -41,6 +41,7 @@ export interface UpdateCourseParams {
   courseSlug?: string;
 }
 export interface CourseParams extends Omit<ICourse, "lecture"> {
+  _id: string;
   lecture: {
     id: string;
     title: string;

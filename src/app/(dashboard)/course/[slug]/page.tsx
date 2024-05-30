@@ -1,8 +1,8 @@
 import PageNotFound from "@/app/not-found";
+import CourseDetailsPage from "@/components/pages/CourseDetailsPage";
 import { updateCourseViews } from "@/lib/actions/course.action";
 import { getCourseDetailsBySlug } from "@/lib/actions/general.action";
 import { getLessonCount } from "@/lib/actions/lesson.action";
-import CourseDetailsPage from "@/pages/CourseDetailsPage";
 import { Metadata, ResolvingMetadata } from "next";
 export const maxDuration = 60;
 

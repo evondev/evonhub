@@ -2,7 +2,6 @@
 import MuxUploader from "@/app/(dashboard)/admin/upload/MuxUploader";
 import { primaryButtonClassName } from "@/constants";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 
 const UploadPage = ({
@@ -12,7 +11,6 @@ const UploadPage = ({
   directUpload1: { url: string };
   directUpload2: { url: string };
 }) => {
-  const router = useRouter();
   const handleRefresh = () => {
     window.location.reload();
   };

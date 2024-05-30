@@ -220,7 +220,11 @@ export async function getFreeCourse(slug: string) {
         message: "Vui lòng đăng nhập để đăng ký khóa học",
       };
     const findCourse = await Course.find({ slug, free: true });
-    if (!findCourse) return undefined;
+    if (!findCourse)
+      return {
+        type: "error",
+        message: "Khóa học không tồn tại",
+      };
     if (findUser.courses.includes(findCourse[0]._id)) {
       return {
         type: "error",
@@ -233,5 +237,7 @@ export async function getFreeCourse(slug: string) {
       type: "success",
       message: "Đăng ký khóa học thành công",
     };
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }

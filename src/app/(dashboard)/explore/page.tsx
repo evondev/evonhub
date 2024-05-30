@@ -1,6 +1,6 @@
 import HeadingNChild from "@/components/HeadingNChild";
+import Courses from "@/components/pages/Courses";
 import { getAllCourses } from "@/lib/actions/course.action";
-import Courses from "@/pages/Courses";
 import { ECourseStatus } from "@/types/enums";
 export const maxDuration = 60;
 

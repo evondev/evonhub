@@ -57,6 +57,7 @@ const CourseDetailsPage = ({
   lessonCount,
 }: {
   data: Omit<ICourse, "lecture"> & {
+    _id: string;
     lecture: {
       _id: string;
       title: string;
@@ -71,6 +72,16 @@ const CourseDetailsPage = ({
   lessonCount: number;
 }) => {
   const { userRole, currentUser } = useGlobalStore();
+  const handleEnrollFree = async (slug: string) => {
+    try {
+      const res = await getFreeCourse(slug);
+      if (res?.type === "success") {
+        toast.success(res?.message);
+        return;
+      }
+      toast.error(res?.message);
+    } catch (error) {}
+  };
   if (!data) return <PageNotFound />;
   if (data.status !== ECourseStatus.APPROVED && userRole !== Role.ADMIN)
     return <PageNotFound />;
@@ -80,18 +91,6 @@ const CourseDetailsPage = ({
   }, 0);
   const totalHours = Math.floor(totalMinutes / 60);
   const totalMinutesLeft = totalMinutes % 60;
-  const handleEnrollFree = async (slug: string) => {
-    try {
-      const res = await getFreeCourse(slug);
-      if (res?.type === "success") {
-        toast.success("Đăng ký khóa học thành công");
-        return;
-      }
-      toast.error(res?.message);
-    } catch (error) {
-      toast.error("Đã có lỗi xảy ra, vui lòng thử lại sau");
-    }
-  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,1.2fr)] gap-8 items-start relative">
@@ -269,17 +268,13 @@ const CourseDetailsPage = ({
           {!currentUser?.courses?.includes(data._id) ? (
             <>
               {data.free ? (
-                <>
-                  <Button
-                    onClick={() => handleEnrollFree(data.slug)}
-                    className={cn(
-                      primaryButtonClassName,
-                      "w-full bg-secondary"
-                    )}
-                  >
-                    Lụm liền
-                  </Button>
-                </>
+                <Button
+                  type="button"
+                  onClick={() => handleEnrollFree(data.slug)}
+                  className={cn(primaryButtonClassName, "w-full bg-secondary")}
+                >
+                  Lụm liền
+                </Button>
               ) : (
                 <Link
                   href={data.ctaLink || "#"}
