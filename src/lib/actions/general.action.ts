@@ -21,7 +21,9 @@ export async function getUserStudyCourse(
     const courses = user.courses;
     const allPromise = Promise.all(
       courses.map(async (item: any) => {
-        return Lesson.find({ courseId: item._id }).select("slug");
+        return Lesson.find({ courseId: item._id, _destroy: false }).select(
+          "slug"
+        );
       })
     );
     const lessons = await allPromise;
@@ -51,12 +53,16 @@ export async function getLessonDetailsContent({
     connectToDatabase();
     const findCourse = await Course.findOne({ slug: courseSlug }).select("_id");
     if (!findCourse) return [];
-    const lectureList = await Lecture.find({ courseId: findCourse._id })
+    const lectureList = await Lecture.find({
+      courseId: findCourse._id,
+      _destroy: false,
+    })
       .select("title lessons")
       .populate({
         path: "lessons",
         model: Lesson,
         select: "_id title slug user course",
+        match: { _destroy: false },
       });
     return lectureList || [];
   } catch (error) {}
