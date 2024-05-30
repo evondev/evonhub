@@ -32,7 +32,10 @@ const layout = ({
         <Suspense fallback={<CommentLoadingSkeleton />}>{comment}</Suspense>
       </div>
       <Suspense fallback={<LessonContentSkeleton />}>
-        <div id="lesson-content-aside" className="sticky top-8 right-0">
+        <div
+          id="lesson-content-aside"
+          className="sticky top-10 xl:top-[128px] right-0"
+        >
           {content}
         </div>
       </Suspense>

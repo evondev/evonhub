@@ -100,7 +100,7 @@ const LessonPlayer = ({
           Toàn màn hình
         </button>
       </div>
-      <h1 className="font-bold text-2xl mb-5">{lessonDetails.title}</h1>
+      <h1 className="font-extrabold text-2xl mb-10">{lessonDetails.title}</h1>
       <div className="lesson-content bg-white p-5 rounded-lg dark:bg-grayDarker text-sm">
         <div
           dangerouslySetInnerHTML={{ __html: lessonDetails.content }}

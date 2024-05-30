@@ -11,6 +11,7 @@ import { Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
+import { sendNotification } from "./notification.action";
 
 export async function createComment(params: CreateCommentParams) {
   try {
@@ -57,16 +58,34 @@ export async function getAllComments(params: GetAllCommentsParams) {
 export async function replyComment(params: ReplyCommentParams) {
   try {
     connectToDatabase();
-    const findComment = await Comment.findById(params.commentId);
+    const findComment = await Comment.findById(params.commentId)
+      .populate({
+        path: "lesson",
+        select: "title slug",
+      })
+      .populate({
+        path: "user",
+        select: "username _id",
+      })
+      .populate({
+        path: "course",
+        select: "title slug",
+      });
     if (!findComment) return;
+
     const newComment = new Comment({
       content: params.user.content,
       user: params.user.userId,
       course: params.user.courseId,
       lesson: params.user.lessonId,
+      parentId: findComment._id,
     });
     await newComment.save();
-    findComment.reply.push(newComment._id);
+    await sendNotification({
+      title: "Hệ thống",
+      content: `<strong class="text-secondary">${findComment.user.username}</strong> vừa trả lời bình luận của bạn tại bài học <a href="/${findComment.course.slug}/lesson?slug=${findComment.lesson.slug}" class="text-primary font-bold">${findComment.lesson.title}</a>`,
+      users: [findComment.user._id],
+    });
     revalidatePath(params.user.path);
   } catch (error) {
     console.log(error);

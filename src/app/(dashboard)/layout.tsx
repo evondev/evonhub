@@ -21,18 +21,20 @@ export default async function DashboardLayout({
     <AuthProvider
       initialUser={mongoUser ? JSON.parse(JSON.stringify(mongoUser)) : {}}
     >
-      <main className="grid grid-cols-1 xl:w-[calc(100%-300px)] ml-auto min-h-screen relative items-start">
-        <Sidebar role={role}></Sidebar>
-        <section className="px-5 lg:px-8 pb-10">
-          <Header
-            notifications={
-              notifications ? JSON.parse(JSON.stringify(notifications)) : []
-            }
-          ></Header>
-          {children}
-          <Navigation role={role}></Navigation>
-        </section>
-      </main>
+      <>
+        <Header
+          notifications={
+            notifications ? JSON.parse(JSON.stringify(notifications)) : []
+          }
+        ></Header>
+        <main className="grid grid-cols-1 pt-10 xl:pt-0 xl:w-[calc(100%-300px)] ml-auto min-h-screen relative items-start">
+          <Sidebar role={role}></Sidebar>
+          <section className="px-5 lg:px-8 pb-10">
+            {children}
+            <Navigation role={role}></Navigation>
+          </section>
+        </main>
+      </>
     </AuthProvider>
   );
 }

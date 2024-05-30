@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { primaryButtonClassName } from "@/constants";
-import { createComment } from "@/lib/actions/comment.action";
+import { replyComment } from "@/lib/actions/comment.action";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -30,6 +30,7 @@ const CommentReplyForm = ({
     lessonId: string;
     commentId: string;
     path: string;
+    userId: string;
   };
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,12 +45,15 @@ const CommentReplyForm = ({
     setIsSubmitting(true);
 
     try {
-      await createComment({
-        content: values.content,
-        course: data.courseId,
-        lesson: data.lessonId,
-        path: data.path,
-        parentId: data.commentId,
+      await replyComment({
+        commentId: data.commentId,
+        user: {
+          userId: data.userId,
+          content: values.content,
+          courseId: data.courseId,
+          lessonId: data.lessonId,
+          path: data.path,
+        },
       });
       form.reset();
       toast.success("Trả lời của bạn sẽ được hiển thị sau khi được duyệt");

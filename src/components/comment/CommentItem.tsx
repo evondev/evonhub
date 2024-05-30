@@ -14,6 +14,7 @@ const CommentItem = ({
   data: {
     courseId: string;
     lessonId: string;
+    userId: string;
     path: string;
   };
   isChild?: boolean;

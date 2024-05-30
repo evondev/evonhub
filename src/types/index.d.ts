@@ -71,6 +71,7 @@ export interface ICommentParams {
   content: string;
   parentId?: string;
   user: {
+    _id: string;
     username: string;
     avatar: string;
   };

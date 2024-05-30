@@ -118,6 +118,7 @@ const CommentForm = ({
                   data={{
                     courseId,
                     lessonId,
+                    userId: comment.user._id,
                     path,
                   }}
                 ></CommentItem>
@@ -129,6 +130,7 @@ const CommentForm = ({
                       comment={reply}
                       data={{
                         courseId,
+                        userId: reply.user._id,
                         lessonId,
                         path,
                       }}

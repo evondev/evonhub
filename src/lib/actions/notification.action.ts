@@ -23,6 +23,7 @@ export async function sendNotification(params: {
         },
       }).select("_id");
     }
+
     await Notification.create({
       title: params.title,
       content: params.content,
@@ -37,7 +38,11 @@ export async function getNotificationByUser(userId: string) {
   try {
     connectToDatabase();
     // find notification users include userId
-    const notifications = await Notification.find({ users: userId });
+    const notifications = await Notification.find({ users: userId })
+      .sort({
+        createdAt: -1,
+      })
+      .limit(10);
     return notifications;
   } catch (err) {
     console.log(err);

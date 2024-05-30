@@ -11,7 +11,7 @@
   }
   .wrapper {
     max-width: 1920px;
-    @apply mx-auto pb-16 lg:pb-10;
+    @apply mx-auto pb-16 lg:pb-10  xl:pt-[128px];
   }
   textarea,
   input {
@@ -70,7 +70,7 @@
     @apply bg-gray-100 dark:bg-grayDarkest #{!important};
   }
   .form-styles {
-    @apply border border-gray-200 dark:border-opacity-10 rounded-lg transition-all bg-white dark:bg-grayDarker focus:border-primary dark:focus:border-primary font-medium placeholder:text-slate-700 focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50  dark:placeholder:text-slate-300 text-sm ring-offset-white px-3 py-2 w-full
+    @apply border border-gray-200 dark:border-opacity-10 rounded-lg transition-all bg-white dark:bg-grayDarker focus:border-primary dark:focus:border-primary font-medium placeholder:text-slate-900 placeholder:text-opacity-30 focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50  dark:placeholder:text-slate-600  text-sm ring-offset-white px-3 py-2 w-full
     dark:text-white dark:text-opacity-90 text-gray-800;
   }
 }
