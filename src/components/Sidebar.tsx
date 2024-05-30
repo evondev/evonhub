@@ -12,8 +12,8 @@ const Sidebar = ({ role }: { role: string }) => {
   const pathname = usePathname();
   const isActiveLink = (url: string) => pathname === url;
   return (
-    <aside className="bg-white fixed top-0 left-0 py-8 px-5 hidden xl:block dark:bg-grayDark bottom-0 w-[300px] z-50 sidebar">
-      <Link href="/" className="flex items-center gap-2 py-3 mb-5">
+    <aside className="bg-white fixed top-0 left-0 pb-8 px-5 hidden xl:block dark:bg-grayDark bottom-0 w-[300px] z-50 sidebar">
+      <Link href="/" className="flex items-center gap-2 py-3 mb-5 h-20">
         <span className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg gradientPrimary p-3.5">
           <Image
             width={40}

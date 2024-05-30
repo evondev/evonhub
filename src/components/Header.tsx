@@ -34,9 +34,9 @@ const IconSearch = (
 const Header = ({ notifications }: { notifications: any[] }) => {
   const auth = useAuth();
   return (
-    <div className="top py-3 xl:py-5 px-5 bg-white dark:bg-grayDarker flex items-center justify-between gap-5 static xl:fixed top-0 left-[300px] right-0 z-50 xl:h-[88px]">
+    <div className="top py-3 px-5 bg-white dark:bg-grayDarker flex items-center justify-between gap-5 static xl:fixed top-0 left-[300px] right-0 z-50 xl:h-16">
       <Link href="/" className="flex items-center gap-2 lg:hidden">
-        <span className="size-10 rounded-full flex items-center justify-center font-bold text-lg gradientPrimary p-3">
+        <span className="size-10 rounded-full flex items-center justify-center font-bold text-lg gradientPrimary p-3.5">
           <Image
             width={40}
             height={40}
@@ -47,7 +47,7 @@ const Header = ({ notifications }: { notifications: any[] }) => {
         </span>
         <span className="text-lg font-bold">EvonHub</span>
       </Link>
-      <div className="rounded-full gap-4 h-12 px-5 bg-white dark:bg-grayDark w-[min(100%,390px)] items-center lg:flex hidden border border-gray-200 dark:border-opacity-10">
+      <div className="rounded-full gap-4 h-10 px-5 bg-white dark:bg-grayDark w-[min(100%,390px)] items-center lg:flex hidden border border-gray-200 dark:border-opacity-10">
         <input
           type="text"
           placeholder="Search..."

@@ -215,7 +215,7 @@ const CourseDetailsPage = ({
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-5 sticky top-5 right-0">
+      <div className="flex flex-col gap-5 sticky top-5 xl:top-[104px] right-0">
         <div className={widgetClassName}>
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">

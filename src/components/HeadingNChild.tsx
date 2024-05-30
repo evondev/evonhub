@@ -9,7 +9,7 @@ const HeadingNChild = ({
 }) => {
   return (
     <>
-      <h1 className="text-2xl lg:text-3xl font-bold mb-8">{title}</h1>
+      <h1 className="text-2xl lg:text-3xl font-extrabold mb-8">{title}</h1>
       <div className="grid xl:grid-cols-3 2xl:grid-cols-4 xl:gap-8 courseSlider">
         {children}
       </div>

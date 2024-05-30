@@ -27,7 +27,7 @@ const Notification = ({ notifications }: { notifications: any[] }) => {
   const { currentUser } = useGlobalStore();
   return (
     <Popover>
-      <PopoverTrigger className="size-12 flex items-center justify-center bg-white rounded-lg dark:bg-grayDarker border border-gray-200 dark:border-opacity-10">
+      <PopoverTrigger className="size-10 flex items-center justify-center bg-white rounded-lg dark:bg-grayDarker border border-gray-200 dark:border-opacity-10">
         {IconNoti}
       </PopoverTrigger>
       <PopoverContent

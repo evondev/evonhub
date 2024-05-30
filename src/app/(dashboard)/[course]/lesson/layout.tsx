@@ -17,10 +17,10 @@ const layout = ({
 }) => {
   return (
     <div
-      className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,400px)] gap-8 items-start transition-all relative"
+      className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,400px)] gap-0 lg:gap-8 items-start transition-all relative"
       id="lesson-study"
     >
-      <div className="overflow-hidden p-2">
+      <div className="lg:overflow-hidden lg:p-2">
         <Suspense fallback={<PlayerLoadingSkeleton />}>{player}</Suspense>
         <Suspense
           fallback={
@@ -34,7 +34,7 @@ const layout = ({
       <Suspense fallback={<LessonContentSkeleton />}>
         <div
           id="lesson-content-aside"
-          className="sticky top-10 xl:top-[128px] right-0"
+          className="mt-2 sticky top-10 xl:top-[112px] right-0"
         >
           {content}
         </div>
