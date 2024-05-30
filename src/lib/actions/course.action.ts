@@ -112,7 +112,7 @@ export async function getCourseBySlug(
     let searchQuery: any = {};
     searchQuery.slug = slug;
     const course = await Course.findOne(searchQuery).select(
-      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords"
+      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free"
     );
 
     return course;
@@ -142,7 +142,7 @@ export async function getAllCoursesUser(
       searchQuery.author = findUser._id;
     }
     const courses = await Course.find(searchQuery).select(
-      "title slug image createdAt status price _id"
+      "title slug image createdAt status price _id free"
     );
     return courses;
   } catch (error) {}
@@ -157,7 +157,7 @@ export async function getAllCourses(
       searchQuery.status = params.status;
     }
     const courses = await Course.find(searchQuery).select(
-      "title slug image level rating price salePrice views"
+      "title slug image level rating price salePrice views free"
     );
     return courses;
   } catch (error) {}
@@ -208,4 +208,26 @@ export async function updateCourseViews(slug: string) {
   } catch (error) {
     console.log(error);
   }
+}
+export async function getFreeCourse(slug: string) {
+  try {
+    connectToDatabase();
+    const { userId } = auth();
+    const findUser = await User.findOne({ clerkId: userId });
+    if (!findUser) return undefined;
+    const findCourse = await Course.find({ slug, free: true });
+    if (!findCourse) return undefined;
+    if (findUser.courses.includes(findCourse[0]._id)) {
+      return {
+        type: "error",
+        message: "Bạn đã đăng ký khóa học này rồi",
+      };
+    }
+    findUser.courses.push(findCourse[0]._id);
+    await findUser.save();
+    return {
+      type: "success",
+      message: "Đăng ký khóa học thành công",
+    };
+  } catch (error) {}
 }

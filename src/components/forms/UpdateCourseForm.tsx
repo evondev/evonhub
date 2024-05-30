@@ -63,6 +63,7 @@ export default function UpdateCourseForm({
       cta: data.cta,
       ctaLink: data.ctaLink,
       seoKeywords: data.seoKeywords,
+      free: data.free,
     },
   });
   const [infoData, setInfoData] = useImmer({
@@ -258,16 +259,25 @@ export default function UpdateCourseForm({
           <div></div>
           {/* <FormField
             control={form.control}
-            name="label"
+            name="free"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Label</FormLabel>
+                <FormLabel>&nbsp;</FormLabel>
                 <FormControl>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="free-course"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                    <Label htmlFor="free-course">Khóa học miễn phí</Label>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           /> */}
+
           <FormField
             control={form.control}
             name="seoKeywords"

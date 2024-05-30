@@ -14,7 +14,7 @@ export async function getUserStudyCourse(
     connectToDatabase();
     const user = await User.findOne({ clerkId: userId }).populate({
       path: "courses",
-      select: "title slug image rating level price salePrice views",
+      select: "title slug image rating level price salePrice views free",
       match: { status: ECourseStatus.APPROVED },
     });
 
@@ -71,7 +71,7 @@ export async function getCourseDetailsBySlug(
     searchQuery.slug = slug;
     const course = await Course.findOne(searchQuery)
       .select(
-        "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords"
+        "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free"
       )
       .populate({
         path: "lecture",

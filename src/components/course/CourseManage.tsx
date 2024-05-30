@@ -100,9 +100,22 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                 </div>
               </TableCell>
               <TableCell>
-                <p className="font-semibold whitespace-nowrap">
-                  {formatThoundsand(course.price)} VNĐ
-                </p>
+                {course.free ? (
+                  <>
+                    <span
+                      className={cn(
+                        courseStatusClassName,
+                        courseStatus.approved.className
+                      )}
+                    >
+                      Miễn phí
+                    </span>
+                  </>
+                ) : (
+                  <p className="font-semibold whitespace-nowrap">
+                    {formatThoundsand(course.price)} VNĐ
+                  </p>
+                )}
               </TableCell>
               <TableCell>
                 <span

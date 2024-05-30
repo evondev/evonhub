@@ -69,21 +69,6 @@ export const menuLinks: TMenuLink[] = [
     url: "/profile",
     isAuth: true,
   },
-  // {
-  //   title: "evondev",
-  //   icon: <IconUser></IconUser>,
-  //   url: "/evondev",
-  // },
-  // {
-  //   title: "Coaching 101",
-  //   icon: <IconUser></IconUser>,
-  //   url: "/coaching101",
-  // },
-  // {
-  //   title: "Hub",
-  //   icon: <IconCube></IconCube>,
-  //   url: "/hub",
-  // },
 ];
 export const baseButtonClassName =
   "rounded-md h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";

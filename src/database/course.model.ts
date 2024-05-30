@@ -32,6 +32,7 @@ export interface ICourse extends Document {
   ctaLink: string;
   createdAt: Date;
   seoKeywords: string;
+  free: boolean;
 }
 const courseSchema = new Schema<ICourse>({
   title: {
@@ -138,6 +139,10 @@ const courseSchema = new Schema<ICourse>({
   },
   seoKeywords: {
     type: String,
+  },
+  free: {
+    type: Boolean,
+    default: false,
   },
 });
 const Course = models.Course || mongoose.model("Course", courseSchema);

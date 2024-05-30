@@ -36,6 +36,7 @@ interface ICourseItemParams {
     salePrice: number;
     lecture: any[];
     views: number;
+    free: boolean;
   };
   cta?: string;
   url?: string;
@@ -68,7 +69,9 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
             <div className="flex items-center">
               <div className="flex items-center gap-2">
                 <div className="text-sm lg:text-base font-bold text-secondary">
-                  {formatThoundsand(data.price)} VNĐ
+                  {data.free
+                    ? "Miễn phí"
+                    : `${formatThoundsand(data.salePrice)} VNĐ`}{" "}
                 </div>
               </div>
             </div>

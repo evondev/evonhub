@@ -36,6 +36,7 @@ export const updateCourseSchema = z.object({
   requirements: z.array(z.string()).optional(),
   gained: z.array(z.string()).optional(),
   seoKeywords: z.string().optional(),
+  free: z.boolean().optional(),
 });
 export const updateUserSchema = z.object({
   name: z.string().optional(),

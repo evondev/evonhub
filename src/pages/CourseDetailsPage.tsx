@@ -16,6 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import {
   boxDetailClassName,
   courseLevel,
@@ -23,12 +24,14 @@ import {
   widgetClassName,
 } from "@/constants";
 import { ICourse } from "@/database/course.model";
+import { getFreeCourse } from "@/lib/actions/course.action";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
 import { ECourseStatus, Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 const techStack = [
   "NextJS14",
@@ -67,7 +70,7 @@ const CourseDetailsPage = ({
   };
   lessonCount: number;
 }) => {
-  const { userRole } = useGlobalStore();
+  const { userRole, currentUser } = useGlobalStore();
   if (!data) return <PageNotFound />;
   if (data.status !== ECourseStatus.APPROVED && userRole !== Role.ADMIN)
     return <PageNotFound />;
@@ -77,6 +80,18 @@ const CourseDetailsPage = ({
   }, 0);
   const totalHours = Math.floor(totalMinutes / 60);
   const totalMinutesLeft = totalMinutes % 60;
+  const handleEnrollFree = async (slug: string) => {
+    try {
+      const res = await getFreeCourse(slug);
+      if (res?.type === "success") {
+        toast.success("Đăng ký khóa học thành công");
+        return;
+      }
+      toast.error(res?.message);
+    } catch (error) {
+      toast.error("Đã có lỗi xảy ra, vui lòng thử lại sau");
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,1.2fr)] gap-8 items-start relative">
@@ -205,7 +220,7 @@ const CourseDetailsPage = ({
         <div className={widgetClassName}>
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
-              {data.price === 0 ? (
+              {data.price === 0 || data.free ? (
                 <strong className="text-xl text-primary">Miễn phí</strong>
               ) : (
                 <>
@@ -218,8 +233,8 @@ const CourseDetailsPage = ({
                 </>
               )}
             </div>
-            <span className="inline-block py-1 px-3 rounded-lg bg-primary bg-opacity-20 text-primary text-xs font-bold">
-              {data.price === 0
+            <span className="inline-block py-1 px-3 rounded-lg bg-secondary bg-opacity-20 text-secondary text-xs font-bold">
+              {data.price === 0 || data.free
                 ? "-100%"
                 : `-${100 - Math.floor((data.price / data.salePrice) * 100)} %`}
             </span>
@@ -251,13 +266,39 @@ const CourseDetailsPage = ({
               <p>Tài liệu kèm theo</p>
             </WidgetItem>
           </div>
-          <Link
-            href={data.ctaLink || "#"}
-            target={data.ctaLink ? "_blank" : "_self"}
-            className={cn(primaryButtonClassName, "w-full bg-secondary")}
-          >
-            {data.cta || "Đăng ký ngay"}
-          </Link>
+          {!currentUser?.courses?.includes(data._id) ? (
+            <>
+              {data.free ? (
+                <>
+                  <Button
+                    onClick={() => handleEnrollFree(data.slug)}
+                    className={cn(
+                      primaryButtonClassName,
+                      "w-full bg-secondary"
+                    )}
+                  >
+                    Lụm liền
+                  </Button>
+                </>
+              ) : (
+                <Link
+                  href={data.ctaLink || "#"}
+                  target={data.ctaLink ? "_blank" : "_self"}
+                  className={cn(primaryButtonClassName, "w-full bg-secondary")}
+                >
+                  {data.cta || "Đăng ký ngay"}
+                </Link>
+              )}
+            </>
+          ) : (
+            <Button
+              type="button"
+              disabled
+              className={cn(primaryButtonClassName, "w-full bg-secondary")}
+            >
+              {data.cta || "Đăng ký ngay"}
+            </Button>
+          )}
         </div>
       </div>
     </div>
