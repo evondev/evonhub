@@ -66,7 +66,11 @@ export default function AddCourseForm({ userId }: { userId: string }) {
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        autoComplete="off"
+        className="l-container"
+      >
         <div className="grid grid-cols-2 gap-10">
           <FormField
             control={form.control}

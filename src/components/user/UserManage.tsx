@@ -187,7 +187,7 @@ const UserManage = ({
             <TableHead className="star">
               <Checkbox />
             </TableHead>
-            <TableHead className="star"></TableHead>
+            <TableHead className="hidden lg:table-cell star"></TableHead>
             <TableHead>Thông tin</TableHead>
             <TableHead>Khóa học</TableHead>
             <TableHead>Trạng thái</TableHead>
@@ -200,7 +200,7 @@ const UserManage = ({
               <TableCell className="star">
                 <Checkbox />
               </TableCell>
-              <TableCell className="star">
+              <TableCell className="hidden lg:table-cell star">
                 {item.courses.filter((el) => !el.free).length > 0 && (
                   <IconStar className="size-6 text-secondary max-w-none" />
                 )}
@@ -215,7 +215,7 @@ const UserManage = ({
                     className="w-12 h-12 object-cover rounded-full flex-shrink-0"
                   />
                   <div>
-                    <h4 className="font-bold text-base line-clamp-2 whitespace-nowrap max-w-[150px] lg:max-w-[400px] block">
+                    <h4 className="font-bold text-base line-clamp-2 whitespace-nowrap max-w-[400px] block">
                       {item.name}
                     </h4>
                     <h5>{item.username}</h5>
@@ -226,7 +226,7 @@ const UserManage = ({
                   </div>
                 </div>
               </TableCell>
-              <TableCell>
+              <TableCell className="pl-10 lg:pl-4">
                 <div className="flex flex-col gap-2">
                   {item.courses.map((course, index) => (
                     <Link
@@ -235,7 +235,7 @@ const UserManage = ({
                       className="flex items-center gap-1 "
                     >
                       <IconStudy className="size-4 flex-shrink-0" />
-                      <div className="max-w-[200px] line-clamp-1">
+                      <div className="w-[200px] line-clamp-2">
                         {course.title}
                       </div>
                     </Link>

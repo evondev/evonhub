@@ -117,8 +117,8 @@ const CourseDetailsPage = ({
           ) : (
             <Image
               alt=""
-              width={700}
-              height={400}
+              width={1200}
+              height={600}
               src={data.image}
               priority
               className="w-full h-full object-cover rounded-lg"
@@ -165,60 +165,63 @@ const CourseDetailsPage = ({
               </DetailsItem>
             </div>
           </div>
-          <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-bold">Nội dung</h2>
-            {lectures?.map((item, index) => (
-              <Accordion
-                type="single"
-                collapsible
-                className="w-full"
-                key={item._id}
-              >
-                <AccordionItem value="item-1">
-                  <AccordionTrigger className="font-bold dark:text-text5">
-                    {item.title}
-                  </AccordionTrigger>
-                  <AccordionContent className="bg-white dark:bg-grayDarker rounded-lg mt-5">
-                    {item.lessons.map((lesson, index) => (
-                      <div
-                        key={lesson._id}
-                        className="text-sm mb-5 pb-5 border-b border-dashed last:pb-0 last:mb-0 last:border-b-0 font-medium flex items-center gap-2 dark:text-text5
-                        "
-                      >
-                        <IconPlay />
-                        {lesson.title}
-                      </div>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            ))}
-          </div>
-          <BoxList title="Yêu cầu" data={data.info.requirements}></BoxList>
-          <BoxList title="Lợi ích" data={data.info.gained}></BoxList>
-
-          <div className="flex flex-col gap-5">
-            <h2 className="text-xl font-bold">Q/A</h2>
-            <div className="flex flex-col gap-3">
-              {data.info.qa.map((item, index) => (
+          {lectures.length > 0 && (
+            <div className="flex flex-col gap-5">
+              <h2 className="text-xl font-bold">Nội dung</h2>
+              {lectures?.map((item, index) => (
                 <Accordion
                   type="single"
                   collapsible
                   className="w-full"
-                  key={item.question}
+                  key={item._id}
                 >
                   <AccordionItem value="item-1">
-                    <AccordionTrigger className="font-bold mb-2">
-                      {item.question}
+                    <AccordionTrigger className="font-bold dark:text-text5">
+                      {item.title}
                     </AccordionTrigger>
-                    <AccordionContent className="font-medium bg-white rounded-lg dark:bg-grayDarker  dark:text-text5 text-sm">
-                      {item.answer}
+                    <AccordionContent className="bg-white dark:bg-grayDarker rounded-lg mt-5">
+                      {item.lessons.map((lesson, index) => (
+                        <div
+                          key={lesson._id}
+                          className="text-sm mb-5 pb-5 border-b border-dashed last:pb-0 last:mb-0 last:border-b-0 font-medium flex items-center gap-2 dark:text-text5
+                        "
+                        >
+                          <IconPlay />
+                          {lesson.title}
+                        </div>
+                      ))}
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
               ))}
             </div>
-          </div>
+          )}
+          <BoxList title="Yêu cầu" data={data.info.requirements}></BoxList>
+          <BoxList title="Lợi ích" data={data.info.gained}></BoxList>
+          {data.info.qa.length > 0 && (
+            <div className="flex flex-col gap-5">
+              <h2 className="text-xl font-bold">Q/A</h2>
+              <div className="flex flex-col gap-3">
+                {data.info.qa.map((item, index) => (
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="w-full"
+                    key={item.question}
+                  >
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger className="font-bold mb-2">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="font-medium bg-white rounded-lg dark:bg-grayDarker  dark:text-text5 text-sm">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex flex-col gap-5 sticky top-5 xl:top-[104px] right-0">
@@ -334,6 +337,7 @@ function WidgetItem({ children }: { children: React.ReactNode }) {
 }
 
 function BoxList({ title, data }: { title: string; data: string[] }) {
+  if (data.length === 0) return null;
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-xl font-bold">{title}</h2>

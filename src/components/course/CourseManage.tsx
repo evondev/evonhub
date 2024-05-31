@@ -80,8 +80,8 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                   <Image
                     src={course.image}
                     alt={course.title}
-                    width={128}
-                    height={128}
+                    width={200}
+                    height={200}
                     className="w-16 h-16 object-cover rounded flex-shrink-0"
                   />
                   <div>
@@ -112,7 +112,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                     </span>
                   </>
                 ) : (
-                  <p className="font-semibold whitespace-nowrap">
+                  <p className="font-semibold whitespace-nowrap text-primary">
                     {formatThoundsand(course.price)} VNĐ
                   </p>
                 )}

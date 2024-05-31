@@ -121,7 +121,11 @@ export default function UpdateCourseForm({
   });
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        autoComplete="off"
+        className="l-container"
+      >
         <div className="grid grid-cols-2 gap-10 mb-10">
           <FormField
             control={form.control}
@@ -346,8 +350,8 @@ export default function UpdateCourseForm({
                         <Image
                           src={image}
                           alt="Course Image"
-                          width={200}
-                          height={150}
+                          width={800}
+                          height={400}
                           className="w-full h-[250px] rounded-lg object-cover"
                         />
                         <button

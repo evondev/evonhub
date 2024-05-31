@@ -102,6 +102,7 @@
 .Toastify__toast-container {
   width: fit-content;
   font-size: 14px;
+  margin-left: auto;
 }
 .Toastify__toast {
   @apply text-gray-700;
@@ -113,6 +114,7 @@ div .tox .tox-edit-area::before {
   .swal2-popup {
     @apply rounded-xl p-8;
     max-width: 400px;
+    margin-left: auto;
   }
   .swal2-popup .swal2-title {
     @apply text-xl font-bold text-grayDarkest;
@@ -252,4 +254,8 @@ div[role="dialog"] {
   to {
     stroke-dashoffset: 0;
   }
+}
+.l-container {
+  max-width: 1024px;
+  margin: 0 auto;
 }
