@@ -303,6 +303,15 @@ const CourseDetailsPage = ({
               {data.cta || "Đăng ký ngay"}
             </Button>
           )}
+          <div className="text-center mt-5 text-sm">
+            Bạn chưa biết cách mua khóa học?{" "}
+            <Link
+              href="/how-to-buy"
+              className="text-primary underline font-semibold"
+            >
+              Nhấn vào đây nha
+            </Link>
+          </div>
         </div>
       </div>
     </div>
