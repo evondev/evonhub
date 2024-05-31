@@ -71,7 +71,7 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
                 <div className="text-sm lg:text-base font-bold text-secondary">
                   {data.free
                     ? "Miễn phí"
-                    : `${formatThoundsand(data.salePrice)} VNĐ`}{" "}
+                    : `${formatThoundsand(data.price)} VNĐ`}{" "}
                 </div>
               </div>
             </div>
