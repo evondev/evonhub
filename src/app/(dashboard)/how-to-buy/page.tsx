@@ -38,7 +38,7 @@ const page = () => {
         <strong>khóa học email</strong> mà không cần dấu @ đồ phía sau nha.
       </div>
       <div className="mb-5">
-        Ví dụ: <strong>nextjspro evonhub1402</strong>
+        Ví dụ: <strong>nextjspro emailcuaban</strong>
       </div>
       <div className="mb-5">
         <Image src="/acb.jpeg" alt="bank" width={300} height={600}></Image>
