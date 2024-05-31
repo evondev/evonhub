@@ -35,7 +35,7 @@ interface IUserManageProps {
   createdAt: string;
   status: EUserStatus;
   clerkId: string;
-  courses: { title: string; slug: string; price: number }[];
+  courses: { title: string; slug: string; price: number; free: boolean }[];
 }
 const ArrowRight = (
   <svg
@@ -201,7 +201,7 @@ const UserManage = ({
                 <Checkbox />
               </TableCell>
               <TableCell className="star">
-                {item.courses.length > 0 && (
+                {item.courses.filter((el) => !el.free).length > 0 && (
                   <IconStar className="size-6 text-secondary max-w-none" />
                 )}
               </TableCell>

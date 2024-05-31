@@ -123,7 +123,9 @@ export async function getAllUsers(
     }
     if (paidUser) {
       query.courses = {
-        $in: await Course.find({ _destroy: false }).distinct("_id"),
+        $in: await Course.find({ _destroy: false, free: false }).distinct(
+          "_id"
+        ),
       };
     }
     const users = await User.find(query)
@@ -131,7 +133,7 @@ export async function getAllUsers(
       .populate({
         path: "courses",
         model: Course,
-        select: "title slug",
+        select: "title slug free",
         match: { _destroy: false },
       })
       .skip(skipAmount)

@@ -31,6 +31,7 @@ import { ECourseStatus, Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 const techStack = [
@@ -72,7 +73,12 @@ const CourseDetailsPage = ({
   lessonCount: number;
 }) => {
   const { userRole, currentUser } = useGlobalStore();
+  const router = useRouter();
   const handleEnrollFree = async (slug: string) => {
+    if (!currentUser?.username) {
+      router.push("/sign-in");
+      return;
+    }
     try {
       const res = await getFreeCourse(slug);
       if (res?.type === "success") {
@@ -288,8 +294,8 @@ const CourseDetailsPage = ({
           ) : (
             <Button
               type="button"
-              disabled
               className={cn(primaryButtonClassName, "w-full bg-secondary")}
+              disabled
             >
               {data.cta || "Đăng ký ngay"}
             </Button>
