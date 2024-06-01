@@ -18,12 +18,13 @@ import { z } from "zod";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 const commentSchema = z.object({
-  content: z.string().min(2, {
-    message: "Nội dung phải có ít nhất 2 ký tự",
+  content: z.string().min(5, {
+    message: "Nội dung phải có ít nhất 5 ký tự",
   }),
 });
 const CommentReplyForm = ({
   data,
+  closeForm,
 }: {
   data: {
     courseId: string;
@@ -32,6 +33,7 @@ const CommentReplyForm = ({
     path: string;
     userId: string;
   };
+  closeForm: () => void;
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<z.infer<typeof commentSchema>>({
@@ -56,15 +58,16 @@ const CommentReplyForm = ({
         },
       });
       form.reset();
-      toast.success("Trả lời của bạn sẽ được hiển thị sau khi được duyệt");
+      toast.success("Trả lời của bạn đang được xử lý!");
     } catch (error) {
     } finally {
       setIsSubmitting(false);
+      closeForm();
     }
   }
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 pl-10">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
           <FormField
@@ -82,7 +85,7 @@ const CommentReplyForm = ({
           <div className="flex mt-5 justify-end">
             <Button
               isLoading={isSubmitting}
-              className={cn(primaryButtonClassName, "w-[120px] bg-secondary")}
+              className={cn(primaryButtonClassName, "w-[130px] bg-primary")}
             >
               Trả lời
             </Button>

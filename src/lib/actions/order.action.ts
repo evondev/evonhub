@@ -41,10 +41,11 @@ export async function updateOrder(params: UpdateOrderParams) {
     console.log(error);
   }
 }
-export async function getAllOrders() {
+export async function getAllOrders(params: { limit?: number }) {
   try {
     connectToDatabase();
     const orders = await Order.find()
+      .limit(params.limit || 500)
       .populate({
         path: "course",
         model: Course,

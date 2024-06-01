@@ -9,7 +9,7 @@ const page = async () => {
   if (!userId) return null;
   const findUser = await getUserById({ userId });
   if (!findUser || findUser.role !== Role.ADMIN) return null;
-  const allOrders = await getAllOrders();
+  const allOrders = await getAllOrders({});
   return (
     <OrderManage
       allOrders={allOrders ? JSON.parse(JSON.stringify(allOrders)) : []}

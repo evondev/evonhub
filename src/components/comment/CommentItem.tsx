@@ -75,6 +75,7 @@ const CommentItem = ({
               ...data,
               commentId: comment._id,
             }}
+            closeForm={() => setShowReply("")}
           />
         )}
       </div>

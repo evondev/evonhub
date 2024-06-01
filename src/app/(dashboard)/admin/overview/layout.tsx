@@ -2,26 +2,15 @@ import React from "react";
 
 export default function Layout({
   general,
-  reaction,
-  member,
-  comment,
-  lesson,
+  order,
 }: {
   general: React.ReactNode;
-  reaction: React.ReactNode;
-  member: React.ReactNode;
-  comment: React.ReactNode;
-  lesson: React.ReactNode;
+  order: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-5 lg:gap-8 l-container">
       {general}
-      {reaction}
-      <div className="grid grid-cols-2 gap-5">
-        {member}
-        {comment}
-      </div>
-      {lesson}
+      {order}
     </div>
   );
 }

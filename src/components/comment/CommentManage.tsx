@@ -66,7 +66,7 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
     }
   };
   return (
-    <div>
+    <>
       <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
         <h1 className="text-2xl lg:text-3xl font-bold">Quản lý thảo luận</h1>
         <Input
@@ -103,7 +103,7 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
               </TableCell>
               <TableCell>
                 <div className="flex flex-col">
-                  <h4 className="font-bold text-base">
+                  <h4 className="font-bold text-xs lg:text-base">
                     {comment.user?.username}
                   </h4>
                   <span className="text-slate-400 font-medium">
@@ -112,9 +112,11 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
                 </div>
               </TableCell>
               <TableCell>
-                <div className="max-w-60 line-clamp-4">{comment.content}</div>
+                <div className="line-clamp-4 whitespace-nowrap">
+                  {comment.content}
+                </div>
               </TableCell>
-              <TableCell>
+              <TableCell className="whitespace-nowrap">
                 <h4 className="font-bold">{comment.course?.title}</h4>
                 <Link
                   href={`/${comment.course.slug}/lesson?slug=${comment.lesson.slug}`}
@@ -165,7 +167,7 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
           ))}
         </TableBody>
       </Table>
-    </div>
+    </>
   );
 };
 

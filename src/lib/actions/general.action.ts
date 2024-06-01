@@ -2,9 +2,10 @@
 import Course from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
+import Order from "@/database/order.model";
 import User from "@/database/user.model";
 import { CourseParams } from "@/types";
-import { ECourseStatus } from "@/types/enums";
+import { ECourseStatus, EOrderStatus } from "@/types/enums";
 import { connectToDatabase } from "../mongoose";
 
 export async function getUserStudyCourse(
@@ -97,4 +98,33 @@ export async function getCourseDetailsBySlug(
   } catch (error) {
     console.log("error:", error);
   }
+}
+export async function countOverview() {
+  try {
+    connectToDatabase();
+    const course = await Course.countDocuments();
+    const user = await User.countDocuments();
+    const order = await Order.countDocuments({
+      status: EOrderStatus.APPROVED,
+    });
+    const income = await Order.aggregate([
+      {
+        $match: {
+          status: EOrderStatus.APPROVED,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$total" },
+        },
+      },
+    ]);
+    return {
+      course,
+      user,
+      order,
+      income,
+    };
+  } catch (error) {}
 }

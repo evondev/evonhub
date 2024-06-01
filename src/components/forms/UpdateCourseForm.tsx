@@ -126,7 +126,7 @@ export default function UpdateCourseForm({
         autoComplete="off"
         className="l-container"
       >
-        <div className="grid grid-cols-2 gap-10 mb-10">
+        <div className="grid lg:grid-cols-2 gap-5 lg:gap-10 mb-10">
           <FormField
             control={form.control}
             name="title"

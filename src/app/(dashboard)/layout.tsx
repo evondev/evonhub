@@ -27,7 +27,7 @@ export default async function DashboardLayout({
             notifications ? JSON.parse(JSON.stringify(notifications)) : []
           }
         ></Header>
-        <main className="grid grid-cols-1 pt-10 xl:pt-0 xl:w-[calc(100%-300px)] ml-auto min-h-screen relative items-start">
+        <main className="grid grid-cols-1 pt-8 xl:pt-0 xl:w-[calc(100%-300px)] ml-auto min-h-screen relative items-start">
           <Sidebar role={role}></Sidebar>
           <section className="px-5 lg:px-8 pb-10">
             {children}

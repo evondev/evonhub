@@ -1,6 +1,7 @@
 import {
   IconComment,
   IconCourseManage,
+  IconCube,
   IconOrder,
   IconPlay,
   IconStudy,
@@ -18,12 +19,12 @@ import {
 } from "@/types/enums";
 
 export const menuLinks: TMenuLink[] = [
-  // {
-  //   title: "Overview",
-  //   icon: <IconCube></IconCube>,
-  //   url: "/admin/overview",
-  //   isAdmin: true,
-  // },
+  {
+    title: "Overview",
+    icon: <IconCube></IconCube>,
+    url: "/admin/overview",
+    isAdmin: true,
+  },
   {
     title: "Khu vực học tập",
     icon: <IconStudy></IconStudy>,
@@ -111,15 +112,18 @@ export const orderStatus: Record<
 > = {
   APPROVED: {
     text: "Đã duyệt",
-    className: "bg-green-500 bg-opacity-10 text-green-500",
+    className:
+      "bg-green-500 bg-opacity-10 text-green-500 text-xs whitespace-nowrap",
   },
   PENDING: {
     text: "Chờ duyệt",
-    className: "bg-orange-500 bg-opacity-10 text-orange-500",
+    className:
+      "bg-orange-500 bg-opacity-10 text-orange-500 text-xs whitespace-nowrap",
   },
   REJECTED: {
     text: "Bị từ chối",
-    className: "bg-red-500 bg-opacity-10 text-red-500",
+    className:
+      "bg-red-500 bg-opacity-10 text-red-500 text-xs whitespace-nowrap",
   },
 };
 export const userStatus: Record<

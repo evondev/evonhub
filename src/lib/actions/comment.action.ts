@@ -7,7 +7,7 @@ import {
   ReplyCommentParams,
   UpdateCommentParams,
 } from "@/types";
-import { Role } from "@/types/enums";
+import { ECommentStatus, Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -22,6 +22,10 @@ export async function createComment(params: CreateCommentParams) {
     await Comment.create({
       ...params,
       user: findUser._id,
+      status:
+        Role.ADMIN === findUser.role
+          ? ECommentStatus.APPROVED
+          : ECommentStatus.PENDING,
     });
     revalidatePath(params.path || "/");
   } catch (error) {
@@ -44,11 +48,20 @@ export async function getAllComments(params: GetAllCommentsParams) {
     if (![Role.ADMIN].includes(findUser?.role)) {
       query.user = findUser._id;
     }
-    const comments = await Comment.find(query).populate({
-      path: "user",
-      model: User,
-      select: "username avatar",
-    });
+    const comments = await Comment.find(query)
+      .populate({
+        path: "user",
+        model: User,
+        select: "username avatar",
+      })
+      .populate({
+        path: "lesson",
+        select: "title slug",
+      })
+      .populate({
+        path: "course",
+        select: "title slug",
+      });
 
     return comments;
   } catch (error) {
@@ -58,6 +71,8 @@ export async function getAllComments(params: GetAllCommentsParams) {
 export async function replyComment(params: ReplyCommentParams) {
   try {
     connectToDatabase();
+    const { userId } = auth();
+    const findUser = await User.findOne({ clerkId: userId });
     const findComment = await Comment.findById(params.commentId)
       .populate({
         path: "lesson",
@@ -75,10 +90,14 @@ export async function replyComment(params: ReplyCommentParams) {
 
     const newComment = new Comment({
       content: params.user.content,
-      user: params.user.userId,
+      user: findUser?._id,
       course: params.user.courseId,
       lesson: params.user.lessonId,
       parentId: findComment._id,
+      status:
+        Role.ADMIN === findUser.role
+          ? ECommentStatus.APPROVED
+          : ECommentStatus.PENDING,
     });
     await newComment.save();
     await sendNotification({

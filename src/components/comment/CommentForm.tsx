@@ -21,21 +21,11 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import CommentItem from "./CommentItem";
 const commentSchema = z.object({
-  content: z.string().min(2, {
-    message: "Nội dung phải có ít nhất 2 ký tự",
+  content: z.string().min(5, {
+    message: "Nội dung phải có ít nhất 5 ký tự",
   }),
 });
 
-const IconSend = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 20 20"
-    fill="currentColor"
-    className="size-4 group-hover:translate-x-2 transition-all"
-  >
-    <path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.925A1.5 1.5 0 005.135 9.25h6.115a.75.75 0 010 1.5H5.135a1.5 1.5 0 00-1.442 1.086l-1.414 4.926a.75.75 0 00.826.95 28.896 28.896 0 0015.293-7.154.75.75 0 000-1.115A28.897 28.897 0 003.105 2.289z" />
-  </svg>
-);
 const CommentForm = ({
   courseId,
   comments,
@@ -65,7 +55,7 @@ const CommentForm = ({
         lesson: lessonId,
         path,
       });
-      toast.success("Bình luận của bạn sẽ hiển thị sau khi được kiểm duyệt");
+      toast.success("Bình luận của bạn đang được xử lý!");
       // reset form
       form.reset();
     } catch (error) {
@@ -99,10 +89,10 @@ const CommentForm = ({
               isLoading={isSubmitting}
               className={cn(
                 primaryButtonClassName,
-                "group w-[125px] gap-2 group"
+                "group w-[130px] gap-2 group"
               )}
             >
-              Gửi {IconSend}
+              Đăng bình luận
             </Button>
           </div>
         </form>

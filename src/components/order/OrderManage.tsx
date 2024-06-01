@@ -42,7 +42,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
           className="w-full lg:w-[300px]"
         />
       </div>
-      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto whitespace-nowrap">
+      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
             <TableHead>
@@ -54,7 +54,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
             <TableHead>Trạng thái</TableHead>
             <TableHead>Số tiền</TableHead>
             <TableHead>Ngày lập</TableHead>
-            <TableHead>Hành động</TableHead>
+            <TableHead className="text-center">Hành động</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -63,10 +63,12 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
               <TableCell>
                 <Checkbox />
               </TableCell>
-              <TableCell className="font-bold">{order.code}</TableCell>
+              <TableCell className="font-bold text-nowrap">
+                {order.code}
+              </TableCell>
               <TableCell>
-                <div className="max-w-[200px]">
-                  <div className="line-clamp-1">{order.course.title}</div>
+                <div className="w-[300px]">
+                  <div className="">{order.course.title}</div>
                 </div>
               </TableCell>
               <TableCell>
@@ -77,7 +79,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                 <span
                   className={cn(
                     orderStatus[order.status as EOrderStatus]?.className,
-                    "py-1 px-2 rounded-full text-xs font-semibold"
+                    "py-1 px-2 rounded-full font-semibold"
                   )}
                 >
                   {orderStatus[order.status as EOrderStatus]?.text}
@@ -90,19 +92,19 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                       {formatThoundsand(order.amount)}
                     </p>
                     {order.discount > 0 && (
-                      <span className="line-through text-sm text-slate-400">
+                      <span className="line-through text-slate-400">
                         {formatThoundsand(order.discount)}
                       </span>
                     )}
                   </div>
-                  <p className="text-secondary font-bold text-base">
+                  <p className="text-secondary font-bold">
                     {formatThoundsand(order.total)}
                   </p>
                 </div>
               </TableCell>
               <TableCell>{formatDate(order.createdAt)}</TableCell>
               <TableCell>
-                <div className="flex items-center gap-4 justify-end text-gray-400 dark:text-white">
+                <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
                   {order.status !== EOrderStatus.APPROVED && (
                     <button
                       className={cn(actionClassName)}

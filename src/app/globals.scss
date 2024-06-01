@@ -51,12 +51,11 @@
   }
   .table-responsive {
     th {
-      @apply text-nowrap;
+      @apply text-nowrap whitespace-nowrap;
     }
     @media screen and (max-width: 767.98px) {
-      th:not(:first-child),
-      th:not(.star),
-      td:not(.star) td:not(:first-child) {
+      th:not(.star, :nth-child(1), :nth-child(2)),
+      td:not(.star, :nth-child(1), :nth-child(2)) {
         padding-left: 75px;
       }
     }

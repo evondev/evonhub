@@ -42,15 +42,15 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
     });
   };
   return (
-    <div className="hidden lg:block">
+    <>
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-xlg lg:text-3xl font-bold">Quản lý khóa học</h1>
+        <h1 className="text-xl lg:text-3xl font-bold">Quản lý khóa học</h1>
         <Link href="/admin/course/add-new" className={primaryButtonClassName}>
           Tạo khóa học mới
         </Link>
       </div>
 
-      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto">
+      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
             <TableHead>
@@ -88,7 +88,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                     <div className="flex items-start gap-2">
                       <Link
                         href={`/admin/course/content?slug=${course.slug}`}
-                        className="font-bold text-base line-clamp-2 max-w-[400px] block"
+                        className="font-bold text-sm lg:text-base line-clamp-2 w-[400px] block"
                       >
                         {course.title}
                       </Link>
@@ -160,7 +160,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
           ))}
         </TableBody>
       </Table>
-    </div>
+    </>
   );
 };
 

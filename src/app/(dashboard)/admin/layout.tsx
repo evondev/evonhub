@@ -11,7 +11,7 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
   const mongoUser = await getUserById({ userId: userId || "" });
   if (![Role.ADMIN].includes(mongoUser?.role))
     return <PageNotFound></PageNotFound>;
-  return <div>{children}</div>;
+  return <>{children}</>;
 };
 
 export default AdminLayout;

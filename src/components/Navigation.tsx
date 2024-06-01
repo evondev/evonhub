@@ -10,7 +10,7 @@ const Navigation = ({ role }: { role: string }) => {
   const isActiveLink = (url: string) => pathname === url;
   return (
     <div className="xl:hidden">
-      <ul className="flex justify-center gap-5 fixed bottom-0 left-0 right-0 z-10 p-2 dark:bg-grayDarker bg-white">
+      <ul className="flex justify-center gap-3 fixed bottom-0 left-0 right-0 z-10 p-2 dark:bg-grayDarker bg-white">
         {menuLinks.map((link) => {
           if (
             (link.url.includes("how-to") || link.url.includes("profile")) &&
@@ -23,7 +23,7 @@ const Navigation = ({ role }: { role: string }) => {
               <Link
                 href={link.url}
                 className={cn(
-                  "size-10 flex items-center justify-center rounded-lg transition-all",
+                  "size-8 flex items-center justify-center rounded p-1.5 transition-all",
                   isActiveLink(link.url) ? "gradientPrimary text-white" : ""
                 )}
               >
