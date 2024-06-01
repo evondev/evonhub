@@ -127,7 +127,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
     user.permissions || []
   );
   return (
-    <>
+    <div className="l-container">
       <div className="mb-5 flex flex-col gap-3 pb-5 border-b border-dashed border-gray-400 dark:border-grayDarker">
         <Image
           src={user.avatar}
@@ -263,7 +263,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
           Cập nhật
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 
