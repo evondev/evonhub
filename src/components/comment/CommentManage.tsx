@@ -37,7 +37,11 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
     });
     router.push(newUrl);
   };
-  const handleChangeStatus = async (id: string, status: ECommonStatus) => {
+  const handleChangeStatus = async (
+    id: string,
+    status: ECommonStatus,
+    userId: string
+  ) => {
     try {
       Swal.fire({
         title: "Bạn chắc chứ?",
@@ -50,6 +54,7 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
         if (result.isConfirmed) {
           await updateComment({
             commentId: id,
+            userId,
             updateData: {
               status:
                 status === ECommonStatus.APPROVED
@@ -133,7 +138,11 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
                     commonStatus[comment.status].className
                   )}
                   onClick={() =>
-                    handleChangeStatus(comment._id, comment.status)
+                    handleChangeStatus(
+                      comment._id,
+                      comment.status,
+                      comment.user._id
+                    )
                   }
                 >
                   {commonStatus[comment.status].text}

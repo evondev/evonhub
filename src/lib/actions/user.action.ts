@@ -13,6 +13,7 @@ import { auth } from "@clerk/nextjs/server";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
+import { sendNotification } from "./notification.action";
 import { createOrder } from "./order.action";
 
 export async function createUser(userData: CreateUserParams) {
@@ -190,6 +191,13 @@ export async function addCourseToUser({
       status: EOrderStatus.APPROVED,
     });
     revalidatePath(path);
+    const findCourse = await Course.findById(courseId);
+    if (!findCourse?.title) return;
+    await sendNotification({
+      title: "Hệ thống",
+      content: `Chúc mừng bạn đã đăng ký khóa học <strong>${findCourse.title}</strong> thành công`,
+      users: [user._id],
+    });
   } catch (error) {
     console.log(error);
   }

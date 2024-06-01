@@ -1,5 +1,7 @@
 "use server";
 import Comment from "@/database/comment.model";
+import Course from "@/database/course.model";
+import Lesson from "@/database/lesson.model";
 import User from "@/database/user.model";
 import {
   CreateCommentParams,
@@ -76,14 +78,17 @@ export async function replyComment(params: ReplyCommentParams) {
     const findComment = await Comment.findById(params.commentId)
       .populate({
         path: "lesson",
+        model: Lesson,
         select: "title slug",
       })
       .populate({
         path: "user",
+        model: User,
         select: "username _id",
       })
       .populate({
         path: "course",
+        model: Course,
         select: "title slug",
       });
     if (!findComment) return;
@@ -115,6 +120,18 @@ export async function updateComment(params: UpdateCommentParams) {
     connectToDatabase();
     await Comment.findByIdAndUpdate(params.commentId, params.updateData);
     revalidatePath(params.path || "/");
+    const findComment = await Comment.findById(params.commentId).populate({
+      path: "lesson",
+      model: Lesson,
+      select: "title",
+    });
+    if (params.userId && params.updateData.status === "approved") {
+      await sendNotification({
+        title: "Hệ thống",
+        content: `Bình luận của bạn tại bài học <strong>${findComment.lesson.title}</strong> đã được duyệt`,
+        users: [params.userId],
+      });
+    }
   } catch (error) {
     console.log(error);
   }

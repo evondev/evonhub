@@ -233,6 +233,7 @@ export async function getFreeCourse(slug: string) {
     }
     findUser.courses.push(findCourse[0]._id);
     await findUser.save();
+
     return {
       type: "success",
       message: "Đăng ký khóa học thành công",

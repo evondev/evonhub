@@ -110,6 +110,7 @@ export interface ReplyCommentParams {
 }
 export interface UpdateCommentParams {
   commentId: string;
+  userId?: string;
   updateData: Partial<ICommentParams>;
   path?: string;
 }
