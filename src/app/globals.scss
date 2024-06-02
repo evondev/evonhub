@@ -200,9 +200,6 @@ div[role="dialog"] {
   a {
     @apply text-secondary;
   }
-  [class^="language-"] {
-    white-space: pre-line;
-  }
   code {
     font-size: 14px;
   }
