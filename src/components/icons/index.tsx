@@ -18,6 +18,7 @@ export { default as IconShare } from "./IconShare";
 export { default as IconStar } from "./IconStar";
 export { default as IconStudy } from "./IconStudy";
 export { default as IconTutorial } from "./IconTutorial";
+export { default as IconUpload } from "./IconUpload";
 export { default as IconUser } from "./IconUser";
 export { default as IconUsers } from "./IconUsers";
 export { default as IconVideo } from "./IconVideo";

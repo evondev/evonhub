@@ -9,6 +9,7 @@ export type TMenuLink = {
   url: string;
   isAdmin?: boolean;
   isAuth?: boolean;
+  isHideMobile?: boolean;
 };
 export interface CreateUserParams {
   clerkId: string;
