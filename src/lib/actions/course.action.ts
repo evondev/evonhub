@@ -142,7 +142,7 @@ export async function getAllCoursesUser(
       searchQuery.author = findUser._id;
     }
     const courses = await Course.find(searchQuery).select(
-      "title slug image createdAt status price _id free"
+      "title slug image createdAt status price _id free rating views"
     );
     return courses;
   } catch (error) {}

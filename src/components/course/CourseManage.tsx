@@ -14,6 +14,7 @@ import {
   courseStatus,
   courseStatusClassName,
   primaryButtonClassName,
+  reactions,
 } from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { deleteCourse } from "@/lib/actions/course.action";
@@ -57,6 +58,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
               <Checkbox />
             </TableHead>
             <TableHead>Thông tin</TableHead>
+            <TableHead className="text-center">Đánh giá</TableHead>
             <TableHead>Giá khóa học</TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead>Hành động</TableHead>
@@ -70,94 +72,119 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
               </TableCell>
             </TableRow>
           )}
-          {courses.map((course) => (
-            <TableRow key={course.slug}>
-              <TableCell>
-                <Checkbox />
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-3">
-                  <Image
-                    src={course.image}
-                    alt={course.title}
-                    width={200}
-                    height={200}
-                    className="w-16 h-16 object-cover rounded flex-shrink-0"
-                  />
-                  <div>
-                    <div className="flex items-start gap-2">
-                      <Link
-                        href={`/admin/course/content?slug=${course.slug}`}
-                        className="font-bold text-sm lg:text-base line-clamp-2 w-[400px] block"
-                      >
-                        {course.title}
-                      </Link>
+          {courses.map((course) => {
+            const rating =
+              course.rating.reduce((a, b) => a + b, 0) / course.rating.length;
+            const reaction = reactions.find(
+              (r) => r.rating === (Math.ceil(rating) as any)
+            );
+            return (
+              <TableRow key={course.slug}>
+                <TableCell>
+                  <Checkbox />
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={course.image}
+                      alt={course.title}
+                      width={200}
+                      height={200}
+                      className="w-16 h-16 object-cover rounded flex-shrink-0"
+                    />
+                    <div>
+                      <div className="flex items-start gap-2">
+                        <Link
+                          href={`/admin/course/content?slug=${course.slug}`}
+                          className="font-bold text-sm lg:text-base line-clamp-2 w-[400px] block"
+                        >
+                          {course.title}
+                        </Link>
+                      </div>
+                      <p className="text-sm text-gray-400">
+                        {new Date(course.createdAt).toLocaleDateString("vi-VN")}
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-400">
-                      {new Date(course.createdAt).toLocaleDateString("vi-VN")}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-col items-center gap-1">
+                    <Image
+                      src={reaction?.icon || ""}
+                      alt=""
+                      width={20}
+                      height={20}
+                      className="mx-auto"
+                    />
+                    <p className="font-semibold text-inherit">
+                      {reaction?.value}
+                    </p>
+                    <p className="font-medium text-gray-400">
+                      {course.rating.length} đánh giá
                     </p>
                   </div>
-                </div>
-              </TableCell>
-              <TableCell>
-                {course.free ? (
-                  <>
-                    <span
-                      className={cn(
-                        courseStatusClassName,
-                        courseStatus.approved.className
-                      )}
-                    >
-                      Miễn phí
-                    </span>
-                  </>
-                ) : (
-                  <p className="font-semibold whitespace-nowrap text-primary">
-                    {formatThoundsand(course.price)} VNĐ
-                  </p>
-                )}
-              </TableCell>
-              <TableCell>
-                <span
-                  className={cn(
-                    courseStatusClassName,
-                    courseStatus[course.status].className
-                  )}
-                >
-                  {courseStatus[course.status].text}
-                </span>
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
-                  <Link
-                    href={`/course/${course.slug}`}
-                    target="_blank"
-                    className={cn(actionClassName)}
-                  >
-                    <IconEye></IconEye>
-                  </Link>
-                  {userRole && [Role.ADMIN, Role.EXPERT].includes(userRole) && (
+                </TableCell>
+                <TableCell>
+                  {course.free ? (
                     <>
-                      <Link
-                        href={`/admin/course/update?slug=${course.slug}`}
-                        className={cn(actionClassName)}
+                      <span
+                        className={cn(
+                          courseStatusClassName,
+                          courseStatus.approved.className
+                        )}
                       >
-                        <IconEdit></IconEdit>
-                      </Link>
+                        Miễn phí
+                      </span>
                     </>
+                  ) : (
+                    <p className="font-semibold whitespace-nowrap text-primary">
+                      {formatThoundsand(course.price)} VNĐ
+                    </p>
                   )}
-                  {userRole && [Role.ADMIN].includes(userRole) && (
-                    <button
+                </TableCell>
+                <TableCell>
+                  <span
+                    className={cn(
+                      courseStatusClassName,
+                      courseStatus[course.status].className
+                    )}
+                  >
+                    {courseStatus[course.status].text}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
+                    <Link
+                      href={`/course/${course.slug}`}
+                      target="_blank"
                       className={cn(actionClassName)}
-                      onClick={() => handleDeleteCourse(course.slug)}
                     >
-                      <IconDelete />
-                    </button>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+                      <IconEye></IconEye>
+                    </Link>
+                    {userRole &&
+                      [Role.ADMIN, Role.EXPERT].includes(userRole) && (
+                        <>
+                          <Link
+                            href={`/admin/course/update?slug=${course.slug}`}
+                            className={cn(actionClassName)}
+                          >
+                            <IconEdit></IconEdit>
+                          </Link>
+                        </>
+                      )}
+                    {userRole && [Role.ADMIN].includes(userRole) && (
+                      <button
+                        className={cn(actionClassName)}
+                        onClick={() => handleDeleteCourse(course.slug)}
+                      >
+                        <IconDelete />
+                      </button>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </>

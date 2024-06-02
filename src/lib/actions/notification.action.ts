@@ -42,7 +42,7 @@ export async function getNotificationByUser(userId: string) {
       .sort({
         createdAt: -1,
       })
-      .limit(10);
+      .limit(3);
     return notifications;
   } catch (err) {
     console.log(err);
