@@ -14,17 +14,12 @@ import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 import { sendNotification } from "./notification.action";
+import { createOrder } from "./order.action";
 
 export async function createUser(userData: CreateUserParams) {
   try {
     connectToDatabase();
-    const findUser = await User.findOne({ username: userData.username });
-    const user = await User.create({
-      ...userData,
-      username: findUser?.username
-        ? `${userData.username}-${new Date().getTime().toString().slice(-5)}`
-        : userData.username,
-    });
+    const user = await User.create(userData);
     return user;
   } catch (error) {
     console.log(error);
@@ -38,21 +33,9 @@ export async function updateUser(params: UpdateUserParams) {
     if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
       return undefined;
     const { clerkId, updateData, path } = params;
-    await User.findOneAndUpdate(
-      { clerkId },
-      {
-        ...updateData,
-        username: findUser?.username
-          ? `${updateData.username}-${new Date()
-              .getTime()
-              .toString()
-              .slice(-5)}`
-          : updateData.username,
-      },
-      {
-        new: true,
-      }
-    );
+    await User.findOneAndUpdate({ clerkId }, updateData, {
+      new: true,
+    });
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -131,7 +114,7 @@ export async function getAllUsers(
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN].includes(findUser?.role)) return undefined;
-    const { page = 1, pageSize = 10, searchQuery, paidUser } = params;
+    const { page = 1, pageSize = 100, searchQuery, paidUser } = params;
     const skipAmount = (page - 1) * pageSize;
     const query: FilterQuery<typeof User> = {};
     let limit = pageSize;
@@ -203,14 +186,14 @@ export async function addCourseToUser({
     }
     user.courses.push(courseId);
     await user.save();
-    // await createOrder({
-    //   user: user._id,
-    //   course: courseId,
-    //   amount: coursePrice,
-    //   total: coursePrice - discount,
-    //   discount,
-    //   status: EOrderStatus.APPROVED,
-    // });
+    await createOrder({
+      user: user._id,
+      course: courseId,
+      amount: coursePrice,
+      total: coursePrice - discount,
+      discount,
+      status: EOrderStatus.APPROVED,
+    });
     revalidatePath(path);
     const findCourse = await Course.findById(courseId);
     if (!findCourse?.title) return;
