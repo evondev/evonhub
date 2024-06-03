@@ -20,6 +20,56 @@ export async function createUser(userData: CreateUserParams) {
   try {
     connectToDatabase();
     const user = await User.create(userData);
+    const existEmails = [
+      "phamtrongphuc.vie@gmail.com",
+      "yunomix280304@gmail.com",
+      "tuanquangnguyen1710@gmail.com",
+      "hieuhanufit@gmail.com",
+      "ifv.hoang@gmail.com",
+      "nhatbaoxxd@gmail.com",
+      "kohavn90@gmail.com",
+      "luongtd@echoes.vn",
+      "danghieuit96@gmail.com",
+      "duongchiviet2004@gmail.com",
+      "phuocthanh2k03@gmail.com",
+      "cuong.truongkien@gmail.com",
+      "reckpo123@gmail.com",
+      "lynguyenthanhtuan@gmail.com",
+      "horizon3470@gmail.com",
+      "nguyenhuynh3000@gmail.com",
+      "minhnavy2000@gmail.com",
+      "vu.dd95@gmail.com",
+      "thanhngq@gmail.com",
+      "trungquangle0102@gmail.com",
+      "tandm160797@gmail.com",
+      "tronghuy2208@gmail.com",
+      "phanminhtri11800@gmail.com",
+      "bathongle@gmail.com",
+      "thailnp133@gmail.com",
+      "tbintb0003@gmail.com",
+      "kientran9574@gmail.com",
+      "phanquangminhlong@gmail.com",
+      "samyha71@gmail.com",
+      "trongnghiajs@gmail.com",
+      "lehuynhhoaivan2001@gmail.com",
+      "duc2722000@gmail.com",
+      "ngotrongphong.dev@gmail.com",
+      "ree6i6x@gmail.com",
+      "phamtu613@gmail.com",
+      "manhtranduc0202@gmail.com",
+      "nhatlinh9105@gmail.com",
+    ];
+    if (existEmails.includes(user.email)) {
+      await addCourseToUser({
+        userId: user.clerkId,
+        course: {
+          id: "662a8e3ee5969c2eeabe905e",
+          price: 799000,
+          discount: 200000,
+        },
+        path: "/",
+      });
+    }
     return user;
   } catch (error) {
     console.log(error);
