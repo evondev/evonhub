@@ -75,7 +75,7 @@ const CourseDetailsPage = ({
   const { userRole, currentUser } = useGlobalStore();
   const router = useRouter();
   const handleEnrollFree = async (slug: string) => {
-    if (!currentUser?.username) {
+    if (!currentUser?._id) {
       router.push("/sign-in");
       return;
     }

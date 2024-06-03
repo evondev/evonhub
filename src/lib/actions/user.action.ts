@@ -14,12 +14,17 @@ import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 import { sendNotification } from "./notification.action";
-import { createOrder } from "./order.action";
 
 export async function createUser(userData: CreateUserParams) {
   try {
     connectToDatabase();
-    const user = await User.create(userData);
+    const findUser = await User.findOne({ username: userData.username });
+    const user = await User.create({
+      ...userData,
+      username: findUser?.username
+        ? `${userData.username}-${new Date().getTime().toString().slice(-5)}`
+        : userData.username,
+    });
     return user;
   } catch (error) {
     console.log(error);
@@ -33,9 +38,21 @@ export async function updateUser(params: UpdateUserParams) {
     if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
       return undefined;
     const { clerkId, updateData, path } = params;
-    await User.findOneAndUpdate({ clerkId }, updateData, {
-      new: true,
-    });
+    await User.findOneAndUpdate(
+      { clerkId },
+      {
+        ...updateData,
+        username: findUser?.username
+          ? `${updateData.username}-${new Date()
+              .getTime()
+              .toString()
+              .slice(-5)}`
+          : updateData.username,
+      },
+      {
+        new: true,
+      }
+    );
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -186,14 +203,14 @@ export async function addCourseToUser({
     }
     user.courses.push(courseId);
     await user.save();
-    await createOrder({
-      user: user._id,
-      course: courseId,
-      amount: coursePrice,
-      total: coursePrice - discount,
-      discount,
-      status: EOrderStatus.APPROVED,
-    });
+    // await createOrder({
+    //   user: user._id,
+    //   course: courseId,
+    //   amount: coursePrice,
+    //   total: coursePrice - discount,
+    //   discount,
+    //   status: EOrderStatus.APPROVED,
+    // });
     revalidatePath(path);
     const findCourse = await Course.findById(courseId);
     if (!findCourse?.title) return;
