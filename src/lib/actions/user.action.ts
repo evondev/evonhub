@@ -77,7 +77,11 @@ export async function getUserById({ userId }: { userId: string }) {
   try {
     connectToDatabase();
     if (!userId) return undefined;
-    let user = await User.findOne({ clerkId: userId });
+    let user = await User.findOne({ clerkId: userId }).populate({
+      path: "courses",
+      model: Course,
+      select: "title slug free",
+    });
     return user;
   } catch (error) {
     console.log(error);
