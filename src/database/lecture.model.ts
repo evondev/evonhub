@@ -6,7 +6,7 @@ export interface ILecture extends Document {
   lessons: Schema.Types.ObjectId[];
   courseId: Schema.Types.ObjectId;
   order: number;
-  _destroy?: boolean;
+  _destroy: boolean;
   createdAt: Date;
 }
 const lectureSchema = new Schema<ILecture>({

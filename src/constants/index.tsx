@@ -6,7 +6,6 @@ import {
   IconPlay,
   IconStudy,
   IconTutorial,
-  IconUpload,
   IconUser,
   IconUsers,
 } from "@/components/icons";
@@ -60,13 +59,7 @@ export const menuLinks: TMenuLink[] = [
     url: "/admin/order/manage",
     isAdmin: true,
   },
-  {
-    title: "Upload",
-    icon: <IconUpload></IconUpload>,
-    url: "/admin/upload",
-    isAdmin: true,
-    isHideMobile: true,
-  },
+
   {
     title: "Hướng dẫn mua",
     icon: <IconTutorial></IconTutorial>,

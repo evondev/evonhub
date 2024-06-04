@@ -59,11 +59,13 @@ export async function getLessonDetailsContent({
       _destroy: false,
     })
       .select("title lessons")
+      .sort({ order: 1 })
       .populate({
         path: "lessons",
         model: Lesson,
         select: "_id title slug user course",
         match: { _destroy: false },
+        sort: { order: 1 } as any,
       });
     return lectureList || [];
   } catch (error) {}

@@ -193,6 +193,7 @@ export async function updateCourseWithLecture(params: {
     }
     const newLecture = new Lecture({
       ...params,
+      _destroy: false,
     });
     await newLecture.save();
     course.lecture.push(newLecture._id);
