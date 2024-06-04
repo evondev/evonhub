@@ -1,5 +1,11 @@
 "use client";
-import { IconCube, IconDelete, IconEdit, IconPlay } from "@/components/icons";
+import {
+  IconCube,
+  IconDelete,
+  IconDrag,
+  IconEdit,
+  IconPlay,
+} from "@/components/icons";
 import {
   Accordion,
   AccordionContent,
@@ -20,6 +26,12 @@ import { cn } from "@/lib/utils";
 import { convertSlug } from "@/utils";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
+import {
+  DragDropContext,
+  Draggable,
+  DropResult,
+  Droppable,
+} from "react-beautiful-dnd";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { useImmer } from "use-immer";
@@ -97,10 +109,7 @@ const CourseContent = ({
     try {
       await addLesson({
         title: "Tiêu đề bài học mới",
-        slug:
-          "tieu-de-bai-hoc-moi" +
-          (lectureList.find((item) => item._id === lectureId)?.lessons.length ||
-            0),
+        slug: "tieu-de-bai-hoc-moi" + new Date().getTime().toString().slice(-5),
         content: "",
         video: "",
         type: "video",
@@ -202,6 +211,7 @@ const CourseContent = ({
   };
   const handleSaveLesson = async (
     lessonId: string,
+    lectureId: string,
     lesson: {
       title: string;
       content: string;
@@ -221,6 +231,7 @@ const CourseContent = ({
           title: lessonData.title || lesson.title,
           slug: convertSlug(lessonData.title || lesson.title),
           courseId: data._id as any,
+          lectureId: lectureId as any,
         },
       });
       toast.success("Bài học đã được cập nhật thành công");
@@ -244,193 +255,249 @@ const CourseContent = ({
     setEditLessonIndex("");
   };
 
+  const onDragEnd = ({ source, destination }: DropResult) => {
+    const droppableSource = source.droppableId;
+    const droppableDestination = destination?.droppableId;
+    const sourceIndex = source.index;
+    const destinationIndex = destination?.index;
+    if (
+      droppableDestination === droppableSource &&
+      sourceIndex !== destinationIndex
+    ) {
+      // TODO: Implement reordering of lessons in same lecture
+    }
+    if (droppableDestination !== droppableSource) {
+      // TODO: Implement moving lessons between lectures
+    }
+  };
+
   return (
     <div className="hidden lg:block">
       <h1 className="font-bold text-3xl mb-8">{data.title}</h1>
-      {lectureList.map((lecture, index) => {
-        const lessons = lecture.lessons;
-        return (
-          <div key={lecture.title} className="max-w-[1024px]">
-            {editLectureIndex === lecture._id ? (
-              <>
-                <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
-                  <div className="flex items-center gap-3 mb-5">
-                    <h3 className="flex-shrink-0 font-bold">Tên chương:</h3>
-                    <Input
-                      placeholder="Nhập tiêu đề"
-                      className="font-semibold border-gray-200 dark:border-grayDarker dark:bg-grayDarkest"
-                      defaultValue={lecture.title}
-                      onChange={debounce(
-                        (e) => setLectureInput(e.target.value),
-                        500
-                      )}
-                    />
+      <DragDropContext onDragEnd={onDragEnd}>
+        {lectureList.map((lecture, index) => {
+          const lessons = lecture.lessons;
+          return (
+            <div key={lecture.title} className="max-w-[1024px]">
+              {editLectureIndex === lecture._id ? (
+                <>
+                  <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
+                    <div className="flex items-center gap-3 mb-5">
+                      <h3 className="flex-shrink-0 font-bold">Tên chương:</h3>
+                      <Input
+                        placeholder="Nhập tiêu đề"
+                        className="font-semibold border-gray-200 dark:border-grayDarker dark:bg-grayDarkest"
+                        defaultValue={lecture.title}
+                        onChange={debounce(
+                          (e) => setLectureInput(e.target.value),
+                          500
+                        )}
+                      />
+                    </div>
+                    <div className="flex justify-end">
+                      <Button
+                        className={cn(primaryButtonClassName, "h-10")}
+                        onClick={() => handleSaveLecture(index)}
+                        isLoading={isSubmitting.lecture}
+                      >
+                        Cập nhật
+                      </Button>
+                      <button
+                        className={cn(baseButtonClassName, "h-10")}
+                        onClick={() => handleCancelLecture(index)}
+                      >
+                        Hủy
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex justify-end">
-                    <Button
-                      className={cn(primaryButtonClassName, "h-10")}
-                      onClick={() => handleSaveLecture(index)}
-                      isLoading={isSubmitting.lecture}
-                    >
-                      Cập nhật
-                    </Button>
-                    <button
-                      className={cn(baseButtonClassName, "h-10")}
-                      onClick={() => handleCancelLecture(index)}
-                    >
-                      Hủy
-                    </button>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <Accordion
-                  type="single"
-                  collapsible
-                  className="w-full mb-5"
-                  key={lecture._id}
-                >
-                  <AccordionItem value={lecture.title}>
-                    <AccordionTrigger>
-                      <div className="flex items-center gap-2 font-semibold">
-                        <IconCube />
-                        <strong>Chương {index + 1}:</strong>
-                        <p>{lecture.title}</p>
-                        <button
-                          className="size-5 flex items-center justify-center hover:text-blue-400"
-                          onClick={() => setEditLectureIndex(lecture._id)}
-                        >
-                          <IconEdit />
-                        </button>
-                        <button
-                          className="size-5 hover:text-red-500 flex items-center justify-center"
-                          onClick={() => handleDeleteLecture(lecture._id)}
-                        >
-                          <IconDelete />
-                        </button>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="bg-transparent">
-                      <div className="flex flex-col gap-3 pl-10 mb-5">
-                        {lessons.map((lesson, idx) => (
-                          <div key={lesson._id}>
-                            {editLessonIndex === lesson._id ? (
-                              <>
-                                <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
-                                  <div className="flex items-center gap-3 mb-5">
-                                    <h3 className="flex-shrink-0 font-bold">
-                                      Tên bài học:
-                                    </h3>
-                                    <Input
-                                      placeholder="Nhập tiêu đề"
-                                      className="font-semibold border-gray-200 dark:border-grayDarker dark:bg-grayDarkest"
-                                      defaultValue={lesson.title}
-                                      onChange={debounce(
-                                        (e) =>
-                                          setLessonData({
-                                            ...lessonData,
-                                            title: e.target.value,
-                                          }),
-                                        500
-                                      )}
-                                    />
-                                  </div>
-                                  <div className="flex justify-end">
-                                    <Button
-                                      className={cn(
-                                        primaryButtonClassName,
-                                        "h-10"
-                                      )}
-                                      onClick={() =>
-                                        handleSaveLesson(lesson._id, lesson)
-                                      }
-                                      isLoading={isSubmitting.lesson}
+                </>
+              ) : (
+                <>
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="w-full mb-5"
+                    key={lecture._id}
+                  >
+                    <AccordionItem value={lecture.title}>
+                      <AccordionTrigger>
+                        <div className="flex items-center gap-2 font-semibold">
+                          <IconCube />
+                          <strong>Chương {index + 1}:</strong>
+                          <p>{lecture.title}</p>
+                          <button
+                            className="size-5 flex items-center justify-center hover:text-blue-400"
+                            onClick={() => setEditLectureIndex(lecture._id)}
+                          >
+                            <IconEdit />
+                          </button>
+                          <button
+                            className="size-5 hover:text-red-500 flex items-center justify-center"
+                            onClick={() => handleDeleteLecture(lecture._id)}
+                          >
+                            <IconDelete />
+                          </button>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="bg-transparent">
+                        <Droppable droppableId={lecture._id}>
+                          {(provided, snapshot) => (
+                            <div
+                              className="flex flex-col pl-10 mb-5"
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                            >
+                              {lessons.map((lesson, idx) => (
+                                <Draggable
+                                  key={lesson._id}
+                                  draggableId={lesson._id}
+                                  index={idx}
+                                >
+                                  {(provided, snapshot) => (
+                                    <div
+                                      key={lesson._id}
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      className="grid items-center grid-cols-[1fr,auto] gap-5 mb-5"
                                     >
-                                      Cập nhật
-                                    </Button>
-                                    <button
-                                      className={cn(
-                                        baseButtonClassName,
-                                        "h-10"
+                                      {editLessonIndex === lesson._id ? (
+                                        <>
+                                          <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
+                                            <div className="flex items-center gap-3 mb-5">
+                                              <h3 className="flex-shrink-0 font-bold">
+                                                Tên bài học:
+                                              </h3>
+                                              <Input
+                                                placeholder="Nhập tiêu đề"
+                                                className="font-semibold border-gray-200 dark:border-grayDarker dark:bg-grayDarkest"
+                                                defaultValue={lesson.title}
+                                                onChange={debounce(
+                                                  (e) =>
+                                                    setLessonData({
+                                                      ...lessonData,
+                                                      title: e.target.value,
+                                                    }),
+                                                  500
+                                                )}
+                                              />
+                                            </div>
+                                            <div className="flex justify-end">
+                                              <Button
+                                                className={cn(
+                                                  primaryButtonClassName,
+                                                  "h-10"
+                                                )}
+                                                onClick={() =>
+                                                  handleSaveLesson(
+                                                    lesson._id,
+                                                    lecture._id,
+                                                    lesson
+                                                  )
+                                                }
+                                                isLoading={isSubmitting.lesson}
+                                              >
+                                                Cập nhật
+                                              </Button>
+                                              <button
+                                                className={cn(
+                                                  baseButtonClassName,
+                                                  "h-10"
+                                                )}
+                                                onClick={() =>
+                                                  handleCancelLesson(index)
+                                                }
+                                              >
+                                                Hủy
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </>
+                                      ) : (
+                                        <Accordion
+                                          type="single"
+                                          collapsible
+                                          className="w-full"
+                                        >
+                                          <AccordionItem value={lesson._id}>
+                                            <AccordionTrigger>
+                                              <div className="flex items-center gap-3 text-sm font-semibold">
+                                                <div className="flex items-center gap-1">
+                                                  <IconPlay />
+                                                  <div>{lesson.title}</div>
+                                                </div>
+                                                <span
+                                                  className="size-5 flex items-center justify-center hover:text-blue-400"
+                                                  onClick={() =>
+                                                    setEditLessonIndex(
+                                                      lesson._id
+                                                    )
+                                                  }
+                                                >
+                                                  <IconEdit />
+                                                </span>
+                                                <span
+                                                  className="size-5 hover:text-red-500 flex items-center justify-center"
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDeleteLesson(
+                                                      lesson._id,
+                                                      lecture._id
+                                                    );
+                                                  }}
+                                                >
+                                                  <IconDelete />
+                                                </span>
+                                              </div>
+                                            </AccordionTrigger>
+                                            <AccordionContent className="bgDarkMode rounded-lg mt-5 p-5">
+                                              <LessonItemUpdate
+                                                lessonId={lesson._id}
+                                                lesson={lesson}
+                                                slug={data.slug}
+                                                course={{
+                                                  id: data._id,
+                                                  slug: data.slug,
+                                                  lectures: lectureList,
+                                                }}
+                                              ></LessonItemUpdate>
+                                            </AccordionContent>
+                                          </AccordionItem>
+                                        </Accordion>
                                       )}
-                                      onClick={() => handleCancelLesson(index)}
-                                    >
-                                      Hủy
-                                    </button>
-                                  </div>
-                                </div>
-                              </>
-                            ) : (
-                              <Accordion
-                                type="single"
-                                collapsible
-                                className="w-full"
-                              >
-                                <AccordionItem value={lesson._id}>
-                                  <AccordionTrigger>
-                                    <div className="flex items-center gap-3 text-sm font-semibold">
-                                      <div className="flex items-center gap-1">
-                                        <IconPlay />
-                                        <div>{lesson.title}</div>
-                                      </div>
-                                      <span
-                                        className="size-5 flex items-center justify-center hover:text-blue-400"
-                                        onClick={() =>
-                                          setEditLessonIndex(lesson._id)
-                                        }
+                                      <button
+                                        {...provided.dragHandleProps}
+                                        className="size-10 bg-white rounded flex items-center justify-center p-1 text-slate-500 dark:bg-grayDarker border border-slate-200 dark:border-opacity-10"
                                       >
-                                        <IconEdit />
-                                      </span>
-                                      <span
-                                        className="size-5 hover:text-red-500 flex items-center justify-center"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeleteLesson(
-                                            lesson._id,
-                                            lecture._id
-                                          );
-                                        }}
-                                      >
-                                        <IconDelete />
-                                      </span>
+                                        <IconDrag></IconDrag>
+                                      </button>
                                     </div>
-                                  </AccordionTrigger>
-                                  <AccordionContent className="bgDarkMode rounded-lg mt-5 p-5">
-                                    <LessonItemUpdate
-                                      lessonId={lesson._id}
-                                      lesson={lesson}
-                                      slug={data.slug}
-                                      course={{
-                                        id: data._id,
-                                        slug: data.slug,
-                                        lectures: lectureList,
-                                      }}
-                                    ></LessonItemUpdate>
-                                  </AccordionContent>
-                                </AccordionItem>
-                              </Accordion>
-                            )}
-                          </div>
-                        ))}
+                                  )}
+                                </Draggable>
+                              ))}
+                            </div>
+                          )}
+                        </Droppable>
                         {editLessonIndex === "" && (
                           <Button
-                            className={commonButtonClassName}
+                            className={cn(
+                              commonButtonClassName,
+                              "ml-auto w-fit flex"
+                            )}
                             onClick={() => handleAddLesson(lecture._id)}
                             isLoading={isSubmitting.lesson}
                           >
                             Thêm bài học
                           </Button>
                         )}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </>
-            )}
-          </div>
-        );
-      })}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </DragDropContext>
 
       {editLectureIndex === "" && editLessonIndex === "" && (
         <Button

@@ -17,7 +17,7 @@ export async function addLesson(params: CreateLessonParams) {
   try {
     connectToDatabase();
     const findLecture = await Lecture.findById(params.lectureId);
-    if (!findLecture) {
+    if (!findLecture?._id) {
       throw new Error("Lecture not found");
     }
     const existLessonSlug = await Lesson.findOne({
@@ -27,6 +27,7 @@ export async function addLesson(params: CreateLessonParams) {
 
     const newLesson = new Lesson({
       ...params,
+      _destroy: false,
       slug: existLessonSlug
         ? `${params.slug}-${new Date().getTime().toString().slice(-3)}`
         : params.slug,
@@ -86,8 +87,12 @@ export async function updateLesson({
         message: "Đường dẫn bài học đã tồn tại!",
       };
     }
-
+    console.log("data:", data);
     const lesson = await Lesson.findById(lessonId);
+    console.log("lesson:", lesson);
+
+    await Lesson.findByIdAndUpdate(lessonId, data);
+
     if (data.lectureId !== lesson.lectureId) {
       const currentLecture = await Lecture.findById(lesson.lectureId);
       if (!currentLecture) return;
@@ -102,7 +107,6 @@ export async function updateLesson({
         await lecture.save();
       }
     }
-    await Lesson.findByIdAndUpdate(lessonId, data);
     revalidatePath(path);
   } catch (error) {
     console.log(error);

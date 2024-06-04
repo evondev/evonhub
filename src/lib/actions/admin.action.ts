@@ -25,6 +25,7 @@ export async function getCourseUpdateOutline(
           select: "title slug video assetId content duration lectureId",
           model: Lesson,
           match: { _destroy: false },
+          sort: { order: 1 } as any,
         },
       });
 

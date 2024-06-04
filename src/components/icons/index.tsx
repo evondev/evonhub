@@ -5,6 +5,7 @@ export { default as IconCourseManage } from "./IconCourseManage";
 export { default as IconCube } from "./IconCube";
 export { default as IconDashboard } from "./IconDashboard";
 export { default as IconDelete } from "./IconDelete";
+export { default as IconDrag } from "./IconDrag";
 export { default as IconEdit } from "./IconEdit";
 export { default as IconEye } from "./IconEye";
 export { default as IconFavorite } from "./IconFavorite";
