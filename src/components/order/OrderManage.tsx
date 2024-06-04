@@ -72,8 +72,10 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                 </div>
               </TableCell>
               <TableCell>
-                <div className="font-semibold">{order.user.username}</div>
-                <div className="text-xs text-slate-400">{order.user.email}</div>
+                <div className="font-semibold">{order.user?.username}</div>
+                <div className="text-xs text-slate-400">
+                  {order.user?.email}
+                </div>
               </TableCell>
               <TableCell>
                 <span
@@ -110,7 +112,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                       className={cn(actionClassName)}
                       onClick={() =>
                         handleRejectOrder({
-                          user: order.user._id,
+                          user: order.user?._id,
                           course: order.course._id,
                           status: EOrderStatus.APPROVED,
                         })
@@ -137,7 +139,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                       className={cn(actionClassName)}
                       onClick={() =>
                         handleRejectOrder({
-                          user: order.user._id,
+                          user: order.user?._id,
                           course: order.course._id,
                           status: EOrderStatus.REJECTED,
                         })

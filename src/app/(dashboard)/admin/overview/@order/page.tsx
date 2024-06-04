@@ -45,9 +45,9 @@ const page = async () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="font-semibold">{order.user.username}</div>
+                    <div className="font-semibold">{order.user?.username}</div>
                     <div className="text-xs text-slate-400">
-                      {order.user.email}
+                      {order.user?.email}
                     </div>
                   </TableCell>
                   <TableCell>
