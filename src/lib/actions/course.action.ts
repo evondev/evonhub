@@ -33,6 +33,7 @@ export async function createCourse({
       title,
       slug,
       path,
+      _destroy: false,
       author: findUser?._id,
     });
     revalidatePath(path);

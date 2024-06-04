@@ -20,6 +20,13 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import slugify from "slugify";
 import { z } from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const formSchema = z.object({
   video: z.string().optional(),
@@ -28,6 +35,7 @@ const formSchema = z.object({
   title: z.string().optional(),
   duration: z.number().optional(),
   assetId: z.string().optional(),
+  lectureId: z.string().optional(),
 });
 const btnClassName =
   "text-xs py-2 px-3 h-10 rounded-md font-semibold w-[100px] flex items-center justify-center";
@@ -46,10 +54,12 @@ const LessonItemUpdate = ({
     title: string;
     duration: number;
     assetId?: string;
+    lectureId: string;
   };
   course: {
     id: string;
     slug: string;
+    lectures: any[];
   };
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,6 +73,7 @@ const LessonItemUpdate = ({
       title: lesson.title,
       duration: lesson.duration,
       assetId: lesson.assetId,
+      lectureId: lesson.lectureId,
     },
   });
   async function onSubmitLesson(values: z.infer<typeof formSchema>) {
@@ -73,6 +84,7 @@ const LessonItemUpdate = ({
         path: `/admin/course/content?slug=${slug}`,
         data: {
           ...values,
+          lectureId: values?.lectureId?.toString() as any,
           slug:
             values.slug ||
             slugify(lesson.title, {
@@ -192,6 +204,35 @@ const LessonItemUpdate = ({
                 />
               </FormControl>
               <FormMessage className="text-red-400" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="lectureId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Lecture ID</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn chương" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {course.lectures.map((lecture) => (
+                      <SelectItem
+                        value={lecture._id.toString()}
+                        key={lecture._id.toString()}
+                      >
+                        {lecture.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
             </FormItem>
           )}
         />

@@ -50,7 +50,7 @@ const layout = async ({
       <Suspense fallback={<LessonContentSkeleton />}>
         <div
           id="lesson-content-aside"
-          className="mt-2 sticky top-10 xl:top-[112px] right-0"
+          className="mt-2 sticky top-10 xl:top-[112px] right-0 lg:max-h-[calc(100vh-150px)] lg:overflow-y-auto scroll-hidden"
         >
           {content}
         </div>

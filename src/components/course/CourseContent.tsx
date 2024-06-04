@@ -44,6 +44,7 @@ const CourseContent = ({
         slug: string;
         order: number;
         duration: number;
+        lectureId: string;
       }[];
     }[];
   };
@@ -65,6 +66,7 @@ const CourseContent = ({
         slug: string;
         order: number;
         duration: number;
+        lectureId: string;
       }[];
     }[]
   >([]);
@@ -286,7 +288,7 @@ const CourseContent = ({
                 <Accordion
                   type="single"
                   collapsible
-                  className="w-full"
+                  className="w-full mb-5"
                   key={lecture._id}
                 >
                   <AccordionItem value={lecture.title}>
@@ -402,6 +404,7 @@ const CourseContent = ({
                                       course={{
                                         id: data._id,
                                         slug: data.slug,
+                                        lectures: lectureList,
                                       }}
                                     ></LessonItemUpdate>
                                   </AccordionContent>

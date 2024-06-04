@@ -255,3 +255,10 @@ div[role="dialog"] {
   max-width: 1024px;
   margin: 0 auto;
 }
+.scroll-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+}

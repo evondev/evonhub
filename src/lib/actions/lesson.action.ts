@@ -87,6 +87,21 @@ export async function updateLesson({
       };
     }
 
+    const lesson = await Lesson.findById(lessonId);
+    if (data.lectureId !== lesson.lectureId) {
+      const currentLecture = await Lecture.findById(lesson.lectureId);
+      if (!currentLecture) return;
+      currentLecture.lessons = currentLecture.lessons.filter(
+        (id: string) => id.toString() !== lesson._id.toString()
+      );
+      await currentLecture.save();
+      const lecture = await Lecture.findById(data.lectureId);
+      if (!lecture) return;
+      if (!lecture?.lessons?.includes(lesson._id)) {
+        lecture.lessons.push(lesson._id);
+        await lecture.save();
+      }
+    }
     await Lesson.findByIdAndUpdate(lessonId, data);
     revalidatePath(path);
   } catch (error) {

@@ -22,7 +22,7 @@ export async function getCourseUpdateOutline(
         match: { _destroy: false },
         populate: {
           path: "lessons",
-          select: "title slug video assetId content duration",
+          select: "title slug video assetId content duration lectureId",
           model: Lesson,
           match: { _destroy: false },
         },
