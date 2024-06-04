@@ -27,14 +27,14 @@ export const menuLinks: TMenuLink[] = [
     isAdmin: true,
   },
   {
-    title: "Khu vực học tập",
-    icon: <IconStudy></IconStudy>,
+    title: "Khám phá",
+    icon: <IconPlay></IconPlay>,
     url: "/",
   },
   {
-    title: "Khám phá",
-    icon: <IconPlay></IconPlay>,
-    url: "/explore",
+    title: "Khu vực học tập",
+    icon: <IconStudy></IconStudy>,
+    url: "/study",
   },
   {
     title: "Quản lý khóa học",

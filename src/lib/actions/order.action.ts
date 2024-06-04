@@ -2,7 +2,7 @@
 import Course from "@/database/course.model";
 import Order from "@/database/order.model";
 import User from "@/database/user.model";
-import { EOrderStatus } from "@/types/enums";
+import { EOrderStatus, Role } from "@/types/enums";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
@@ -41,10 +41,19 @@ export async function updateOrder(params: UpdateOrderParams) {
     console.log(error);
   }
 }
-export async function getAllOrders(params: { limit?: number }) {
+export async function getAllOrders(params: {
+  limit?: number;
+  userId?: string;
+}) {
   try {
     connectToDatabase();
-    const orders = await Order.find()
+    const findUser = await User.findById(params.userId);
+    const userCourses = await Course.find({ author: findUser?._id });
+    let query: any = {};
+    if (findUser?.role === Role.EXPERT) {
+      query = { course: { $in: userCourses.map((course) => course._id) } };
+    }
+    const orders = await Order.find(query)
       .limit(params.limit || 500)
       .populate({
         path: "course",

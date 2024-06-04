@@ -89,7 +89,11 @@ const CourseDetailsPage = ({
     } catch (error) {}
   };
   if (!data) return <PageNotFound />;
-  if (data.status !== ECourseStatus.APPROVED && userRole !== Role.ADMIN)
+  if (
+    data.status !== ECourseStatus.APPROVED &&
+    userRole !== Role.ADMIN &&
+    userRole !== Role.EXPERT
+  )
     return <PageNotFound />;
   const lectures = data?.lecture || [];
   const totalMinutes = lectures.reduce((acc, cur) => {

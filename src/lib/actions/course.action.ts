@@ -33,7 +33,7 @@ export async function createCourse({
       title,
       slug,
       path,
-      author,
+      author: findUser?._id,
     });
     revalidatePath(path);
   } catch (error) {
@@ -112,7 +112,7 @@ export async function getCourseBySlug(
     let searchQuery: any = {};
     searchQuery.slug = slug;
     const course = await Course.findOne(searchQuery).select(
-      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free"
+      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author"
     );
 
     return course;
