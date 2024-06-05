@@ -158,7 +158,7 @@ export async function getAllUsers(
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN].includes(findUser?.role)) return undefined;
-    const { page = 1, pageSize = 100, searchQuery, paidUser } = params;
+    const { page = 1, pageSize = 10, searchQuery, paidUser } = params;
     const skipAmount = (page - 1) * pageSize;
     const query: FilterQuery<typeof User> = {};
     let limit = pageSize;

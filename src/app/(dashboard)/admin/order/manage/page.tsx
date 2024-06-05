@@ -11,6 +11,7 @@ const page = async () => {
   if (!findUser || findUser.role !== Role.ADMIN) return null;
   const allOrders = await getAllOrders({
     userId: findUser._id,
+    limit: 10,
   });
   return (
     <OrderManage
