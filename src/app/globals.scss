@@ -27,6 +27,7 @@
   }
 }
 @layer components {
+  .shadow-main,
   .focus-primary:focus {
     box-shadow: 0 0 0 3px rgb(44, 143, 255, 0.25);
   }

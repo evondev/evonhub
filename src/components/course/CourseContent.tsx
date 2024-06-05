@@ -65,7 +65,7 @@ const CourseContent = ({
 }) => {
   const commonButtonClassName = cn(
     baseButtonClassName,
-    "w-[140px] ml-auto mt-5 border border-gray-300 bg-gray-100 dark:border-opacity-10 dark:bg-grayDarkest hover:border-gray-100"
+    "w-[140px] ml-auto mt-5 border border-gray-300 bg-gray-100 dark:border-opacity-10 dark:bg-grayDarkest hover:opacity-80 dark:bg-grayDarker"
   );
   const [lectureList, setLectureList] = useState<
     {
@@ -281,9 +281,6 @@ const CourseContent = ({
       });
     }
     if (droppableDestination !== droppableSource) {
-      const findLecture = lectureList.find(
-        (item) => item._id === droppableDestination
-      );
       const sourceLectureIndex = lectureList.findIndex(
         (lecture) => lecture._id === source.droppableId
       );
@@ -385,7 +382,12 @@ const CourseContent = ({
                         <Droppable key={lecture._id} droppableId={lecture._id}>
                           {(provided, snapshot) => (
                             <div
-                              className="flex flex-col mb-5 min-h-[100px]"
+                              className={cn(
+                                "flex flex-col mb-5 min-h-[100px] pb-20 rounded-lg p-5",
+                                snapshot.isDraggingOver
+                                  ? "border border-primary shadow-main"
+                                  : ""
+                              )}
                               {...provided.droppableProps}
                               ref={provided.innerRef}
                             >
@@ -399,7 +401,9 @@ const CourseContent = ({
                                     <div
                                       ref={provided.innerRef}
                                       {...provided.draggableProps}
-                                      className="grid items-center grid-cols-[1fr,auto] gap-5 mb-5"
+                                      className={cn(
+                                        "grid items-center grid-cols-[1fr,auto] gap-5 mb-5"
+                                      )}
                                     >
                                       {editLessonIndex === lesson._id ? (
                                         <>
@@ -507,7 +511,12 @@ const CourseContent = ({
                                       )}
                                       <button
                                         {...provided.dragHandleProps}
-                                        className="size-10 bg-white rounded flex items-center justify-center p-1 text-slate-500 dark:bg-grayDarker border border-slate-200 dark:border-opacity-10 cursor-grab"
+                                        className={cn(
+                                          "size-10  rounded flex items-center justify-center p-1 text-slate-500  border border-slate-200 dark:border-opacity-10 cursor-grab",
+                                          snapshot.isDragging
+                                            ? "bg-primary shadow-main text-white"
+                                            : "bg-white dark:bg-grayDarker"
+                                        )}
                                       >
                                         <IconDrag></IconDrag>
                                       </button>
