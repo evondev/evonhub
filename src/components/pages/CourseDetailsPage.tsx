@@ -65,8 +65,8 @@ const CourseDetailsPage = ({
       lessons: {
         _id: string;
         title: string;
-        video: string;
         duration: number;
+        order: number;
       }[];
     }[];
   };

@@ -17,15 +17,17 @@ export async function getCourseUpdateOutline(
       .select("title slug")
       .populate({
         path: "lecture",
-        select: "title",
+        select: "title order _destroy",
         model: Lecture,
         match: { _destroy: false },
+        options: { sort: { order: 1 } },
         populate: {
           path: "lessons",
-          select: "title slug video assetId content duration lectureId",
+          select:
+            "title slug video assetId content duration lectureId order _destroy",
           model: Lesson,
           match: { _destroy: false },
-          sort: { order: 1 } as any,
+          options: { sort: { order: 1 } },
         },
       });
 

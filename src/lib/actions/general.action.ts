@@ -63,9 +63,11 @@ export async function getLessonDetailsContent({
       .populate({
         path: "lessons",
         model: Lesson,
-        select: "_id title slug user course",
+        select: "_id title slug user course order",
         match: { _destroy: false },
-        sort: { order: 1 } as any,
+        options: {
+          sort: { order: 1 },
+        },
       });
     return lectureList || [];
   } catch (error) {}
@@ -82,6 +84,7 @@ export async function getCourseDetailsBySlug(
       .select(
         "_id title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free"
       )
+      .sort({ order: 1 })
       .populate({
         path: "lecture",
         select: "title",
@@ -89,10 +92,10 @@ export async function getCourseDetailsBySlug(
         options: { lean: true },
         populate: {
           path: "lessons",
-          select: "title duration",
+          select: "_id title duration order",
           model: Lesson,
           match: { _destroy: false },
-          options: { lean: true },
+          options: { lean: true, sort: { order: 1 } },
         },
       });
 

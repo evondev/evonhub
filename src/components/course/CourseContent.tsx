@@ -20,10 +20,12 @@ import { deleteLecture, updateLecture } from "@/lib/actions/lecture.action";
 import {
   addLesson,
   deleteLesson,
+  updateLectureLessonOrder,
   updateLesson,
+  updateLessonOrder,
 } from "@/lib/actions/lesson.action";
 import { cn } from "@/lib/utils";
-import { convertSlug } from "@/utils";
+import { convertSlug, move, reorder } from "@/utils";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import {
@@ -255,19 +257,59 @@ const CourseContent = ({
     setEditLessonIndex("");
   };
 
-  const onDragEnd = ({ source, destination }: DropResult) => {
+  const onDragEnd = async ({ source, destination }: DropResult) => {
     const droppableSource = source.droppableId;
     const droppableDestination = destination?.droppableId;
     const sourceIndex = source.index;
-    const destinationIndex = destination?.index;
+    if (!destination) return;
+    const destinationIndex = destination.index;
     if (
       droppableDestination === droppableSource &&
       sourceIndex !== destinationIndex
     ) {
-      // TODO: Implement reordering of lessons in same lecture
+      const findLecture = lectureList.find(
+        (item) => item._id === droppableSource
+      );
+      const lessons = reorder(
+        findLecture?.lessons,
+        sourceIndex,
+        destinationIndex
+      ) as any;
+      await updateLessonOrder({
+        lessons,
+        path: `/admin/course/content?slug=${data.slug}`,
+      });
     }
     if (droppableDestination !== droppableSource) {
-      // TODO: Implement moving lessons between lectures
+      const findLecture = lectureList.find(
+        (item) => item._id === droppableDestination
+      );
+      const sourceLectureIndex = lectureList.findIndex(
+        (lecture) => lecture._id === source.droppableId
+      );
+      const destinationLectureIndex = lectureList.findIndex(
+        (lecture) => lecture._id === destination.droppableId
+      );
+
+      const result = move(
+        lectureList[sourceLectureIndex].lessons,
+        lectureList[destinationLectureIndex].lessons,
+        source,
+        destination
+      );
+      const newLectures = Array.from(lectureList);
+      newLectures[sourceLectureIndex] = {
+        ...newLectures[sourceLectureIndex],
+        lessons: result[source.droppableId],
+      };
+      newLectures[destinationLectureIndex] = {
+        ...newLectures[destinationLectureIndex],
+        lessons: result[destination.droppableId],
+      };
+      await updateLectureLessonOrder({
+        lectures: newLectures,
+        path: `/admin/course/content?slug=${data.slug}`,
+      });
     }
   };
 
@@ -340,22 +382,21 @@ const CourseContent = ({
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="bg-transparent">
-                        <Droppable droppableId={lecture._id}>
+                        <Droppable key={lecture._id} droppableId={lecture._id}>
                           {(provided, snapshot) => (
                             <div
-                              className="flex flex-col pl-10 mb-5"
+                              className="flex flex-col mb-5 min-h-[100px]"
                               {...provided.droppableProps}
                               ref={provided.innerRef}
                             >
                               {lessons.map((lesson, idx) => (
                                 <Draggable
                                   key={lesson._id}
-                                  draggableId={lesson._id}
+                                  draggableId={`${lesson._id}`}
                                   index={idx}
                                 >
                                   {(provided, snapshot) => (
                                     <div
-                                      key={lesson._id}
                                       ref={provided.innerRef}
                                       {...provided.draggableProps}
                                       className="grid items-center grid-cols-[1fr,auto] gap-5 mb-5"
@@ -466,7 +507,7 @@ const CourseContent = ({
                                       )}
                                       <button
                                         {...provided.dragHandleProps}
-                                        className="size-10 bg-white rounded flex items-center justify-center p-1 text-slate-500 dark:bg-grayDarker border border-slate-200 dark:border-opacity-10"
+                                        className="size-10 bg-white rounded flex items-center justify-center p-1 text-slate-500 dark:bg-grayDarker border border-slate-200 dark:border-opacity-10 cursor-grab"
                                       >
                                         <IconDrag></IconDrag>
                                       </button>

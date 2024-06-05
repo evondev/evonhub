@@ -87,9 +87,7 @@ export async function updateLesson({
         message: "Đường dẫn bài học đã tồn tại!",
       };
     }
-    console.log("data:", data);
     const lesson = await Lesson.findById(lessonId);
-    console.log("lesson:", lesson);
 
     await Lesson.findByIdAndUpdate(lessonId, data);
 
@@ -190,4 +188,87 @@ export async function getAllLectureByCourseId(courseId: string) {
   } catch (error) {
     console.log(error);
   }
+}
+export async function updateLessonDrag({
+  lessons,
+  path,
+}: {
+  lessons: {
+    _id: string;
+    lectureId: string;
+  }[];
+  path: string;
+}) {
+  try {
+    connectToDatabase();
+    await Promise.all(
+      lessons.map(async (l, index) => {
+        await updateLesson({
+          lessonId: l._id,
+          path,
+          data: {
+            lectureId: l.lectureId as any,
+            order: index + 1,
+          },
+        });
+      })
+    );
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function updateLessonOrder(params: {
+  lessons: {
+    _id: string;
+    lectureId: string;
+    order: number;
+    slug: string;
+  }[];
+  path: string;
+}) {
+  try {
+    connectToDatabase();
+
+    await Promise.all(
+      params.lessons.map(async (item, index) => {
+        return Lesson.findOneAndUpdate(
+          {
+            slug: item.slug,
+          },
+          {
+            order: index + 1,
+          }
+        );
+      })
+    );
+    revalidatePath(params.path);
+  } catch (error) {}
+}
+export async function updateLectureLessonOrder(params: {
+  lectures: any[];
+  path: string;
+}) {
+  try {
+    connectToDatabase();
+
+    await Promise.all(
+      params.lectures.map(async (item, index) => {
+        await Lecture.findOneAndUpdate(
+          {
+            _id: item._id,
+          },
+          {
+            lessons: item.lessons,
+          }
+        );
+        await updateLessonOrder({
+          lessons: item.lessons,
+          path: params.path,
+        });
+      })
+    );
+    revalidatePath(params.path);
+  } catch (error) {}
 }
