@@ -34,7 +34,6 @@ export async function completeLesson({
       user: userId,
       course: courseId,
     });
-    console.log("existHistory:", existHistory);
     if (!existHistory) {
       await History.create({
         user: userId,

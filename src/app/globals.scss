@@ -299,8 +299,23 @@ div[role="dialog"] {
 .gradient-primary {
   background: linear-gradient(
     90deg,
-    #f3ca4d 0%,
-    #ff979a 45.3125%,
-    #cbabff 100%
+    #f3ca4d,
+    #ff979a,
+    #cbabff,
+    #20e3b2,
+    #00aefd
   );
+  background-size: 400% 400%;
+  animation: gradient 3s linear infinite;
+}
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

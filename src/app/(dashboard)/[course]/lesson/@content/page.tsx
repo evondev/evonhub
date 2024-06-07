@@ -29,10 +29,11 @@ const page = async ({
   const mongoUser = await getUserById({ userId: userId || "" });
   const lessonDetails = await getLessonBySlug(searchParams.slug, params.course);
   if (!lessonDetails) return null;
-  const progress = await getCompleteCourseHistory({
-    userId: mongoUser?._id.toString(),
-    courseId: lessonDetails.courseId.toString(),
-  });
+  const progress =
+    (await getCompleteCourseHistory({
+      userId: mongoUser?._id.toString(),
+      courseId: lessonDetails.courseId.toString(),
+    })) || 0;
   const courseId = lessonDetails.courseId.toString();
   const historyLessons = await getHistories();
   const lectures = await getLessonDetailsContent({ courseSlug: params.course });
@@ -44,12 +45,12 @@ const page = async ({
           <div
             className="h-2 gradient-primary rounded-full transition-all"
             style={{
-              width: `${progress}%`,
+              width: `${Math.ceil(progress)}%`,
             }}
           ></div>
         </div>
-        <span className="font-semibold flex-shrink-0 text-sm">
-          {progress} %
+        <span className="font-bold flex-shrink-0 text-xs">
+          {Math.ceil(progress)} %
         </span>
       </div>
       {lectures.map((item) => (
