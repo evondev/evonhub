@@ -1,5 +1,6 @@
 "use server";
 import Course from "@/database/course.model";
+import History from "@/database/history.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
 import Order from "@/database/order.model";
@@ -132,4 +133,28 @@ export async function countOverview() {
       income,
     };
   } catch (error) {}
+}
+export async function getCompleteCourseHistory(params: {
+  userId: string;
+  courseId: string;
+}) {
+  try {
+    connectToDatabase();
+    const { userId, courseId } = params;
+    const lessons = await History.find({
+      user: userId,
+      course: courseId,
+    }).populate({
+      path: "lesson",
+      select: "title",
+    });
+    const totalLessonofCourse = await Lesson.countDocuments({
+      courseId,
+      _destroy: false,
+    });
+    const percent = (lessons.length / totalLessonofCourse) * 100;
+    return percent;
+  } catch (error) {
+    console.log(error);
+  }
 }

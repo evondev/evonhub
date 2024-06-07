@@ -7,7 +7,6 @@ import MuxPlayer from "@mux/mux-player-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLayoutEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { IconVideo } from "../icons";
 const LessonPlayer = ({
   lessonDetails,
   videoId = "",
@@ -109,19 +108,13 @@ const LessonPlayer = ({
         </button>
       </div>
       <h1 className="font-extrabold text-2xl mb-10">{lessonDetails.title}</h1>
-
-      <div className="lesson-content bg-white p-5 rounded-lg dark:bg-grayDarker text-sm">
-        {!videoId && (
-          <div className="flex items-center gap-2">
-            <IconVideo className="animate-spin size-5 text-primary"></IconVideo>
-            <div>Video đang được cập nhật</div>
-          </div>
-        )}
-        <div
-          dangerouslySetInnerHTML={{ __html: lessonDetails.content }}
-          className="prose dark:prose-dark"
-        ></div>
-      </div>
+      {lessonDetails.content && (
+        <div className="lesson-content bg-white p-5 rounded-lg dark:bg-grayDarker text-sm">
+          <div
+            dangerouslySetInnerHTML={{ __html: lessonDetails.content }}
+          ></div>
+        </div>
+      )}
     </div>
   );
 };

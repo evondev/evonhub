@@ -20,7 +20,7 @@ const Navigation = ({ role }: { role: string }) => {
                 href={link.url}
                 className={cn(
                   "size-10 flex items-center justify-center rounded p-1.5 transition-all",
-                  isActiveLink(link.url) ? "gradientPrimary text-white" : ""
+                  isActiveLink(link.url) ? "bg-primary text-white" : ""
                 )}
               >
                 {link.icon}

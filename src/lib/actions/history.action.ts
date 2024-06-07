@@ -1,5 +1,6 @@
 "use server";
 import History from "@/database/history.model";
+import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 interface IHistoryLesson {
   lesson: string;
@@ -19,10 +20,12 @@ export async function completeLesson({
   lessonId,
   userId,
   courseId,
+  path,
 }: {
   lessonId: string;
   userId: string;
   courseId: string;
+  path?: string;
 }): Promise<void> {
   try {
     connectToDatabase();
@@ -31,6 +34,7 @@ export async function completeLesson({
       user: userId,
       course: courseId,
     });
+    console.log("existHistory:", existHistory);
     if (!existHistory) {
       await History.create({
         user: userId,
@@ -40,8 +44,11 @@ export async function completeLesson({
     } else {
       await History.findOneAndDelete({
         lesson: lessonId,
+        user: userId,
+        course: courseId,
       });
     }
+    revalidatePath(path || "/");
   } catch (error) {
     console.log("error:", error);
   }

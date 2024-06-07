@@ -13,11 +13,13 @@ const LessonItem = ({
   isActive,
   isCompleted,
   data,
+  path,
 }: {
   title: string;
   url?: string;
   isActive?: boolean;
   isCompleted?: boolean;
+  path?: string;
   data?: {
     courseId: string;
     lessonId: string;
@@ -47,6 +49,7 @@ const LessonItem = ({
         lessonId: data.lessonId,
         userId: data.userId,
         courseId: data.courseId,
+        path,
       });
     } catch (error) {
       console.log(error);

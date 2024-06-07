@@ -16,16 +16,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import {
-  boxDetailClassName,
-  courseLevel,
-  primaryButtonClassName,
-  widgetClassName,
-} from "@/constants";
+import { boxDetailClassName, courseLevel, widgetClassName } from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { getFreeCourse } from "@/lib/actions/course.action";
-import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
 import { ECourseStatus, Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
@@ -33,6 +26,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import ButtonGradient from "../button/ButtonGradient";
 
 const techStack = [
   "NextJS14",
@@ -73,6 +67,7 @@ const CourseDetailsPage = ({
   lessonCount: number;
 }) => {
   const { userRole, currentUser } = useGlobalStore();
+  const userCourses = currentUser?.courses?.map((item: any) => item._id) || [];
   const router = useRouter();
   const handleEnrollFree = async (slug: string) => {
     if (!currentUser?._id) {
@@ -103,7 +98,7 @@ const CourseDetailsPage = ({
   const totalMinutesLeft = totalMinutes % 60;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,1.2fr)] gap-8 items-start relative">
+    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr),400px] gap-8 items-start relative">
       <div>
         <div className="aspect-video relative mb-8">
           {data.intro ? (
@@ -278,34 +273,51 @@ const CourseDetailsPage = ({
               <p>Tài liệu kèm theo</p>
             </WidgetItem>
           </div>
-          {!currentUser?.courses?.includes(data._id) ? (
+          {!userCourses?.includes(data._id) ? (
             <>
               {data.free ? (
-                <Button
+                <button
                   type="button"
                   onClick={() => handleEnrollFree(data.slug)}
-                  className={cn(primaryButtonClassName, "w-full bg-secondary")}
+                  className="w-full"
                 >
-                  Lụm liền
-                </Button>
+                  <ButtonGradient
+                    className={{
+                      wrapper: "w-full rounded-full",
+                      main: "text-sm",
+                    }}
+                  >
+                    Lụm liền
+                  </ButtonGradient>
+                </button>
               ) : (
                 <Link
                   href={data.ctaLink || "#"}
                   target={data.ctaLink ? "_blank" : "_self"}
-                  className={cn(primaryButtonClassName, "w-full bg-secondary")}
+                  className="w-full"
                 >
-                  {data.cta || "Đăng ký ngay"}
+                  <ButtonGradient
+                    className={{
+                      wrapper: "w-full rounded-full",
+                      main: "text-sm",
+                    }}
+                  >
+                    {data.cta || "Đăng ký ngay"}
+                  </ButtonGradient>
                 </Link>
               )}
             </>
           ) : (
-            <Button
-              type="button"
-              className={cn(primaryButtonClassName, "w-full bg-secondary")}
-              disabled
-            >
-              {data.cta || "Đăng ký ngay"}
-            </Button>
+            <button type="button" className="w-full" disabled>
+              <ButtonGradient
+                className={{
+                  wrapper: "w-full rounded-full",
+                  main: "text-sm",
+                }}
+              >
+                {data.cta || "Đăng ký ngay"}
+              </ButtonGradient>
+            </button>
           )}
           <div className="text-center mt-5 text-sm">
             Bạn chưa biết cách mua khóa học?{" "}

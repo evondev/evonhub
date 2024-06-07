@@ -5,7 +5,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { getLessonDetailsContent } from "@/lib/actions/general.action";
+import {
+  getCompleteCourseHistory,
+  getLessonDetailsContent,
+} from "@/lib/actions/general.action";
 import { getHistories } from "@/lib/actions/history.action";
 import { getLessonBySlug } from "@/lib/actions/lesson.action";
 import { getUserById } from "@/lib/actions/user.action";
@@ -24,15 +27,31 @@ const page = async ({
 }) => {
   const { userId } = auth();
   const mongoUser = await getUserById({ userId: userId || "" });
-
   const lessonDetails = await getLessonBySlug(searchParams.slug, params.course);
   if (!lessonDetails) return null;
+  const progress = await getCompleteCourseHistory({
+    userId: mongoUser?._id.toString(),
+    courseId: lessonDetails.courseId.toString(),
+  });
   const courseId = lessonDetails.courseId.toString();
   const historyLessons = await getHistories();
   const lectures = await getLessonDetailsContent({ courseSlug: params.course });
   if (!lectures) return null;
   return (
     <div>
+      <div className="flex items-center gap-3 mb-5">
+        <div className="w-full p-0.5 border border-gray-200 dark:border-opacity-10 bg-white rounded-full dark:bg-grayDarker">
+          <div
+            className="h-2 gradient-primary rounded-full transition-all"
+            style={{
+              width: `${progress}%`,
+            }}
+          ></div>
+        </div>
+        <span className="font-semibold flex-shrink-0 text-sm">
+          {progress} %
+        </span>
+      </div>
       {lectures.map((item) => (
         <Accordion
           type="single"
@@ -65,6 +84,7 @@ const page = async ({
                           item.course.toString() === courseId
                       ) !== -1
                     }
+                    path={`/${params.course}/lesson/${lesson.slug}`}
                     data={{
                       courseId: courseId.toString(),
                       lessonId: lesson._id.toString(),

@@ -7,11 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  baseButtonClassName,
-  primaryButtonClassName,
-  reactions,
-} from "@/constants";
+import { primaryButtonClassName, reactions } from "@/constants";
 import createRating from "@/lib/actions/rating.action";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
@@ -21,6 +17,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
+import ButtonGradient from "../button/ButtonGradient";
 import { IconStar } from "../icons";
 import { Button } from "../ui/button";
 import {
@@ -80,14 +77,18 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
     <Form {...form}>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger
-          className={cn(
-            baseButtonClassName,
-            "bg-secondary text-white gap-2 flex ml-auto  button-styles group"
-          )}
+          className={"rounded-full ml-auto block w-fit text-sm"}
           onClick={() => setOpen(true)}
         >
-          <IconStar className="size-4 group-hover:animate-spin" />
-          Đánh giá khóa học
+          <ButtonGradient
+            className={{
+              wrapper: "rounded-full",
+              main: "flex items-center gap-2 px-3 text-sm",
+            }}
+          >
+            <IconStar className="size-4 group-hover:animate-spin fill-[#ff979a]" />
+            Đánh giá khóa học
+          </ButtonGradient>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>

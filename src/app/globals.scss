@@ -22,6 +22,9 @@
     -webkit-appearance: none;
     margin: 0;
   }
+  button:disabled {
+    @apply pointer-events-none opacity-60;
+  }
   svg {
     @apply max-w-full;
   }
@@ -41,14 +44,6 @@
   .avatar-shadow2 {
     @apply border border-secondary;
     box-shadow: 0 0 0 3px rgb(250, 149, 117, 0.25);
-  }
-  .gradientPrimary {
-    transition: all 0.2s linear;
-    @apply bg-primary;
-  }
-  .gradientPrimaryHover:hover {
-    // @apply bg-opacity-90;
-    background-size: 100% 100%;
   }
   .table-responsive {
     th {
@@ -70,7 +65,7 @@
     @apply bg-gray-100 dark:bg-grayDarkest #{!important};
   }
   .form-styles {
-    @apply border border-gray-200 dark:border-opacity-10 rounded-lg transition-all bg-white dark:bg-grayDarker focus:border-primary dark:focus:border-primary font-medium placeholder:text-slate-900 placeholder:text-opacity-40 focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50  dark:placeholder:text-slate-500  text-sm ring-offset-white px-3 py-2 w-full
+    @apply border border-gray-200 dark:border-opacity-10 rounded-md transition-all bg-white dark:bg-grayDarker focus:border-primary dark:focus:border-primary font-medium placeholder:text-slate-900 placeholder:text-opacity-40 focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50  dark:placeholder:text-slate-500  text-sm ring-offset-white px-3 py-2 w-full
     dark:text-white dark:text-opacity-90 text-gray-800;
   }
 }
@@ -262,4 +257,50 @@ div[role="dialog"] {
 }
 .scroll-hidden::-webkit-scrollbar {
   display: none;
+}
+#nprogress .bar {
+  background: linear-gradient(
+    90deg,
+    #f3ca4d 0%,
+    #ff979a 45.3125%,
+    #cbabff 100%
+  ) !important;
+}
+
+.button-gradient {
+  background: linear-gradient(
+    90deg,
+    rgba(243, 202, 77, 0.2) 0%,
+    rgba(255, 151, 154, 0.2) 45.3125%,
+    rgba(221, 165, 227, 0.2) 82.3125%,
+    rgba(203, 171, 255, 0.2) 100%
+  );
+  @apply font-bold relative p-1;
+  height: 48px;
+  .button-inside {
+    background: linear-gradient(
+      90deg,
+      #f3ca4d 0%,
+      #ff979a 45.3125%,
+      #cbabff 100%
+    );
+    @apply flex items-center justify-center h-10;
+    border-radius: inherit;
+    flex: 1 0 0px;
+    padding: 1px;
+  }
+  .button-main {
+    border-radius: inherit;
+    @apply bg-white flex items-center justify-center gap-2 dark:bg-grayDarker;
+    height: 38px;
+    flex: 1 0 0px;
+  }
+}
+.gradient-primary {
+  background: linear-gradient(
+    90deg,
+    #f3ca4d 0%,
+    #ff979a 45.3125%,
+    #cbabff 100%
+  );
 }
