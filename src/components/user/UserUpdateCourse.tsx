@@ -121,7 +121,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
     }
   };
   const [selectCourse, setSelectCourse] = useState<any>(null);
-  const [discount, setDiscount] = useState<number | string>(200_000);
+  const [discount, setDiscount] = useState<number | string>(0);
   const [userRole, setUserRole] = useState(user.role);
   const [selectPermissions, setSelectPermissions] = useState<string[]>(
     user.permissions || []

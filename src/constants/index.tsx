@@ -67,6 +67,12 @@ export const menuLinks: TMenuLink[] = [
     isHideMobile: true,
   },
   {
+    title: "Khóa học 101",
+    icon: <IconUser></IconUser>,
+    url: "/101",
+    isHideMobile: true,
+  },
+  {
     title: "Profile",
     icon: <IconUser></IconUser>,
     url: "/profile",
