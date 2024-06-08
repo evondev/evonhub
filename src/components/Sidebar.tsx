@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MenuLink from "./MenuLink";
+import ButtonGradient from "./button/ButtonGradient";
 
 const Sidebar = ({ role }: { role: string }) => {
   const { currentUser } = useGlobalStore();
@@ -14,16 +15,21 @@ const Sidebar = ({ role }: { role: string }) => {
   return (
     <aside className="bg-white fixed top-0 left-0 pb-8 px-5 hidden xl:block dark:bg-grayDark bottom-0 w-[300px] z-50 sidebar">
       <Link href="/" className="flex items-center gap-2 py-3 mb-5 h-20">
-        <span className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg bg-primary p-3.5">
+        <ButtonGradient
+          className={{
+            wrapper: "rounded-full size-12 flex-shrink-0",
+            main: "p-3",
+          }}
+        >
           <Image
             width={40}
             height={40}
             src="/logo.png"
             alt="EvonHub"
-            className="object-contain max-w-full"
+            className="max-h-full max-w-full brightness-0 object-contain dark:brightness-100"
           ></Image>
-        </span>
-        <span className="text-xl font-bold">EvonHub</span>
+        </ButtonGradient>
+        <span className="text-xl font-bold">evonHub</span>
       </Link>
       <ul className="flex flex-col gap-3">
         {menuLinks.map((link) => {

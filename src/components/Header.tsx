@@ -3,6 +3,7 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
+import ButtonGradient from "./button/ButtonGradient";
 import Notification from "./noti/Notification";
 
 const IconSearch = (
@@ -36,16 +37,21 @@ const Header = ({ notifications }: { notifications: any[] }) => {
   return (
     <div className="top py-3 px-5 bg-white dark:bg-grayDarker flex items-center justify-between gap-5 static xl:fixed top-0 left-[300px] right-0 z-50 xl:h-16">
       <Link href="/" className="flex items-center gap-2 lg:hidden">
-        <span className="size-10 rounded-full flex items-center justify-center font-bold text-lg p-3.5">
+        <ButtonGradient
+          className={{
+            wrapper: "rounded-full size-12 flex-shrink-0",
+            main: "p-3",
+          }}
+        >
           <Image
             width={40}
             height={40}
             src="/logo.png"
             alt="EvonHub"
-            className="object-contain max-w-full"
+            className="object-contain max-w-full brightness-0 dark:brightness-100"
           ></Image>
-        </span>
-        <span className="text-lg font-bold">EvonHub</span>
+        </ButtonGradient>
+        <span className="text-lg font-bold">evonHub</span>
       </Link>
       <div className="rounded-full gap-4 h-10 px-5 bg-white dark:bg-grayDark w-[min(100%,390px)] items-center lg:flex hidden border border-gray-200 dark:border-opacity-10">
         <input
