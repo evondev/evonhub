@@ -40,7 +40,7 @@ const Header = ({ notifications }: { notifications: any[] }) => {
         <ButtonGradient
           className={{
             wrapper: "rounded-full size-12 flex-shrink-0",
-            main: "p-3",
+            main: "p-3.5",
           }}
         >
           <Image

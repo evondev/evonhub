@@ -65,7 +65,7 @@ const CommentForm = ({
   }
 
   return (
-    <div className="mt-8">
+    <div className="mt-8 hidden lg:block">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
           <FormField

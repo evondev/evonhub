@@ -33,10 +33,10 @@ const layout = async ({
     return <PageNotFound />;
   return (
     <div
-      className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,400px)] gap-0 lg:gap-8 items-start transition-all relative"
+      className="flex flex-col lg:grid lg:overflow-visible h-[calc(100vh-72px-56px)] sm:h-auto grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,400px)] gap-0 lg:gap-8 items-start transition-all relative -mx-5 -mb-7 lg:mb-0 lg:mx-0 -mt-8 lg:mt-0"
       id="lesson-study"
     >
-      <div className="lg:overflow-hidden lg:p-2">
+      <div className="lg:overflow-hidden lg:p-2 flex-shrink-0 w-full">
         <Suspense fallback={<PlayerLoadingSkeleton />}>{player}</Suspense>
         <Suspense
           fallback={
@@ -50,7 +50,7 @@ const layout = async ({
       <Suspense fallback={<LessonContentSkeleton />}>
         <div
           id="lesson-content-aside"
-          className="mt-2 sticky top-10 xl:top-[112px] right-0 lg:max-h-[calc(100vh-150px)] lg:overflow-y-auto scroll-hidden"
+          className="mt-2 flex-1 overflow-hidden lg:overflow-visible h-full lg:h-auto w-full sticky top-10 xl:top-[112px] right-0"
         >
           {content}
         </div>

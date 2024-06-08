@@ -7,6 +7,7 @@ import MuxPlayer from "@mux/mux-player-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLayoutEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
+
 const LessonPlayer = ({
   lessonDetails,
   videoId = "",
@@ -52,9 +53,9 @@ const LessonPlayer = ({
   }, [lessonDetails.content]);
 
   return (
-    <div className="mb-8">
+    <div className="lg:mb-8">
       <FullScreen handle={handle}>
-        <div className="relative group aspect-video mb-5">
+        <div className="relative group aspect-video lg:mb-5">
           {videoId ? (
             <MuxPlayer
               streamType="on-demand"
@@ -67,7 +68,7 @@ const LessonPlayer = ({
           ) : (
             <div className="w-full h-full bg-white dark:bg-grayDarker rounded-lg"></div>
           )}
-          <div className="flex my-5 gap-3 justify-end sm:block">
+          <div className="hidden my-5 gap-3 justify-end sm:block">
             {prevLesson && (
               <PlayerControl
                 action="prev"
@@ -84,7 +85,7 @@ const LessonPlayer = ({
         </div>
       </FullScreen>
 
-      <div className="hidden sm:flex items-center justify-end mb-5 gap-3">
+      <div className="hidden lg:flex items-center justify-end mb-5 gap-3">
         <button
           onClick={handleExpandScreen}
           className={cn(
@@ -107,9 +108,14 @@ const LessonPlayer = ({
           Toàn màn hình
         </button>
       </div>
-      <h1 className="font-extrabold text-2xl mb-10">{lessonDetails.title}</h1>
+      <div className="p-3 lg:p-0">
+        <h1 className="font-extrabold text-xl lg:text-2xl lg:mb-10">
+          {lessonDetails.title}
+        </h1>
+      </div>
+
       {lessonDetails.content && (
-        <div className="lesson-content bg-white p-5 rounded-lg dark:bg-grayDarker text-sm">
+        <div className="lesson-content hidden lg:block bg-white p-5 rounded-lg dark:bg-grayDarker text-sm">
           <div
             dangerouslySetInnerHTML={{ __html: lessonDetails.content }}
           ></div>
