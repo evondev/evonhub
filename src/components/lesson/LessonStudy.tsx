@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IconPlay, IconStudy } from "../icons";
 enum ETabs {
   LESSON = "LESSON",
@@ -31,6 +31,12 @@ const LessonStudy = ({
   const handleActiveTab = (tab: ETabs) => {
     setActiveTab(tab);
   };
+  useEffect(() => {
+    const links = document.querySelectorAll(".lesson-content a");
+    links.forEach((link) => {
+      link.setAttribute("target", "_blank");
+    });
+  }, [content]);
   return (
     <div className="bg-[#EEEFF1] relative dark:bg-grayDarkest h-full block lg:hidden">
       <div className="flex p-2 px-3 gap-2 border-b border-b-gray-200 dark:border-opacity-10 sticky top-0 left-0 right-0 h-14 bg-white dark:bg-grayDarker">

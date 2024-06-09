@@ -5,7 +5,7 @@ import { useGlobalStore } from "@/store";
 import { formUrlQuery } from "@/utils";
 import MuxPlayer from "@mux/mux-player-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 const LessonPlayer = ({
@@ -38,7 +38,7 @@ const LessonPlayer = ({
     });
     router.push(newUrl);
   };
-  useLayoutEffect(() => {
+  useEffect(() => {
     const links = document.querySelectorAll(".lesson-content a");
     links.forEach((link) => {
       link.setAttribute("target", "_blank");
