@@ -23,16 +23,9 @@ const LessonPlayer = ({
   prevLesson?: string;
 }) => {
   const handle = useFullScreenHandle();
-  const { isFullscreen, toggleFullscreen } = useGlobalStore();
+  const { toggleExpanded, isExpanded } = useGlobalStore();
   const handleExpandScreen = () => {
-    toggleFullscreen(!isFullscreen);
-    const layout = document.querySelector("#lesson-study");
-    if (layout) {
-      layout.setAttribute(
-        "style",
-        isFullscreen ? "display: block" : "display: grid"
-      );
-    }
+    toggleExpanded?.(!isExpanded);
   };
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -93,7 +86,7 @@ const LessonPlayer = ({
             "flex w-fit gap-2 bg-white dark:bg-grayDarker hover:text-primary"
           )}
         >
-          {!isFullscreen ? "Mặc định" : "Mở rộng"}
+          {isExpanded ? "Mặc định" : "Mở rộng"}
         </button>
         <button
           onClick={() => {

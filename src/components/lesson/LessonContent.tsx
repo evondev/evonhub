@@ -35,7 +35,7 @@ const LessonContent = ({
                 <LessonItem
                   key={lesson._id}
                   title={lesson.title}
-                  url={lesson.slug === slug ? undefined : lesson.slug}
+                  url={lesson.slug}
                   isActive={lesson.slug === slug}
                 ></LessonItem>
               ))}

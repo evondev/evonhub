@@ -1,4 +1,7 @@
 import PageNotFound from "@/app/not-found";
+import LessonDesktopAside from "@/components/lesson/LessonDesktopAside";
+import LessonLayout from "@/components/lesson/LessonLayout";
+import LessonToggle from "@/components/lesson/LessonToggle";
 import CommentLoadingSkeleton from "@/components/loading/CommentLoadingSkeleton";
 import LessonContentSkeleton from "@/components/loading/LessonContentSkeleton";
 import PlayerLoadingSkeleton from "@/components/loading/PlayerLoadingSkeleton";
@@ -32,10 +35,7 @@ const layout = async ({
   )
     return <PageNotFound />;
   return (
-    <div
-      className="flex flex-col lg:grid lg:overflow-visible h-[calc(100svh-56px)] sm:h-auto grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,400px)] gap-0 lg:gap-8 items-start transition-all relative -mx-5 -mb-7 lg:mb-0 lg:mx-0"
-      id="lesson-study"
-    >
+    <LessonLayout>
       <div className="lg:overflow-hidden lg:p-2 flex-shrink-0 w-full">
         <Suspense fallback={<PlayerLoadingSkeleton />}>{player}</Suspense>
         <Suspense
@@ -48,14 +48,10 @@ const layout = async ({
         <Suspense fallback={<CommentLoadingSkeleton />}>{comment}</Suspense>
       </div>
       <Suspense fallback={<LessonContentSkeleton />}>
-        <div
-          id="lesson-content-aside"
-          className="mt-2 flex-1 overflow-hidden lg:overflow-visible h-full lg:h-auto w-full sticky top-10 xl:top-[112px] right-0"
-        >
-          {content}
-        </div>
+        <LessonToggle></LessonToggle>
+        <LessonDesktopAside>{content}</LessonDesktopAside>
       </Suspense>
-    </div>
+    </LessonLayout>
   );
 };
 

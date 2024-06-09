@@ -28,7 +28,9 @@ const LessonItem = ({
 }) => {
   const base = cn(
     "mb-5 pb-5 border-b border-dashed dark:border-b-slate-500 last:pb-0 last:mb-0 last:border-b-0 flex items-center gap-2 dark:text-text5 cursor-pointer text-sm",
-    isActive ? "text-primary font-bold dark:text-primary" : "font-medium"
+    isActive
+      ? "text-primary font-bold dark:text-primary pointer-events-none"
+      : "font-medium"
   );
   const searchParams = useSearchParams();
   const [isChecked, setIsChecked] = useState(isCompleted);

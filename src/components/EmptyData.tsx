@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const EmptyData = ({ text }: { text?: string }) => {
   return (
-    <div className="bg-white max-w-[500px] mx-auto p-5 rounded-lg my-5 text-center">
+    <div className="bg-white dark:bg-grayDarker max-w-[500px] mx-auto p-5 rounded-lg my-5 text-center">
       <Image
         alt=""
         src="/content.svg"

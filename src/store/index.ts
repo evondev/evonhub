@@ -3,8 +3,8 @@ import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 interface GlobalState {
-  isFullscreen: boolean;
-  toggleFullscreen: (isFullscreen: boolean) => void;
+  isExpanded?: boolean;
+  toggleExpanded?: (isExpanded: boolean) => void;
   currentUser?: any;
   setCurrentUser?: (currentUser: any) => void;
   permissions?: any[];
@@ -17,9 +17,9 @@ export const useGlobalStore = create<GlobalState>()(
   devtools(
     persist(
       (set) => ({
-        isFullscreen: false,
-        toggleFullscreen: (isFullscreen: boolean) =>
-          set((state) => ({ isFullscreen: isFullscreen })),
+        isExpanded: false,
+        toggleExpanded: (isExpanded: boolean) =>
+          set((state) => ({ isExpanded: isExpanded })),
         currentUser: undefined,
         setCurrentUser: (currentUser: any) =>
           set((state) => ({ currentUser: currentUser })),

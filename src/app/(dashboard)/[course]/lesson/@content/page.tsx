@@ -73,11 +73,7 @@ const page = async ({
                     <LessonItem
                       key={lesson._id}
                       title={lesson.title}
-                      url={
-                        lesson.slug === searchParams.slug
-                          ? undefined
-                          : lesson.slug
-                      }
+                      url={lesson.slug}
                       isActive={lesson.slug === searchParams.slug}
                       isCompleted={
                         historyLessons?.findIndex(
@@ -121,11 +117,7 @@ const page = async ({
                     <LessonItem
                       key={lesson._id}
                       title={lesson.title}
-                      url={
-                        lesson.slug === searchParams.slug
-                          ? undefined
-                          : lesson.slug
-                      }
+                      url={lesson.slug}
                       isActive={lesson.slug === searchParams.slug}
                       isCompleted={
                         historyLessons?.findIndex(
