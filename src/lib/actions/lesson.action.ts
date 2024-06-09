@@ -87,24 +87,8 @@ export async function updateLesson({
         message: "Đường dẫn bài học đã tồn tại!",
       };
     }
-    const lesson = await Lesson.findById(lessonId);
-
     await Lesson.findByIdAndUpdate(lessonId, data);
 
-    if (data.lectureId !== lesson.lectureId) {
-      const currentLecture = await Lecture.findById(lesson.lectureId);
-      if (!currentLecture) return;
-      currentLecture.lessons = currentLecture.lessons.filter(
-        (id: string) => id.toString() !== lesson._id.toString()
-      );
-      await currentLecture.save();
-      const lecture = await Lecture.findById(data.lectureId);
-      if (!lecture) return;
-      if (!lecture?.lessons?.includes(lesson._id)) {
-        lecture.lessons.push(lesson._id);
-        await lecture.save();
-      }
-    }
     revalidatePath(path);
   } catch (error) {
     console.log(error);

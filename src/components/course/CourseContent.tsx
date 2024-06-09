@@ -213,7 +213,6 @@ const CourseContent = ({
   };
   const handleSaveLesson = async (
     lessonId: string,
-    lectureId: string,
     lesson: {
       title: string;
       content: string;
@@ -233,7 +232,6 @@ const CourseContent = ({
           title: lessonData.title || lesson.title,
           slug: convertSlug(lessonData.title || lesson.title),
           courseId: data._id as any,
-          lectureId: lectureId as any,
         },
       });
       toast.success("Bài học đã được cập nhật thành công");
@@ -435,7 +433,6 @@ const CourseContent = ({
                                                 onClick={() =>
                                                   handleSaveLesson(
                                                     lesson._id,
-                                                    lecture._id,
                                                     lesson
                                                   )
                                                 }
