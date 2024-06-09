@@ -12,7 +12,6 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { userId } = auth();
-  // if (!userId) redirect("/sign-in");
   const mongoUser = await getUserById({ userId: userId || "" });
   const notifications = await getNotificationByUser(mongoUser?._id.toString());
 

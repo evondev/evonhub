@@ -52,6 +52,7 @@ export const menuLinks: TMenuLink[] = [
     icon: <IconComment></IconComment>,
     url: "/admin/comment/manage",
     isAdmin: true,
+    isHideMobile: true,
   },
   {
     title: "Quản lý đơn hàng",
@@ -77,7 +78,6 @@ export const menuLinks: TMenuLink[] = [
     icon: <IconUser></IconUser>,
     url: "/profile",
     isAuth: true,
-    isHideMobile: true,
   },
 ];
 export const baseButtonClassName =

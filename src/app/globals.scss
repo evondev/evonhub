@@ -320,3 +320,13 @@ div[role="dialog"] {
     background-position: 0% 50%;
   }
 }
+@media screen and (max-width: 767.98px) {
+  .lesson-study-page {
+    #header {
+      display: none;
+    }
+    main {
+      padding-top: 0;
+    }
+  }
+}

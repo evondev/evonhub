@@ -35,12 +35,15 @@ const IconSearch = (
 const Header = ({ notifications }: { notifications: any[] }) => {
   const auth = useAuth();
   return (
-    <div className="top py-3 px-5 bg-white dark:bg-grayDarker flex items-center justify-between gap-5 static xl:fixed top-0 left-[300px] right-0 z-50 xl:h-16">
+    <div
+      className="top py-3 px-5 bg-white dark:bg-grayDarker flex items-center justify-between gap-5 static xl:fixed top-0 left-[300px] right-0 z-50 xl:h-16"
+      id="header"
+    >
       <Link href="/" className="flex items-center gap-2 lg:hidden">
         <ButtonGradient
           className={{
             wrapper: "rounded-full size-12 flex-shrink-0",
-            main: "p-3.5",
+            main: "p-3.5 !bg-[#ff979a]",
           }}
         >
           <Image
@@ -48,7 +51,7 @@ const Header = ({ notifications }: { notifications: any[] }) => {
             height={40}
             src="/logo.png"
             alt="EvonHub"
-            className="object-contain max-w-full brightness-0 dark:brightness-100"
+            className="object-contain max-w-full"
           ></Image>
         </ButtonGradient>
         <span className="text-lg font-bold">evonHub</span>

@@ -33,7 +33,7 @@ const layout = async ({
     return <PageNotFound />;
   return (
     <div
-      className="flex flex-col lg:grid lg:overflow-visible h-[calc(100vh-72px-56px)] sm:h-auto grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,400px)] gap-0 lg:gap-8 items-start transition-all relative -mx-5 -mb-7 lg:mb-0 lg:mx-0 -mt-8 lg:mt-0"
+      className="flex flex-col lg:grid lg:overflow-visible h-[calc(100svh-56px)] sm:h-auto grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,400px)] gap-0 lg:gap-8 items-start transition-all relative -mx-5 -mb-7 lg:mb-0 lg:mx-0"
       id="lesson-study"
     >
       <div className="lg:overflow-hidden lg:p-2 flex-shrink-0 w-full">

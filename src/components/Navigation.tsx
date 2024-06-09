@@ -12,7 +12,8 @@ const Navigation = ({ role }: { role: string }) => {
     <div className="xl:hidden">
       <ul className="flex justify-center gap-3 fixed bottom-0 left-0 right-0 z-10 p-2 dark:bg-grayDarker bg-white h-14">
         {menuLinks.map((link) => {
-          if (link.isHideMobile && role === Role.ADMIN) return null;
+          if (link.isHideMobile || (link.isAuth && role === Role.ADMIN))
+            return null;
           if (link.isAdmin && role !== Role.ADMIN) return null;
           return (
             <li key={link.title}>

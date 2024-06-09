@@ -18,15 +18,15 @@ const Sidebar = ({ role }: { role: string }) => {
         <ButtonGradient
           className={{
             wrapper: "rounded-full size-12 flex-shrink-0",
-            main: "p-3",
+            main: "p-3 !bg-[#ff979a]",
           }}
         >
           <Image
-            width={40}
-            height={40}
+            width={48}
+            height={48}
             src="/logo.png"
             alt="EvonHub"
-            className="max-h-full max-w-full brightness-0 object-contain dark:brightness-100"
+            className="max-h-full max-w-full object-contain"
           ></Image>
         </ButtonGradient>
         <span className="text-xl font-bold">evonHub</span>
