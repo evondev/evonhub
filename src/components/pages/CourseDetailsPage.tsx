@@ -378,7 +378,7 @@ function BoxList({ title, data }: { title: string; data: string[] }) {
 function ListItem({ title }: { title: string }) {
   return (
     <li className="flex items-baseline gap-3 dark:text-text5">
-      <div className="size-4 p-0.5 flex items-center justify-center rounded bg-primary text-white relative top-0.5">
+      <div className="size-4 p-0.5 flex items-center justify-center rounded bg-primary text-white relative top-0.5 flex-shrink-0">
         <IconCheck />
       </div>
       <p>{title}</p>
