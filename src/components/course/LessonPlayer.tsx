@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
 import { formUrlQuery } from "@/utils";
 import MuxPlayer from "@mux/mux-player-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
@@ -31,6 +31,7 @@ const LessonPlayer = ({
   };
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
   const handleChangeLesson = (url: string) => {
     if (!url) return;
     const newUrl = formUrlQuery({
@@ -72,19 +73,24 @@ const LessonPlayer = ({
     const data = localData.concat(item);
     localStorage.setItem("lastCourseLesson", JSON.stringify(data));
   }, [lessonDetails.course, lessonDetails.slug, videoId]);
-  // useEffect(() => {
-  //   if (!videoId) return;
-  //   function handleGetVideoTime() {
-  //     if (videoRef.current) {
-  //       const currentTime = videoRef.current.currentTime;
-  //       localStorage.setItem(`videoTime-${lessonDetails.slug}`, currentTime);
-  //     }
-  //   }
-  //   window.addEventListener("beforeunload", handleGetVideoTime);
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleGetVideoTime);
-  //   };
-  // }, [lessonDetails.slug, videoId]);
+  function handleGetVideoTime() {
+    if (videoRef.current) {
+      const currentTime = videoRef.current.currentTime;
+      localStorage.setItem(`videoTime-${lessonDetails.slug}`, currentTime);
+    }
+  }
+  const handleOnPlaying = () => {
+    setInterval(() => {
+      handleGetVideoTime();
+    }, 10000);
+  };
+  useEffect(() => {
+    if (!videoId) return;
+    const time = localStorage.getItem(`videoTime-${lessonDetails.slug}`);
+    if (videoRef.current) {
+      videoRef.current.currentTime = Number(time || 0);
+    }
+  }, [lessonDetails.slug, videoId]);
 
   return (
     <div className="lg:mb-8">
@@ -99,6 +105,9 @@ const LessonPlayer = ({
               }}
               className="w-full h-full inline-block align-bottom"
               ref={videoRef}
+              onPause={handleGetVideoTime}
+              onPlaying={handleOnPlaying}
+              autoPlay
             />
           ) : (
             <div className="w-full h-full bg-white dark:bg-grayDarker rounded-lg"></div>
