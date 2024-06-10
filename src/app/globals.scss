@@ -199,8 +199,10 @@ div[role="dialog"] {
     @apply text-secondary;
   }
   code {
-    font-size: 14px;
+    @apply text-secondary bg-secondary bg-opacity-10 p-1 rounded-full text-sm font-medium;
     white-space: pre-line;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 }
 // slider css
