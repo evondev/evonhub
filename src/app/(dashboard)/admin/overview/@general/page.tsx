@@ -28,7 +28,7 @@ function BoxItem({
   count?: number | string;
 }) {
   return (
-    <div className="p-5 rounded-lg bg-white dark:bg-grayDarker border border-slate-200 dark:border-opacity-10">
+    <div className="p-5 rounded-lg bgDarkMode borderDarkMode">
       <h3 className="text-xl lg:text-3xl font-extrabold">{count}</h3>
       <h4 className="font-medium text-sm text-slate-500 mb-0.5">{title}</h4>
       <span className="inline-flex py-0.5 px-2 mt-2 font-semibold rounded text-xs text-green-500 bg-green-100 dark:bg-green-900">

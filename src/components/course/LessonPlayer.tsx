@@ -61,20 +61,19 @@ const LessonPlayer = ({
           ) : (
             <div className="w-full h-full bg-white dark:bg-grayDarker rounded-lg"></div>
           )}
-          <div className="hidden my-5 gap-3 justify-end sm:block">
-            {prevLesson && (
-              <PlayerControl
-                action="prev"
-                onClick={() => handleChangeLesson(prevLesson)}
-              ></PlayerControl>
-            )}
-            {nextLesson && (
-              <PlayerControl
-                action="next"
-                onClick={() => handleChangeLesson(nextLesson)}
-              ></PlayerControl>
-            )}
-          </div>
+
+          {prevLesson && (
+            <PlayerControl
+              action="prev"
+              onClick={() => handleChangeLesson(prevLesson)}
+            ></PlayerControl>
+          )}
+          {nextLesson && (
+            <PlayerControl
+              action="next"
+              onClick={() => handleChangeLesson(nextLesson)}
+            ></PlayerControl>
+          )}
         </div>
       </FullScreen>
 
@@ -83,7 +82,7 @@ const LessonPlayer = ({
           onClick={handleExpandScreen}
           className={cn(
             baseButtonClassName,
-            "flex w-fit gap-2 bg-white dark:bg-grayDarker hover:text-primary"
+            "flex w-fit gap-2 bgDarkMode borderDarkMode"
           )}
         >
           {isExpanded ? "Mặc định" : "Mở rộng"}
@@ -94,7 +93,7 @@ const LessonPlayer = ({
           }}
           className={cn(
             baseButtonClassName,
-            "flex w-fit gap-2 bg-white dark:bg-grayDarker hover:text-primary"
+            "flex w-fit gap-2 bgDarkMode borderDarkMode"
           )}
         >
           <IconFullscreen />
@@ -128,7 +127,7 @@ function PlayerControl({
     <button
       onClick={onClick}
       className={cn(
-        "flex size-10 rounded items-center bg-white justify-center sm:absolute sm:top-1/2 sm:-translate-y-1/2 z-10 hover:!bg-primary hover:!text-white transition-all dark:bg-grayDarker",
+        "flex size-10 rounded items-center bg-white justify-center absolute top-1/2 -translate-y-1/2 z-10 hover:!bg-primary hover:!text-white transition-all dark:bg-grayDarker",
         action === "prev" ? "left-5" : "right-5"
       )}
     >

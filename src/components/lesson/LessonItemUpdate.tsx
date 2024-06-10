@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import slugify from "slugify";
 import { z } from "zod";
+import { IconEdit } from "../icons";
 
 const formSchema = z.object({
   video: z.string().optional(),
@@ -30,7 +31,7 @@ const formSchema = z.object({
   assetId: z.string().optional(),
 });
 const btnClassName =
-  "text-xs py-2 px-3 h-10 rounded-md font-semibold w-[100px] flex items-center justify-center";
+  "text-sm py-2 px-5 h-10 rounded-md font-semibold flex items-center justify-center";
 const LessonItemUpdate = ({
   lessonId,
   slug,
@@ -197,13 +198,17 @@ const LessonItemUpdate = ({
           )}
         />
 
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex items-center justify-end gap-1">
           <Button
-            className={cn(btnClassName, " bg-primary text-white button-styles")}
+            className={cn(
+              btnClassName,
+              "rounded-full border border-current gap-1 hover:bg-gray-50 dark:hover:bg-grayDarkest dark:border-opacity-10 dark:border-gray-200"
+            )}
             type="submit"
             isLoading={isSubmitting}
           >
-            Cập nhật
+            <IconEdit />
+            <span>Cập nhật</span>
           </Button>
           <Link
             href={`/${course.slug}/lesson?slug=${lesson.slug}`}

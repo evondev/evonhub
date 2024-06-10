@@ -211,7 +211,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
         </div>
       </div>
       <h2 className="font-bold text-xl mb-5">Phân quyền</h2>
-      <div className="bg-white rounded-lg p-5 dark:bg-grayDarker mb-5">
+      <div className="mb-5">
         <div className="flex flex-wrap gap-5">
           {Object.values(userPermissions).map((key) => (
             <div

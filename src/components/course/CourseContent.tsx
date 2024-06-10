@@ -65,7 +65,7 @@ const CourseContent = ({
 }) => {
   const commonButtonClassName = cn(
     baseButtonClassName,
-    "w-[140px] ml-auto mt-5 border border-gray-300 bg-gray-100 dark:border-opacity-10 dark:bg-grayDarkest hover:opacity-80 dark:bg-grayDarker"
+    "w-[140px] ml-auto mt-5 bgDarkMode borderDarkMode hover:bg-gray-100 dark:hover:bg-grayDarkest"
   );
   const [lectureList, setLectureList] = useState<
     {
@@ -363,20 +363,20 @@ const CourseContent = ({
                           <strong>Chương {index + 1}:</strong>
                           <p>{lecture.title}</p>
                           <button
-                            className="size-5 flex items-center justify-center hover:text-blue-400"
+                            className="size-5 flex items-center justify-center hover:opacity-50"
                             onClick={() => setEditLectureIndex(lecture._id)}
                           >
                             <IconEdit />
                           </button>
                           <button
-                            className="size-5 hover:text-red-500 flex items-center justify-center"
+                            className="size-5 hover:opacity-50 flex items-center justify-center"
                             onClick={() => handleDeleteLecture(lecture._id)}
                           >
                             <IconDelete />
                           </button>
                         </div>
                       </AccordionTrigger>
-                      <AccordionContent className="bg-transparent">
+                      <AccordionContent className="bg-transparent mt-5">
                         <Droppable key={lecture._id} droppableId={lecture._id}>
                           {(provided, snapshot) => (
                             <div
@@ -468,7 +468,7 @@ const CourseContent = ({
                                                   <div>{lesson.title}</div>
                                                 </div>
                                                 <span
-                                                  className="size-5 flex items-center justify-center hover:text-blue-400"
+                                                  className="size-5 flex items-center justify-center hover:opacity-50"
                                                   onClick={() =>
                                                     setEditLessonIndex(
                                                       lesson._id
@@ -478,7 +478,7 @@ const CourseContent = ({
                                                   <IconEdit />
                                                 </span>
                                                 <span
-                                                  className="size-5 hover:text-red-500 flex items-center justify-center"
+                                                  className="size-5 hover:opacity-50 flex items-center justify-center"
                                                   onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleDeleteLesson(

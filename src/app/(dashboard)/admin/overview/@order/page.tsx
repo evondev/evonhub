@@ -19,7 +19,7 @@ const page = async () => {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="p-5 rounded-lg bg-white border border-slate-200 dark:border-opacity-10 dark:bg-grayDarker">
+      <div className="">
         <h2 className="font-bold text-lg l:text-xl mb-0 lg:mb-5">
           Đơn hàng gần đây
         </h2>

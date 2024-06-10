@@ -7,7 +7,7 @@
     @apply text-white bg-primary;
   }
   body {
-    @apply bg-[#EEEFF1] text-grayPrimary dark:text-white dark:bg-grayDarkest antialiased;
+    @apply bg-white text-grayPrimary dark:text-white dark:bg-grayDarkest antialiased;
   }
   .wrapper {
     max-width: 1920px;
@@ -59,7 +59,10 @@
 }
 @layer utilities {
   .bgDarkMode {
-    @apply bg-white dark:bg-grayDarker #{!important};
+    @apply bg-white dark:bg-grayDarker;
+  }
+  .borderDarkMode {
+    @apply border border-gray-200 dark:border-opacity-10;
   }
   .bgDarkestMode {
     @apply bg-gray-100 dark:bg-grayDarkest #{!important};
@@ -328,5 +331,22 @@ div[role="dialog"] {
     main {
       padding-top: 0;
     }
+  }
+}
+
+.border-gradient {
+  position: relative;
+  &:before {
+    content: "";
+    position: absolute;
+    inset: -1.5px;
+    z-index: -1;
+    background: linear-gradient(
+      90deg,
+      #f3ca4d 0%,
+      #ff979a 45.3125%,
+      #cbabff 100%
+    );
+    border-radius: inherit;
   }
 }

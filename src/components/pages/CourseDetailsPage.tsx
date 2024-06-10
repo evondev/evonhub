@@ -150,7 +150,10 @@ const CourseDetailsPage = ({
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Chi tiết</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-              <DetailsItem title="Bài học" icon={<IconVideo />}>
+              <DetailsItem
+                title="Bài học"
+                icon={<IconVideo className="size-4" />}
+              >
                 {lessonCount}
               </DetailsItem>
               <DetailsItem title="Mức độ" icon={<IconLevel />}>
@@ -345,8 +348,10 @@ function DetailsItem({
 }) {
   return (
     <div className={boxDetailClassName}>
-      <h4 className="text-sm text-slate-600 dark:text-slate-400">{title}</h4>
-      <div className="flex items-center gap-1">
+      <h4 className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+        {title}
+      </h4>
+      <div className="flex items-center gap-1 font-semibold text-sm">
         {icon}
         <span>{children}</span>
       </div>

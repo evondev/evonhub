@@ -13,7 +13,7 @@ const Sidebar = ({ role }: { role: string }) => {
   const pathname = usePathname();
   const isActiveLink = (url: string) => pathname === url;
   return (
-    <aside className="bg-white fixed top-0 left-0 pb-8 px-5 hidden xl:block dark:bg-grayDark bottom-0 w-[300px] z-50 sidebar">
+    <aside className="fixed top-0 left-0 pb-8 px-5 hidden xl:block bgDarkMode bottom-0 w-[300px] z-50 sidebar border-r border-gray-200 dark:border-opacity-10">
       <Link href="/" className="flex items-center gap-2 py-3 mb-5 h-20">
         <ButtonGradient
           className={{

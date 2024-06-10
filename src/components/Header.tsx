@@ -36,7 +36,7 @@ const Header = ({ notifications }: { notifications: any[] }) => {
   const auth = useAuth();
   return (
     <div
-      className="top py-3 px-5 bg-white dark:bg-grayDarker flex items-center justify-between gap-5 static xl:fixed top-0 left-[300px] right-0 z-50 xl:h-16"
+      className="top py-3 px-5 bgDarkMode flex items-center justify-between gap-5 static xl:fixed top-0 left-[300px] right-0 z-50 xl:h-16"
       id="header"
     >
       <Link href="/" className="flex items-center gap-2 lg:hidden">
@@ -56,7 +56,7 @@ const Header = ({ notifications }: { notifications: any[] }) => {
         </ButtonGradient>
         <span className="text-lg font-bold">evonHub</span>
       </Link>
-      <div className="rounded-full gap-4 h-10 px-5 bg-white dark:bg-grayDark w-[min(100%,390px)] items-center lg:flex hidden border border-gray-200 dark:border-opacity-10">
+      <div className="rounded-full gap-4 h-12 px-5 bgDarkMode w-[min(100%,390px)] items-center lg:flex hidden borderDarkMode">
         <input
           type="text"
           placeholder="Search..."

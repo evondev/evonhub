@@ -89,9 +89,9 @@ export const actionClassName =
   "size-8 flex items-center justify-center bg-gray-100 dark:bg-grayDarkest rounded  p-2 transition-all  hover:text-gray-500 dark:hover:text-opacity-80";
 
 export const boxDetailClassName =
-  "rounded-lg p-5 bg-white dark:bg-grayDarker flex flex-col items-start gap-1";
+  "rounded-lg p-5 bgDarkMode borderDarkMode flex flex-col items-start gap-1";
 
-export const widgetClassName = "p-5 rounded-lg bg-white dark:bg-grayDarker";
+export const widgetClassName = "p-5 rounded-lg bgDarkMode borderDarkMode";
 
 export const courseStatusClassName =
   "text-xs font-semibold  inline-flex py-1 px-3 rounded-full whitespace-nowrap";
