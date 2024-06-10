@@ -31,7 +31,7 @@ const formSchema = z.object({
   assetId: z.string().optional(),
 });
 const btnClassName =
-  "text-sm py-2 px-5 h-10 rounded-md font-semibold flex items-center justify-center";
+  "text-sm py-2 px-5 h-10 rounded-md font-semibold w-[125px] flex items-center justify-center";
 const LessonItemUpdate = ({
   lessonId,
   slug,
