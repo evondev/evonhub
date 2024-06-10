@@ -234,7 +234,7 @@ const CourseDetailsPage = ({
                 <strong className="text-xl text-primary">Miễn phí</strong>
               ) : (
                 <>
-                  <strong className="text-xl text-secondary">
+                  <strong className="text-lg lg:text-xl text-secondary">
                     {formatThoundsand(data.price)} VNĐ
                   </strong>
                   <span className="text-sm line-through text-slate-400">

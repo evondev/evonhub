@@ -63,7 +63,7 @@ const LessonItem = ({
         onCheckedChange={() => handleCompleteLesson()}
       />
 
-      <IconPlay />
+      <IconPlay className="size-5 shrink-0" />
       <div
         className={cn(
           "line-clamp-1",

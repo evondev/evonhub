@@ -10,7 +10,7 @@ const Navigation = ({ role }: { role: string }) => {
   const isActiveLink = (url: string) => pathname === url;
   return (
     <div className="xl:hidden">
-      <ul className="flex justify-center gap-3 fixed bottom-0 left-0 right-0 z-10 p-2 dark:bg-grayDarker bg-white h-14">
+      <ul className="flex justify-center gap-3 fixed bottom-0 left-0 right-0 z-10 p-2 dark:bg-grayDarker bg-white h-14 border-t border-gray-200 dark:border-opacity-10">
         {menuLinks.map((link) => {
           if (link.isHideMobile || (link.isAuth && role === Role.ADMIN))
             return null;
