@@ -158,7 +158,7 @@ const LessonPlayer = ({
       </div>
 
       {lessonDetails.content && (
-        <div className="lesson-content hidden lg:block bg-white p-5 rounded-lg dark:bg-grayDarker text-sm">
+        <div className="lesson-content hidden lg:block  p-5 rounded-lg bgDarkMode borderDarkMode text-sm">
           <div
             dangerouslySetInnerHTML={{ __html: lessonDetails.content }}
           ></div>
@@ -178,7 +178,7 @@ function PlayerControl({
     <button
       onClick={onClick}
       className={cn(
-        "flex size-10 rounded items-center bg-white justify-center absolute top-1/2 -translate-y-1/2 z-10 hover:!bg-primary hover:!text-white transition-all dark:bg-grayDarker",
+        "flex opacity-0 invisible group-hover:opacity-100 group-hover:visible size-10 rounded items-center bg-white justify-center absolute top-1/2 -translate-y-1/2 z-10 hover:!bg-primary hover:!text-white transition-all dark:bg-grayDarker",
         action === "prev" ? "left-5" : "right-5"
       )}
     >

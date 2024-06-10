@@ -3,7 +3,6 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
-import ButtonGradient from "./button/ButtonGradient";
 import Notification from "./noti/Notification";
 
 const IconSearch = (
@@ -36,24 +35,19 @@ const Header = ({ notifications }: { notifications: any[] }) => {
   const auth = useAuth();
   return (
     <div
-      className="top py-3 px-5 bgDarkMode flex items-center justify-between gap-5 static xl:fixed top-0 left-[300px] right-0 z-50 xl:h-16"
+      className="top py-3 px-5 bgDarkMode flex items-center justify-between gap-5 static xl:fixed top-0 left-[300px] right-0 z-50 xl:h-16 shadow-sm"
       id="header"
     >
       <Link href="/" className="flex items-center gap-2 lg:hidden">
-        <ButtonGradient
-          className={{
-            wrapper: "rounded-full size-12 flex-shrink-0",
-            main: "p-3.5 !bg-[#ff979a]",
-          }}
-        >
+        <div className="bg-primary p-3 rounded-full size-10 flex-shrink-0">
           <Image
-            width={40}
-            height={40}
+            width={48}
+            height={48}
             src="/logo.png"
             alt="EvonHub"
-            className="object-contain max-w-full"
+            className="object-contain max-h-full max-w-full"
           ></Image>
-        </ButtonGradient>
+        </div>
         <span className="text-lg font-bold">evonHub</span>
       </Link>
       <div className="rounded-full gap-4 h-12 px-5 bgDarkMode w-[min(100%,390px)] items-center lg:flex hidden borderDarkMode">

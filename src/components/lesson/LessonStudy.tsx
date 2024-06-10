@@ -58,12 +58,12 @@ const LessonStudy = ({
         {activeTab === ETabs.LESSON ? (
           children
         ) : (
-          <>
+          <div className="bgDarkMode borderDarkMode p-3 rounded-lg">
             <div
               dangerouslySetInnerHTML={{ __html: content }}
               className="lesson-content"
             ></div>
-          </>
+          </div>
         )}
       </div>
     </div>
