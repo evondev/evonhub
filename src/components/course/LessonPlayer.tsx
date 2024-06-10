@@ -82,13 +82,13 @@ const LessonPlayer = ({
   const handleOnPlaying = () => {
     setInterval(() => {
       handleGetVideoTime();
-    }, 10000);
+    }, 5000);
   };
   useEffect(() => {
     if (!videoId) return;
     const time = localStorage.getItem(`videoTime-${lessonDetails.slug}`);
-    if (videoRef.current) {
-      videoRef.current.currentTime = Number(time || 0);
+    if (videoRef.current && time) {
+      videoRef.current.currentTime = Number(time);
     }
   }, [lessonDetails.slug, videoId]);
 
