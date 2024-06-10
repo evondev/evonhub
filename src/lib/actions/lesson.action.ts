@@ -112,9 +112,13 @@ export async function getLessonBySlug(slug: string, course?: string) {
     };
     const findCourse = await Course.findOne({ slug: course });
     if (findCourse) query.courseId = findCourse._id.toString();
-    const lesson = await Lesson.findOne(query).select(
-      "title content video courseId lectureId"
-    );
+    const lesson = await Lesson.findOne(query)
+      .select("title content video courseId lectureId")
+      .populate({
+        path: "courseId",
+        model: Course,
+        select: "id slug",
+      });
     return lesson;
   } catch (error) {
     console.log(error);

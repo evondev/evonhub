@@ -5,7 +5,7 @@ import { useGlobalStore } from "@/store";
 import { formUrlQuery } from "@/utils";
 import MuxPlayer from "@mux/mux-player-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 const LessonPlayer = ({
@@ -17,6 +17,8 @@ const LessonPlayer = ({
   lessonDetails: {
     title: string;
     content: string;
+    slug: string;
+    course: string;
   };
   videoId: string;
   nextLesson?: string;
@@ -44,6 +46,45 @@ const LessonPlayer = ({
       link.setAttribute("target", "_blank");
     });
   }, [lessonDetails.content]);
+  const videoRef = useRef<any>(null);
+  useEffect(() => {
+    if (!videoId) return;
+    // save last course lesson slug and course to local storage
+    const localData =
+      JSON.parse(localStorage.getItem("lastCourseLesson") || "[]") || [];
+    if (!Array.isArray(localData)) return;
+    const existLesson = localData.find(
+      (item: { course: string; lesson: string }) =>
+        item.course === lessonDetails.course
+    );
+    if (existLesson) {
+      const index = localData.findIndex(
+        (item: { course: string; lesson: string }) =>
+          item.course === lessonDetails.course
+      );
+      localData.splice(index, 1);
+    }
+
+    const item = {
+      course: lessonDetails.course,
+      lesson: lessonDetails.slug,
+    };
+    const data = localData.concat(item);
+    localStorage.setItem("lastCourseLesson", JSON.stringify(data));
+  }, [lessonDetails.course, lessonDetails.slug, videoId]);
+  // useEffect(() => {
+  //   if (!videoId) return;
+  //   function handleGetVideoTime() {
+  //     if (videoRef.current) {
+  //       const currentTime = videoRef.current.currentTime;
+  //       localStorage.setItem(`videoTime-${lessonDetails.slug}`, currentTime);
+  //     }
+  //   }
+  //   window.addEventListener("beforeunload", handleGetVideoTime);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleGetVideoTime);
+  //   };
+  // }, [lessonDetails.slug, videoId]);
 
   return (
     <div className="lg:mb-8">
@@ -57,6 +98,7 @@ const LessonPlayer = ({
                 handleChangeLesson(nextLesson || "");
               }}
               className="w-full h-full inline-block align-bottom"
+              ref={videoRef}
             />
           ) : (
             <div className="w-full h-full bg-white dark:bg-grayDarker rounded-lg"></div>

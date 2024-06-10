@@ -18,8 +18,10 @@ const page = async ({
 }) => {
   const lessonDetails = await getLessonBySlug(searchParams.slug, params.course);
   if (!lessonDetails) return <EmptyData text="Bài học không tồn tại!" />;
-  const { video, title, content, courseId } = lessonDetails;
-  const lessonList = (await getAllLessonByCourseId(courseId.toString())) || [];
+  const { video, title, content, courseId, slug } = lessonDetails;
+  const course = JSON.parse(JSON.stringify(courseId));
+  const lessonList =
+    (await getAllLessonByCourseId(course._id.toString())) || [];
   const lessonIndex = lessonList?.findIndex(
     (l) => l.slug === searchParams.slug
   );
@@ -31,6 +33,8 @@ const page = async ({
       lessonDetails={{
         title,
         content,
+        slug: searchParams.slug,
+        course: course.slug,
       }}
       nextLesson={nextLesson}
       prevLesson={prevLesson}

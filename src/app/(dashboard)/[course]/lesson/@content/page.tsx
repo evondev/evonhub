@@ -30,12 +30,13 @@ const page = async ({
   const mongoUser = await getUserById({ userId: userId || "" });
   const lessonDetails = await getLessonBySlug(searchParams.slug, params.course);
   if (!lessonDetails) return null;
+  const course = JSON.parse(JSON.stringify(lessonDetails.courseId));
   const progress =
     (await getCompleteCourseHistory({
       userId: mongoUser?._id.toString(),
-      courseId: lessonDetails.courseId.toString(),
+      courseId: course._id.toString(),
     })) || 0;
-  const courseId = lessonDetails.courseId.toString();
+  const courseId = course._id.toString();
   const historyLessons = await getHistories();
   const lectures = await getLessonDetailsContent({ courseSlug: params.course });
   if (!lectures) return null;
