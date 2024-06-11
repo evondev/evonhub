@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
 import { formUrlQuery } from "@/utils";
 import MuxPlayer from "@mux/mux-player-react";
+import { debounce } from "lodash";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
@@ -73,23 +74,30 @@ const LessonPlayer = ({
     const data = localData.concat(item);
     localStorage.setItem("lastCourseLesson", JSON.stringify(data));
   }, [lessonDetails.course, lessonDetails.slug, videoId]);
-  function handleGetVideoTime() {
-    if (videoRef.current) {
-      const currentTime = videoRef.current.currentTime;
-      localStorage.setItem(`videoTime-${lessonDetails.slug}`, currentTime);
-    }
-  }
-  const handleOnPlaying = () => {
-    setInterval(() => {
-      handleGetVideoTime();
-    }, 5000);
-  };
   useEffect(() => {
-    if (!videoId) return;
-    const time = localStorage.getItem(`videoTime-${lessonDetails.slug}`);
-    if (videoRef.current && time) {
-      videoRef.current.currentTime = Number(time);
+    const storageKey = `videoTime-${lessonDetails.slug}`;
+    const video = videoRef.current;
+    const savedTime = localStorage.getItem(storageKey);
+
+    if (savedTime && video) {
+      video.currentTime = parseFloat(savedTime);
     }
+
+    const handleTimeUpdate = debounce(() => {
+      if (video) {
+        localStorage.setItem(storageKey, video.currentTime);
+      }
+    }, 5000);
+
+    if (video) {
+      video.addEventListener("timeupdate", handleTimeUpdate);
+    }
+
+    return () => {
+      if (video) {
+        video.removeEventListener("timeupdate", handleTimeUpdate);
+      }
+    };
   }, [lessonDetails.slug, videoId]);
 
   return (
@@ -105,8 +113,6 @@ const LessonPlayer = ({
               }}
               className="w-full h-full inline-block align-bottom"
               ref={videoRef}
-              onPause={handleGetVideoTime}
-              onPlaying={handleOnPlaying}
               autoPlay
             />
           ) : (
