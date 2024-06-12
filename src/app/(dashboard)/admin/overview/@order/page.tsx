@@ -20,9 +20,7 @@ const page = async () => {
   return (
     <div className="flex flex-col gap-5">
       <div className="">
-        <h2 className="font-bold text-lg l:text-xl mb-0 lg:mb-5">
-          Đơn hàng gần đây
-        </h2>
+        <h2 className="font-bold text-lg l:text-xl mb-5">Đơn hàng gần đây</h2>
 
         <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto whitespace-nowrap">
           <TableHeader>

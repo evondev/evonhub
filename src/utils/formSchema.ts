@@ -44,4 +44,12 @@ export const updateUserSchema = z.object({
   username: z.string().optional(),
   bio: z.string().optional(),
   avatar: z.string().optional(),
+  bank: z
+    .object({
+      bankName: z.string().optional(),
+      bankAccount: z.string().optional(),
+      bankNumber: z.string().optional(),
+      bankBranch: z.string().optional(),
+    })
+    .optional(),
 });

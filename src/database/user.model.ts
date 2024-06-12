@@ -15,6 +15,12 @@ export interface IUser extends Document {
   role: string;
   createdAt: Date;
   permissions?: EUserPermission[];
+  bank: {
+    bankAccount: string;
+    bankName: string;
+    bankNumber: string;
+    bankBranch: string;
+  };
 }
 const UserSchema = new Schema({
   clerkId: {
@@ -80,6 +86,20 @@ const UserSchema = new Schema({
       ],
     },
   ],
+  bank: {
+    bankAccount: {
+      type: String,
+    },
+    bankName: {
+      type: String,
+    },
+    bankNumber: {
+      type: String,
+    },
+    bankBranch: {
+      type: String,
+    },
+  },
 });
 UserSchema.index({ clerkId: 1 }, { unique: true });
 const User = models.User || model("User", UserSchema);

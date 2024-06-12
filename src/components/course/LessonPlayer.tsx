@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
 import { formUrlQuery } from "@/utils";
 import MuxPlayer from "@mux/mux-player-react";
-import { debounce } from "lodash";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Prism from "prismjs";
 import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
@@ -74,31 +74,25 @@ const LessonPlayer = ({
     const data = localData.concat(item);
     localStorage.setItem("lastCourseLesson", JSON.stringify(data));
   }, [lessonDetails.course, lessonDetails.slug, videoId]);
+  const storageKey = `videoTime-${lessonDetails.slug}`;
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      localStorage.setItem(storageKey, videoRef.current.currentTime);
+    }
+  };
   useEffect(() => {
-    const storageKey = `videoTime-${lessonDetails.slug}`;
     const video = videoRef.current;
     const savedTime = localStorage.getItem(storageKey);
 
     if (savedTime && video) {
       video.currentTime = parseFloat(savedTime);
     }
+  }, [lessonDetails.slug, storageKey, videoId]);
 
-    const handleTimeUpdate = debounce(() => {
-      if (video) {
-        localStorage.setItem(storageKey, video.currentTime);
-      }
-    }, 5000);
-
-    if (video) {
-      video.addEventListener("timeupdate", handleTimeUpdate);
-    }
-
-    return () => {
-      if (video) {
-        video.removeEventListener("timeupdate", handleTimeUpdate);
-      }
-    };
-  }, [lessonDetails.slug, videoId]);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    Prism.highlightAll();
+  }, [lessonDetails.content.length]);
 
   return (
     <div className="lg:mb-8">
@@ -114,6 +108,7 @@ const LessonPlayer = ({
               className="w-full h-full inline-block align-bottom"
               ref={videoRef}
               autoPlay
+              onTimeUpdate={handleTimeUpdate}
             />
           ) : (
             <div className="w-full h-full bg-white dark:bg-grayDarker rounded-lg"></div>

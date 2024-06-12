@@ -19,6 +19,7 @@ import {
 import { boxDetailClassName, courseLevel, widgetClassName } from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { getFreeCourse } from "@/lib/actions/course.action";
+import { userBuyCourse } from "@/lib/actions/order.action";
 import { useGlobalStore } from "@/store";
 import { ECourseStatus, Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
@@ -83,6 +84,19 @@ const CourseDetailsPage = ({
       toast.error(res?.message);
     } catch (error) {}
   };
+  const handleBuyCourse = async (slug: string) => {
+    if (!currentUser?._id) {
+      router.push("/sign-in");
+      return;
+    }
+    const res = await userBuyCourse({
+      user: currentUser?._id,
+      course: data._id,
+      amount: data.price,
+      total: data.price,
+    });
+    router.push(`/order/${res?.order.code}`);
+  };
   if (!data) return <PageNotFound />;
   if (
     data.status !== ECourseStatus.APPROVED &&
@@ -96,6 +110,9 @@ const CourseDetailsPage = ({
   }, 0);
   const totalHours = Math.floor(totalMinutes / 60);
   const totalMinutesLeft = totalMinutes % 60;
+  const embed = data?.intro?.includes("v=")
+    ? data?.intro?.split("v=")[1]?.split("&")[0]
+    : data?.intro?.split("/").at(-1);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr),400px] gap-8 items-start relative">
@@ -104,9 +121,7 @@ const CourseDetailsPage = ({
           {data.intro ? (
             <>
               <iframe
-                src={`https://www.youtube.com/embed/${data.intro
-                  .split("/")
-                  .at(-1)}`}
+                src={`https://www.youtube.com/embed/${embed}`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
@@ -294,10 +309,9 @@ const CourseDetailsPage = ({
                   </ButtonGradient>
                 </button>
               ) : (
-                <Link
-                  href={data.ctaLink || "#"}
-                  target={data.ctaLink ? "_blank" : "_self"}
+                <button
                   className="w-full"
+                  onClick={() => handleBuyCourse(data.slug)}
                 >
                   <ButtonGradient
                     className={{
@@ -307,7 +321,7 @@ const CourseDetailsPage = ({
                   >
                     {data.cta || "Đăng ký ngay"}
                   </ButtonGradient>
-                </Link>
+                </button>
               )}
             </>
           ) : (

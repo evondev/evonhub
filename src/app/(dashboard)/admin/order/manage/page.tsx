@@ -4,14 +4,22 @@ import { getUserById } from "@/lib/actions/user.action";
 import { Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 
-const page = async () => {
+const page = async ({
+  searchParams,
+}: {
+  searchParams: {
+    page: number;
+    search: string;
+  };
+}) => {
   const { userId } = auth();
   if (!userId) return null;
   const findUser = await getUserById({ userId });
   if (!findUser || findUser.role !== Role.ADMIN) return null;
   const allOrders = await getAllOrders({
     userId: findUser._id,
-    limit: 10,
+    searchQuery: searchParams?.search,
+    page: searchParams.page ? +searchParams.page : 1,
   });
   return (
     <OrderManage

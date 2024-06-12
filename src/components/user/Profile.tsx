@@ -27,6 +27,7 @@ const Profile = ({ user }: { user: IUser }) => {
       username: user.username,
       bio: user.bio,
       avatar: user.avatar,
+      bank: user?.bank,
     },
   });
   async function onSubmit(values: z.infer<typeof updateUserSchema>) {
@@ -38,6 +39,12 @@ const Profile = ({ user }: { user: IUser }) => {
           name: values.name,
           username: values.username,
           bio: values.bio,
+          bank: {
+            bankAccount: values.bank?.bankAccount || "",
+            bankBranch: values.bank?.bankBranch || "",
+            bankName: values.bank?.bankName || "",
+            bankNumber: values.bank?.bankNumber || "",
+          },
         },
         path: "/profile",
       });
@@ -115,52 +122,58 @@ const Profile = ({ user }: { user: IUser }) => {
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={form.control}
-              name="avatar"
+              name="bank.bankNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Avatar</FormLabel>
+                  <FormLabel>Số tài khoản ngân hàng</FormLabel>
                   <FormControl>
-                    <>
-                      {image && (
-                        <div className="relative group">
-                          <Image
-                            src={image}
-                            alt="Course Image"
-                            width={200}
-                            height={150}
-                            className="w-full h-[250px] rounded-lg object-cover"
-                          />
-                          <button
-                            className={cn(
-                              actionClassName,
-                              "absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 hover:bg-red-500 opacity-0 invisible group-hover:opacity-100 group-hover:visible"
-                            )}
-                            onClick={() => form.setValue("avatar", "")}
-                          >
-                            <IconDelete />
-                          </button>
-                        </div>
-                      )}
-                      {!image && (
-                        <UploadDropzone
-                          className="justify-center items-center bg-white dark:bg-grayDarker rounded-lg h-[250px]"
-                          endpoint="imageUploader"
-                          onClientUploadComplete={(res) => {
-                            form.setValue("avatar", res[0].url);
-                          }}
-                          onUploadError={(error: Error) => {
-                            alert(`ERROR! ${error.message}`);
-                          }}
-                        />
-                      )}
-                    </>
+                    <Input placeholder="Số tài khoản ngân hàng" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
+            <FormField
+              control={form.control}
+              name="bank.bankName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tên ngân hàng</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Tên ngân hàng" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bank.bankAccount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tên tài khoản</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Tên tài khoản" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bank.bankBranch"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Chi nhánh</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Chi nhánh" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
         </form>
       </Form>

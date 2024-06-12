@@ -100,6 +100,7 @@ export default function UpdateCourseForm({
             gained: infoData.gained,
           },
         },
+        path: `/course/${values.slug || courseSlug}`,
       });
       if (res?.type === "error") {
         return toast.error(res.message);
@@ -158,9 +159,13 @@ export default function UpdateCourseForm({
             name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Giá khóa học</FormLabel>
+                <FormLabel>Giá khuyến mãi</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="Giá khóa học" {...field} />
+                  <Input
+                    type="number"
+                    placeholder="Giá khuyến mãi"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -171,13 +176,9 @@ export default function UpdateCourseForm({
             name="salePrice"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Giá khuyến mãi</FormLabel>
+                <FormLabel>Giá gốc</FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Giá khuyến mãi"
-                    {...field}
-                  />
+                  <Input type="number" placeholder="Giá gốc" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -254,7 +255,11 @@ export default function UpdateCourseForm({
               <FormItem>
                 <FormLabel>Intro URL</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Intro URL" {...field} />
+                  <Input
+                    type="text"
+                    placeholder="Video youtube URL only"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -374,6 +379,9 @@ export default function UpdateCourseForm({
                         }}
                         onUploadError={(error: Error) => {
                           alert(`ERROR! ${error.message}`);
+                        }}
+                        config={{
+                          mode: "auto",
                         }}
                       />
                     )}

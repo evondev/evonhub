@@ -58,7 +58,6 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
               <Checkbox />
             </TableHead>
             <TableHead>Thông tin</TableHead>
-            <TableHead className="text-center">Đánh giá</TableHead>
             <TableHead>Giá khóa học</TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead>Hành động</TableHead>
@@ -107,7 +106,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <div className="flex flex-col items-center gap-1">
                     <Image
                       src={reaction?.icon || ""}
@@ -123,7 +122,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                       {course.rating.length} đánh giá
                     </p>
                   </div>
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   {course.free ? (
                     <>

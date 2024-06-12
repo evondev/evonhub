@@ -97,7 +97,40 @@ export const courseStatusClassName =
   "text-xs font-semibold  inline-flex py-1 px-3 rounded-full whitespace-nowrap";
 export const baseStatusClassName =
   "text-xs font-semibold  inline-flex py-1 px-3 rounded-full whitespace-nowrap";
-
+export const pagiBtn =
+  "size-8 rounded bg-gray-900 dark:bg-white dark:text-gray-900 flex items-center justify-center text-white hover:opacity-90 p-2";
+export const ArrowRight = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="size-5"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M8.25 4.5l7.5 7.5-7.5 7.5"
+    />
+  </svg>
+);
+export const ArrowLeft = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="size-5"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15.75 19.5L8.25 12l7.5-7.5"
+    />
+  </svg>
+);
 export const courseStatus = {
   approved: {
     text: "Đã duyệt",
