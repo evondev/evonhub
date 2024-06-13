@@ -18,7 +18,7 @@ export default async function DashboardLayout({
   const notifications = await getNotificationByUser(mongoUser?._id.toString());
 
   const role = mongoUser?.role;
-  if (mongoUser.status === EUserStatus.INACTIVE)
+  if (mongoUser?.status === EUserStatus.INACTIVE)
     return (
       <EmptyData
         text="Your account is inactive. Please contact the administrator to activate your account."

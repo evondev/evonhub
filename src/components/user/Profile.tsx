@@ -2,6 +2,7 @@
 import { primaryButtonClassName } from "@/constants";
 import { IUser } from "@/database/user.model";
 import { updateUser } from "@/lib/actions/user.action";
+import { Role } from "@/types/enums";
 import { updateUserSchema } from "@/utils/formSchema";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -122,58 +123,65 @@ const Profile = ({ user }: { user: IUser }) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="bank.bankNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Số tài khoản ngân hàng</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Số tài khoản ngân hàng" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="bank.bankName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tên ngân hàng</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Tên ngân hàng" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="bank.bankAccount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tên tài khoản</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Tên tài khoản" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="bank.bankBranch"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Chi nhánh</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Chi nhánh" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {user?.role !== Role.USER && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="bank.bankNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Số tài khoản ngân hàng</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Số tài khoản ngân hàng"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bank.bankName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tên ngân hàng</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Tên ngân hàng" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bank.bankAccount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tên tài khoản</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Tên tài khoản" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bank.bankBranch"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Chi nhánh</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Chi nhánh" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
           </div>
         </form>
       </Form>
