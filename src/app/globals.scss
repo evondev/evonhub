@@ -110,8 +110,8 @@ div .tox .tox-edit-area::before {
 }
 .swal2-container {
   .swal2-popup {
-    @apply rounded-xl p-8;
-    max-width: 600px;
+    @apply rounded-xl p-8 w-full;
+    max-width: 400px;
   }
   .swal2-popup .swal2-title {
     @apply text-xl font-bold text-grayDarkest;
@@ -161,7 +161,7 @@ div .tox .tox-edit-area::before {
 }
 div[role="dialog"] {
   @media screen and (max-width: 767.98px) {
-    max-width: calc(100% - 20px);
+    max-width: calc(100% - 20px) !important;
     border-radius: 8px;
   }
 }

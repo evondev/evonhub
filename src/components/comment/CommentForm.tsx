@@ -27,11 +27,14 @@ const commentSchema = z.object({
 });
 
 const CommentForm = ({
-  courseId,
+  course,
   comments,
   lessonId,
 }: {
-  courseId: string;
+  course: {
+    _id: string;
+    slug: string;
+  };
   comments: ICommentParams[];
   lessonId: string;
 }) => {
@@ -51,7 +54,7 @@ const CommentForm = ({
     try {
       await createComment({
         content: values.content,
-        course: courseId,
+        course: course._id,
         lesson: lessonId,
         path,
       });
@@ -106,7 +109,7 @@ const CommentForm = ({
                 <CommentItem
                   comment={comment}
                   data={{
-                    courseId,
+                    courseId: course._id,
                     lessonId,
                     userId: comment.user._id,
                     path,
@@ -119,7 +122,7 @@ const CommentForm = ({
                       key={reply._id.toString()}
                       comment={reply}
                       data={{
-                        courseId,
+                        courseId: course._id,
                         userId: reply.user._id,
                         lessonId,
                         path,

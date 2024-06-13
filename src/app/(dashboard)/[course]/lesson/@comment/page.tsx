@@ -15,15 +15,17 @@ const page = async ({
   };
 }) => {
   const lessonDetails = await getLessonBySlug(searchParams.slug, params.course);
+  console.log("lessonDetails:", lessonDetails);
   if (!lessonDetails) return null;
   const comments =
     (await getAllComments({
       lesson: lessonDetails._id.toString(),
       status: ECommentStatus.APPROVED,
     })) || [];
+  if (!lessonDetails.courseId) return null;
   return (
     <CommentForm
-      courseId={lessonDetails.courseId.toString()}
+      course={JSON.parse(JSON.stringify(lessonDetails.courseId))}
       comments={JSON.parse(JSON.stringify(comments))}
       lessonId={lessonDetails._id.toString()}
     ></CommentForm>

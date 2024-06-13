@@ -45,7 +45,6 @@ const CommentReplyForm = ({
 
   async function onSubmit(values: z.infer<typeof commentSchema>) {
     setIsSubmitting(true);
-
     try {
       await replyComment({
         commentId: data.commentId,
