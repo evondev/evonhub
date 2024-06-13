@@ -11,6 +11,7 @@ export interface IOrder extends Document {
   amount: number;
   discount: number;
   total: number;
+  _destroy: boolean;
 }
 const orderSchema = new Schema<IOrder>({
   user: {
@@ -45,6 +46,10 @@ const orderSchema = new Schema<IOrder>({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  _destroy: {
+    type: Boolean,
+    default: false,
   },
 });
 const Order = models.Order || mongoose.model("Order", orderSchema);

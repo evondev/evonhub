@@ -1,3 +1,4 @@
+import PageNotFound from "@/app/not-found";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { getOrderDetails } from "@/lib/actions/order.action";
 import { formatThoundsand } from "@/utils";
@@ -10,9 +11,11 @@ const page = async ({
     orderId: string;
   };
 }) => {
+  if (!params.orderId) return <PageNotFound />;
   const orderDetails = await getOrderDetails(params.orderId);
   const bankInfo = orderDetails?.course?.author?.bank;
-  if (!orderDetails || !bankInfo) return null;
+  if (!orderDetails || !bankInfo || !bankInfo.bankNumber)
+    return <PageNotFound />;
   return (
     <div className="bg-white rounded-lg bgDarkMode borderDarkMode p-5 flex text-sm lg:text-base flex-col gap-3 font-medium">
       <div>

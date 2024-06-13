@@ -21,6 +21,7 @@ export interface IUser extends Document {
     bankNumber: string;
     bankBranch: string;
   };
+  _destroy: boolean;
 }
 const UserSchema = new Schema({
   clerkId: {
@@ -99,6 +100,10 @@ const UserSchema = new Schema({
     bankBranch: {
       type: String,
     },
+  },
+  _destroy: {
+    type: Boolean,
+    default: false,
   },
 });
 UserSchema.index({ clerkId: 1 }, { unique: true });

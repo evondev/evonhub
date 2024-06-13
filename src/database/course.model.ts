@@ -33,6 +33,7 @@ export interface ICourse extends Document {
   createdAt: Date;
   seoKeywords: string;
   free: boolean;
+  _destroy: boolean;
 }
 const courseSchema = new Schema<ICourse>({
   title: {
@@ -141,6 +142,10 @@ const courseSchema = new Schema<ICourse>({
     type: String,
   },
   free: {
+    type: Boolean,
+    default: false,
+  },
+  _destroy: {
     type: Boolean,
     default: false,
   },
