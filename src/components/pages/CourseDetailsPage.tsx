@@ -95,6 +95,10 @@ const CourseDetailsPage = ({
       amount: data.price,
       total: data.price,
     });
+    if (res?.error) {
+      toast.error(res?.error);
+      return;
+    }
     router.push(`/order/${res?.order.code}`);
   };
   if (!data) return <PageNotFound />;

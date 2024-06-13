@@ -26,6 +26,7 @@ export async function createOrder(params: CreateOrderParams) {
   } catch (error) {}
 }
 interface UpdateOrderParams {
+  code: string;
   user: string;
   course: string;
   status: EOrderStatus;
@@ -33,13 +34,27 @@ interface UpdateOrderParams {
 export async function updateOrder(params: UpdateOrderParams) {
   try {
     connectToDatabase();
+    const findUser = await User.findById(params.user);
+    if (!findUser) return;
+    const findOrder = await Order.findOne({
+      code: params.code,
+    });
+    if (findOrder?.status === EOrderStatus.REJECTED) return;
     await Order.updateOne(
       { user: params.user, course: params.course },
       { status: params.status }
     );
+
     if (params.status === EOrderStatus.APPROVED) {
       // add course to user
+      findUser.courses.push(params.course);
+    } else {
+      // remove course from user
+      findUser.courses = findUser.courses.filter(
+        (course: any) => course.toString() !== params.course
+      );
     }
+    await findUser.save();
     revalidatePath("/admin/order/manage");
   } catch (error) {
     console.log(error);
@@ -89,6 +104,16 @@ export async function getAllOrders(params: {
 export async function userBuyCourse(params: Partial<CreateOrderParams>) {
   try {
     connectToDatabase();
+    const findUser = await User.findById(params.user);
+    if (!findUser)
+      return {
+        error: "User not found",
+      };
+    const userCourses = await Course.find({ author: findUser._id });
+    if (userCourses.find((course) => course._id === params.course))
+      return {
+        error: "Bạn đã sở hữu khóa học này rồi",
+      };
     const newOrder = new Order({
       ...params,
       code: `DH${new Date().getTime().toString().slice(-8)}`,

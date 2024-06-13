@@ -12,6 +12,7 @@ const page = async ({
 }) => {
   const orderDetails = await getOrderDetails(params.orderId);
   const bankInfo = orderDetails?.course?.author?.bank;
+  if (!orderDetails || !bankInfo) return null;
   return (
     <div className="bg-white rounded-lg bgDarkMode borderDarkMode p-5 flex text-sm lg:text-base flex-col gap-3 font-medium">
       <div>

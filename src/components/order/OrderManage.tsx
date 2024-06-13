@@ -22,6 +22,7 @@ import { EOrderStatus } from "@/types/enums";
 import { formUrlQuery, formatDate, formatThoundsand } from "@/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import Swal from "sweetalert2";
 import { IconDelete } from "../icons";
 import {
   Tooltip,
@@ -34,13 +35,16 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
     user,
     course,
     status,
+    code,
   }: {
     user: string;
     course: string;
     status: EOrderStatus;
+    code: string;
   }) => {
     try {
       await updateOrder({
+        code,
         user,
         course,
         status,
@@ -64,6 +68,25 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
       value: action === "prev" ? `${page - 1}` : `${page + 1}`,
     });
     router.push(newUrl);
+  };
+  const handleCancelOrder = (order: any) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn muốn hủy đơn hàng?",
+      text: "Hành động này không thể hoàn tác",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleRejectOrder({
+          user: order.user?._id,
+          course: order?.course?._id,
+          status: EOrderStatus.REJECTED,
+          code: order.code,
+        });
+      }
+    });
   };
   return (
     <>
@@ -169,7 +192,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
               <TableCell>{formatDate(order.createdAt)}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
-                  {order.status !== EOrderStatus.APPROVED && (
+                  {order.status === EOrderStatus.PENDING && (
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
@@ -180,6 +203,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                                 user: order.user?._id,
                                 course: order?.course?._id,
                                 status: EOrderStatus.APPROVED,
+                                code: order.code,
                               })
                             }
                           >
@@ -211,13 +235,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                         <TooltipTrigger>
                           <button
                             className={cn(actionClassName)}
-                            onClick={() =>
-                              handleRejectOrder({
-                                user: order.user?._id,
-                                course: order?.course?._id,
-                                status: EOrderStatus.REJECTED,
-                              })
-                            }
+                            onClick={() => handleCancelOrder(order)}
                           >
                             <IconDelete />
                           </button>

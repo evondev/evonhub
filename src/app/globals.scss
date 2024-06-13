@@ -111,8 +111,7 @@ div .tox .tox-edit-area::before {
 .swal2-container {
   .swal2-popup {
     @apply rounded-xl p-8;
-    max-width: 400px;
-    margin-left: auto;
+    max-width: 600px;
   }
   .swal2-popup .swal2-title {
     @apply text-xl font-bold text-grayDarkest;

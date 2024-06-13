@@ -32,21 +32,26 @@ const page = () => {
         đó bấm vào khóa học để xem thông tin. Các bạn sẽ thấy giá khóa học{" "}
         <strong className="text-secondary">màu cam</strong>.
         <p className="my-5">
-          <Image src="/tut1.png" alt="bank" width={300} height={600}></Image>
+          <Image src="/widget.png" alt="bank" width={300} height={600}></Image>
         </p>
-        Các bạn chuyển khoản vào tài khoản dưới với nội dung{" "}
-        <strong>khóa học email</strong> mà không cần dấu @ đồ phía sau nha.
+        Sau đó các bạn nhấn vào button để mua khóa học. Lúc này các bạn sẽ thấy
+        nội dung như sau:
       </div>
       <div className="mb-5">
-        Ví dụ: <strong>nextjspro emailcuaban</strong>
+        <Image src="/order.png" alt="order" width={600} height={600}></Image>
       </div>
       <div className="mb-5">
-        <Image src="/acb.jpeg" alt="bank" width={300} height={600}></Image>
+        Tại đây các bạn sẽ thấy thông tin ngân hàng và số tiền cần thanh toán.
+        Các bạn chỉ cần chuyển khoản vào tài khoản ngân hàng đó với nội dung là
+        mã đơn hàng
       </div>
       <div className="mb-5">
-        Khi mình nhận được thanh toán, mình sẽ chủ động thêm khóa học vào tài
-        khoản cho các bạn. Nếu sau 24h mà không nhận được khóa học, các bạn vui
-        lòng liên hệ mình fb cá nhân mình tại:{" "}
+        Ví dụ: <strong className="text-secondary">DH43522145</strong>
+      </div>
+      <div className="mb-5">
+        Khi đơn hàng được tạo, tác giả sẽ chủ động thêm khóa học vào tài khoản
+        cho các bạn. Nếu sau 24h mà không nhận được khóa học, các bạn vui lòng
+        liên hệ Admin tại:{" "}
         <a
           href="https://fb.com/tuan.trananh.0509"
           target="_blank"
