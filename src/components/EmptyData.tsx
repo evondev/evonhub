@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const EmptyData = ({ text }: { text?: string }) => {
+const EmptyData = ({ text, url }: { text?: string; url?: string }) => {
   return (
     <div className="bg-white dark:bg-grayDarker max-w-[500px] mx-auto p-5 rounded-lg my-5 text-center">
       <Image
@@ -16,7 +16,7 @@ const EmptyData = ({ text }: { text?: string }) => {
       của bạn chưa được kích hoạt hoặc bị khóa vì vi phạm chính sách hệ thống.
       Vui lòng liên hệ với quản trị viên để được hỗ trợ.`}
       <Link
-        href="/"
+        href={url || "/"}
         className="text-white bg-grayPrimary rounded-full h-12 px-10 flex items-center justify-center gap-2 w-fit mx-auto group mt-5"
       >
         <svg
@@ -31,7 +31,7 @@ const EmptyData = ({ text }: { text?: string }) => {
             clipRule="evenodd"
           />
         </svg>
-        <span>Khu vực học tập</span>
+        {!url ? <span>Khu vực học tập</span> : <span>Liên hệ</span>}
       </Link>
     </div>
   );

@@ -2,7 +2,7 @@
 import Course from "@/database/course.model";
 import Order from "@/database/order.model";
 import User from "@/database/user.model";
-import { EOrderStatus, Role } from "@/types/enums";
+import { EOrderStatus, EUserStatus, Role } from "@/types/enums";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -108,6 +108,10 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
     if (!findUser)
       return {
         error: "User not found",
+      };
+    if (findUser.status === EUserStatus.INACTIVE)
+      return {
+        error: "Tài khoản của bạn đã bị khóa",
       };
     const userCourses = await Course.find({ author: findUser._id });
     if (userCourses.find((course) => course._id === params.course))
