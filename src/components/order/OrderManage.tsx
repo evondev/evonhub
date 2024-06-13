@@ -95,7 +95,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
         <div className="flex gap-5 items-center">
           <Input
             placeholder="Tìm kiếm đơn hàng"
-            className="w-full lg:w-[300px]"
+            className="w-full lg:w-[300px] h-10"
           />
           <div className="flex justify-end gap-3">
             <button
@@ -196,7 +196,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <button
+                          <span
                             className={cn(actionClassName)}
                             onClick={() =>
                               handleRejectOrder({
@@ -221,7 +221,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                                 d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                               />
                             </svg>
-                          </button>
+                          </span>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Duyệt đơn hàng</p>
@@ -233,12 +233,12 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <button
+                          <span
                             className={cn(actionClassName)}
                             onClick={() => handleCancelOrder(order)}
                           >
                             <IconDelete />
-                          </button>
+                          </span>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>Hủy đơn hàng</p>
