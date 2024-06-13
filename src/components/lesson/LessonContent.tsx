@@ -37,6 +37,9 @@ const LessonContent = ({
                   title={lesson.title}
                   url={lesson.slug}
                   isActive={lesson.slug === slug}
+                  data={{
+                    duration: lesson.duration,
+                  }}
                 ></LessonItem>
               ))}
             </AccordionContent>

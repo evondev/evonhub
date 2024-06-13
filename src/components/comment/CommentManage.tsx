@@ -117,7 +117,7 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
                 </div>
               </TableCell>
               <TableCell>
-                <div className="line-clamp-4 whitespace-nowrap">
+                <div className="line-clamp-4 max-w-[300px]">
                   {comment.content}
                 </div>
               </TableCell>

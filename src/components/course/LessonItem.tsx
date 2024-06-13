@@ -6,6 +6,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { IconPlay } from "../icons";
 import { Checkbox } from "../ui/checkbox";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 const LessonItem = ({
   title,
@@ -21,9 +27,10 @@ const LessonItem = ({
   isCompleted?: boolean;
   path?: string;
   data?: {
-    courseId: string;
-    lessonId: string;
-    userId: string;
+    courseId?: string;
+    lessonId?: string;
+    userId?: string;
+    duration?: number;
   };
 }) => {
   const base = cn(
@@ -46,9 +53,9 @@ const LessonItem = ({
     if (!data) return;
     try {
       await completeLesson({
-        lessonId: data.lessonId,
-        userId: data.userId,
-        courseId: data.courseId,
+        lessonId: data.lessonId || "",
+        userId: data.userId || "",
+        courseId: data.courseId || "",
         path,
       });
     } catch (error) {
@@ -64,15 +71,23 @@ const LessonItem = ({
       />
 
       <IconPlay className="size-5 shrink-0" />
-      <div
-        className={cn(
-          "line-clamp-1",
-          isActive ? "pointer-events-none" : "cursor-pointer"
-        )}
-        onClick={handleChangeLesson}
-      >
-        {title}
-      </div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger
+            className={cn(
+              "flex-1 text-left",
+              isActive ? "pointer-events-none" : "cursor-pointer"
+            )}
+            onClick={handleChangeLesson}
+          >
+            <div className="line-clamp-1">{title}</div>
+          </TooltipTrigger>
+          <TooltipContent>{title}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <span className="ml-auto font-semibold text-xs flex-shrink-0">
+        {data?.duration} phút
+      </span>
     </>
   );
 

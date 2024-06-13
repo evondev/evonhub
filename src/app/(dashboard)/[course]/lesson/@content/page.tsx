@@ -90,6 +90,7 @@ const page = async ({
                         courseId: courseId.toString(),
                         lessonId: lesson._id.toString(),
                         userId: mongoUser?._id.toString(),
+                        duration: lesson.duration,
                       }}
                     ></LessonItem>
                   );
@@ -134,6 +135,7 @@ const page = async ({
                         courseId: courseId.toString(),
                         lessonId: lesson._id.toString(),
                         userId: mongoUser?._id.toString(),
+                        duration: lesson.duration,
                       }}
                     ></LessonItem>
                   );

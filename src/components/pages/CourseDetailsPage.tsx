@@ -208,7 +208,10 @@ const CourseDetailsPage = ({
                         "
                         >
                           <IconPlay />
-                          {lesson.title}
+                          <div className="line-clamp-1">{lesson.title}</div>
+                          <span className="ml-auto font-semibold text-xs flex-shrink-0">
+                            {lesson.duration} phút
+                          </span>
                         </div>
                       ))}
                     </AccordionContent>

@@ -43,6 +43,7 @@ interface IGetLessonContent {
       _id: string;
       title: string;
       slug: string;
+      duration: number;
     }
   ];
 }
@@ -64,7 +65,7 @@ export async function getLessonDetailsContent({
       .populate({
         path: "lessons",
         model: Lesson,
-        select: "_id title slug user course order",
+        select: "_id title slug user course order duration",
         match: { _destroy: false },
         options: {
           sort: { order: 1 },
