@@ -7,7 +7,7 @@ import MuxPlayer from "@mux/mux-player-react";
 import { debounce } from "lodash";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Prism from "prismjs";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 const LessonPlayer = ({
@@ -99,21 +99,34 @@ const LessonPlayer = ({
     if (!nextLesson) return;
     handleChangeLesson(nextLesson);
   }, duration);
+  const [hasEnded, setHasEnded] = useState(false);
 
   return (
     <div className="lg:mb-8">
       <FullScreen handle={handle}>
         <div className="relative group aspect-video lg:mb-5">
           {videoId ? (
-            <MuxPlayer
-              streamType="on-demand"
-              playbackId={videoId}
-              onEnded={() => handleEndedLessson(nextLesson)}
-              className="w-full h-full inline-block align-bottom"
-              ref={videoRef}
-              autoPlay
-              onTimeUpdate={handleTimeUpdate}
-            />
+            <div className="relative">
+              <div
+                className={cn(
+                  "player-bar h-1 absolute top-0 left-0 z-10 w-0",
+                  hasEnded ? "player-bar-animate" : ""
+                )}
+              ></div>
+              <MuxPlayer
+                streamType="on-demand"
+                playbackId={videoId}
+                onEnded={() => {
+                  handleEndedLessson(nextLesson);
+                  setHasEnded(true);
+                }}
+                onPlay={() => setHasEnded(false)}
+                className="w-full h-full inline-block align-bottom"
+                ref={videoRef}
+                autoPlay
+                onTimeUpdate={handleTimeUpdate}
+              />
+            </div>
           ) : (
             <div className="w-full h-full bg-white dark:bg-grayDarker rounded-lg"></div>
           )}

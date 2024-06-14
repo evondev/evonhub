@@ -262,6 +262,11 @@ div[role="dialog"] {
 .scroll-hidden::-webkit-scrollbar {
   display: none;
 }
+
+.player-bar-animate {
+  animation: playerBar 5s linear 1;
+}
+.player-bar,
 #nprogress .bar {
   background: linear-gradient(
     90deg,
@@ -321,6 +326,11 @@ div[role="dialog"] {
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+@keyframes playerBar {
+  to {
+    width: 100%;
   }
 }
 @media screen and (max-width: 767.98px) {
