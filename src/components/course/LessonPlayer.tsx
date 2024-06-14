@@ -94,10 +94,11 @@ const LessonPlayer = ({
     if (typeof window === "undefined") return;
     Prism.highlightAll();
   }, [lessonDetails.content.length]);
-  const handleEndedLess = debounce((nextLesson: string | undefined) => {
+  const duration = 5000;
+  const handleEndedLessson = debounce((nextLesson: string | undefined) => {
     if (!nextLesson) return;
     handleChangeLesson(nextLesson);
-  }, 6000);
+  }, duration);
 
   return (
     <div className="lg:mb-8">
@@ -107,7 +108,7 @@ const LessonPlayer = ({
             <MuxPlayer
               streamType="on-demand"
               playbackId={videoId}
-              onEnded={() => handleEndedLess(nextLesson)}
+              onEnded={() => handleEndedLessson(nextLesson)}
               className="w-full h-full inline-block align-bottom"
               ref={videoRef}
               autoPlay
