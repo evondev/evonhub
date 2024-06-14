@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
 import { formUrlQuery } from "@/utils";
 import MuxPlayer from "@mux/mux-player-react";
+import { debounce } from "lodash";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Prism from "prismjs";
 import { useEffect, useRef } from "react";
@@ -93,6 +94,10 @@ const LessonPlayer = ({
     if (typeof window === "undefined") return;
     Prism.highlightAll();
   }, [lessonDetails.content.length]);
+  const handleEndedLess = debounce((nextLesson: string | undefined) => {
+    if (!nextLesson) return;
+    handleChangeLesson(nextLesson);
+  }, 6000);
 
   return (
     <div className="lg:mb-8">
@@ -102,9 +107,7 @@ const LessonPlayer = ({
             <MuxPlayer
               streamType="on-demand"
               playbackId={videoId}
-              onEnded={() => {
-                handleChangeLesson(nextLesson || "");
-              }}
+              onEnded={() => handleEndedLess(nextLesson)}
               className="w-full h-full inline-block align-bottom"
               ref={videoRef}
               autoPlay
