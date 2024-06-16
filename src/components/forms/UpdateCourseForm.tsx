@@ -23,6 +23,7 @@ import { UploadDropzone } from "@/utils/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -48,6 +49,7 @@ export default function UpdateCourseForm({
   slug: string;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
   const form = useForm<z.infer<typeof updateCourseSchema>>({
     resolver: zodResolver(updateCourseSchema),
     defaultValues: {
@@ -102,6 +104,9 @@ export default function UpdateCourseForm({
         },
         path: `/course/${values.slug || courseSlug}`,
       });
+      if (values.slug) {
+        router.replace(`/admin/course/update?slug=${values.slug}`);
+      }
       if (res?.type === "error") {
         return toast.error(res.message);
       }

@@ -26,8 +26,10 @@ import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import ButtonGradient from "../button/ButtonGradient";
+import { Input } from "../ui/input";
 
 const techStack = [
   "NextJS14",
@@ -68,6 +70,7 @@ const CourseDetailsPage = ({
   lessonCount: number;
 }) => {
   const { userRole, currentUser } = useGlobalStore();
+  const [couponCode, setCouponCode] = useState("");
   const userCourses = currentUser?.courses?.map((item: any) => item._id) || [];
   const router = useRouter();
   const handleEnrollFree = async (slug: string) => {
@@ -94,6 +97,7 @@ const CourseDetailsPage = ({
       course: data._id,
       amount: data.price,
       total: data.price,
+      couponCode,
     });
     if (res?.error) {
       toast.error(res?.error);
@@ -343,6 +347,12 @@ const CourseDetailsPage = ({
               </ButtonGradient>
             </button>
           )}
+          <Input
+            placeholder="Coupon is coming soon"
+            className="mt-5 focus:shadow-none"
+            // onChange={(e) => setCouponCode(e.target.value)}
+            disabled
+          />
           <div className="text-center mt-5 text-sm">
             Bạn chưa biết cách mua khóa học?{" "}
             <Link

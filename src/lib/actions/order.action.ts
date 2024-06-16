@@ -1,4 +1,5 @@
 "use server";
+import Coupon from "@/database/coupon.model";
 import Course from "@/database/course.model";
 import Order from "@/database/order.model";
 import User from "@/database/user.model";
@@ -14,6 +15,7 @@ interface CreateOrderParams {
   discount?: number;
   total: number;
   status: EOrderStatus;
+  couponCode?: string;
 }
 export async function createOrder(params: CreateOrderParams) {
   try {
@@ -118,8 +120,15 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
       return {
         error: "Bạn đã sở hữu khóa học này rồi",
       };
+    let discount = 0;
+    if (params.couponCode) {
+      const findCoupon = await Coupon.findOne({ code: params.couponCode });
+      if (findCoupon?.course !== params.course) discount = 0;
+      discount = findCoupon?.amount || 0;
+    }
     const newOrder = new Order({
       ...params,
+      discount,
       code: `DH${new Date().getTime().toString().slice(-8)}`,
     });
     await newOrder.save();
