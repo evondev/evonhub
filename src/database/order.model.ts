@@ -11,6 +11,7 @@ export interface IOrder extends Document {
   amount: number;
   discount: number;
   total: number;
+  couponCode: string;
   _destroy: boolean;
 }
 const orderSchema = new Schema<IOrder>({
@@ -46,6 +47,9 @@ const orderSchema = new Schema<IOrder>({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  couponCode: {
+    type: String,
   },
   _destroy: {
     type: Boolean,

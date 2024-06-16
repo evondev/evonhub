@@ -139,134 +139,145 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {allOrders.map((order: any) => (
-            <TableRow key={order._id} className="font-medium">
-              <TableCell>
-                <Checkbox />
-              </TableCell>
-              <TableCell className="font-bold text-nowrap">
-                {order.code}
-              </TableCell>
-              <TableCell>
-                <div className="w-[300px]">
-                  <div className="">{order?.course?.title}</div>
-                </div>
-              </TableCell>
-              <TableCell>
-                <div className="font-semibold">{order.user?.username}</div>
-                <div className="text-xs text-slate-400">
-                  {order.user?.email}
-                </div>
-              </TableCell>
-              <TableCell>
-                <span
-                  className={cn(
-                    orderStatus[order.status as EOrderStatus]?.className,
-                    "py-1 px-2 rounded-full font-semibold"
-                  )}
-                >
-                  {orderStatus[order.status as EOrderStatus]?.text}
-                </span>
-              </TableCell>
-              <TableCell>
-                <div className="flex flex-col gap-2">
-                  {order.amount > 0 && (
-                    <p className="font-bold">
-                      {formatThoundsand(order.amount)}
-                    </p>
-                  )}
-                  {order.discount > 0 && (
-                    <p className="font-bold">
-                      <span className="line-through text-slate-500">
-                        {formatThoundsand(order.discount)}
+          {allOrders.length > 0 &&
+            allOrders.map((order: any) => (
+              <TableRow key={order._id} className="font-medium">
+                <TableCell>
+                  <Checkbox />
+                </TableCell>
+                <TableCell className="font-bold text-nowrap">
+                  {order.code}
+                </TableCell>
+                <TableCell>
+                  <div className="w-[300px]">
+                    <div className="">{order?.course?.title}</div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="font-semibold">{order.user?.username}</div>
+                  <div className="text-xs text-slate-400">
+                    {order.user?.email}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <span
+                    className={cn(
+                      orderStatus[order.status as EOrderStatus]?.className,
+                      "py-1 px-2 rounded-full font-semibold"
+                    )}
+                  >
+                    {orderStatus[order.status as EOrderStatus]?.text}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex gap-3">
+                      {order.amount > 0 && (
+                        <p className="font-bold">
+                          {formatThoundsand(order.amount)}
+                        </p>
+                      )}
+                      {order.discount > 0 && (
+                        <p className="font-bold">
+                          <span className="line-through text-slate-500">
+                            {formatThoundsand(order.discount)}
+                          </span>
+                        </p>
+                      )}
+                    </div>
+                    {order.couponCode && (
+                      <div>
+                        Coupon:{" "}
+                        <strong className="text-primary">
+                          {order.couponCode}
+                        </strong>
+                      </div>
+                    )}
+                    {order.total <= 0 ? (
+                      <span
+                        className={cn(
+                          orderStatus[EOrderStatus.APPROVED]?.className,
+                          "py-1 px-2 rounded-full font-semibold inline-block w-fit"
+                        )}
+                      >
+                        Miễn phí
                       </span>
-                    </p>
-                  )}
-                  {order.total <= 0 ? (
-                    <span
-                      className={cn(
-                        orderStatus[EOrderStatus.APPROVED]?.className,
-                        "py-1 px-2 rounded-full font-semibold inline-block w-fit"
-                      )}
-                    >
-                      Miễn phí
-                    </span>
-                  ) : (
-                    <p
-                      className={cn(
-                        "font-bold",
-                        order.status === EOrderStatus.APPROVED
-                          ? "text-green-500"
-                          : "text-orange-500"
-                      )}
-                    >
-                      {order.status === EOrderStatus.APPROVED && "+"}
-                      {formatThoundsand(order.total)}
-                    </p>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell>{formatDate(order.createdAt)}</TableCell>
-              <TableCell>
-                <div className="flex items-center gap-4 justify-end text-gray-400 dark:text-white">
-                  {order.status === EOrderStatus.PENDING && (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <span
-                            className={cn(actionClassName)}
-                            onClick={() =>
-                              handleRejectOrder({
-                                user: order.user?._id,
-                                course: order?.course?._id,
-                                status: EOrderStatus.APPROVED,
-                                code: order.code,
-                              })
-                            }
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
+                    ) : (
+                      <p
+                        className={cn(
+                          "font-bold",
+                          order.status === EOrderStatus.APPROVED
+                            ? "text-green-500"
+                            : "text-orange-500"
+                        )}
+                      >
+                        {order.status === EOrderStatus.APPROVED && "+"}
+                        {formatThoundsand(order.total)}
+                      </p>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>{formatDate(order.createdAt)}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-4 justify-end text-gray-400 dark:text-white">
+                    {order.status === EOrderStatus.PENDING && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <span
+                              className={cn(actionClassName)}
+                              onClick={() =>
+                                handleRejectOrder({
+                                  user: order.user?._id,
+                                  course: order?.course?._id,
+                                  status: EOrderStatus.APPROVED,
+                                  code: order.code,
+                                })
+                              }
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                          </span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Duyệt đơn hàng</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {order.status !== EOrderStatus.REJECTED && (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <span
-                            className={cn(actionClassName)}
-                            onClick={() => handleCancelOrder(order)}
-                          >
-                            <IconDelete />
-                          </span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Hủy đơn hàng</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Duyệt đơn hàng</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                    {order.status !== EOrderStatus.REJECTED && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <span
+                              className={cn(actionClassName)}
+                              onClick={() => handleCancelOrder(order)}
+                            >
+                              <IconDelete />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Hủy đơn hàng</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </>
