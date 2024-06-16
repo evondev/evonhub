@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/accordion";
 import { boxDetailClassName, courseLevel, widgetClassName } from "@/constants";
 import { ICourse } from "@/database/course.model";
+import { getCouponInfo } from "@/lib/actions/coupon.action";
 import { getFreeCourse } from "@/lib/actions/course.action";
 import { userBuyCourse } from "@/lib/actions/order.action";
 import { useGlobalStore } from "@/store";
@@ -29,7 +30,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import ButtonGradient from "../button/ButtonGradient";
-import { Input } from "../ui/input";
 
 const techStack = [
   "NextJS14",
@@ -71,6 +71,7 @@ const CourseDetailsPage = ({
 }) => {
   const { userRole, currentUser } = useGlobalStore();
   const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(0);
   const userCourses = currentUser?.courses?.map((item: any) => item._id) || [];
   const router = useRouter();
   const handleEnrollFree = async (slug: string) => {
@@ -96,7 +97,8 @@ const CourseDetailsPage = ({
       user: currentUser?._id,
       course: data._id,
       amount: data.price,
-      total: data.price,
+      total: data.price - discount,
+      discount,
       couponCode,
     });
     if (res?.error) {
@@ -104,6 +106,23 @@ const CourseDetailsPage = ({
       return;
     }
     router.push(`/order/${res?.order.code}`);
+  };
+  const handleApplyCoupon = async () => {
+    try {
+      const couponDetails = await getCouponInfo(couponCode);
+      if (
+        couponDetails?.amount &&
+        couponDetails?.course === data._id &&
+        couponDetails?.limit >= couponDetails?.used
+      ) {
+        setDiscount(couponDetails.amount);
+        toast.success("Áp dụng mã giảm giá thành công");
+      } else {
+        toast.error("Mã giảm giá không hợp lệ");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   if (!data) return <PageNotFound />;
   if (
@@ -261,7 +280,7 @@ const CourseDetailsPage = ({
               ) : (
                 <>
                   <strong className="text-lg lg:text-xl text-secondary">
-                    {formatThoundsand(data.price)} VNĐ
+                    {formatThoundsand(data.price - discount)} VNĐ
                   </strong>
                   <span className="text-sm line-through text-slate-400">
                     {formatThoundsand(data.salePrice)} VNĐ
@@ -347,12 +366,21 @@ const CourseDetailsPage = ({
               </ButtonGradient>
             </button>
           )}
-          <Input
-            placeholder="Coupon is coming soon"
-            className="mt-5 focus:shadow-none"
-            // onChange={(e) => setCouponCode(e.target.value)}
-            disabled
-          />
+          <div className="relative h-12 rounded-lg borderDarkMode flex items-center gap-5 p-2 mt-5 justify-between has-[input:focus]:border-primary transition-all">
+            <input
+              placeholder="Nhập mã giảm giá"
+              className="outline-none border-none bg-transparent text-sm uppercase font-bold pr-2 w-full placeholder:font-medium"
+              onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+              value={couponCode}
+            />
+            <button
+              className="text-xs font-semibold bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white rounded px-3 h-full flex-shrink-0"
+              onClick={handleApplyCoupon}
+              disabled={!couponCode}
+            >
+              Áp dụng
+            </button>
+          </div>
           <div className="text-center mt-5 text-sm">
             Bạn chưa biết cách mua khóa học?{" "}
             <Link
