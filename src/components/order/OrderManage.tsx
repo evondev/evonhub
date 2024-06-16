@@ -88,6 +88,14 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
       }
     });
   };
+  const handleFilter = (filter: string) => {
+    const newUrl = formUrlQuery({
+      params: searchParams?.toString() || "",
+      key: "search",
+      value: filter,
+    });
+    router.push(newUrl);
+  };
   return (
     <>
       <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
@@ -96,6 +104,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
           <Input
             placeholder="Tìm kiếm đơn hàng"
             className="w-full lg:w-[300px] h-10"
+            onChange={(e) => handleFilter(e.target.value)}
           />
           <div className="flex justify-end gap-3">
             <button
@@ -160,19 +169,19 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                 </span>
               </TableCell>
               <TableCell>
-                <div className="flex flex-col gap-2 font-medium">
-                  <div className="flex gap-2 items-end">
-                    {order.amount > 0 && (
-                      <p className="font-medium">
-                        {formatThoundsand(order.amount)}
-                      </p>
-                    )}
-                    {order.discount > 0 && (
+                <div className="flex flex-col gap-2">
+                  {order.amount > 0 && (
+                    <p className="font-bold">
+                      {formatThoundsand(order.amount)}
+                    </p>
+                  )}
+                  {order.discount > 0 && (
+                    <p className="font-bold">
                       <span className="line-through text-slate-500">
                         {formatThoundsand(order.discount)}
                       </span>
-                    )}
-                  </div>
+                    </p>
+                  )}
                   {order.total <= 0 ? (
                     <span
                       className={cn(
@@ -183,7 +192,15 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                       Miễn phí
                     </span>
                   ) : (
-                    <p className="text-secondary text-base font-bold">
+                    <p
+                      className={cn(
+                        "font-bold",
+                        order.status === EOrderStatus.APPROVED
+                          ? "text-green-500"
+                          : "text-orange-500"
+                      )}
+                    >
+                      {order.status === EOrderStatus.APPROVED && "+"}
                       {formatThoundsand(order.total)}
                     </p>
                   )}
@@ -191,7 +208,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
               </TableCell>
               <TableCell>{formatDate(order.createdAt)}</TableCell>
               <TableCell>
-                <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
+                <div className="flex items-center gap-4 justify-end text-gray-400 dark:text-white">
                   {order.status === EOrderStatus.PENDING && (
                     <TooltipProvider>
                       <Tooltip>

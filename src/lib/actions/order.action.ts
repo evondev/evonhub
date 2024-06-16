@@ -120,15 +120,20 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
       return {
         error: "Bạn đã sở hữu khóa học này rồi",
       };
-    let discount = 0;
+    // let discount = 0;
+    console.log(params);
     if (params.couponCode) {
-      const findCoupon = await Coupon.findOne({ code: params.couponCode });
-      if (findCoupon?.course !== params.course) discount = 0;
-      discount = findCoupon?.amount || 0;
+      // const findCoupon = await Coupon.findOne({ code: params.couponCode });
+      await Coupon.findOneAndUpdate(
+        { code: params.couponCode.toUpperCase() },
+        { $inc: { used: 1 } }
+      );
+
+      // if (findCoupon?.course !== params.course) discount = 0;
+      // discount = findCoupon?.amount || 0;
     }
     const newOrder = new Order({
       ...params,
-      discount,
       code: `DH${new Date().getTime().toString().slice(-8)}`,
     });
     await newOrder.save();
