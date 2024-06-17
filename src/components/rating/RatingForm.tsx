@@ -110,7 +110,7 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
                       >
                         <span
                           className={cn(
-                            "size-12 p-2 rounded-full flex items-center justify-center text-sm",
+                            "size-10 p-2 rounded-full flex items-center justify-center text-sm",
                             rating === reaction.rating
                               ? "bg-[#FEE272]"
                               : "bg-gray-200 dark:bg-gray-100 dark:bg-opacity-10"

@@ -366,7 +366,7 @@ const CourseDetailsPage = ({
               </ButtonGradient>
             </button>
           )}
-          <div className="relative h-12 rounded-lg borderDarkMode flex items-center gap-5 p-2 mt-5 justify-between has-[input:focus]:border-primary transition-all">
+          <div className="relative h-10 rounded-lg borderDarkMode flex items-center gap-5 p-2 mt-5 justify-between has-[input:focus]:border-primary transition-all">
             <input
               placeholder="Nhập mã giảm giá"
               className="outline-none border-none bg-transparent text-sm uppercase font-bold pr-2 w-full placeholder:font-medium"

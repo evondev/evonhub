@@ -168,7 +168,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
               valueIsNumericString
               thousandSeparator
               className={cn(
-                "flex h-12 file:border-0 file:bg-transparent file:text-sm file:font-medium   focus-primary form-styles w-40"
+                "flex h-10 file:border-0 file:bg-transparent file:text-sm file:font-medium   focus-primary form-styles w-40"
               )}
               defaultValue={discount as any}
               onChange={(e) => setDiscount(e.target.value)}
@@ -177,7 +177,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
           <Button
             type="button"
             className={
-              "size-12 rounded flex items-center justify-center bg-primary text-white p-1 flex-shrink-0"
+              "size-10 rounded flex items-center justify-center bg-primary text-white p-1 flex-shrink-0"
             }
             onClick={handleAddCourseToUser}
             isLoading={isSubmitting}

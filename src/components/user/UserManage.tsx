@@ -182,7 +182,7 @@ const UserManage = ({
                     alt={item.username}
                     width={64}
                     height={64}
-                    className="w-12 h-12 object-cover rounded-full flex-shrink-0"
+                    className="size-10 object-cover rounded-full flex-shrink-0"
                   />
                   <div>
                     <h4 className="font-bold text-sm lg:text-base line-clamp-2 whitespace-nowrap max-w-[400px] block">

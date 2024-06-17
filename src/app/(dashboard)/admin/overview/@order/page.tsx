@@ -1,3 +1,4 @@
+import LabelStatus from "@/components/common/LabelStatus";
 import {
   Table,
   TableBody,
@@ -38,25 +39,24 @@ const page = async () => {
                 <TableRow key={order._id} className="font-medium">
                   <TableCell className="font-bold">{order.code}</TableCell>
                   <TableCell>
-                    <div className="max-w-[200px]">
+                    <div className="max-w-[300px] font-bold">
                       <div className="line-clamp-1">{order.course.title}</div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="font-semibold">{order.user?.username}</div>
+                    <div className="font-medium">{order.user?.username}</div>
                     <div className="text-xs text-slate-400">
                       {order.user?.email}
                     </div>
                   </TableCell>
                   <TableCell>
-                    <span
+                    <LabelStatus
                       className={cn(
-                        orderStatus[order.status as EOrderStatus]?.className,
-                        "py-1 px-2 rounded-full text-xs font-semibold"
+                        orderStatus[order.status as EOrderStatus]?.className
                       )}
                     >
                       {orderStatus[order.status as EOrderStatus]?.text}
-                    </span>
+                    </LabelStatus>
                   </TableCell>
                   <TableCell>{formatDate(order.createdAt)}</TableCell>
                 </TableRow>
