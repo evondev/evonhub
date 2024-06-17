@@ -71,7 +71,7 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
     }
   };
   return (
-    <>
+    <div className="hidden lg:block">
       <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
         <h1 className="text-2xl lg:text-3xl font-bold">Quản lý thảo luận</h1>
         <Input
@@ -116,11 +116,7 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
                   </span>
                 </div>
               </TableCell>
-              <TableCell>
-                <div className="line-clamp-4 max-w-[300px]">
-                  {comment.content}
-                </div>
-              </TableCell>
+              <TableCell>{comment.content}</TableCell>
               <TableCell className="whitespace-nowrap">
                 <h4 className="font-bold">{comment.course?.title}</h4>
                 <Link
@@ -176,7 +172,7 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
           ))}
         </TableBody>
       </Table>
-    </>
+    </div>
   );
 };
 

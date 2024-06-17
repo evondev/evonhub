@@ -1,5 +1,5 @@
 "use client";
-import { IconDelete, IconEdit, IconEye } from "@/components/icons";
+import { IconDelete, IconEdit, IconEye, IconStudy } from "@/components/icons";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
@@ -12,9 +12,7 @@ import {
 import {
   actionClassName,
   courseStatus,
-  courseStatusClassName,
   primaryButtonClassName,
-  reactions,
 } from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { deleteCourse } from "@/lib/actions/course.action";
@@ -25,6 +23,7 @@ import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import LabelStatus from "../common/LabelStatus";
 
 const CourseManage = ({ courses }: { courses: ICourse[] }) => {
   const { permissions, userRole } = useGlobalStore();
@@ -60,7 +59,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
             <TableHead>Thông tin</TableHead>
             <TableHead>Giá khóa học</TableHead>
             <TableHead>Trạng thái</TableHead>
-            <TableHead>Hành động</TableHead>
+            <TableHead className="text-center">Hành động</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -72,11 +71,6 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
             </TableRow>
           )}
           {courses.map((course) => {
-            const rating =
-              course.rating.reduce((a, b) => a + b, 0) / course.rating.length;
-            const reaction = reactions.find(
-              (r) => r.rating === (Math.ceil(rating) as any)
-            );
             return (
               <TableRow key={course.slug}>
                 <TableCell>
@@ -93,48 +87,22 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                     />
                     <div>
                       <div className="flex items-start gap-2">
-                        <Link
-                          href={`/admin/course/content?slug=${course.slug}`}
-                          className="font-bold text-sm lg:text-base line-clamp-2 w-[400px] block"
-                        >
+                        <div className="font-bold line-clamp-2 w-[400px] block text-sm">
                           {course.title}
-                        </Link>
+                        </div>
                       </div>
-                      <p className="text-sm text-gray-400">
+                      <p className="font-semibold text-gray-400">
+                        Ngày tạo:{" "}
                         {new Date(course.createdAt).toLocaleDateString("vi-VN")}
                       </p>
                     </div>
                   </div>
                 </TableCell>
-                {/* <TableCell>
-                  <div className="flex flex-col items-center gap-1">
-                    <Image
-                      src={reaction?.icon || ""}
-                      alt=""
-                      width={20}
-                      height={20}
-                      className="mx-auto"
-                    />
-                    <p className="font-semibold text-inherit">
-                      {reaction?.value}
-                    </p>
-                    <p className="font-medium text-gray-400">
-                      {course.rating.length} đánh giá
-                    </p>
-                  </div>
-                </TableCell> */}
                 <TableCell>
                   {course.free ? (
-                    <>
-                      <span
-                        className={cn(
-                          courseStatusClassName,
-                          courseStatus.approved.className
-                        )}
-                      >
-                        Miễn phí
-                      </span>
-                    </>
+                    <LabelStatus className={courseStatus.approved.className}>
+                      Miễn phí
+                    </LabelStatus>
                   ) : (
                     <p className="font-semibold whitespace-nowrap text-primary">
                       {formatThoundsand(course.price)} VNĐ
@@ -142,17 +110,21 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                   )}
                 </TableCell>
                 <TableCell>
-                  <span
-                    className={cn(
-                      courseStatusClassName,
-                      courseStatus[course.status].className
-                    )}
+                  <LabelStatus
+                    className={courseStatus[course.status].className}
                   >
                     {courseStatus[course.status].text}
-                  </span>
+                  </LabelStatus>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
+                    <Link
+                      href={`/admin/course/content?slug=${course.slug}`}
+                      target="_blank"
+                      className={cn(actionClassName)}
+                    >
+                      <IconStudy></IconStudy>
+                    </Link>
                     <Link
                       href={`/course/${course.slug}`}
                       target="_blank"

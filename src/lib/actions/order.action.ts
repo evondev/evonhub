@@ -42,10 +42,7 @@ export async function updateOrder(params: UpdateOrderParams) {
       code: params.code,
     });
     if (findOrder?.status === EOrderStatus.REJECTED) return;
-    await Order.updateOne(
-      { user: params.user, course: params.course },
-      { status: params.status }
-    );
+    await Order.updateOne({ code: params.code }, { status: params.status });
 
     if (params.status === EOrderStatus.APPROVED) {
       // add course to user

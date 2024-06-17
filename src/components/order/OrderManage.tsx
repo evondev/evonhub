@@ -23,6 +23,7 @@ import { formUrlQuery, formatDate, formatThoundsand } from "@/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import LabelStatus from "../common/LabelStatus";
 import { IconDelete } from "../icons";
 import {
   Tooltip,
@@ -150,48 +151,30 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                 </TableCell>
                 <TableCell>
                   <div className="w-[300px]">
-                    <div className="">{order?.course?.title}</div>
+                    <div className="font-bold">{order?.course?.title}</div>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="font-semibold">{order.user?.username}</div>
+                  <div className="">{order.user?.username}</div>
                   <div className="text-xs text-slate-400">
                     {order.user?.email}
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span
-                    className={cn(
-                      orderStatus[order.status as EOrderStatus]?.className,
-                      "py-1 px-2 rounded-full font-semibold"
-                    )}
+                  <LabelStatus
+                    className={
+                      orderStatus[order.status as EOrderStatus]?.className
+                    }
                   >
                     {orderStatus[order.status as EOrderStatus]?.text}
-                  </span>
+                  </LabelStatus>
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-2">
-                    <div className="flex gap-3">
-                      {order.amount > 0 && (
-                        <p className="font-bold">
-                          {formatThoundsand(order.amount)}
-                        </p>
-                      )}
-                      {order.discount > 0 && (
-                        <p className="font-bold">
-                          <span className="line-through text-slate-500">
-                            {formatThoundsand(order.discount)}
-                          </span>
-                        </p>
-                      )}
-                    </div>
-                    {order.couponCode && (
-                      <div>
-                        Coupon:{" "}
-                        <strong className="text-primary">
-                          {order.couponCode}
-                        </strong>
-                      </div>
+                    {order.amount > 0 && (
+                      <p className="font-medium">
+                        {formatThoundsand(order.amount)}
+                      </p>
                     )}
                     {order.total <= 0 ? (
                       <span

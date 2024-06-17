@@ -1,5 +1,5 @@
 "use client";
-import { IconDelete, IconEdit, IconStar, IconStudy } from "@/components/icons";
+import { IconDelete, IconEdit, IconStar } from "@/components/icons";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
@@ -13,7 +13,6 @@ import {
   ArrowLeft,
   ArrowRight,
   actionClassName,
-  courseStatusClassName,
   pagiBtn,
   userStatus,
 } from "@/constants";
@@ -28,6 +27,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import LabelStatus from "../common/LabelStatus";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 interface IUserManageProps {
@@ -125,7 +125,7 @@ const UserManage = ({
           onChange={debounce((e) => handleFilter(e.target.value), 300)}
         />
       </div>
-      <div className="mb-2 flex items-center justify-between px-4 py-2 bg-white rounded-lg dark:bg-grayDarker">
+      <div className="mb-2 flex items-center justify-between px-4 py-2 bgDarkMode borderDarkMode rounded-lg">
         <div className="flex items-center gap-3 text-sm font-medium">
           <Checkbox
             defaultChecked={isPaidUser}
@@ -166,7 +166,7 @@ const UserManage = ({
         </TableHeader>
         <TableBody>
           {users.map((item) => (
-            <TableRow key={item.username}>
+            <TableRow key={item.username} className="break-all">
               <TableCell className="star">
                 <Checkbox />
               </TableCell>
@@ -185,7 +185,7 @@ const UserManage = ({
                     className="w-12 h-12 object-cover rounded-full flex-shrink-0"
                   />
                   <div>
-                    <h4 className="font-bold text-base line-clamp-2 whitespace-nowrap max-w-[400px] block">
+                    <h4 className="font-bold text-sm lg:text-base line-clamp-2 whitespace-nowrap max-w-[400px] block">
                       {item.name}
                     </h4>
                     <h5>{item.username}</h5>
@@ -197,33 +197,30 @@ const UserManage = ({
                 </div>
               </TableCell>
               <TableCell className="pl-10 lg:pl-4">
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 font-semibold">
                   {item.courses.map((course, index) => (
                     <Link
                       href={`/course/${course.slug}`}
                       key={index}
-                      className="flex items-center gap-1 "
+                      className="flex text-sm items-center gap-1 whitespace-nowrap"
                     >
-                      <IconStudy className="size-4 flex-shrink-0" />
-                      <div className="w-[200px] line-clamp-2">
-                        {course.title}
-                      </div>
+                      {course.title}
                     </Link>
                   ))}
                 </div>
               </TableCell>
               <TableCell>
-                <button
+                <LabelStatus
                   className={cn(
-                    courseStatusClassName,
-                    userStatus[item.status]?.className
+                    userStatus[item.status]?.className,
+                    "cursor-pointer"
                   )}
                   onClick={() =>
                     handleChangeUserStatus(item.clerkId, item.status)
                   }
                 >
                   {userStatus[item.status]?.text}
-                </button>
+                </LabelStatus>
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
