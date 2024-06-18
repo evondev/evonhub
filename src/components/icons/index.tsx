@@ -1,6 +1,7 @@
 export { default as IconCategory } from "./IconCategory";
 export { default as IconClock } from "./IconClock";
 export { default as IconComment } from "./IconComment";
+export { default as IconCoupon } from "./IconCoupon";
 export { default as IconCourseManage } from "./IconCourseManage";
 export { default as IconCube } from "./IconCube";
 export { default as IconDashboard } from "./IconDashboard";

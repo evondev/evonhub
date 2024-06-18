@@ -96,6 +96,9 @@ export async function POST(req: Request) {
     const deletedUser = await deleteUser({ clerkId: id! });
     return NextResponse.json({ message: "OK", user: deletedUser });
   }
+  if (eventType === "session.created") {
+    const { user_id } = evt.data;
+  }
 
   return new Response("", { status: 200 });
 }
