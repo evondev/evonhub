@@ -1,6 +1,7 @@
 "use client";
 
 import { primaryButtonClassName } from "@/constants";
+import { createCoupon } from "@/lib/actions/coupon.action";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
@@ -8,6 +9,8 @@ import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
+import { useImmer } from "use-immer";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
@@ -21,6 +24,13 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 const createCouponSchema = z.object({
   title: z.string(),
   code: z.string(),
@@ -30,8 +40,9 @@ const createCouponSchema = z.object({
   startDate: z.date().optional(),
   endDate: z.date().optional(),
 });
-const CouponCreate = () => {
+const CouponCreate = ({ courses }: { courses: any[] }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedCourses, setSelectedCourses] = useImmer<any[]>([]);
   const router = useRouter();
   const form = useForm<z.infer<typeof createCouponSchema>>({
     resolver: zodResolver(createCouponSchema),
@@ -39,6 +50,9 @@ const CouponCreate = () => {
   });
   async function onSubmit(values: z.infer<typeof createCouponSchema>) {
     setIsSubmitting(true);
+    try {
+      const res = await createCoupon(values);
+    } catch (error) {}
   }
   const [date, setDate] = useState<Date>();
   return (
@@ -79,10 +93,13 @@ const CouponCreate = () => {
                 <FormItem>
                   <FormLabel>Số tiền</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="200.000"
+                    <NumericFormat
+                      valueIsNumericString
+                      thousandSeparator
+                      className={cn(
+                        "flex h-10 file:border-0 file:bg-transparent file:text-sm file:font-medium   focus-primary form-styles w-40"
+                      )}
                       {...field}
-                      type="number"
                       onChange={(e) => field.onChange(parseInt(e.target.value))}
                     />
                   </FormControl>
@@ -182,8 +199,74 @@ const CouponCreate = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Khóa học</FormLabel>
-                  <FormControl></FormControl>
+                  <FormControl>
+                    <Select
+                      onValueChange={(value: any) => {
+                        setSelectedCourses((draft) => {
+                          // filterr if course already exists
+                          if (
+                            !draft.find((course) => course.slug === value.slug)
+                          ) {
+                            draft.push(value);
+                          } else {
+                            draft = draft.filter(
+                              (course) => course.slug !== value.slug
+                            );
+                          }
+                        });
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn khóa học" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {courses.map((course) => (
+                          <SelectItem key={course._id} value={course}>
+                            {course.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
                   <FormMessage />
+                  <div className="flex gap-2 flex-wrap">
+                    {selectedCourses
+                      .filter((item) => item.title)
+                      .map((course) => (
+                        <div
+                          key={course.slug}
+                          className="px-3 py-1 rounded bgDarkMode borderDarkMode font-semibold text-sm flex items-center gap-3"
+                        >
+                          {course.title}
+                          <button
+                            type="button"
+                            className="text-slate-400"
+                            onClick={() =>
+                              setSelectedCourses((draft) => {
+                                draft = draft.filter(
+                                  (item) => item.title !== course.title
+                                );
+                              })
+                            }
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="size-5"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                  </div>
                 </FormItem>
               )}
             />

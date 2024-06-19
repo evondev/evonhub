@@ -112,7 +112,7 @@ const CourseDetailsPage = ({
       const couponDetails = await getCouponInfo(couponCode);
       if (
         couponDetails?.amount &&
-        couponDetails?.course === data._id &&
+        couponDetails?.course?.toString() === data._id.toString() &&
         couponDetails?.limit >= couponDetails?.used
       ) {
         setDiscount(couponDetails.amount);
