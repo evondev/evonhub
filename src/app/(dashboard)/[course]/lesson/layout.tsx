@@ -2,7 +2,6 @@ import PageNotFound from "@/app/not-found";
 import LessonDesktopAside from "@/components/lesson/LessonDesktopAside";
 import LessonLayout from "@/components/lesson/LessonLayout";
 import LessonToggle from "@/components/lesson/LessonToggle";
-import CommentLoadingSkeleton from "@/components/loading/CommentLoadingSkeleton";
 import LessonContentSkeleton from "@/components/loading/LessonContentSkeleton";
 import PlayerLoadingSkeleton from "@/components/loading/PlayerLoadingSkeleton";
 import { getUserById } from "@/lib/actions/user.action";
@@ -45,7 +44,7 @@ const layout = async ({
         >
           {rating}
         </Suspense>
-        <Suspense fallback={<CommentLoadingSkeleton />}>{comment}</Suspense>
+        {/* <Suspense fallback={<CommentLoadingSkeleton />}>{comment}</Suspense> */}
       </div>
       <Suspense fallback={<LessonContentSkeleton />}>
         <LessonToggle></LessonToggle>

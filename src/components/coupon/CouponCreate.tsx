@@ -43,6 +43,7 @@ const createCouponSchema = z.object({
 const CouponCreate = ({ courses }: { courses: any[] }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedCourses, setSelectedCourses] = useImmer<any[]>([]);
+  console.log("CouponCreate ~ selectedCourses:", selectedCourses);
   const router = useRouter();
   const form = useForm<z.infer<typeof createCouponSchema>>({
     resolver: zodResolver(createCouponSchema),
@@ -230,42 +231,40 @@ const CouponCreate = ({ courses }: { courses: any[] }) => {
                   </FormControl>
                   <FormMessage />
                   <div className="flex gap-2 flex-wrap">
-                    {selectedCourses
-                      .filter((item) => item.title)
-                      .map((course) => (
-                        <div
-                          key={course.slug}
-                          className="px-3 py-1 rounded bgDarkMode borderDarkMode font-semibold text-sm flex items-center gap-3"
+                    {selectedCourses.map((course) => (
+                      <div
+                        key={course.slug}
+                        className="px-3 py-1 rounded bgDarkMode borderDarkMode font-semibold text-sm flex items-center gap-3"
+                      >
+                        {course.title}
+                        <button
+                          type="button"
+                          className="text-slate-400"
+                          onClick={() => {
+                            setSelectedCourses((draft) => {
+                              draft = draft.filter(
+                                (item) => item.slug !== course.slug
+                              );
+                            });
+                          }}
                         >
-                          {course.title}
-                          <button
-                            type="button"
-                            className="text-slate-400"
-                            onClick={() =>
-                              setSelectedCourses((draft) => {
-                                draft = draft.filter(
-                                  (item) => item.title !== course.title
-                                );
-                              })
-                            }
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-5"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="size-5"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </FormItem>
               )}
