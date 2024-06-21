@@ -53,6 +53,7 @@ const techStack = [
 const CourseDetailsPage = ({
   data,
   lessonCount,
+  ratings = [],
 }: {
   data: Omit<ICourse, "lecture"> & {
     _id: string;
@@ -68,6 +69,7 @@ const CourseDetailsPage = ({
     }[];
   };
   lessonCount: number;
+  ratings: any[];
 }) => {
   const { userRole, currentUser } = useGlobalStore();
   const [couponCode, setCouponCode] = useState("");
@@ -167,6 +169,31 @@ const CourseDetailsPage = ({
           )}
         </div>
         <h1 className="font-bold text-2xl lg:text-3xl mb-8">{data.title}</h1>
+        {ratings.length > 0 && (
+          <>
+            <div className="flex flex-wrap gap-3 mb-5">
+              {ratings.map((el, index) => (
+                <ButtonGradient
+                  key={el.content}
+                  className={{
+                    wrapper: "rounded-lg",
+                  }}
+                >
+                  <div className="rounded-md px-3 py-1 font-semibold text-sm flex items-center gap-2">
+                    <Image
+                      width={20}
+                      height={20}
+                      src={el.user.avatar}
+                      alt=""
+                      className="border borderDarkMode size-5 p-0.5 object-cover rounded-full"
+                    />
+                    {el.content}
+                  </div>
+                </ButtonGradient>
+              ))}
+            </div>
+          </>
+        )}
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5">
             <h2 className="text-xl font-bold">Mô tả</h2>

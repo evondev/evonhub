@@ -3,6 +3,7 @@ import CourseDetailsPage from "@/components/pages/CourseDetailsPage";
 import { updateCourseViews } from "@/lib/actions/course.action";
 import { getCourseDetailsBySlug } from "@/lib/actions/general.action";
 import { getLessonCount } from "@/lib/actions/lesson.action";
+import { getRatingByCourse } from "@/lib/actions/rating.action";
 import { Metadata, ResolvingMetadata } from "next";
 export const maxDuration = 60;
 
@@ -37,10 +38,12 @@ const page = async ({ params }: Props) => {
   const courseDetails = await getCourseDetailsBySlug(slug);
   if (!courseDetails) return <PageNotFound />;
   const lessonCount = await getLessonCount(courseDetails._id);
+  const ratings = await getRatingByCourse(courseDetails._id);
   return (
     <CourseDetailsPage
       data={JSON.parse(JSON.stringify(courseDetails))}
       lessonCount={lessonCount || 0}
+      ratings={JSON.parse(JSON.stringify(ratings)) || []}
     ></CourseDetailsPage>
   );
 };

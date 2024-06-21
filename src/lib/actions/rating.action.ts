@@ -1,6 +1,7 @@
 "use server";
 import Course from "@/database/course.model";
 import Rating from "@/database/rating.model";
+import { ERatingStatus } from "@/types/enums";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
@@ -31,6 +32,18 @@ export default async function createRating(params: {
     findCourse.rating.push(params.rate);
     findCourse.save();
     revalidatePath(params.path);
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function getRatingByCourse(courseId: string) {
+  try {
+    connectToDatabase();
+    const ratings = await Rating.find({
+      course: courseId,
+      status: ERatingStatus.ACTIVE,
+    }).populate("user", "name avatar");
+    return ratings;
   } catch (error) {
     console.log(error);
   }
