@@ -9,6 +9,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Prism from "prismjs";
 import { useEffect, useRef, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import RatingForm from "../rating/RatingForm";
 
 const LessonPlayer = ({
   lessonDetails,
@@ -21,6 +22,7 @@ const LessonPlayer = ({
     content: string;
     slug: string;
     course: string;
+    courseId: string;
   };
   videoId: string;
   nextLesson?: string;
@@ -128,7 +130,7 @@ const LessonPlayer = ({
               />
             </div>
           ) : (
-            <div className="w-full h-full bg-white dark:bg-grayDarker rounded-lg"></div>
+            <div className="w-full h-full lg:border borderDarkMode lg:rounded-lg bgDarkMode"></div>
           )}
 
           {prevLesson && (
@@ -168,6 +170,7 @@ const LessonPlayer = ({
           <IconFullscreen />
           Toàn màn hình
         </button>
+        <RatingForm courseId={lessonDetails.courseId}></RatingForm>
       </div>
       <div className="p-3 lg:p-0">
         <h1 className="font-extrabold text-xl lg:text-2xl lg:mb-10">

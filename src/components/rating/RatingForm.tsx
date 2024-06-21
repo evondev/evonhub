@@ -65,7 +65,7 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
         toast.error(res.message);
         return;
       }
-      toast.success("Đánh giá thành công");
+      toast.success("Cám ơn bạn đã đánh giá khóa học!");
     } catch (error) {
       console.log(error);
     } finally {

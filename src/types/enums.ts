@@ -76,3 +76,7 @@ export enum ECouponStatus {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",
 }
+export enum ERatingStatus {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+}

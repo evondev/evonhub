@@ -27,6 +27,7 @@ const page = async ({
   );
   const nextLesson = lessonList[lessonIndex + 1]?.slug;
   const prevLesson = lessonList[lessonIndex - 1]?.slug;
+
   return (
     <LessonPlayer
       videoId={video}
@@ -35,6 +36,7 @@ const page = async ({
         content,
         slug: searchParams.slug,
         course: course.slug,
+        courseId: course._id.toString(),
       }}
       nextLesson={nextLesson}
       prevLesson={prevLesson}

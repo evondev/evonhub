@@ -14,6 +14,7 @@ export interface ICoupon extends Document {
   createdAt: Date;
   createdBy: Schema.Types.ObjectId;
   status: ECouponStatus;
+  emails: string[];
 }
 const couponSchema = new Schema<ICoupon>({
   title: { type: String, required: true },
@@ -31,6 +32,7 @@ const couponSchema = new Schema<ICoupon>({
     enum: Object.values(ECouponStatus),
     default: ECouponStatus.ACTIVE,
   },
+  emails: [{ type: String }],
 });
 const Coupon = models.Coupon || model("Coupon", couponSchema);
 export default Coupon;

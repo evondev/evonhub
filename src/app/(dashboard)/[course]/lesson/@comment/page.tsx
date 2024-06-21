@@ -15,7 +15,6 @@ const page = async ({
   };
 }) => {
   const lessonDetails = await getLessonBySlug(searchParams.slug, params.course);
-  console.log("lessonDetails:", lessonDetails);
   if (!lessonDetails) return null;
   const comments =
     (await getAllComments({

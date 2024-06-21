@@ -37,13 +37,13 @@ const layout = async ({
     <LessonLayout>
       <div className="lg:overflow-hidden lg:p-2 flex-shrink-0 w-full">
         <Suspense fallback={<PlayerLoadingSkeleton />}>{player}</Suspense>
-        <Suspense
+        {/* <Suspense
           fallback={
             <div className="h-12 skeleton w-[120px] mb-8 ml-auto rounded-lg"></div>
           }
         >
           {rating}
-        </Suspense>
+        </Suspense> */}
         {/* <Suspense fallback={<CommentLoadingSkeleton />}>{comment}</Suspense> */}
       </div>
       <Suspense fallback={<LessonContentSkeleton />}>
