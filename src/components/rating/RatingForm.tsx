@@ -58,7 +58,6 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
         rate: rating,
         content: values.content,
         courseId,
-        userId: currentUser?._id,
         path: `/`,
       });
       if (res?.message) {

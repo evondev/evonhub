@@ -1,12 +1,13 @@
 "use server";
 import Course from "@/database/course.model";
 import Rating from "@/database/rating.model";
+import User from "@/database/user.model";
 import { ERatingStatus } from "@/types/enums";
+import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
 export default async function createRating(params: {
-  userId: string;
   courseId: string;
   rate: number;
   path: string;
@@ -14,15 +15,18 @@ export default async function createRating(params: {
 }) {
   try {
     connectToDatabase();
+    const { userId } = auth();
+    const findUser = await User.findOne({ clerkId: userId });
+    if (!findUser) return;
     const findRating = await Rating.findOne({
-      user: params.userId,
+      user: findUser._id,
       course: params.courseId,
     });
     if (findRating) {
       return { message: "Bạn đã đánh giá khóa học này rồi" };
     }
     const newRating = new Rating({
-      user: params.userId,
+      user: findUser._id,
       course: params.courseId,
       rating: params.rate,
       content: params.content,
