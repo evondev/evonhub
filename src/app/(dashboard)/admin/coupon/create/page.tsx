@@ -9,7 +9,7 @@ const page = async () => {
   return (
     <>
       <CouponCreate
-        courses={JSON.parse(JSON.stringify(allCoures)) || []}
+        courses={allCoures ? JSON.parse(JSON.stringify(allCoures)) : []}
       ></CouponCreate>
     </>
   );
