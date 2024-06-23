@@ -21,7 +21,6 @@ import { ICourse } from "@/database/course.model";
 import { getCouponInfo } from "@/lib/actions/coupon.action";
 import { getFreeCourse } from "@/lib/actions/course.action";
 import { userBuyCourse } from "@/lib/actions/order.action";
-import { useGlobalStore } from "@/store";
 import { ECourseStatus, Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
@@ -54,6 +53,7 @@ const CourseDetailsPage = ({
   data,
   lessonCount,
   ratings = [],
+  user,
 }: {
   data: Omit<ICourse, "lecture"> & {
     _id: string;
@@ -70,14 +70,15 @@ const CourseDetailsPage = ({
   };
   lessonCount: number;
   ratings: any[];
+  user?: any;
 }) => {
-  const { userRole, currentUser } = useGlobalStore();
+  const userRole = user?.role || "";
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
-  const userCourses = currentUser?.courses?.map((item: any) => item._id) || [];
+  const userCourses = user?.courses?.map((item: any) => item._id) || [];
   const router = useRouter();
   const handleEnrollFree = async (slug: string) => {
-    if (!currentUser?._id) {
+    if (!user?._id) {
       router.push("/sign-in");
       return;
     }
@@ -91,12 +92,12 @@ const CourseDetailsPage = ({
     } catch (error) {}
   };
   const handleBuyCourse = async (slug: string) => {
-    if (!currentUser?._id) {
+    if (!user?._id) {
       router.push("/sign-in");
       return;
     }
     const res = await userBuyCourse({
-      user: currentUser?._id,
+      user: user?._id,
       course: data._id,
       amount: data.price,
       total: data.price - discount,
