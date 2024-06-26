@@ -171,20 +171,19 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-2">
-                    {order.amount > 0 && (
+                    {order.amount > 0 && order.total > 0 && (
                       <p className="font-medium">
                         {formatThoundsand(order.amount)}
                       </p>
                     )}
                     {order.total <= 0 ? (
-                      <span
-                        className={cn(
-                          orderStatus[EOrderStatus.APPROVED]?.className,
-                          "py-1 px-2 rounded-full font-semibold inline-block w-fit"
-                        )}
+                      <LabelStatus
+                        className={
+                          orderStatus[EOrderStatus.APPROVED]?.className
+                        }
                       >
                         Miễn phí
-                      </span>
+                      </LabelStatus>
                     ) : (
                       <p
                         className={cn(
