@@ -38,7 +38,7 @@ const Notification = ({ notifications }: { notifications: any[] }) => {
           Thông báo
         </div>
         {notifications?.length > 0 && (
-          <div className="p-3">
+          <div className="p-3  max-h-[300px] overflow-y-auto">
             {notifications.map((el) => (
               <div
                 className="flex items-baseline gap-3 text-sm font-medium pb-3 mb-3 border-b border-b-gray-100 border-dashed dark:border-opacity-10 last:mb-0 last:pb-0 last:border-b-0"
