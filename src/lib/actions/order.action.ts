@@ -4,6 +4,7 @@ import Course from "@/database/course.model";
 import Order from "@/database/order.model";
 import User from "@/database/user.model";
 import { EOrderStatus, EUserStatus, Role } from "@/types/enums";
+import { auth } from "@clerk/nextjs/server";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -36,6 +37,10 @@ interface UpdateOrderParams {
 export async function updateOrder(params: UpdateOrderParams) {
   try {
     connectToDatabase();
+    const { userId } = auth();
+    const user = await User.findOne({ clerkId: userId });
+    if (!user) return;
+    if (![Role.ADMIN, Role.EXPERT].includes(user?.role)) return;
     const findUser = await User.findById(params.user);
     if (!findUser) return;
     const findOrder = await Order.findOne({

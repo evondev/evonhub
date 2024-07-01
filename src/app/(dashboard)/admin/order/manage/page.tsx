@@ -15,7 +15,8 @@ const page = async ({
   const { userId } = auth();
   if (!userId) return null;
   const findUser = await getUserById({ userId });
-  if (!findUser || findUser.role !== Role.ADMIN) return null;
+  if (!findUser || ![Role.ADMIN, Role.EXPERT].includes(findUser.role))
+    return null;
   const allOrders = await getAllOrders({
     userId: findUser._id,
     searchQuery: searchParams?.search,
