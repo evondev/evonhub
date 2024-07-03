@@ -16,11 +16,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { boxDetailClassName, courseLevel, widgetClassName } from "@/constants";
+import {
+  boxDetailClassName,
+  courseLevel,
+  primaryButtonClassName,
+  widgetClassName,
+} from "@/constants";
 import { ICourse } from "@/database/course.model";
 import { getCouponInfo } from "@/lib/actions/coupon.action";
 import { getFreeCourse } from "@/lib/actions/course.action";
 import { userBuyCourse } from "@/lib/actions/order.action";
+import { cn } from "@/lib/utils";
 import { ECourseStatus, Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
@@ -65,6 +71,7 @@ const CourseDetailsPage = ({
         title: string;
         duration: number;
         order: number;
+        slug: string;
       }[];
     }[];
   };
@@ -300,125 +307,124 @@ const CourseDetailsPage = ({
         </div>
       </div>
       <div className="flex flex-col gap-5 sticky top-5 xl:top-[104px] right-0">
-        <div className={widgetClassName}>
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              {data.price === 0 || data.free ? (
-                <strong className="text-xl text-primary">Miễn phí</strong>
-              ) : (
-                <>
-                  <strong className="text-lg lg:text-xl text-secondary">
-                    {formatThoundsand(data.price - discount)} VNĐ
-                  </strong>
-                  <span className="text-sm line-through text-slate-400">
-                    {formatThoundsand(data.salePrice)} VNĐ
-                  </span>
-                </>
-              )}
+        {userCourses?.includes(data._id) ? (
+          <AlreadyEnroll
+            course={data.slug}
+            lesson={data.lecture[0].lessons[0].slug}
+            user={user}
+          />
+        ) : (
+          <div className={widgetClassName}>
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2">
+                {data.price === 0 || data.free ? (
+                  <strong className="text-xl text-primary">Miễn phí</strong>
+                ) : (
+                  <>
+                    <strong className="text-lg lg:text-xl text-secondary">
+                      {formatThoundsand(data.price - discount)} VNĐ
+                    </strong>
+                    <span className="text-sm line-through text-slate-400">
+                      {formatThoundsand(data.salePrice)} VNĐ
+                    </span>
+                  </>
+                )}
+              </div>
+              <span className="inline-block py-1 px-3 rounded-lg bg-secondary bg-opacity-20 text-secondary text-xs font-bold">
+                {data.price === 0 || data.free
+                  ? "-100%"
+                  : `-${
+                      100 - Math.floor((data.price / data.salePrice) * 100)
+                    } %`}
+              </span>
             </div>
-            <span className="inline-block py-1 px-3 rounded-lg bg-secondary bg-opacity-20 text-secondary text-xs font-bold">
-              {data.price === 0 || data.free
-                ? "-100%"
-                : `-${100 - Math.floor((data.price / data.salePrice) * 100)} %`}
-            </span>
-          </div>
-          <h4 className="text-base font-semibold mb-3">Khóa học bao gồm:</h4>
-          <div className="flex flex-col gap-3 text-sm text-slate-600 mb-5">
-            <WidgetItem>
-              <div className="size-5">
-                <IconPlay />
-              </div>
-              <p>{totalHours} giờ học</p>
-            </WidgetItem>
-            <WidgetItem>
-              <div className="size-5">
-                <IconPlay />
-              </div>
-              <p>Video quay Full HD</p>
-            </WidgetItem>
-            <WidgetItem>
-              <div className="size-5">
-                <IconUser />
-              </div>
-              <p>Có nhóm hỗ trợ</p>
-            </WidgetItem>
-            <WidgetItem>
-              <div className="size-5">
-                <IconStudy />
-              </div>
-              <p>Tài liệu kèm theo</p>
-            </WidgetItem>
-          </div>
-          {!userCourses?.includes(data._id) ? (
-            <>
-              {data.free ? (
-                <button
-                  type="button"
-                  onClick={() => handleEnrollFree(data.slug)}
-                  className="w-full"
-                >
-                  <ButtonGradient
-                    className={{
-                      wrapper: "w-full rounded-full",
-                      main: "text-sm",
-                    }}
+            <h4 className="text-base font-semibold mb-3">Khóa học bao gồm:</h4>
+            <div className="flex flex-col gap-3 text-sm text-slate-600 mb-5">
+              <WidgetItem>
+                <div className="size-5">
+                  <IconPlay />
+                </div>
+                <p>{totalHours} giờ học</p>
+              </WidgetItem>
+              <WidgetItem>
+                <div className="size-5">
+                  <IconPlay />
+                </div>
+                <p>Video quay Full HD</p>
+              </WidgetItem>
+              <WidgetItem>
+                <div className="size-5">
+                  <IconUser />
+                </div>
+                <p>Có nhóm hỗ trợ</p>
+              </WidgetItem>
+              <WidgetItem>
+                <div className="size-5">
+                  <IconStudy />
+                </div>
+                <p>Tài liệu kèm theo</p>
+              </WidgetItem>
+            </div>
+            {!userCourses?.includes(data._id) && (
+              <>
+                {data.free ? (
+                  <button
+                    type="button"
+                    onClick={() => handleEnrollFree(data.slug)}
+                    className="w-full"
                   >
-                    Lụm liền
-                  </ButtonGradient>
-                </button>
-              ) : (
-                <button
-                  className="w-full"
-                  onClick={() => handleBuyCourse(data.slug)}
-                >
-                  <ButtonGradient
-                    className={{
-                      wrapper: "w-full rounded-full",
-                      main: "text-sm",
-                    }}
+                    <ButtonGradient
+                      className={{
+                        wrapper: "w-full rounded-full",
+                        main: "text-sm",
+                      }}
+                    >
+                      Lụm liền
+                    </ButtonGradient>
+                  </button>
+                ) : (
+                  <button
+                    className="w-full"
+                    onClick={() => handleBuyCourse(data.slug)}
                   >
-                    {data.cta || "Đăng ký ngay"}
-                  </ButtonGradient>
-                </button>
-              )}
-            </>
-          ) : (
-            <button type="button" className="w-full" disabled>
-              <ButtonGradient
-                className={{
-                  wrapper: "w-full rounded-full",
-                  main: "text-sm",
-                }}
+                    <ButtonGradient
+                      className={{
+                        wrapper: "w-full rounded-full",
+                        main: "text-sm",
+                      }}
+                    >
+                      {data.cta || "Đăng ký ngay"}
+                    </ButtonGradient>
+                  </button>
+                )}
+              </>
+            )}
+            <div className="relative h-10 rounded-lg borderDarkMode flex items-center gap-5 p-2 mt-5 justify-between has-[input:focus]:border-primary transition-all">
+              <input
+                placeholder="Nhập mã giảm giá"
+                className="outline-none border-none bg-transparent text-sm uppercase font-bold pr-2 w-full placeholder:font-medium"
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                value={couponCode}
+              />
+              <button
+                className="text-xs font-semibold bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white rounded px-3 h-full flex-shrink-0"
+                onClick={handleApplyCoupon}
+                disabled={!couponCode}
               >
-                {data.cta || "Đăng ký ngay"}
-              </ButtonGradient>
-            </button>
-          )}
-          <div className="relative h-10 rounded-lg borderDarkMode flex items-center gap-5 p-2 mt-5 justify-between has-[input:focus]:border-primary transition-all">
-            <input
-              placeholder="Nhập mã giảm giá"
-              className="outline-none border-none bg-transparent text-sm uppercase font-bold pr-2 w-full placeholder:font-medium"
-              onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-              value={couponCode}
-            />
-            <button
-              className="text-xs font-semibold bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white rounded px-3 h-full flex-shrink-0"
-              onClick={handleApplyCoupon}
-              disabled={!couponCode}
-            >
-              Áp dụng
-            </button>
+                Áp dụng
+              </button>
+            </div>
+            <div className="text-center mt-5 text-sm">
+              Bạn chưa biết cách mua khóa học?{" "}
+              <Link
+                href="/how-to-buy"
+                className="text-primary underline font-semibold"
+              >
+                Nhấn vào đây nha
+              </Link>
+            </div>
           </div>
-          <div className="text-center mt-5 text-sm">
-            Bạn chưa biết cách mua khóa học?{" "}
-            <Link
-              href="/how-to-buy"
-              className="text-primary underline font-semibold"
-            >
-              Nhấn vào đây nha
-            </Link>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -496,4 +502,69 @@ function IconCheck({}) {
     </svg>
   );
 }
+
+function AlreadyEnroll({
+  course,
+  lesson,
+  user,
+}: {
+  course: string;
+  lesson: string;
+  user: any;
+}) {
+  return (
+    <div className={widgetClassName}>
+      <div className="relative size-20 rounded-full border borderDarkMode mx-auto mb-5">
+        <Image
+          src={user.avatar}
+          alt=""
+          width={80}
+          height={80}
+          className="w-full h-full object-cover rounded-full"
+        />
+        <svg
+          width={15}
+          height={15}
+          viewBox="0 0 15 15"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="size-5 absolute right-0 bottom-0"
+        >
+          <path
+            d="M8.59024 0.644475L9.97913 3.45026C10.1439 3.78929 10.4735 4.03479 10.8619 4.08156L13.981 4.52581C14.9462 4.66609 15.3228 5.83517 14.6284 6.51323L12.3803 8.69941C12.1096 8.96829 11.9801 9.35409 12.0389 9.72819L12.5686 12.8146C12.7334 13.7615 11.7329 14.4863 10.8737 14.0421L8.08412 12.5924C7.74278 12.4171 7.33082 12.4171 6.98948 12.5924L4.21169 14.0304C3.35246 14.4746 2.35198 13.7498 2.51677 12.8029L3.04643 9.72819C3.11705 9.35409 2.98758 8.96829 2.70509 8.69941L0.456967 6.52493C-0.23748 5.84686 0.150939 4.67779 1.10433 4.5375L4.22346 4.09325C4.60011 4.03479 4.92968 3.80098 5.10623 3.46195L6.49513 0.656165C6.91886 -0.208951 8.16651 -0.208951 8.59024 0.644475Z"
+            fill="url(#paint0_linear_693_4755)"
+          />
+          <defs>
+            <linearGradient
+              id="paint0_linear_693_4755"
+              x1="0.103858"
+              y1="7.08658"
+              x2="14.9841"
+              y2="7.08658"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#FFAFA7" />
+              <stop offset={1} stopColor="#FCD2CB" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div>
+        Xin chào <strong>{user.username}</strong>.Bạn đã sở hữu khóa học này
+        rồi. Vui lòng vào{" "}
+        <Link href="/study" className="text-primary font-bold">
+          khu vực học tập
+        </Link>{" "}
+        để học hoặc
+      </div>
+      <Link
+        href={`/${course}/lesson?slug=${lesson}`}
+        className={cn(primaryButtonClassName, "mt-5 w-full")}
+      >
+        Nhấn vào đây
+      </Link>
+    </div>
+  );
+}
+
 export default CourseDetailsPage;

@@ -94,7 +94,7 @@ export async function getCourseDetailsBySlug(
         options: { lean: true },
         populate: {
           path: "lessons",
-          select: "_id title duration order",
+          select: "_id title duration order slug",
           model: Lesson,
           match: { _destroy: false },
           options: { lean: true, sort: { order: 1 } },

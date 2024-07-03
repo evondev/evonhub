@@ -2,7 +2,7 @@ import Skeleton from "@/components/loading/Skeleton";
 
 const loading = () => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,1.2fr)] gap-8 items-start relative">
+    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr),400px] gap-8 items-start relative">
       <div>
         <div className="aspect-video relative mb-8">
           <Skeleton className="w-full h-full rounded-lg" />
