@@ -80,9 +80,7 @@ export async function getAllOrders(params: {
     if (searchQuery) {
       query.$or = [{ code: { $regex: searchQuery, $options: "i" } }];
     }
-    if (findUser?.role === Role.EXPERT) {
-      query.course = { $in: userCourses.map((course) => course._id) };
-    }
+    query.course = { $in: userCourses.map((course) => course._id) };
     const orders = await Order.find(query)
       .limit(params.limit || 500)
       .populate({
