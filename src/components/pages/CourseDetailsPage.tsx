@@ -27,6 +27,7 @@ import { getCouponInfo } from "@/lib/actions/coupon.action";
 import { getFreeCourse } from "@/lib/actions/course.action";
 import { userBuyCourse } from "@/lib/actions/order.action";
 import { cn } from "@/lib/utils";
+import { ECourseStatus, Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -134,12 +135,12 @@ const CourseDetailsPage = ({
     }
   };
   if (!data) return <PageNotFound />;
-  // if (
-  //   data.status !== ECourseStatus.APPROVED &&
-  //   userRole !== Role.ADMIN &&
-  //   userRole !== Role.EXPERT
-  // )
-  //   return <PageNotFound />;
+  if (
+    data.status !== ECourseStatus.APPROVED &&
+    userRole !== Role.ADMIN &&
+    userRole !== Role.EXPERT
+  )
+    return <PageNotFound />;
   const lectures = data?.lecture || [];
   const totalMinutes = lectures.reduce((acc, cur) => {
     return acc + cur.lessons.reduce((acc, cur) => acc + cur.duration, 0);
