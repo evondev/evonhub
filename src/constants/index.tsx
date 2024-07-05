@@ -39,7 +39,7 @@ export const menuLinks: TMenuLink[] = [
     title: "Quản lý khóa học",
     icon: <IconCourseManage></IconCourseManage>,
     url: "/admin/course/manage",
-    isAdmin: true,
+    isExpert: true,
   },
   {
     title: "Quản lý thành viên",
@@ -58,7 +58,7 @@ export const menuLinks: TMenuLink[] = [
     title: "Quản lý đơn hàng",
     icon: <IconOrder></IconOrder>,
     url: "/admin/order/manage",
-    isAdmin: true,
+    isExpert: true,
   },
   {
     title: "Quản lý Coupon",

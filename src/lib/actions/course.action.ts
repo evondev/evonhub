@@ -157,9 +157,9 @@ export async function getAllCourses(
     if (params.status) {
       searchQuery.status = params.status;
     }
-    const courses = await Course.find(searchQuery).select(
-      "title slug image level rating price salePrice views free"
-    );
+    const courses = await Course.find(searchQuery)
+      .select("title slug image level rating price salePrice views free")
+      .sort({ createdAt: -1 });
     return courses;
   } catch (error) {}
 }

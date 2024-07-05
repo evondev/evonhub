@@ -14,7 +14,12 @@ const Navigation = ({ role }: { role: string }) => {
         {menuLinks.map((link) => {
           if (link.isHideMobile || (link.isAuth && role === Role.ADMIN))
             return null;
-          if (link.isAdmin && role !== Role.ADMIN) return null;
+          if (link.isAdmin && ![Role.ADMIN].includes(role as Role)) return null;
+          if (
+            link.isExpert &&
+            ![Role.EXPERT, Role.ADMIN].includes(role as Role)
+          )
+            return null;
           return (
             <li key={link.title}>
               <Link
