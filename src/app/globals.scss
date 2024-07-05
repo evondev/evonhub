@@ -197,6 +197,10 @@ div[role="dialog"] {
   a {
     @apply text-secondary;
   }
+
+  & > div > *:not(pre) code {
+    @apply text-sm font-semibold text-secondary rounded-sm;
+  }
   code {
     @apply text-sm font-medium;
   }
