@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
 import { formUrlQuery } from "@/utils";
 import MuxPlayer from "@mux/mux-player-react";
-import { debounce } from "lodash";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Prism from "prismjs";
 import { useEffect, useRef, useState } from "react";
@@ -36,7 +35,7 @@ const LessonPlayer = ({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const handleChangeLesson = (url: string) => {
+  const handleChangeLesson = (url: string | undefined) => {
     if (!url) return;
     const newUrl = formUrlQuery({
       params: searchParams?.toString() || "",
@@ -97,11 +96,21 @@ const LessonPlayer = ({
     Prism.highlightAll();
   }, [lessonDetails.content.length]);
   const duration = 5000;
-  const handleEndedLessson = debounce((nextLesson: string | undefined) => {
-    if (!nextLesson) return;
-    handleChangeLesson(nextLesson);
-  }, duration);
+  // const handleEndedLessson = debounce((nextLesson: string | undefined) => {
+  //   if (!nextLesson || !hasEnded) return;
+  //   handleChangeLesson(nextLesson);
+  // }, duration);
   const [hasEnded, setHasEnded] = useState(false);
+  useEffect(() => {
+    if (!hasEnded) return;
+    const timer = setTimeout(() => {
+      handleChangeLesson(nextLesson);
+    }, duration);
+    return () => {
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasEnded, nextLesson]);
 
   return (
     <div className="lg:mb-8">
@@ -119,7 +128,6 @@ const LessonPlayer = ({
                 streamType="on-demand"
                 playbackId={videoId}
                 onEnded={() => {
-                  handleEndedLessson(nextLesson);
                   setHasEnded(true);
                 }}
                 onPlay={() => setHasEnded(false)}
