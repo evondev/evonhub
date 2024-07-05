@@ -47,9 +47,10 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
         </div>
         <div className="p-5 flex-1 flex flex-col">
           <div className="flex items-center mb-3 justify-between">
-            <span className="inline-flex py-1 px-3 rounded-md text-xs lg:text-sm font-semibold bg-gray-100 text-gray-500 self-start dark:bg-white dark:bg-opacity-15 dark:text-white dark:text-opacity-80">
+            <span></span>
+            {/* <span className="inline-flex py-1 px-3 rounded-md text-xs lg:text-sm font-semibold bg-gray-100 text-gray-500 self-start dark:bg-white dark:bg-opacity-15 dark:text-white dark:text-opacity-80">
               Frontend
-            </span>
+            </span> */}
             <div className="flex items-center">
               <div className="flex items-center gap-2">
                 <div className="text-sm lg:text-base font-bold text-secondary">
