@@ -29,7 +29,10 @@ const Sidebar = ({ role }: { role: string }) => {
         {menuLinks.map((link) => {
           if (adminRoutes.includes(link.url) && Role.ADMIN !== role)
             return null;
-          if (link.isAdmin && ![Role.ADMIN, Role.EXPERT].includes(role as Role))
+          if (
+            (link.isAdmin || link.isExpert) &&
+            ![Role.ADMIN, Role.EXPERT].includes(role as Role)
+          )
             return null;
           if (link.isAuth && !currentUser?._id) return null;
           return (
