@@ -80,7 +80,7 @@ const LessonItemUpdate = ({
             slugify(lesson.title, {
               lower: true,
               locale: "vi",
-              remove: /[*+~.()'"!:@]/g,
+              remove: /[*+~.()'"!:@,?_]/g,
             }),
           courseId: course.id as any,
         },

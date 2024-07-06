@@ -44,7 +44,7 @@ export const convertSlug = (str: string): string => {
   return slugify(str, {
     lower: true,
     locale: "vi",
-    remove: /[*+~.()'"!:@]/g,
+    remove: /[*+~.()'"!:@,?_]/g,
   });
 };
 interface UrlQueryParams {
