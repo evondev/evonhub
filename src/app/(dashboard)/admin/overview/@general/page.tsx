@@ -3,6 +3,7 @@ import { formatThoundsand } from "@/utils";
 
 const GeneralPage = async () => {
   const data = await countOverview();
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-5">
@@ -13,7 +14,7 @@ const GeneralPage = async () => {
           <BoxItem title="Đơn hàng" count={data?.order}></BoxItem>
           <BoxItem
             title="Thu nhập"
-            count={formatThoundsand(data?.income[0].total) || 0}
+            count={formatThoundsand(data?.income[0]?.total) || 0}
           ></BoxItem>
         </div>
       </div>

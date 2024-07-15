@@ -7,6 +7,7 @@ import Order from "@/database/order.model";
 import User from "@/database/user.model";
 import { CourseParams } from "@/types";
 import { ECourseStatus, EOrderStatus } from "@/types/enums";
+import { auth } from "@clerk/nextjs/server";
 import { connectToDatabase } from "../mongoose";
 
 export async function getUserStudyCourse(
@@ -109,15 +110,24 @@ export async function getCourseDetailsBySlug(
 export async function countOverview() {
   try {
     connectToDatabase();
-    const course = await Course.countDocuments();
-    const user = await User.countDocuments();
+    const { userId } = auth();
+    const findUser = await User.findOne({ clerkId: userId });
+    if (!findUser) return null;
+    const userCourses = await Course.find({ author: findUser?._id });
+
+    const course = userCourses.length;
+    const user = await User.countDocuments({
+      courses: { $in: userCourses.map((course) => course._id) },
+    });
     const order = await Order.countDocuments({
       status: EOrderStatus.APPROVED,
+      course: { $in: userCourses.map((course) => course._id) },
     });
     const income = await Order.aggregate([
       {
         $match: {
           status: EOrderStatus.APPROVED,
+          course: { $in: userCourses.map((course) => course._id) },
         },
       },
       {

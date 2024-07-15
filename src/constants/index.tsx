@@ -23,7 +23,7 @@ export const menuLinks: TMenuLink[] = [
     title: "Overview",
     icon: <IconCube></IconCube>,
     url: "/admin/overview",
-    isAdmin: true,
+    isExpert: true,
   },
   {
     title: "Khám phá",
@@ -65,19 +65,6 @@ export const menuLinks: TMenuLink[] = [
     icon: <IconCoupon></IconCoupon>,
     url: "/admin/coupon/manage",
     isAdmin: true,
-  },
-
-  // {
-  //   title: "Hướng dẫn mua",
-  //   icon: <IconTutorial></IconTutorial>,
-  //   url: "/how-to-buy",
-  //   isHideMobile: true,
-  // },
-  {
-    title: "Khóa học 101",
-    icon: <IconUser></IconUser>,
-    url: "/101",
-    isHideMobile: true,
   },
   {
     title: "Profile",

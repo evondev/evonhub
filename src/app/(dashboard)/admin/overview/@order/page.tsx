@@ -9,13 +9,18 @@ import {
 } from "@/components/ui/table";
 import { orderStatus } from "@/constants";
 import { getAllOrders } from "@/lib/actions/order.action";
+import { getUserById } from "@/lib/actions/user.action";
 import { cn } from "@/lib/utils";
 import { EOrderStatus } from "@/types/enums";
 import { formatDate } from "@/utils";
+import { auth } from "@clerk/nextjs/server";
 
 const page = async () => {
+  const { userId } = auth();
+  if (!userId) return null;
+  const findUser = await getUserById({ userId });
   const allOrders = await getAllOrders({
-    limit: 5,
+    userId: findUser?._id,
   });
 
   return (
