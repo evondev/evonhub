@@ -11,15 +11,11 @@ export const maxDuration = 60;
 
 const layout = async ({
   player,
-  rating,
   content,
-  comment,
   params,
 }: {
   player: React.ReactNode;
-  rating: React.ReactNode;
   content: React.ReactNode;
-  comment: React.ReactNode;
   params: {
     course: string;
   };
@@ -37,14 +33,6 @@ const layout = async ({
     <LessonLayout>
       <div className="lg:overflow-hidden lg:p-2 flex-shrink-0 w-full">
         <Suspense fallback={<PlayerLoadingSkeleton />}>{player}</Suspense>
-        {/* <Suspense
-          fallback={
-            <div className="h-12 skeleton w-[120px] mb-8 ml-auto rounded-lg"></div>
-          }
-        >
-          {rating}
-        </Suspense> */}
-        {/* <Suspense fallback={<CommentLoadingSkeleton />}>{comment}</Suspense> */}
       </div>
       <Suspense fallback={<LessonContentSkeleton />}>
         <LessonToggle></LessonToggle>
