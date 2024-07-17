@@ -11,9 +11,10 @@ const Dashboard = ({
   lessons: any[];
 }) => {
   const handleGetLastUrl = (slug: string) => {
-    const localLessons = JSON.parse(
-      localStorage.getItem("lastCourseLesson") || "[]"
-    );
+    const localLessons =
+      localStorage && localStorage.getItem("lastCourseLesson")
+        ? JSON.parse(localStorage.getItem("lastCourseLesson") || "[]")
+        : [];
     const findCourse = localLessons?.find(
       (item: { course: string; lesson: string }) => item.course === slug
     );
