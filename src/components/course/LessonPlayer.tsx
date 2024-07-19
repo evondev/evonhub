@@ -135,6 +135,7 @@ const LessonPlayer = ({
                 ref={videoRef}
                 autoPlay
                 onTimeUpdate={handleTimeUpdate}
+                minResolution="1080p"
               />
             </div>
           ) : (
