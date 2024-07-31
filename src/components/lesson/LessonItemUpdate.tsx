@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import slugify from "slugify";
@@ -55,7 +55,7 @@ const LessonItemUpdate = ({
   };
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const editorRef = useRef(null);
+  const editorRef = useRef<any>(null);
   const { theme } = useTheme();
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -96,15 +96,15 @@ const LessonItemUpdate = ({
       setIsSubmitting(false);
     }
   }
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const editor = editorRef.current as any;
-      if (editor) {
-        editor.setContent(lesson.content);
-      }
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [lesson.content]);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     const editor = editorRef.current as any;
+  //     if (editor) {
+  //       editor.setContent(lesson.content);
+  //     }
+  //   }, 2000);
+  //   return () => clearTimeout(timer);
+  // }, [lesson.content]);
   return (
     <Form {...form}>
       <form
@@ -188,7 +188,12 @@ const LessonItemUpdate = ({
                 <Editor
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                   // @ts-ignore
-                  onInit={(evt, editor) => (editorRef.current = editor)}
+                  // onInit={(evt, editor) => (editorRef.current = editor)}
+                  onInit={(_evt, editor) => {
+                    (editorRef.current = editor).setContent(
+                      lesson.content || ""
+                    );
+                  }}
                   value={field.value}
                   {...editorOptions(field, theme)}
                 />
