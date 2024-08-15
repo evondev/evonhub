@@ -68,7 +68,9 @@ export async function updateCourse({
       delete updateData.status;
     }
 
-    await Course.findOneAndUpdate({ slug }, updateData);
+    await Course.findOneAndUpdate({ slug: courseSlug }, updateData, {
+      new: true,
+    });
 
     revalidatePath(path || `/admin/course/update?slug=${slug}`);
   } catch (error) {

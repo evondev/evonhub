@@ -112,7 +112,7 @@ export default function UpdateCourseForm({
         },
         path: `/course/${values.slug || courseSlug}`,
       });
-      if (values.slug) {
+      if (values.slug !== data.slug) {
         router.replace(`/admin/course/update?slug=${values.slug}`);
       }
       if (res?.type === "error") {
