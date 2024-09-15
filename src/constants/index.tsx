@@ -287,5 +287,5 @@ export const userPermissions = {
 export type TUserPermission = keyof typeof userPermissions;
 export const adminRoutes = ["/admin/overview", "/admin/user/manage"];
 export const commonPath = {
-  LOGIN: "/log-in",
+  LOGIN: "/sign-in",
 };
