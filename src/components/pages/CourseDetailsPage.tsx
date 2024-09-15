@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/accordion";
 import {
   boxDetailClassName,
+  commonPath,
   courseLevel,
   primaryButtonClassName,
   widgetClassName,
@@ -86,7 +87,7 @@ const CourseDetailsPage = ({
   const router = useRouter();
   const handleEnrollFree = async (slug: string) => {
     if (!user?._id) {
-      router.push("/sign-in");
+      router.push(commonPath.LOGIN);
       return;
     }
     try {
@@ -100,7 +101,7 @@ const CourseDetailsPage = ({
   };
   const handleBuyCourse = async (slug: string) => {
     if (!user?._id) {
-      router.push("/sign-in");
+      router.push(commonPath.LOGIN);
       return;
     }
     const res = await userBuyCourse({

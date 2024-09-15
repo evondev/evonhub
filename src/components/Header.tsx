@@ -1,4 +1,5 @@
 "use client";
+import { commonPath } from "@/constants";
 import { UserButton, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -68,7 +69,7 @@ const Header = ({ notifications }: { notifications: any[] }) => {
           </div>
         ) : (
           <Link
-            href="/sign-in"
+            href={commonPath.LOGIN}
             className="py-3 flex items-center justify-center gap-2 lg:px-5 size-10 lg:w-auto rounded-lg bg-primary text-white font-semibold"
           >
             <span>
