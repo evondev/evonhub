@@ -27,6 +27,9 @@ export const metadata: Metadata = {
       "Nền tảng học lập trình trực tuyến với các khóa học từ cơ bản đến nâng cao về Frontend dành cho người mới bắt đầu và người đã có kinh nghiệm. Được phát triển và xây dựng bởi Evondev.",
     images: ["/seo-cover.jpg"],
   },
+  other: {
+    "google-site-verification": "jVBTbT71E76dExUgIo5fpClsPpHqU47POlZ4EUuB2rM",
+  },
 };
 export const viewport: Viewport = {
   width: "device-width",
