@@ -21,6 +21,8 @@ export interface IUser extends Document {
     bankNumber: string;
     bankBranch: string;
   };
+  package: "none" | "basic" | "pro" | "premium" | "master";
+  packageExpire: Date;
   _destroy: boolean;
 }
 const UserSchema = new Schema({
@@ -104,6 +106,14 @@ const UserSchema = new Schema({
   _destroy: {
     type: Boolean,
     default: false,
+  },
+  package: {
+    type: String,
+    enum: ["none", "basic", "pro", "premium", "master"],
+    default: "none",
+  },
+  packageExpire: {
+    type: Date,
   },
 });
 UserSchema.index({ clerkId: 1 }, { unique: true });

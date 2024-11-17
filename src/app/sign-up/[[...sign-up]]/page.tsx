@@ -1,9 +1,15 @@
 import { SignUp } from "@clerk/nextjs";
+import Head from "next/head";
 
 export default function Page() {
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <SignUp />
-    </div>
+    <>
+      <Head>
+        <meta name="robots" content="noindex, nofollow" />
+      </Head>
+      <div className="w-full h-screen flex items-center justify-center">
+        <SignUp />
+      </div>
+    </>
   );
 }

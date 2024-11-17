@@ -33,6 +33,7 @@ export interface ICourse extends Document {
   createdAt: Date;
   seoKeywords: string;
   free: boolean;
+  isPackage: boolean;
   _destroy: boolean;
 }
 const courseSchema = new Schema<ICourse>({
@@ -146,6 +147,10 @@ const courseSchema = new Schema<ICourse>({
     default: false,
   },
   _destroy: {
+    type: Boolean,
+    default: false,
+  },
+  isPackage: {
     type: Boolean,
     default: false,
   },

@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /sign-in
+Disallow: /sign-in/
+Disallow: /sign-in/factor-one
+Disallow: /sign-up
