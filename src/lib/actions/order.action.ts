@@ -127,6 +127,7 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
       findCourse.slug === "khoa-hoc-html-css-master"
     ) {
       await findUser.courses.push(findCourse._id);
+      await findUser.save();
       return;
     }
     if (params.couponCode) {
