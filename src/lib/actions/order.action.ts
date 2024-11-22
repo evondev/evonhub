@@ -1,4 +1,5 @@
 "use server";
+import { usersHTML } from "@/data";
 import Coupon from "@/database/coupon.model";
 import Course from "@/database/course.model";
 import Order from "@/database/order.model";
@@ -120,17 +121,19 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
       return {
         error: "Bạn đã sở hữu khóa học này rồi",
       };
-    // let discount = 0;
-    console.log(params);
+    const findCourse = await Course.findById(params.course);
+    if (
+      usersHTML.includes(findUser.email) &&
+      findCourse.slug === "khoa-hoc-html-css-master"
+    ) {
+      await findUser.courses.push(findCourse._id);
+      return;
+    }
     if (params.couponCode) {
-      // const findCoupon = await Coupon.findOne({ code: params.couponCode });
       await Coupon.findOneAndUpdate(
         { code: params.couponCode.toUpperCase() },
         { $inc: { used: 1 } }
       );
-
-      // if (findCoupon?.course !== params.course) discount = 0;
-      // discount = findCoupon?.amount || 0;
     }
     const newOrder = new Order({
       ...params,
