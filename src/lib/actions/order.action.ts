@@ -116,8 +116,10 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
       return {
         error: "Tài khoản của bạn đã bị khóa",
       };
-    const userCourses = await Course.find({ author: findUser._id });
-    if (userCourses.find((course) => course._id === params.course))
+    const userCourses = findUser.courses.map((course: any) =>
+      course.toString()
+    );
+    if (userCourses.includes(params.course?.toString()))
       return {
         error: "Bạn đã sở hữu khóa học này rồi",
       };
