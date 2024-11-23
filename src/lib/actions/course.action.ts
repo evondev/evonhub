@@ -1,4 +1,5 @@
 "use server";
+import { usersHTML, usersJS, usersReact } from "@/data";
 import Course, { ICourse } from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
@@ -223,19 +224,43 @@ export async function getFreeCourse(slug: string) {
         type: "error",
         message: "Vui lòng đăng nhập để đăng ký khóa học",
       };
-    const findCourse = await Course.find({ slug, free: true });
+    const findCourse = await Course.findOne({ slug, free: true });
     if (!findCourse)
       return {
         type: "error",
         message: "Khóa học không tồn tại",
       };
-    if (findUser.courses.includes(findCourse[0]._id)) {
+    if (findUser.courses.includes(findCourse._id)) {
       return {
         type: "error",
         message: "Bạn đã đăng ký khóa học này rồi",
       };
     }
-    findUser.courses.push(findCourse[0]._id);
+    if (findCourse.slug === "khoa-hoc-html-css-master") {
+      if (!usersHTML.includes(findUser.email)) {
+        return {
+          type: "error",
+          message: "Bạn chưa phải thành viên của KTcity",
+        };
+      }
+    }
+    if (findCourse.slug === "khoa-hoc-reactjs-co-ban") {
+      if (!usersReact.includes(findUser.email)) {
+        return {
+          type: "error",
+          message: "Bạn chưa phải thành viên của KTcity",
+        };
+      }
+    }
+    if (findCourse.slug === "khoa-hoc-javascript-co-ban-cho-nguoi-moi") {
+      if (!usersJS.includes(findUser.email)) {
+        return {
+          type: "error",
+          message: "Bạn chưa phải thành viên của KTcity",
+        };
+      }
+    }
+    findUser.courses.push(findCourse._id);
     await findUser.save();
 
     return {
