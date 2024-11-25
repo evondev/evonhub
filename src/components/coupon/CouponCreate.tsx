@@ -43,7 +43,6 @@ const createCouponSchema = z.object({
 const CouponCreate = ({ courses }: { courses: any[] }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedCourses, setSelectedCourses] = useImmer<any[]>([]);
-  console.log("CouponCreate ~ selectedCourses:", selectedCourses);
   const router = useRouter();
   const form = useForm<z.infer<typeof createCouponSchema>>({
     resolver: zodResolver(createCouponSchema),
@@ -101,7 +100,7 @@ const CouponCreate = ({ courses }: { courses: any[] }) => {
                         "flex h-10 file:border-0 file:bg-transparent file:text-sm file:font-medium   focus-primary form-styles w-40"
                       )}
                       {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value))}
+                      onChange={(e) => field.onChange(e.target.value)}
                     />
                   </FormControl>
                   <FormMessage />

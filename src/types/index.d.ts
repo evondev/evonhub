@@ -90,10 +90,11 @@ export interface ICommentParams {
 }
 export interface CreateCommentParams {
   content: string;
-  course: string;
-  path?: string;
   lesson: string;
+  user: string;
+  level: number;
   parentId?: string;
+  path?: string;
 }
 export interface GetAllCommentsParams {
   lesson?: string;

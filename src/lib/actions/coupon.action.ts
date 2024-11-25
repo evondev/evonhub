@@ -14,7 +14,7 @@ export async function getCouponInfo(couponCode: string) {
 export async function createCoupon(params: any) {
   try {
     connectToDatabase();
-    const newCoupon = Coupon.create(params);
+    const newCoupon = await Coupon.create(params);
     return JSON.parse(JSON.stringify(newCoupon));
   } catch (error) {
     console.log(error);

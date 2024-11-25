@@ -1,5 +1,5 @@
 "use server";
-import Comment from "@/database/comment.model";
+import Comment, { IComment } from "@/database/comment.model";
 import Course from "@/database/course.model";
 import Lesson from "@/database/lesson.model";
 import User from "@/database/user.model";
@@ -18,18 +18,12 @@ import { sendNotification } from "./notification.action";
 export async function createComment(params: CreateCommentParams) {
   try {
     connectToDatabase();
-    const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
-    if (!findUser) return;
-    await Comment.create({
-      ...params,
-      user: findUser._id,
-      status:
-        Role.ADMIN === findUser.role
-          ? ECommentStatus.APPROVED
-          : ECommentStatus.PENDING,
-    });
+    const newComment = await Comment.create(params);
+
     revalidatePath(params.path || "/");
+    if (!newComment) return false;
+
+    return true;
   } catch (error) {
     console.log(error);
   }
@@ -141,6 +135,32 @@ export async function deleteComment(commentId: string) {
     connectToDatabase();
     await Comment.findByIdAndDelete(commentId);
     revalidatePath("/admin/comment/manage");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export interface CommentItemData extends Omit<IComment, "user"> {
+  user: {
+    name: string;
+    avatar: string;
+  };
+}
+
+export async function getCommentsByLesson(
+  lessonId: string
+): Promise<CommentItemData[] | undefined> {
+  try {
+    connectToDatabase();
+    const comments = await Comment.find<CommentItemData>({
+      lesson: lessonId,
+    }).populate({
+      path: "user",
+      model: User,
+      select: "name avatar",
+    });
+
+    return JSON.parse(JSON.stringify(comments));
   } catch (error) {
     console.log(error);
   }

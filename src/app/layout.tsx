@@ -1,5 +1,6 @@
 import Providers from "@/components/Providers";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { UserProvider } from "@/components/user-context";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -54,7 +55,9 @@ export default async function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <Providers>{children}</Providers>
+              <Providers>
+                <UserProvider>{children}</UserProvider>
+              </Providers>
             </ThemeProvider>
           </div>
           <ToastContainer

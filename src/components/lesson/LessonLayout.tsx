@@ -2,9 +2,20 @@
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
 import React from "react";
+import { useUserContext } from "../user-context";
 
-const LessonLayout = ({ children }: { children: React.ReactNode }) => {
+interface LessonLayoutProps {
+  children: React.ReactNode;
+  courseId: string;
+}
+const LessonLayout = ({ children, courseId }: LessonLayoutProps) => {
   const { isExpanded } = useGlobalStore();
+  const { userInfo } = useUserContext();
+  const userCourses = userInfo?.courses
+    ? JSON.parse(JSON.stringify(userInfo?.courses))
+    : [];
+
+  if (!userCourses.includes(courseId) || !userInfo?._id) return null;
   return (
     <div
       className={cn(

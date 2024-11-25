@@ -234,3 +234,19 @@ export async function removeCourseFromUser({
     console.log(error);
   }
 }
+export async function getUserInfo({
+  userId,
+}: {
+  userId: string;
+}): Promise<IUser | null | undefined> {
+  try {
+    connectToDatabase();
+    const findUser = await User.findOne({ clerkId: userId });
+
+    if (!findUser?._id) return null;
+
+    return JSON.parse(JSON.stringify(findUser));
+  } catch (error) {
+    console.log(error);
+  }
+}
