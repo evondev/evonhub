@@ -109,6 +109,8 @@ const LessonPlayer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasEnded, nextLesson]);
 
+  const iframeId = iframe?.split("/d/").at(-1)?.replace("/view", "");
+
   return (
     <div className="lg:mb-8">
       <FullScreen handle={handle}>
@@ -135,10 +137,10 @@ const LessonPlayer = ({
                 minResolution="1080p"
               />
             </div>
-          ) : iframe ? (
+          ) : iframeId ? (
             <div className="size-full lg:border borderDarkMode lg:rounded-lg bgDarkMode overflow-hidden">
               <iframe
-                src={`https://drive.google.com/file/d/${iframe}/preview`}
+                src={`https://drive.google.com/file/d/${iframeId}/preview`}
                 className="size-full object-fill"
                 allow="autoplay"
               ></iframe>

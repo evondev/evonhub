@@ -59,6 +59,7 @@ const CourseContent = ({
         order: number;
         duration: number;
         lectureId: string;
+        iframe: string;
       }[];
     }[];
   };
@@ -81,6 +82,7 @@ const CourseContent = ({
         order: number;
         duration: number;
         lectureId: string;
+        iframe: string;
       }[];
     }[]
   >([]);
@@ -90,6 +92,7 @@ const CourseContent = ({
     slug: "",
     content: "",
     video: "",
+    iframe: "",
   });
   const [editLectureIndex, setEditLectureIndex] = useState("");
   const [editLessonIndex, setEditLessonIndex] = useState("");
@@ -219,6 +222,7 @@ const CourseContent = ({
       video: string;
       type: string;
       slug: string;
+      iframe: string;
     }
   ) => {
     setIsSubmitting((draf) => {
@@ -232,6 +236,7 @@ const CourseContent = ({
           title: lessonData.title || lesson.title,
           slug: convertSlug(lessonData.title || lesson.title),
           courseId: data._id as any,
+          iframe: lessonData.iframe || lesson.iframe,
         },
       });
       toast.success("Bài học đã được cập nhật thành công");
@@ -406,23 +411,38 @@ const CourseContent = ({
                                       {editLessonIndex === lesson._id ? (
                                         <>
                                           <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
-                                            <div className="flex items-center gap-3 mb-5">
+                                            <div className="flex items-baseline gap-3 mb-5">
                                               <h3 className="flex-shrink-0 font-bold">
                                                 Tên bài học:
                                               </h3>
-                                              <Input
-                                                placeholder="Nhập tiêu đề"
-                                                className="font-semibold border-gray-200 dark:border-grayDarker dark:bg-grayDarkest"
-                                                defaultValue={lesson.title}
-                                                onChange={debounce(
-                                                  (e) =>
-                                                    setLessonData({
-                                                      ...lessonData,
-                                                      title: e.target.value,
-                                                    }),
-                                                  500
-                                                )}
-                                              />
+                                              <div className="flex flex-col gap-2 w-full">
+                                                <Input
+                                                  placeholder="Nhập tiêu đề"
+                                                  className="font-semibold border-gray-200 dark:border-grayDarker dark:bg-grayDarkest"
+                                                  defaultValue={lesson.title}
+                                                  onChange={debounce(
+                                                    (e) =>
+                                                      setLessonData({
+                                                        ...lessonData,
+                                                        title: e.target.value,
+                                                      }),
+                                                    500
+                                                  )}
+                                                />
+                                                <Input
+                                                  placeholder="Nhập iframe"
+                                                  className="font-semibold border-gray-200 dark:border-grayDarker dark:bg-grayDarkest font-sans !text-blue-500"
+                                                  defaultValue={lesson.iframe}
+                                                  onChange={debounce(
+                                                    (e) =>
+                                                      setLessonData({
+                                                        ...lessonData,
+                                                        iframe: e.target.value,
+                                                      }),
+                                                    500
+                                                  )}
+                                                />
+                                              </div>
                                             </div>
                                             <div className="flex justify-end">
                                               <Button
