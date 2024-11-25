@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
+import { Role } from "@/types/enums";
 import React from "react";
 import { useUserContext } from "../user-context";
 
@@ -15,7 +16,11 @@ const LessonLayout = ({ children, courseId }: LessonLayoutProps) => {
     ? JSON.parse(JSON.stringify(userInfo?.courses))
     : [];
 
-  if (!userCourses.includes(courseId) || !userInfo?._id) return null;
+  if (
+    (!userCourses.includes(courseId) || !userInfo?._id) &&
+    userInfo?.role !== Role.ADMIN
+  )
+    return null;
   return (
     <div
       className={cn(

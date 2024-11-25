@@ -4,18 +4,13 @@ import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
 import { formUrlQuery } from "@/utils";
 import MuxPlayer from "@mux/mux-player-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Prism from "prismjs";
 import { useEffect, useRef, useState } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import RatingForm from "../rating/RatingForm";
 
-const LessonPlayer = ({
-  lessonDetails,
-  videoId = "",
-  nextLesson,
-  prevLesson,
-}: {
+interface LessonPlayerProps {
   lessonDetails: {
     title: string;
     content: string;
@@ -26,7 +21,15 @@ const LessonPlayer = ({
   videoId: string;
   nextLesson?: string;
   prevLesson?: string;
-}) => {
+  iframe?: string;
+}
+const LessonPlayer = ({
+  lessonDetails,
+  videoId = "",
+  nextLesson,
+  prevLesson,
+  iframe,
+}: LessonPlayerProps) => {
   const handle = useFullScreenHandle();
   const { toggleExpanded, isExpanded } = useGlobalStore();
   const handleExpandScreen = () => {
@@ -34,7 +37,6 @@ const LessonPlayer = ({
   };
   const searchParams = useSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
   const handleChangeLesson = (url: string | undefined) => {
     if (!url) return;
     const newUrl = formUrlQuery({
@@ -53,7 +55,6 @@ const LessonPlayer = ({
   const videoRef = useRef<any>(null);
   useEffect(() => {
     if (!videoId) return;
-    // save last course lesson slug and course to local storage
     const localData =
       JSON.parse(localStorage.getItem("lastCourseLesson") || "[]") || [];
     if (!Array.isArray(localData)) return;
@@ -96,10 +97,6 @@ const LessonPlayer = ({
     Prism.highlightAll();
   }, [lessonDetails.content.length]);
   const duration = 5000;
-  // const handleEndedLessson = debounce((nextLesson: string | undefined) => {
-  //   if (!nextLesson || !hasEnded) return;
-  //   handleChangeLesson(nextLesson);
-  // }, duration);
   const [hasEnded, setHasEnded] = useState(false);
   useEffect(() => {
     if (!hasEnded) return;
@@ -138,6 +135,11 @@ const LessonPlayer = ({
                 minResolution="1080p"
               />
             </div>
+          ) : iframe ? (
+            <div
+              className="[&_iframe]:size-full size-full lg:border borderDarkMode lg:rounded-lg bgDarkMode overflow-hidden"
+              dangerouslySetInnerHTML={{ __html: iframe }}
+            ></div>
           ) : (
             <div className="w-full h-full lg:border borderDarkMode lg:rounded-lg bgDarkMode"></div>
           )}

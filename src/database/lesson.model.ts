@@ -15,6 +15,7 @@ export interface ILesson extends Document {
   views: number;
   createdAt: Date;
   assetId: string;
+  iframe: string;
   _destroy: boolean;
 }
 const lessonSchema = new Schema<ILesson>({
@@ -62,6 +63,9 @@ const lessonSchema = new Schema<ILesson>({
     default: 0,
   },
   assetId: {
+    type: String,
+  },
+  iframe: {
     type: String,
   },
   createdAt: {

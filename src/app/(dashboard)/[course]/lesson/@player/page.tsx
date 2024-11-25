@@ -18,7 +18,7 @@ const page = async ({
 }) => {
   const lessonDetails = await getLessonBySlug(searchParams.slug, params.course);
   if (!lessonDetails) return <EmptyData text="Bài học không tồn tại!" />;
-  const { video, title, content, courseId, slug } = lessonDetails;
+  const { video, title, content, courseId, iframe } = lessonDetails;
   const course = JSON.parse(JSON.stringify(courseId));
   const lessonList =
     (await getAllLessonByCourseId(course._id.toString())) || [];
@@ -31,6 +31,7 @@ const page = async ({
   return (
     <LessonPlayer
       videoId={video}
+      iframe={iframe}
       lessonDetails={{
         title,
         content,
