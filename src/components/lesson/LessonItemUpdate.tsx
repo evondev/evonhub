@@ -180,7 +180,7 @@ const LessonItemUpdate = ({
             <FormItem>
               <FormLabel>Iframe</FormLabel>
               <FormControl>
-                <Textarea className="h-[150px]" {...field} />
+                <Textarea className="h-[150px] font-sans" {...field} />
               </FormControl>
             </FormItem>
           )}

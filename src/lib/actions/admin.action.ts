@@ -24,7 +24,7 @@ export async function getCourseUpdateOutline(
         populate: {
           path: "lessons",
           select:
-            "title slug video assetId content duration lectureId order _destroy",
+            "title slug video assetId content duration lectureId order iframe _destroy",
           model: Lesson,
           match: { _destroy: false },
           options: { sort: { order: 1 } },
