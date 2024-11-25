@@ -53,10 +53,6 @@ export async function getAllComments(params: GetAllCommentsParams) {
       .populate({
         path: "lesson",
         select: "title slug",
-      })
-      .populate({
-        path: "course",
-        select: "title slug",
       });
 
     return comments;
