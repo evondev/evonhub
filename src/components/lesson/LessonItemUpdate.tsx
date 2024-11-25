@@ -49,6 +49,7 @@ const LessonItemUpdate = ({
     title: string;
     duration: number;
     assetId?: string;
+    iframe?: string;
   };
   course: {
     id: string;
@@ -67,6 +68,7 @@ const LessonItemUpdate = ({
       title: lesson.title,
       duration: lesson.duration,
       assetId: lesson.assetId,
+      iframe: lesson.iframe,
     },
   });
   async function onSubmitLesson(values: z.infer<typeof formSchema>) {
