@@ -21,7 +21,6 @@ import { toast } from "react-toastify";
 import slugify from "slugify";
 import { z } from "zod";
 import { IconEdit } from "../icons";
-import { Textarea } from "../ui/textarea";
 
 const formSchema = z.object({
   video: z.string().optional(),
@@ -180,7 +179,7 @@ const LessonItemUpdate = ({
             <FormItem>
               <FormLabel>Iframe</FormLabel>
               <FormControl>
-                <Textarea className="h-[150px] font-sans" {...field} />
+                <Input type="text" className="font-sans" {...field} />
               </FormControl>
             </FormItem>
           )}

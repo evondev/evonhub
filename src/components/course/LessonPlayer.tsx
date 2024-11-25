@@ -136,10 +136,13 @@ const LessonPlayer = ({
               />
             </div>
           ) : iframe ? (
-            <div
-              className="[&_iframe]:size-full size-full lg:border borderDarkMode lg:rounded-lg bgDarkMode overflow-hidden"
-              dangerouslySetInnerHTML={{ __html: iframe }}
-            ></div>
+            <div className="size-full lg:border borderDarkMode lg:rounded-lg bgDarkMode overflow-hidden">
+              <iframe
+                src={`https://drive.google.com/file/d/${iframe}/preview`}
+                className="size-full object-fill"
+                allow="autoplay"
+              ></iframe>
+            </div>
           ) : (
             <div className="w-full h-full lg:border borderDarkMode lg:rounded-lg bgDarkMode"></div>
           )}
