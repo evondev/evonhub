@@ -1,6 +1,6 @@
 "use client";
 import { baseButtonClassName } from "@/constants";
-import { cn } from "@/lib/utils";
+import { cn, extractDriveId } from "@/lib/utils";
 import { useGlobalStore } from "@/store";
 import { formUrlQuery } from "@/utils";
 import MuxPlayer from "@mux/mux-player-react";
@@ -108,8 +108,7 @@ const LessonPlayer = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasEnded, nextLesson]);
-
-  const iframeId = iframe?.split("/d/").at(-1)?.replace("/view", "");
+  const iframeId = extractDriveId(iframe || "");
 
   return (
     <div className="lg:mb-8">

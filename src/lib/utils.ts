@@ -23,3 +23,24 @@ export const timeAgo = (date: string | Date) => {
 
   return `${seconds} giây trước`;
 };
+export const extractDriveId = (input: string) => {
+  const regexIdParam = /[?&]id=([^&]+)/;
+
+  const regexFilePath = /\/d\/([^/]+)/;
+
+  if (/^[a-zA-Z0-9_-]+$/.test(input)) {
+    return input;
+  }
+
+  const idParamMatch = input.match(regexIdParam);
+  if (idParamMatch) {
+    return idParamMatch[1];
+  }
+
+  const filePathMatch = input.match(regexFilePath);
+  if (filePathMatch) {
+    return filePathMatch[1];
+  }
+
+  return null;
+};
