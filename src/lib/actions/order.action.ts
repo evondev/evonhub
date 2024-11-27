@@ -1,5 +1,5 @@
 "use server";
-import { usersHTML } from "@/data";
+import { usersHTML, usersJS, usersJSAdvanced, usersReact } from "@/data";
 import Coupon from "@/database/coupon.model";
 import Course from "@/database/course.model";
 import Order from "@/database/order.model";
@@ -124,13 +124,33 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
         error: "Bạn đã sở hữu khóa học này rồi",
       };
     const findCourse = await Course.findById(params.course);
-    if (
-      usersHTML.includes(findUser.email) &&
-      findCourse.slug === "khoa-hoc-html-css-master"
-    ) {
-      await findUser.courses.push(findCourse._id);
-      await findUser.save();
-      return;
+    if (findCourse.slug === "khoa-hoc-html-css-master") {
+      if (usersHTML.includes(findUser.email)) {
+        params.total = 0;
+        params.amount = 0;
+        params.discount = 0;
+      }
+    }
+    if (findCourse.slug === "khoa-hoc-reactjs-co-ban") {
+      if (usersReact.includes(findUser.email)) {
+        params.total = 0;
+        params.amount = 0;
+        params.discount = 0;
+      }
+    }
+    if (findCourse.slug === "khoa-hoc-javascript-co-ban-cho-nguoi-moi") {
+      if (usersJS.includes(findUser.email)) {
+        params.total = 0;
+        params.amount = 0;
+        params.discount = 0;
+      }
+    }
+    if (findCourse.slug === "khoa-hoc-javascript-chuyen-sau") {
+      if (usersJSAdvanced.includes(findUser.email)) {
+        params.total = 0;
+        params.amount = 0;
+        params.discount = 0;
+      }
     }
     if (params.couponCode) {
       await Coupon.findOneAndUpdate(

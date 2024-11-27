@@ -1,5 +1,4 @@
 "use server";
-import { usersHTML, usersJS, usersReact } from "@/data";
 import Course, { ICourse } from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
@@ -236,30 +235,7 @@ export async function getFreeCourse(slug: string) {
         message: "Bạn đã đăng ký khóa học này rồi",
       };
     }
-    if (findCourse.slug === "khoa-hoc-html-css-master") {
-      if (!usersHTML.includes(findUser.email)) {
-        return {
-          type: "error",
-          message: "Bạn chưa phải thành viên của KTcity",
-        };
-      }
-    }
-    if (findCourse.slug === "khoa-hoc-reactjs-co-ban") {
-      if (!usersReact.includes(findUser.email)) {
-        return {
-          type: "error",
-          message: "Bạn chưa phải thành viên của KTcity",
-        };
-      }
-    }
-    if (findCourse.slug === "khoa-hoc-javascript-co-ban-cho-nguoi-moi") {
-      if (!usersJS.includes(findUser.email)) {
-        return {
-          type: "error",
-          message: "Bạn chưa phải thành viên của KTcity",
-        };
-      }
-    }
+
     findUser.courses.push(findCourse._id);
     await findUser.save();
 
