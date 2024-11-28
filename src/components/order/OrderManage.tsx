@@ -170,7 +170,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                   </LabelStatus>
                 </TableCell>
                 <TableCell>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-2 items-start">
                     {order.amount > 0 && order.total > 0 && (
                       <p className="font-medium">
                         {formatThoundsand(order.amount)}
