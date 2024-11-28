@@ -150,7 +150,7 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                   {order.code}
                 </TableCell>
                 <TableCell>
-                  <div className="w-[300px]">
+                  <div className="w-[200px]">
                     <div className="font-bold">{order?.course?.title}</div>
                   </div>
                 </TableCell>
