@@ -20,6 +20,7 @@ import { updateOrder } from "@/lib/actions/order.action";
 import { cn } from "@/lib/utils";
 import { EOrderStatus } from "@/types/enums";
 import { formUrlQuery, formatDate, formatThoundsand } from "@/utils";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Swal from "sweetalert2";
@@ -155,10 +156,15 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="">{order.user?.username}</div>
-                  <div className="text-xs text-slate-400">
-                    {order.user?.email}
-                  </div>
+                  <Link
+                    href={`/admin/user/update?email=${order.user?.email}`}
+                    className="flex flex-col"
+                  >
+                    <div className="">{order.user?.username}</div>
+                    <div className="text-xs text-slate-400">
+                      {order.user?.email}
+                    </div>
+                  </Link>
                 </TableCell>
                 <TableCell>
                   <LabelStatus
