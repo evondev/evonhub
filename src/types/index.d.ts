@@ -138,6 +138,7 @@ export interface CreateLessonParams {
   order: number;
   lectureId: string;
   courseId: string;
+  iframe?: string;
 }
 export interface UpdateLessonParams {
   lessonId: string;
