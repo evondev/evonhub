@@ -10,6 +10,7 @@ const page = async ({
   searchParams: {
     page: number;
     search: string;
+    freeOrders: boolean;
   };
 }) => {
   const { userId } = auth();
@@ -21,6 +22,7 @@ const page = async ({
     userId: findUser._id,
     searchQuery: searchParams?.search,
     page: searchParams.page ? +searchParams.page : 1,
+    freeOrders: searchParams?.freeOrders,
   });
   return (
     <OrderManage

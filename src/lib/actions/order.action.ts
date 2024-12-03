@@ -52,7 +52,9 @@ export async function updateOrder(params: UpdateOrderParams) {
 
     if (params.status === EOrderStatus.APPROVED) {
       // add course to user
-      findUser.courses.push(params.course);
+      if (!findUser.courses.includes(params.course)) {
+        findUser.courses.push(params.course);
+      }
     } else {
       // remove course from user
       findUser.courses = findUser.courses.filter(
@@ -70,6 +72,7 @@ export async function getAllOrders(params: {
   userId?: string;
   searchQuery?: string;
   page?: number;
+  freeOrders?: boolean;
 }) {
   try {
     connectToDatabase();
@@ -80,6 +83,9 @@ export async function getAllOrders(params: {
     const query: FilterQuery<typeof Order> = {};
     if (searchQuery) {
       query.$or = [{ code: { $regex: searchQuery, $options: "i" } }];
+    }
+    if (params.freeOrders) {
+      query.total = 0;
     }
     query.course = { $in: userCourses.map((course) => course._id) };
     const orders = await Order.find(query)

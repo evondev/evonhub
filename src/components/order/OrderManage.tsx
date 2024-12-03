@@ -25,7 +25,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import LabelStatus from "../common/LabelStatus";
-import { IconDelete } from "../icons";
+import { IconDelete, IconStar } from "../icons";
+import { Label } from "../ui/label";
 import {
   Tooltip,
   TooltipContent,
@@ -57,6 +58,11 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
 
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const [isFreeOrders, setIsFreeOrders] = useState(
+    searchParams?.get("freeOrders") === "true"
+  );
+
   const handleChangePage = (action: "prev" | "next") => {
     if (page === 1 && action === "prev") return;
     if (action === "prev") {
@@ -98,6 +104,16 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
     });
     router.push(newUrl);
   };
+
+  const handleFilterFreeOrders = (checked: boolean) => {
+    const newUrl = formUrlQuery({
+      params: searchParams?.toString() || "",
+      key: "freeOrders",
+      value: checked ? "true" : "",
+    });
+    router.push(newUrl);
+  };
+
   return (
     <>
       <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
@@ -122,6 +138,24 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
               {ArrowRight}
             </button>
           </div>
+        </div>
+      </div>
+      <div className="mb-2 flex items-center justify-between px-4 py-2 bgDarkMode borderDarkMode rounded-lg">
+        <div className="flex items-center gap-3 text-sm font-medium">
+          <Checkbox
+            defaultChecked={isFreeOrders}
+            onCheckedChange={(checked) =>
+              handleFilterFreeOrders(checked as boolean)
+            }
+            id="freeOrders"
+          />
+          <Label
+            htmlFor="freeOrders"
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <span>Đơn hàng miễn phí</span>
+            <IconStar className="size-6 text-secondary" />
+          </Label>
         </div>
       </div>
 

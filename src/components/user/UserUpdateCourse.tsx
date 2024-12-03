@@ -1,16 +1,10 @@
 "use client";
 import {
-  TUserPermission,
-  primaryButtonClassName,
-  userPermissions,
-} from "@/constants";
-import {
   addCourseToUser,
   removeCourseFromUser,
   updateUserByUsername,
 } from "@/lib/actions/user.action";
 import { cn } from "@/lib/utils";
-import { Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import { useState } from "react";
@@ -19,7 +13,6 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { IconDelete } from "../icons";
 import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -188,11 +181,11 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
         <div className="flex flex-col gap-3">
           {user.courses.map((course: any, index: number) => (
             <div
-              className="flex items-center justify-between p-3 rounded bg-white text-sm dark:bg-grayDarker gap-3"
+              className="flex items-center justify-between p-2 rounded-lg bg-white text-sm dark:bg-grayDarker gap-3 border borderDarkMode"
               key={index}
             >
-              <h3 className="font-semibold">
-                {course.title}
+              <h3 className="font-semibold flex">
+                <span className="lg:min-w-[300px] block">{course.title}</span>
                 <strong className="text-secondary ml-5">
                   {formatThoundsand(course.price)} VNĐ
                 </strong>
@@ -209,59 +202,6 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
             </div>
           ))}
         </div>
-      </div>
-      <h2 className="font-bold text-xl mb-5">Phân quyền</h2>
-      <div className="mb-5">
-        <div className="flex flex-wrap gap-5">
-          {Object.values(userPermissions).map((key) => (
-            <div
-              className="flex items-center gap-2 capitalize font-medium text-sm"
-              key={key}
-            >
-              <span>{key}</span>
-              <Checkbox
-                defaultValue={userPermissions[key as TUserPermission]}
-                className="border-gray-500 dark:border-white"
-                checked={selectPermissions.includes(key)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setSelectPermissions([...selectPermissions, key]);
-                  } else {
-                    setSelectPermissions(
-                      selectPermissions.filter(
-                        (permission) => permission !== key
-                      )
-                    );
-                  }
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      <h2 className="font-bold text-xl mb-5">Vai trò</h2>
-      <div className="flex items-center gap-5">
-        <div className="w-40">
-          <Select
-            onValueChange={(value) => setUserRole(value)}
-            defaultValue={userRole}
-          >
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="Vai trò" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={Role.USER}>Thành viên</SelectItem>
-              <SelectItem value={Role.EXPERT}>Expert</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <Button
-          onClick={handleUpdatePermissions}
-          className={cn(primaryButtonClassName, "w-fit flex")}
-          isLoading={isUpdatePermissions}
-        >
-          Cập nhật
-        </Button>
       </div>
     </div>
   );
