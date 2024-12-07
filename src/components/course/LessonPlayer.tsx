@@ -6,7 +6,7 @@ import { formUrlQuery } from "@/utils";
 import MuxPlayer from "@mux/mux-player-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Prism from "prismjs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import RatingForm from "../rating/RatingForm";
 
@@ -97,17 +97,17 @@ const LessonPlayer = ({
     Prism.highlightAll();
   }, [lessonDetails.content.length]);
   const duration = 5000;
-  const [hasEnded, setHasEnded] = useState(false);
-  useEffect(() => {
-    if (!hasEnded) return;
-    const timer = setTimeout(() => {
-      handleChangeLesson(nextLesson);
-    }, duration);
-    return () => {
-      clearTimeout(timer);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasEnded, nextLesson]);
+  // const [hasEnded, setHasEnded] = useState(false);
+  // useEffect(() => {
+  //   if (!hasEnded) return;
+  //   const timer = setTimeout(() => {
+  //     handleChangeLesson(nextLesson);
+  //   }, duration);
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [hasEnded, nextLesson]);
   const iframeId = extractDriveId(iframe || "");
 
   return (
@@ -118,21 +118,21 @@ const LessonPlayer = ({
             <div className="relative">
               <div
                 className={cn(
-                  "player-bar h-1 absolute top-0 left-0 z-10 w-0",
-                  hasEnded ? "player-bar-animate" : ""
+                  "player-bar h-1 absolute top-0 left-0 z-10 w-0"
+                  // hasEnded ? "player-bar-animate" : ""
                 )}
               ></div>
               <MuxPlayer
                 streamType="on-demand"
                 playbackId={videoId}
-                onEnded={() => {
-                  setHasEnded(true);
-                }}
-                onPlay={() => setHasEnded(false)}
+                // onEnded={() => {
+                //   setHasEnded(true);
+                // }}
+                // onPlay={() => setHasEnded(false)}
                 className="w-full h-full inline-block align-bottom"
                 ref={videoRef}
                 autoPlay
-                onTimeUpdate={handleTimeUpdate}
+                // onTimeUpdate={handleTimeUpdate}
                 minResolution="1080p"
               />
             </div>
