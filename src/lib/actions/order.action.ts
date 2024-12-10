@@ -206,3 +206,32 @@ export async function getOrderDetails(orderId: string) {
     console.log(error);
   }
 }
+
+export async function deleteUnpaidOrders(params: { userId: string }) {
+  try {
+    connectToDatabase();
+    const query: FilterQuery<typeof Order> = {};
+    const findUser = await User.findById(params.userId);
+    const userCourses = await Course.find({ author: findUser?._id });
+    query.course = { $in: userCourses.map((course) => course._id) };
+    const orders = await Order.find({
+      status: EOrderStatus.PENDING,
+      createdAt: {
+        // 24 hours ago
+        $gte: new Date(new Date().getTime() - 1000 * 60 * 60 * 24),
+      },
+      ...query,
+    });
+
+    if (!orders.length)
+      return {
+        error: "Không có đơn hàng trùng lặp",
+      };
+    await Order.deleteMany({
+      _id: { $in: orders.map((order) => order._id) },
+    });
+    revalidatePath("/admin/order/manage");
+  } catch (error) {
+    console.log(error);
+  }
+}

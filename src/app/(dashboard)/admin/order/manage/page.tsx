@@ -27,6 +27,7 @@ const page = async ({
   return (
     <OrderManage
       allOrders={allOrders ? JSON.parse(JSON.stringify(allOrders)) : []}
+      userId={findUser._id}
     />
   );
 };

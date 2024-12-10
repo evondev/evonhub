@@ -16,16 +16,18 @@ import {
   orderStatus,
   pagiBtn,
 } from "@/constants";
-import { updateOrder } from "@/lib/actions/order.action";
+import { deleteUnpaidOrders, updateOrder } from "@/lib/actions/order.action";
 import { cn } from "@/lib/utils";
 import { EOrderStatus } from "@/types/enums";
 import { formUrlQuery, formatDate, formatThoundsand } from "@/utils";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import LabelStatus from "../common/LabelStatus";
 import { IconDelete, IconStar } from "../icons";
+import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import {
   Tooltip,
@@ -33,7 +35,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
+const OrderManage = ({
+  allOrders,
+  userId,
+}: {
+  allOrders: any[];
+  userId: string;
+}) => {
   const handleRejectOrder = async ({
     user,
     course,
@@ -114,6 +122,19 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
     router.push(newUrl);
   };
 
+  const handleRemoveUnPaidOrders = async () => {
+    try {
+      const response = await deleteUnpaidOrders({
+        userId,
+      });
+      if (response?.error) {
+        toast.error(response.error);
+      } else {
+        toast.success("Xóa đơn hàng chưa thanh toán thành công");
+      }
+    } catch (error) {}
+  };
+
   return (
     <>
       <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
@@ -140,24 +161,29 @@ const OrderManage = ({ allOrders }: { allOrders: any[] }) => {
           </div>
         </div>
       </div>
-      <div className="mb-2 flex items-center justify-between px-4 py-2 bgDarkMode borderDarkMode rounded-lg">
-        <div className="flex items-center gap-3 text-sm font-medium">
-          <Checkbox
-            defaultChecked={isFreeOrders}
-            onCheckedChange={(checked) =>
-              handleFilterFreeOrders(checked as boolean)
-            }
-            id="freeOrders"
-          />
-          <Label
-            htmlFor="freeOrders"
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <span>Đơn hàng miễn phí</span>
-            <IconStar className="size-6 text-secondary" />
-          </Label>
+      {!!allOrders.length && (
+        <div className="mb-2 flex items-center justify-between px-4 py-2 bgDarkMode borderDarkMode rounded-lg">
+          <div className="flex items-center gap-3 text-sm font-medium">
+            <Checkbox
+              defaultChecked={isFreeOrders}
+              onCheckedChange={(checked) =>
+                handleFilterFreeOrders(checked as boolean)
+              }
+              id="freeOrders"
+            />
+            <Label
+              htmlFor="freeOrders"
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <span>Đơn hàng miễn phí</span>
+              <IconStar className="size-6 text-secondary" />
+            </Label>
+          </div>
+          <Button onClick={handleRemoveUnPaidOrders}>
+            Xóa đơn hàng chưa thanh toán(24h)
+          </Button>
         </div>
-      </div>
+      )}
 
       <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
