@@ -61,8 +61,9 @@ export default async function RootLayout({
             </ThemeProvider>
           </div>
           <ToastContainer
-            autoClose={1500}
+            autoClose={4000}
             position="top-right"
+            className="max-w-[400px]"
           ></ToastContainer>
           <Script
             id="mux-uploader"

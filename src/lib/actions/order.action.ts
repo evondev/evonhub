@@ -116,7 +116,7 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
     const findUser = await User.findById(params.user);
     if (!findUser)
       return {
-        error: "User not found",
+        error: "Vui lòng đăng nhập để mua khóa học",
       };
     if (findUser.status === EUserStatus.INACTIVE)
       return {
@@ -164,6 +164,16 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
         { $inc: { used: 1 } }
       );
     }
+    const existOrder = await Order.findOne({
+      user: params.user,
+      course: params.course,
+      status: EOrderStatus.PENDING,
+    });
+    if (existOrder) {
+      return {
+        error: `Bạn đang có một đơn hàng đang chờ xử lý. Truy cập vào https://evonhub.dev/order/${existOrder.code} để xem`,
+      };
+    }
     const newOrder = new Order({
       ...params,
       code: `DH${new Date().getTime().toString().slice(-8)}`,
@@ -184,7 +194,7 @@ export async function getOrderDetails(orderId: string) {
       .populate({
         path: "course",
         model: Course,
-        select: "title",
+        select: "title slug",
         populate: {
           path: "author",
           model: User,
