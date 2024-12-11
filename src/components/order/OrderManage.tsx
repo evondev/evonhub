@@ -179,7 +179,7 @@ const OrderManage = ({
               <IconStar className="size-6 text-secondary" />
             </Label>
           </div>
-          <Button onClick={handleRemoveUnPaidOrders}>
+          <Button className="hidden lg:flex" onClick={handleRemoveUnPaidOrders}>
             Xóa đơn hàng chưa thanh toán(24h)
           </Button>
         </div>
