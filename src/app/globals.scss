@@ -32,14 +32,14 @@
 @layer components {
   .shadow-main,
   .focus-primary:focus {
-    box-shadow: 0 0 0 3px rgb(44, 143, 255, 0.25);
+    box-shadow: 0 0 0 3px rgb(255, 105, 90, 0.25);
   }
   .primary-button:hover {
-    box-shadow: 0 0 0 3px rgb(44, 143, 255, 0.25);
+    box-shadow: 0 0 0 3px rgb(255, 105, 90, 0.25);
   }
   .avatar-shadow1 {
     @apply border border-primary;
-    box-shadow: 0 0 0 3px rgb(44, 143, 255, 0.25);
+    box-shadow: 0 0 0 3px rgb(255, 105, 90, 0.25);
   }
   .avatar-shadow2 {
     @apply border border-secondary;
