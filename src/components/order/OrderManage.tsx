@@ -142,7 +142,7 @@ const OrderManage = ({
         <div className="flex gap-5 items-center">
           <Input
             placeholder="Tìm kiếm đơn hàng"
-            className="w-full lg:w-[300px] h-10"
+            className="w-full lg:w-[300px] h-12"
             onChange={(e) => handleFilter(e.target.value)}
           />
           <div className="flex justify-end gap-3">

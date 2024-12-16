@@ -97,7 +97,7 @@ const CouponCreate = ({ courses }: { courses: any[] }) => {
                       valueIsNumericString
                       thousandSeparator
                       className={cn(
-                        "flex h-10 file:border-0 file:bg-transparent file:text-sm file:font-medium   focus-primary form-styles w-40"
+                        "flex h-12 file:border-0 file:bg-transparent file:text-sm file:font-medium   focus-primary form-styles w-40"
                       )}
                       {...field}
                       onChange={(e) => field.onChange(e.target.value)}

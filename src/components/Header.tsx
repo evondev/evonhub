@@ -51,7 +51,7 @@ const Header = ({ notifications }: { notifications: any[] }) => {
         </div>
         <span className="text-lg font-bold">evonHub</span>
       </Link>
-      <div className="rounded-full gap-4 h-10 px-5 bgDarkMode w-[min(100%,390px)] items-center lg:flex hidden borderDarkMode">
+      <div className="rounded-full gap-4 h-12 px-5 bgDarkMode w-[min(100%,390px)] items-center lg:flex hidden borderDarkMode">
         <input
           type="text"
           placeholder="Search..."

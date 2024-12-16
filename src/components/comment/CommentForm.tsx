@@ -105,7 +105,7 @@ const CommentForm = ({
             isLoading={isPending}
             type="submit"
             variant="primary"
-            className={cn("ml-auto h-10 w-[140px] rounded-lg", {
+            className={cn("ml-auto h-12 w-[140px] rounded-lg", {
               "w-24": isReply,
             })}
           >

@@ -102,7 +102,7 @@ export default function AddCourseForm({ userId }: { userId: string }) {
         <div className="mt-10 flex justify-end">
           <Button
             type="submit"
-            className="h-10 bg-primary dark:bg-primary dark:text-white text-white font-bold w-[150px]"
+            className="h-12 bg-primary dark:bg-primary dark:text-white text-white font-bold w-[150px]"
             isLoading={isSubmitting}
           >
             Thêm khóa học

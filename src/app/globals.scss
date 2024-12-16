@@ -124,7 +124,7 @@ div .tox .tox-edit-area::before {
   .swal2-popup .swal2-styled.swal2-cancel {
     all: unset;
     box-sizing: border-box;
-    @apply bg-transparent text-grayDarkest hover:bg-none hover:bg-transparent h-10 w-28 text-sm font-semibold px-4 py-2 cursor-pointer text-center hover:text-opacity-55;
+    @apply bg-transparent text-grayDarkest hover:bg-none hover:bg-transparent h-12 w-28 text-sm font-semibold px-4 py-2 cursor-pointer text-center hover:text-opacity-55;
   }
   .swal2-popup .swal2-actions:not(.swal2-loading) .swal2-styled:hover {
     @apply bg-none;

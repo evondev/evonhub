@@ -4,7 +4,7 @@ const GoBack = ({ title = "Quay lại" }: { title?: string }) => {
   return (
     <Link
       href="/"
-      className="text-white bg-grayPrimary rounded-full h-10 px-10 flex items-center justify-center gap-2 w-fit mx-auto group"
+      className="text-white bg-grayPrimary rounded-full h-12 px-10 flex items-center justify-center gap-2 w-fit mx-auto group"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

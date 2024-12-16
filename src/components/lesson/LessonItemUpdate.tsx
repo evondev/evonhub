@@ -32,7 +32,7 @@ const formSchema = z.object({
   iframe: z.string().optional(),
 });
 const btnClassName =
-  "text-sm py-2 px-5 h-10 rounded-md font-semibold w-[125px] flex items-center justify-center";
+  "text-sm py-2 px-5 h-12 rounded-md font-semibold w-[125px] flex items-center justify-center";
 const LessonItemUpdate = ({
   lessonId,
   slug,

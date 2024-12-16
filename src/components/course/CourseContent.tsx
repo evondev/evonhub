@@ -338,14 +338,14 @@ const CourseContent = ({
                     </div>
                     <div className="flex justify-end">
                       <Button
-                        className={cn(primaryButtonClassName, "h-10")}
+                        className={cn(primaryButtonClassName, "h-12")}
                         onClick={() => handleSaveLecture(index)}
                         isLoading={isSubmitting.lecture}
                       >
                         Cập nhật
                       </Button>
                       <button
-                        className={cn(baseButtonClassName, "h-10")}
+                        className={cn(baseButtonClassName, "h-12")}
                         onClick={() => handleCancelLecture(index)}
                       >
                         Hủy
@@ -448,7 +448,7 @@ const CourseContent = ({
                                               <Button
                                                 className={cn(
                                                   primaryButtonClassName,
-                                                  "h-10"
+                                                  "h-12"
                                                 )}
                                                 onClick={() =>
                                                   handleSaveLesson(
@@ -463,7 +463,7 @@ const CourseContent = ({
                                               <button
                                                 className={cn(
                                                   baseButtonClassName,
-                                                  "h-10"
+                                                  "h-12"
                                                 )}
                                                 onClick={() =>
                                                   handleCancelLesson(index)
