@@ -66,7 +66,7 @@ export const menuLinks: TMenuLink[] = [
   },
 ];
 export const baseButtonClassName =
-  "rounded-lg h-10 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";
+  "rounded-lg h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";
 
 export const primaryButtonClassName = `bg-primary text-white bg-primary button-styles ${baseButtonClassName}`;
 
