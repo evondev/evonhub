@@ -314,13 +314,16 @@ const CourseContent = ({
   };
 
   return (
-    <div className="hidden lg:block">
-      <h1 className="font-bold text-3xl mb-8">{data.title}</h1>
+    <div className="hidden lg:block max-w-[1280px] mx-auto">
+      <h1 className="font-bold text-3xl mb-8 flex items-baseline max-w-[75%]">
+        <div className="w-10 h-2 bg-primary"></div>
+        Outline khóa học: {data.title}
+      </h1>
       <DragDropContext onDragEnd={onDragEnd}>
         {lectureList.map((lecture, index) => {
           const lessons = lecture.lessons;
           return (
-            <div key={lecture.title} className="max-w-[1024px]">
+            <div key={lecture.title}>
               {editLectureIndex === lecture._id ? (
                 <>
                   <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
@@ -363,9 +366,8 @@ const CourseContent = ({
                   >
                     <AccordionItem value={lecture.title}>
                       <AccordionTrigger>
-                        <div className="flex items-center gap-2 font-semibold">
+                        <div className="flex items-center gap-2 font-bold">
                           <IconCube />
-                          <strong>Chương {index + 1}:</strong>
                           <p>{lecture.title}</p>
                           <button
                             className="size-5 flex items-center justify-center hover:opacity-50"
