@@ -315,9 +315,8 @@ const CourseContent = ({
 
   return (
     <div className="hidden lg:block max-w-[1280px] mx-auto">
-      <h1 className="font-bold text-3xl mb-8 flex items-baseline max-w-[75%]">
-        <div className="w-10 h-2 bg-primary"></div>
-        Outline khóa học: {data.title}
+      <h1 className="font-bold text-3xl mb-8 max-w-[75%]">
+        Outline khóa học: <span className="font-extrabold">{data.title}</span>
       </h1>
       <DragDropContext onDragEnd={onDragEnd}>
         {lectureList.map((lecture, index) => {
