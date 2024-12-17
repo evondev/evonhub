@@ -75,11 +75,11 @@ const CommentForm = ({
   }
 
   return (
-    <>
+    <div className="hidden lg:block">
       <Form {...commentForm}>
         <form
           autoComplete="off"
-          className="relative flex flex-col gap-5"
+          className="relative flex flex-col gap-5 p-3 lg:p-0"
           onSubmit={commentForm.handleSubmit(onSubmit)}
         >
           <FormField
@@ -113,7 +113,7 @@ const CommentForm = ({
           </Button>
         </form>
       </Form>
-    </>
+    </div>
   );
 };
 

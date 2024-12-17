@@ -13,7 +13,7 @@ const HeadingNChild = ({
         <div className="w-10 h-2 bg-primary"></div>
         {title}
       </h1>
-      <div className="grid xl:grid-cols-3 2xl:grid-cols-4 xl:gap-8 courseSlider">
+      <div className="grid xl:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4 courseSlider">
         {children}
       </div>
     </>

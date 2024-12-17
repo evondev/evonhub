@@ -40,10 +40,10 @@ const CourseItem = ({ data, cta, url }: ICourseItemParams) => {
               src={data.image}
               priority
               alt=""
-              width={800}
+              width={600}
               height={360}
               className="w-full h-full object-cover rounded-lg transition-all"
-              sizes="400px"
+              sizes="300px"
             ></Image>
           </div>
           <div className="py-5 flex-1 flex flex-col">
