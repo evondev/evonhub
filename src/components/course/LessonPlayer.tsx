@@ -133,7 +133,7 @@ const LessonPlayer = ({
                 ref={videoRef}
                 autoPlay
                 // onTimeUpdate={handleTimeUpdate}
-                minResolution="1080p"
+                minResolution="720p"
               />
             </div>
           ) : iframeId ? (
