@@ -2,16 +2,20 @@ import Skeleton from "@/shared/components/skeleton";
 
 const CourseItemLoading = () => {
   return (
-    <div className="rounded-lg flex flex-col transition-all">
-      <Skeleton className="rounded-xl h-[180px]" />
-      <div className="p-5 flex-1 flex flex-col">
-        <div className="flex items-center justify-between mb-3 text-sm font-medium">
-          <Skeleton className="w-10 h-4" />
-          <Skeleton className="w-10 h-4" />
-        </div>
-        <Skeleton className="h-8 mb-5" />
-        <div className="mt-auto flex flex-col gap-8">
-          <Skeleton className="w-20 h-5" />
+    <div className="bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest">
+      <div className="rounded-lg h-full flex flex-col p-3 ">
+        <Skeleton className="rounded-xl h-[180px]" />
+        <div className="py-5 flex-1 flex flex-col">
+          <div className="mb-10 flex flex-col gap-2">
+            <Skeleton className="w-full h-4" />
+            <Skeleton className="w-full h-4" />
+            <Skeleton className="w-full h-4" />
+          </div>
+          <div className="flex items-center justify-between mb-5">
+            <Skeleton className="w-16 h-4" />
+            <Skeleton className="w-16 h-4" />
+          </div>
+          <Skeleton className="w-full h-12 mt-auto rounded-lg" />
         </div>
       </div>
     </div>

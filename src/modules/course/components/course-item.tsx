@@ -21,7 +21,7 @@ const CourseItem = ({ data, cta, url, disabled }: CourseItemProps) => {
     5.0;
   return (
     <Suspense fallback={<CourseItemLoading />}>
-      <div className=" bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest">
+      <div className="bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest">
         {!disabled && (
           <Link href={link} className="absolute inset-0 z-10"></Link>
         )}
