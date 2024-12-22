@@ -11,9 +11,10 @@ interface CourseItemProps {
   data: CourseItemData;
   cta?: string;
   url?: string;
+  disabled?: boolean;
 }
 
-const CourseItem = ({ data, cta, url }: CourseItemProps) => {
+const CourseItem = ({ data, cta, url, disabled }: CourseItemProps) => {
   const link = url ? `/${data.slug}${url}` : `/course/${data.slug}`;
   const rating =
     data?.rating?.reduce((acc, cur) => acc + cur, 0) / data?.rating?.length ||
@@ -21,7 +22,9 @@ const CourseItem = ({ data, cta, url }: CourseItemProps) => {
   return (
     <Suspense fallback={<CourseItemLoading />}>
       <div className=" bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest">
-        <Link href={link} className="absolute inset-0 z-10"></Link>
+        {!disabled && (
+          <Link href={link} className="absolute inset-0 z-10"></Link>
+        )}
         <div className="bg-white rounded-lg h-full flex flex-col p-3 dark:bg-grayDarker">
           <div className="relative h-[180px] block group rounded-lg">
             <Image
@@ -55,14 +58,14 @@ const CourseItem = ({ data, cta, url }: CourseItemProps) => {
                     <div className="text-sm lg:text-base font-bold text-secondary">
                       {data.free
                         ? "Miễn phí"
-                        : `${formatThoundsand(data.price)}`}{" "}
+                        : `${formatThoundsand(data.price)}`}
                     </div>
                   </div>
                 </div>
               </div>
               <div className="p-1 border border-[#f6f6f8] rounded-xl bg-[#f6f6f8]/30 backdrop-blur-xl dark:bg-grayDarkest dark:border-white/10">
                 <SimpleButton className="w-full">
-                  {!url ? "Xem chi tiết" : "Học tiếp"}
+                  {disabled ? "Sắp ra mắt" : !url ? "Xem chi tiết" : cta}
                 </SimpleButton>
               </div>
             </div>

@@ -13,6 +13,7 @@ export function Heading({ children, className }: HeadingProps) {
         className
       )}
     >
+      <div className="w-5 h-2 bg-primary"></div>
       {children}
     </h1>
   );

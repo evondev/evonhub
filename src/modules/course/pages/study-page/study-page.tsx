@@ -13,7 +13,13 @@ export async function StudyPage(_props: StudyPageProps) {
     <div>
       <Heading>
         Khu vực tu luyện
-        <Image alt="" src="/meditation.png" width={32} height={32} />
+        <Image
+          alt=""
+          src="/meditation.png"
+          width={32}
+          height={32}
+          className="dark:brightness-0 dark:invert"
+        />
       </Heading>
       <StudyPageContainer
         courses={data?.courses}

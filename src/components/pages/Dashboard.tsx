@@ -11,6 +11,7 @@ const Dashboard = ({
   lessons: any[];
 }) => {
   const handleGetLastUrl = (slug: string) => {
+    if (typeof localStorage === "undefined") return;
     const localLessons =
       localStorage && localStorage.getItem("lastCourseLesson")
         ? JSON.parse(localStorage.getItem("lastCourseLesson") || "[]")
