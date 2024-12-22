@@ -31,7 +31,7 @@ const EmptyData = ({ text, url }: { text?: string; url?: string }) => {
             clipRule="evenodd"
           />
         </svg>
-        {!url ? <span>Khu vực học tập</span> : <span>Liên hệ</span>}
+        {!url ? <span>Khu vực tu luyện</span> : <span>Liên hệ</span>}
       </Link>
     </div>
   );

@@ -210,10 +210,11 @@ div[role="dialog"] {
 }
 // slider css
 @media screen and (max-width: 1279.98px) {
-  .courseSlider {
+  .course-slider {
     display: grid;
     justify-content: flex-start;
     grid-auto-columns: 305px;
+    grid-template-rows: repeat(3, auto);
     grid-auto-flow: column;
     gap: 20px;
     overflow: auto;
@@ -227,11 +228,11 @@ div[role="dialog"] {
     grid-template-columns: unset;
     padding-bottom: 10px;
   }
-  .courseSlider::-webkit-scrollbar {
+  .course-slider::-webkit-scrollbar {
     display: none;
     width: 0;
   }
-  .courseSlider > * {
+  .course-slider > * {
     scroll-snap-align: start;
   }
 }

@@ -11,10 +11,15 @@ import { auth } from "@clerk/nextjs/server";
 import { connectToDatabase } from "../mongoose";
 
 export async function getUserStudyCourse(
-  userId: string
+  userId?: string
 ): Promise<any | undefined> {
   try {
     connectToDatabase();
+    if (!userId)
+      return {
+        courses: [],
+        lessons: [],
+      };
     const user = await User.findOne({ clerkId: userId }).populate({
       path: "courses",
       select: "title slug image rating level price salePrice views free",

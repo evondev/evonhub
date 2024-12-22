@@ -23,10 +23,11 @@ export const menuLinks: TMenuLink[] = [
     url: "/",
   },
   {
-    title: "Khu vực học tập",
+    title: "Khu vực tu luyện",
     icon: <IconStudy></IconStudy>,
     url: "/study",
   },
+
   {
     title: "Quản lý khóa học",
     icon: <IconCourseManage></IconCourseManage>,
@@ -58,6 +59,11 @@ export const menuLinks: TMenuLink[] = [
   //   url: "/admin/coupon/manage",
   //   isAdmin: true,
   // },
+  {
+    title: "Bí kíp sắp ra mắt",
+    icon: <IconStudy></IconStudy>,
+    url: "/coming-soon",
+  },
   {
     title: "Profile",
     icon: <IconUser></IconUser>,
