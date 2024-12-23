@@ -23,7 +23,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
         shallowRouting
       />
       <Snowfall
-        snowflakeCount={100}
+        snowflakeCount={25}
         style={{
           zIndex: 9999,
           pointerEvents: "none",
