@@ -3,7 +3,6 @@
 import { cn } from "@/lib/utils";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 import { useParams, useSearchParams } from "next/navigation";
-import Snowfall from "react-snowfall";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   const params = useParams();
@@ -22,13 +21,13 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
         options={{ showSpinner: false }}
         shallowRouting
       />
-      <Snowfall
+      {/* <Snowfall
         snowflakeCount={25}
         style={{
           zIndex: 9999,
           pointerEvents: "none",
         }}
-      />
+      /> */}
     </div>
   );
 };
