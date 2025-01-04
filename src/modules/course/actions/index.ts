@@ -35,3 +35,21 @@ export async function fetchCoursesIncoming(): Promise<
     return parseData(courses);
   } catch (error) {}
 }
+
+export async function fetchCourseBySlug(
+  slug: string
+): Promise<CourseItemData | undefined> {
+  try {
+    connectToDatabase();
+    let searchQuery: any = {};
+    searchQuery.slug = slug;
+    const course = await CourseModel.findOne(searchQuery).select(
+      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author"
+    );
+    if (!course) return undefined;
+
+    return JSON.parse(JSON.stringify(course));
+  } catch (error) {
+    console.log("error:", error);
+  }
+}

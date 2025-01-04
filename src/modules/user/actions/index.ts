@@ -45,3 +45,19 @@ export async function fetchUserCourses(userId?: string): Promise<
     };
   } catch (error) {}
 }
+
+export async function fetchUserById({
+  userId,
+}: {
+  userId: string;
+}): Promise<UserItemData | null | undefined> {
+  try {
+    connectToDatabase();
+    const findUser = await UserModel.findOne({ clerkId: userId });
+    if (!findUser?._id) return null;
+
+    return JSON.parse(JSON.stringify(findUser));
+  } catch (error) {
+    console.log(error);
+  }
+}
