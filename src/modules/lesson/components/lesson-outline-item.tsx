@@ -6,12 +6,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { IconClock, IconPlay } from "@/shared/components";
-import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
-import { getQueryClient } from "@/shared/libs";
 import { cn } from "@/shared/utils";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { getLessonById } from "../actions";
+import { useLayoutEffect, useRef } from "react";
 
 export interface LessonOutlineItemProps {
   title: string;
@@ -25,24 +22,16 @@ export function LessonOutlineItem({
   title,
   id,
   isActive,
-  isCompleted,
   duration,
 }: LessonOutlineItemProps) {
   const router = useRouter();
-  const queryClient = getQueryClient();
+  const itemRef = useRef<HTMLDivElement>(null);
+  const activeId = "active-lesson-id";
 
   const className = cn(
     "mb-5 pb-5 border-b border-dashed dark:border-b-slate-500 last:pb-0 last:mb-0 last:border-b-0 flex items-center gap-2 dark:text-text5 text-sm",
     isActive ? "text-primary font-bold dark:text-primary" : "font-medium"
   );
-
-  useEffect(() => {
-    if (!id) return;
-    queryClient.prefetchQuery({
-      queryKey: [QUERY_KEYS.GET_LESSON_BY_ID, id],
-      queryFn: () => getLessonById(id),
-    });
-  }, [id]);
 
   const handleChangeLesson = () => {
     if (!id) return;
@@ -50,6 +39,16 @@ export function LessonOutlineItem({
       scroll: false,
     });
   };
+
+  useLayoutEffect(() => {
+    const container = document.getElementById("lesson-outline");
+    if (container) {
+      const item = document.getElementById(activeId);
+      container.scrollTo({
+        top: (item?.offsetTop ?? 0) - (item?.offsetHeight ?? 0),
+      });
+    }
+  }, []);
 
   const child = (
     <>
@@ -77,7 +76,12 @@ export function LessonOutlineItem({
     </>
   );
   return (
-    <div className={className} onClick={handleChangeLesson}>
+    <div
+      ref={itemRef}
+      id={isActive ? "active-lesson-id" : ""}
+      className={className}
+      onClick={handleChangeLesson}
+    >
       {child}
     </div>
   );

@@ -7,7 +7,7 @@ import { IconFullScreen } from "@/shared/components";
 import { cn, extractDriveId } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import MuxPlayer from "@mux/mux-player-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Prism from "prismjs";
 import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
@@ -23,11 +23,10 @@ export function LessonContent(_props: LessonContentProps) {
     toggleExpanded?.(!isExpanded);
   };
   const params = useParams();
-  const router = useRouter();
   const videoRef = useRef<any>(null);
 
   const { data: lessonDetails, isFetching } = useQueryLessonById({
-    lessonId: params.id.toString(),
+    lessonId: params.id.toString() || "",
   });
   const courseDetails = lessonDetails?.courseId;
   const { data: lessonList } = useQueryLessonsByCourseId({

@@ -7,10 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { LessonOutlineItem } from "@/modules/lesson/components";
-import {
-  useQueryLessonById,
-  useQueryLessonDetailsOutline,
-} from "@/modules/lesson/services";
+import { useQueryLessonDetailsOutline } from "@/modules/lesson/services";
 import { useParams } from "next/navigation";
 import { LoadingOutline } from "./loading-outline";
 
@@ -18,18 +15,18 @@ export interface LessonOutlineProps {}
 
 export function LessonOutline(_props: LessonOutlineProps) {
   const params = useParams();
-  const { data: lessonDetails } = useQueryLessonById({
-    lessonId: params.id.toString(),
-  });
+
   const { data: lectures, isFetching } = useQueryLessonDetailsOutline({
     slug: params.course.toString(),
   });
   if (isFetching) return <LoadingOutline />;
-  if (!lessonDetails) return null;
   if (lectures?.length === 0 || !lectures) return null;
   return (
-    <div className="flex-1 lg:overflow-visible h-full lg:h-auto w-full static lg:sticky top-10 xl:top-[112px] right-0 p-3 lg:p-0 h-[calc(100%-56px)] w-full lg:p-0 lg:h-auto overflow-y-auto lg:overflow-y-visible">
-      <div className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg">
+    <div className="flex-1 h-full lg:h-auto w-full static lg:sticky top-10 xl:top-[112px] right-0 p-3 lg:p-0 h-[calc(100%-56px)] w-full lg:p-0 lg:h-auto overflow-y-auto lg:overflow-y-visible">
+      <div
+        className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg"
+        id="lesson-outline"
+      >
         {lectures.map((item) => {
           const activeLesson = item.lessons.find(
             (el) => el._id.toString() === params.id.toString()

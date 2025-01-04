@@ -6,7 +6,7 @@ export function Loading(_props: LoadingProps) {
       <div className="w-full aspect-video mb-5">
         <div className="w-full h-full skeleton"></div>
       </div>
-      <div className="flex justify-end mb-5">
+      <div className="flex justify-end mb-5 gap-3">
         <div className="h-12 w-[120px] skeleton"></div>
         <div className="h-12 w-[120px] skeleton"></div>
       </div>
