@@ -32,7 +32,7 @@ export function PlayerNavigation({ action, lessonId }: PlayerNavigationProps) {
       onMouseEnter={() => handleMouseEnter(lessonId)}
       onClick={handleChangeLesson}
       className={cn(
-        "flex opacity-0 invisible group-hover:opacity-100 group-hover:visible size-10 rounded items-center bg-white justify-center absolute top-1/2 -translate-y-1/2 z-10 hover:!bg-primary hover:!text-white transition-all dark:bg-grayDarker",
+        "flex lg:opacity-0 lg:invisible group-hover:opacity-100 group-hover:visible size-10 rounded items-center bg-primary lg:bg-white justify-center static lg:absolute top-1/2 lg:-translate-y-1/2 z-10 hover:!bg-primary text-white lg:text-current hover:!text-white transition-all dark:bg-grayDarker",
         action === "prev" ? "left-5" : "right-5"
       )}
     >

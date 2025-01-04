@@ -10,6 +10,7 @@ import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
 import { getQueryClient } from "@/shared/libs";
 import { cn } from "@/shared/utils";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { getLessonById } from "../actions";
 
 export interface LessonOutlineItemProps {
@@ -35,12 +36,13 @@ export function LessonOutlineItem({
     isActive ? "text-primary font-bold dark:text-primary" : "font-medium"
   );
 
-  const handleMouseEnter = (lessonId: string) => {
+  useEffect(() => {
+    if (!id) return;
     queryClient.prefetchQuery({
-      queryKey: [QUERY_KEYS.GET_LESSON_BY_ID, lessonId],
-      queryFn: () => getLessonById(lessonId),
+      queryKey: [QUERY_KEYS.GET_LESSON_BY_ID, id],
+      queryFn: () => getLessonById(id),
     });
-  };
+  }, [id]);
 
   const handleChangeLesson = () => {
     if (!id) return;
@@ -75,11 +77,7 @@ export function LessonOutlineItem({
     </>
   );
   return (
-    <div
-      className={className}
-      onClick={handleChangeLesson}
-      onMouseEnter={() => handleMouseEnter(id || "")}
-    >
+    <div className={className} onClick={handleChangeLesson}>
       {child}
     </div>
   );

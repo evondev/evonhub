@@ -113,20 +113,36 @@ export function LessonContent(_props: LessonContentProps) {
           ) : (
             <div className="w-full h-full lg:border borderDarkMode lg:rounded-lg bgDarkMode"></div>
           )}
-          {prevLesson && (
-            <PlayerNavigation
-              action="prev"
-              lessonId={prevLesson}
-            ></PlayerNavigation>
-          )}
-          {nextLesson && (
-            <PlayerNavigation
-              action="next"
-              lessonId={nextLesson}
-            ></PlayerNavigation>
-          )}
+          <div className="hidden lg:block">
+            {prevLesson && (
+              <PlayerNavigation
+                action="prev"
+                lessonId={prevLesson}
+              ></PlayerNavigation>
+            )}
+            {nextLesson && (
+              <PlayerNavigation
+                action="next"
+                lessonId={nextLesson}
+              ></PlayerNavigation>
+            )}
+          </div>
         </div>
       </FullScreen>
+      <div className="flex items-center justify-end gap-2 p-2">
+        {prevLesson && (
+          <PlayerNavigation
+            action="prev"
+            lessonId={prevLesson}
+          ></PlayerNavigation>
+        )}
+        {nextLesson && (
+          <PlayerNavigation
+            action="next"
+            lessonId={nextLesson}
+          ></PlayerNavigation>
+        )}
+      </div>
 
       <div className="hidden lg:flex items-center justify-end mb-5 gap-3">
         <button
