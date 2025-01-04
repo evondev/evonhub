@@ -19,7 +19,7 @@ export function getUserByIdOptions({ userId }: GetUserByIdProps) {
 
       return response;
     },
-    queryKey: [QUERY_KEYS.GET_USER_BY_ID],
+    queryKey: [QUERY_KEYS.GET_USER_BY_ID, userId],
   });
 }
 

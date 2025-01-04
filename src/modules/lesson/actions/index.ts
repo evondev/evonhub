@@ -50,6 +50,11 @@ export async function fetchLessonDetailsOutline(
         options: {
           sort: { order: 1 },
         },
+        populate: {
+          path: "lectureId",
+          model: LectureModel,
+          select: "id title",
+        },
       });
     if (!lectureList) return [];
     return JSON.parse(JSON.stringify(lectureList));

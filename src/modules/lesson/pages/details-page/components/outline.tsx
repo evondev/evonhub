@@ -8,13 +8,15 @@ import {
 } from "@/components/ui/accordion";
 import { LessonOutlineItem } from "@/modules/lesson/components";
 import { useQueryLessonDetailsOutline } from "@/modules/lesson/services";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { LoadingOutline } from "./loading-outline";
 
 export interface LessonOutlineProps {}
 
 export function LessonOutline(_props: LessonOutlineProps) {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const lessonId = searchParams.get("id")?.toString() || "";
 
   const { data: lectures, isLoading } = useQueryLessonDetailsOutline({
     slug: params.course.toString(),
@@ -23,13 +25,10 @@ export function LessonOutline(_props: LessonOutlineProps) {
   if (lectures?.length === 0 || !lectures) return null;
   return (
     <div className="flex-1 h-full lg:h-auto w-full static lg:sticky top-10 xl:top-[112px] right-0 p-3 lg:p-0 h-[calc(100%-56px)] w-full lg:p-0 lg:h-auto overflow-y-auto lg:overflow-y-visible">
-      <div
-        className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg"
-        id="lesson-outline"
-      >
+      <div className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg">
         {lectures.map((item) => {
           const activeLesson = item.lessons.find(
-            (el) => el._id.toString() === params.id.toString()
+            (el) => el._id.toString() === lessonId
           );
 
           return (
@@ -38,9 +37,9 @@ export function LessonOutline(_props: LessonOutlineProps) {
               collapsible
               className="w-full mb-3 lg:mb-5"
               key={item.title}
-              defaultValue={activeLesson?.title || ""}
+              defaultValue={activeLesson?.lectureId?.title || ""}
             >
-              <AccordionItem value={activeLesson?.title || item.title}>
+              <AccordionItem value={item.title || ""}>
                 <AccordionTrigger className="font-bold dark:text-text5 text-sm lg:text-base">
                   <div className="line-clamp-1 text-left">{item.title}</div>
                 </AccordionTrigger>
@@ -51,9 +50,7 @@ export function LessonOutline(_props: LessonOutlineProps) {
                         key={lesson._id}
                         title={lesson.title}
                         id={lesson._id}
-                        isActive={
-                          lesson._id.toString() === params.id.toString()
-                        }
+                        isActive={lesson._id.toString() === lessonId}
                         duration={lesson.duration}
                       ></LessonOutlineItem>
                     );

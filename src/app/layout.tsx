@@ -51,16 +51,16 @@ export default async function RootLayout({
         <body className={`${manrope.className}`}>
           <div className="wrapper relative">
             <ReactQueryProvider>
-              <UserProvider>
-                <ThemeProvider
-                  attribute="class"
-                  defaultTheme="system"
-                  enableSystem
-                  disableTransitionOnChange
-                >
-                  <Providers>{children}</Providers>
-                </ThemeProvider>
-              </UserProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <Providers>
+                  <UserProvider>{children}</UserProvider>
+                </Providers>
+              </ThemeProvider>
             </ReactQueryProvider>
           </div>
           <ToastContainer

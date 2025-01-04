@@ -13,8 +13,8 @@ function makeQueryClient() {
           query.state.status === "pending",
       },
       queries: {
-        refetchOnWindowFocus: true,
-        staleTime: 10 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000,
       },
     },
   });

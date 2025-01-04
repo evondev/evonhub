@@ -38,7 +38,7 @@ export function StudyPageContainer({}: StudyPageContainerProps) {
           key={course.slug}
           data={course}
           cta="Tiếp tục học"
-          url={`/lesson/${
+          url={`/lesson?id=${
             handleGetLastUrl(course.slug) || lessons?.[index]?.[0]?._id
           }`}
         ></CourseItem>

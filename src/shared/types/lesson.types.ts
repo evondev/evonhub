@@ -1,5 +1,6 @@
 import { CourseItemData } from "@/modules/course/types";
 import { Schema } from "mongoose";
+import { LectureItemData } from "./lecture.types";
 
 export interface LessonModelProps extends Document {
   _id: Schema.Types.ObjectId;
@@ -23,7 +24,7 @@ export interface LessonItemData
   extends Omit<LessonModelProps, "_id" | "lectureId" | "courseId"> {
   _id: string;
   courseId: string;
-  lectureId: string;
+  lectureId: LectureItemData;
 }
 export interface LessonItemCutomizeData
   extends Omit<LessonModelProps, "_id" | "lectureId" | "courseId"> {

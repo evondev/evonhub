@@ -6,12 +6,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { IconClock, IconPlay } from "@/shared/components";
-import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
-import { getQueryClient } from "@/shared/libs";
 import { cn } from "@/shared/utils";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
-import { getLessonById } from "../actions";
+import { useRef } from "react";
 
 export interface LessonOutlineItemProps {
   title: string;
@@ -68,23 +66,17 @@ export function LessonOutlineItem({
       )}
     </>
   );
-  const queryClient = getQueryClient();
-  useEffect(() => {
-    if (!id) return;
-    queryClient.prefetchQuery({
-      queryKey: [QUERY_KEYS.GET_LESSON_BY_ID, id],
-      queryFn: () => getLessonById(id),
-    });
-  }, [id]);
+  if (!id) {
+    return (
+      <div className={className} id={id}>
+        {child}
+      </div>
+    );
+  }
 
   return (
-    <div
-      ref={itemRef}
-      id={id}
-      className={className}
-      onClick={handleChangeLesson}
-    >
+    <Link scroll={false} id={id} className={className} href={`?id=${id}`}>
       {child}
-    </div>
+    </Link>
   );
 }

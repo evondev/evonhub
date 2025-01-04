@@ -7,7 +7,7 @@ import { IconFullScreen } from "@/shared/components";
 import { cn, extractDriveId } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import MuxPlayer from "@mux/mux-player-react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Prism from "prismjs";
 import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
@@ -23,10 +23,11 @@ export function LessonContent(_props: LessonContentProps) {
     toggleExpanded?.(!isExpanded);
   };
   const params = useParams();
+  const searchParams = useSearchParams();
   const videoRef = useRef<any>(null);
-
+  const lessonId = searchParams.get("id")?.toString() || "";
   const { data: lessonDetails, isLoading } = useQueryLessonById({
-    lessonId: params.id.toString() || "",
+    lessonId,
   });
   const courseDetails = lessonDetails?.courseId;
   const { data: lessonList } = useQueryLessonsByCourseId({
@@ -34,9 +35,7 @@ export function LessonContent(_props: LessonContentProps) {
   });
 
   const lessonIndex =
-    lessonList?.findIndex(
-      (lesson) => lesson._id.toString() === params.id.toString()
-    ) || -1;
+    lessonList?.findIndex((lesson) => lesson._id.toString() === lessonId) || -1;
   const nextLesson = lessonList?.[lessonIndex + 1]?._id;
   const prevLesson = lessonList?.[lessonIndex - 1]?._id;
   const iframeId = extractDriveId(lessonDetails?.iframe || "");
