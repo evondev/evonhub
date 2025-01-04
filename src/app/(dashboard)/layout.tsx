@@ -37,7 +37,7 @@ export default async function DashboardLayout({
         ></Header>
         <main className="grid grid-cols-1 pt-8 xl:pt-0 xl:w-[calc(100%-300px)] ml-auto lg:min-h-screen relative items-start">
           <Sidebar role={role}></Sidebar>
-          <section className="px-5 lg:px-8 pb-5 lg:pb-10">
+          <section className="px-5 lg:px-8 pb-10">
             {children}
             <Navigation role={role}></Navigation>
           </section>
