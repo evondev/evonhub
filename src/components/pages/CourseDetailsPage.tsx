@@ -29,12 +29,14 @@ import { userBuyCourse } from "@/lib/actions/order.action";
 import { cn } from "@/lib/utils";
 import { ECourseStatus, Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
+import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import ButtonGradient from "../button/ButtonGradient";
+import { Tooltip, TooltipContent, TooltipProvider } from "../ui/tooltip";
 
 const techStack = [
   "NextJS14",
@@ -181,25 +183,27 @@ const CourseDetailsPage = ({
         {ratings.length > 0 && (
           <>
             <div className="flex flex-wrap gap-3 mb-5">
-              {ratings.map((el, index) => (
-                <ButtonGradient
-                  key={el.content}
-                  className={{
-                    wrapper: "rounded-lg",
-                  }}
-                >
-                  <div className="rounded-md px-3 py-1 font-semibold text-sm flex items-center gap-2">
-                    <Image
-                      width={20}
-                      height={20}
-                      src={el.user.avatar}
-                      alt=""
-                      className="border borderDarkMode size-5 p-0.5 object-cover rounded-full"
-                    />
-                    {el.content}
-                  </div>
-                </ButtonGradient>
-              ))}
+              <TooltipProvider>
+                {ratings.map((el, index) => (
+                  <Tooltip key={index}>
+                    <TooltipTrigger>
+                      <div className="rounded-full p-2 text-sm flex items-center gap-2 border borderDarkMode bgDarkMode">
+                        <Image
+                          width={40}
+                          height={40}
+                          src={el.user.avatar}
+                          alt=""
+                          className="border borderDarkMode size-10 p-0.5 object-cover rounded-full flex-shrink-0"
+                        />
+                        {el.content.slice(0, 25)}...
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-sm">
+                      {el.content}
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </TooltipProvider>
             </div>
           </>
         )}
@@ -266,7 +270,7 @@ const CourseDetailsPage = ({
                           className="text-sm mb-5 pb-5 border-b border-dashed last:pb-0 last:mb-0 last:border-b-0 font-medium flex items-center gap-2 dark:text-text5
                         "
                         >
-                          <IconPlay />
+                          <IconPlay className="size-5 flex-shrink-0" />
                           <div className="line-clamp-1">{lesson.title}</div>
                           <span className="ml-auto font-semibold text-xs flex-shrink-0">
                             {lesson.duration} phút

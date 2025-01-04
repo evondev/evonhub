@@ -1,11 +1,26 @@
+"use client";
+import CourseItemLoading from "./course-item-loading";
+
 export interface CourseListProps {
   children: React.ReactNode;
+  isLoading?: boolean;
 }
 
-export function CourseList({ children }: CourseListProps) {
+export function CourseList({ children, isLoading }: CourseListProps) {
+  const child = isLoading ? (
+    <>
+      {Array(6)
+        .fill(0)
+        .map((_, index) => (
+          <CourseItemLoading key={index} />
+        ))}
+    </>
+  ) : (
+    children
+  );
   return (
     <div className="grid xl:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4 course-slider">
-      {children}
+      {child}
     </div>
   );
 }

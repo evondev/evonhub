@@ -63,7 +63,7 @@ export function LessonOutlineItem({
           >
             <div className="line-clamp-1">{title}</div>
           </TooltipTrigger>
-          <TooltipContent>{title}</TooltipContent>
+          <TooltipContent className="max-w-xs">{title}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
       {Number(duration) > 0 ? (

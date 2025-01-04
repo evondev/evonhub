@@ -8,7 +8,7 @@ import { connectToDatabase } from "@/shared/libs";
 import UserModel from "../models";
 import { UserItemData } from "../types";
 
-export async function fetchUserCourses(userId?: string): Promise<
+export async function fetchUserCourses({ userId }: { userId: string }): Promise<
   | {
       courses: CourseItemData[];
       lessons: any[];
@@ -29,6 +29,7 @@ export async function fetchUserCourses(userId?: string): Promise<
       select: "title slug image rating level price salePrice views free",
       match: { status: CourseStatus.Approved },
     });
+    console.info(`File index.ts user at line 32:`, user);
 
     const courses = user.courses;
     const allPromise = Promise.all(

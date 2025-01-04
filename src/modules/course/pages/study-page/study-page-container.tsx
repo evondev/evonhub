@@ -1,19 +1,20 @@
 "use client";
 
+import { useUserContext } from "@/components/user-context";
+import { useQueryUserCourses } from "@/modules/user/services";
 import { CourseList } from "@/shared/components";
 import CourseItem from "../../components/course-item";
-import { CourseItemData } from "../../types";
 
-export interface StudyPageContainerProps {
-  courses?: CourseItemData[];
-  lessons?: any[];
-}
+export interface StudyPageContainerProps {}
 
-export function StudyPageContainer({
-  courses = [],
-  lessons = [],
-}: StudyPageContainerProps) {
-  if (!courses.length || !lessons.length) return null;
+export function StudyPageContainer({}: StudyPageContainerProps) {
+  const { userInfo } = useUserContext();
+  const userId = userInfo?.clerkId.toString() || "";
+  const { data, isFetching } = useQueryUserCourses({
+    userId,
+  });
+  const courses = data?.courses || [];
+  const lessons = data?.lessons || [];
 
   const handleGetLastUrl = (slug: string) => {
     if (typeof localStorage === "undefined") return;
@@ -31,14 +32,14 @@ export function StudyPageContainer({
     return findCourse?.lesson;
   };
   return (
-    <CourseList>
+    <CourseList isLoading={isFetching}>
       {courses.map((course, index) => (
         <CourseItem
           key={course.slug}
           data={course}
           cta="Tiếp tục học"
           url={`/lesson/${
-            handleGetLastUrl(course.slug) || lessons?.[index][0]._id
+            handleGetLastUrl(course.slug) || lessons?.[index]?.[0]?._id
           }`}
         ></CourseItem>
       ))}

@@ -1,3 +1,4 @@
+"use client";
 import { ExplorePage } from "@/modules/course/pages";
 
 export interface ExplorePageRootProps {}
