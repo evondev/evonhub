@@ -13,6 +13,7 @@ export { default as IconFavorite } from "./IconFavorite";
 export { default as IconHome } from "./IconHome";
 export { default as IconLevel } from "./IconLevel";
 export { default as IconLike } from "./IconLike";
+export { default as IconLongArrowLeft } from "./IconLongArrowLeft";
 export { default as IconLongArrowRight } from "./IconLongArrowRight";
 export { default as IconOrder } from "./IconOrder";
 export { default as IconPlay } from "./IconPlay";

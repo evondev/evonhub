@@ -12,13 +12,14 @@ interface GetLessonByIdProps {
 
 export function getLessonByIdOptions({ lessonId }: GetLessonByIdProps) {
   return queryOptions({
+    enabled: !!lessonId,
     placeholderData: keepPreviousData,
     queryFn: async () => {
       const response = await getLessonById(lessonId);
 
       return response;
     },
-    queryKey: [QUERY_KEYS.GET_LESSON_BY_ID],
+    queryKey: [QUERY_KEYS.GET_LESSON_BY_ID, lessonId],
   });
 }
 

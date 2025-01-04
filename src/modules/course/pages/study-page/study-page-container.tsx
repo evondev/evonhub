@@ -16,6 +16,7 @@ export function StudyPageContainer({
   if (!courses.length || !lessons.length) return null;
 
   const handleGetLastUrl = (slug: string) => {
+    if (typeof localStorage === "undefined") return;
     const localLessons =
       localStorage && localStorage.getItem("lastCourseLesson")
         ? JSON.parse(localStorage.getItem("lastCourseLesson") || "[]")
@@ -32,8 +33,8 @@ export function StudyPageContainer({
           key={course.slug}
           data={course}
           cta="Tiếp tục học"
-          url={`/lesson?slug=${
-            handleGetLastUrl(course.slug) || lessons?.[index][0]?.slug
+          url={`/lesson/${
+            handleGetLastUrl(course.slug) || lessons?.[index][0]._id
           }`}
         ></CourseItem>
       ))}

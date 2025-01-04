@@ -1,5 +1,5 @@
+import { LessonModelProps } from "@/shared/types";
 import mongoose, { models, Schema } from "mongoose";
-import { LessonModelProps } from "../types";
 
 const lessonSchema = new Schema<LessonModelProps>({
   title: {
