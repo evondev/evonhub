@@ -99,7 +99,6 @@ export function LessonContent(_props: LessonContentProps) {
                 className="w-full h-full inline-block align-bottom"
                 ref={videoRef}
                 autoPlay
-                minResolution="480p"
               />
             </div>
           ) : iframeId ? (
