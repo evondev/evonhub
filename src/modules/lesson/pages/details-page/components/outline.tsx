@@ -16,10 +16,10 @@ export interface LessonOutlineProps {}
 export function LessonOutline(_props: LessonOutlineProps) {
   const params = useParams();
 
-  const { data: lectures, isFetching } = useQueryLessonDetailsOutline({
+  const { data: lectures, isLoading } = useQueryLessonDetailsOutline({
     slug: params.course.toString(),
   });
-  if (isFetching) return <LoadingOutline />;
+  if (isLoading) return <LoadingOutline />;
   if (lectures?.length === 0 || !lectures) return null;
   return (
     <div className="flex-1 h-full lg:h-auto w-full static lg:sticky top-10 xl:top-[112px] right-0 p-3 lg:p-0 h-[calc(100%-56px)] w-full lg:p-0 lg:h-auto overflow-y-auto lg:overflow-y-visible">

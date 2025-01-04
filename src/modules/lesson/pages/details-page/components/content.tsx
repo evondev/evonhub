@@ -25,7 +25,7 @@ export function LessonContent(_props: LessonContentProps) {
   const params = useParams();
   const videoRef = useRef<any>(null);
 
-  const { data: lessonDetails, isFetching } = useQueryLessonById({
+  const { data: lessonDetails, isLoading } = useQueryLessonById({
     lessonId: params.id.toString() || "",
   });
   const courseDetails = lessonDetails?.courseId;
@@ -80,7 +80,7 @@ export function LessonContent(_props: LessonContentProps) {
     localStorage.setItem("lastCourseLesson", JSON.stringify(data));
   }, [courseDetails?.slug, lessonDetails]);
 
-  if (isFetching) return <Loading />;
+  if (isLoading) return <Loading />;
   if (!lessonDetails) return <EmptyData text="Bài học không tồn tại!" />;
 
   return (

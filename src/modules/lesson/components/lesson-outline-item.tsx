@@ -6,9 +6,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { IconClock, IconPlay } from "@/shared/components";
+import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
+import { getQueryClient } from "@/shared/libs";
 import { cn } from "@/shared/utils";
 import { useRouter } from "next/navigation";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { getLessonById } from "../actions";
 
 export interface LessonOutlineItemProps {
   title: string;
@@ -40,16 +43,6 @@ export function LessonOutlineItem({
     });
   };
 
-  useLayoutEffect(() => {
-    const container = document.getElementById("lesson-outline");
-    if (container) {
-      const item = document.getElementById(activeId);
-      container.scrollTo({
-        top: (item?.offsetTop ?? 0) - (item?.offsetHeight ?? 0),
-      });
-    }
-  }, []);
-
   const child = (
     <>
       <IconPlay className="size-5 shrink-0" />
@@ -75,10 +68,19 @@ export function LessonOutlineItem({
       )}
     </>
   );
+  const queryClient = getQueryClient();
+  useEffect(() => {
+    if (!id) return;
+    queryClient.prefetchQuery({
+      queryKey: [QUERY_KEYS.GET_LESSON_BY_ID, id],
+      queryFn: () => getLessonById(id),
+    });
+  }, [id]);
+
   return (
     <div
       ref={itemRef}
-      id={isActive ? "active-lesson-id" : ""}
+      id={id}
       className={className}
       onClick={handleChangeLesson}
     >
