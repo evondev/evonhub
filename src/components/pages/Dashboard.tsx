@@ -23,7 +23,7 @@ const Dashboard = ({
   };
   return (
     <>
-      <HeadingNChild title="Khu vực tu luyện">
+      <HeadingNChild title="Khu vực học tập">
         {courses.length > 0 &&
           courses?.map((course, index) => (
             <CourseItem

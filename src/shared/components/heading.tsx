@@ -9,11 +9,11 @@ export function Heading({ children, className }: HeadingProps) {
   return (
     <h1
       className={cn(
-        "text-2xl lg:text-3xl font-extrabold mb-8 flex items-baseline gap-1",
+        "text-2xl lg:text-3xl font-extrabold mb-8 flex items-baseline gap-2",
         className
       )}
     >
-      <div className="w-5 h-2 bg-primary"></div>
+      <div className="size-5 from-[#ba97f7] to-[#978df8] bg-gradient-to-tl rounded-sm"></div>
       {children}
     </h1>
   );

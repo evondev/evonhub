@@ -6,7 +6,7 @@ export interface StudyPageProps {}
 export function StudyPage(_props: StudyPageProps) {
   return (
     <div>
-      <Heading>Khu vực tu luyện</Heading>
+      <Heading>Khu vực học tập</Heading>
       <StudyPageContainer />
     </div>
   );

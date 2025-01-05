@@ -48,7 +48,7 @@ export function LessonOutline(_props: LessonOutlineProps) {
 
   useEffect(() => {
     const element = document.getElementById(lessonId);
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target as Node) &&
@@ -64,8 +64,10 @@ export function LessonOutline(_props: LessonOutlineProps) {
       }
     }
     document.addEventListener("click", handleClickOutside);
+    document.addEventListener("touchend", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("touchend", handleClickOutside);
     };
   }, [lessonId]);
 
@@ -78,6 +80,7 @@ export function LessonOutline(_props: LessonOutlineProps) {
         className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg"
         ref={containerRef}
         onMouseLeave={handleLeaveContainer}
+        onTouchEnd={handleLeaveContainer}
       >
         {lectures.map((item) => {
           const activeLesson = item.lessons.find(

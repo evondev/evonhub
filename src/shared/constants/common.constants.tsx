@@ -16,7 +16,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/",
   },
   {
-    title: "Khu vực tu luyện",
+    title: "Khu vực học tập",
     icon: <IconStudy></IconStudy>,
     url: "/study",
   },

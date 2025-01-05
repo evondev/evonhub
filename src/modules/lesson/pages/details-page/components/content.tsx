@@ -131,7 +131,7 @@ export function LessonContent(_props: LessonContentProps) {
           </div>
         </FullScreen>
       </div>
-      <div className="flex lg:hidden items-center justify-end gap-2 p-2">
+      <div className="flex lg:hidden items-center justify-end gap-2 px-2 py-6">
         {prevLesson && (
           <PlayerNavigation
             action="prev"
@@ -168,7 +168,7 @@ export function LessonContent(_props: LessonContentProps) {
         </button>
         <RatingForm courseId={lessonDetails.courseId?._id}></RatingForm>
       </div>
-      <div className="p-3 lg:p-0">
+      <div className="px-3 lg:p-0">
         <h1 className="font-extrabold text-xl lg:text-2xl lg:mb-10">
           {lessonDetails.title}
         </h1>

@@ -50,9 +50,9 @@ export const Header = () => {
       <Link
         href="/study"
         scroll={false}
-        className={cn("items-center gap-2", {
+        className={cn("flex items-center gap-2", {
           flex: isLessonPage,
-          hidden: !isLessonPage,
+          "lg:hidden": !isLessonPage,
         })}
       >
         <div className="bg-primary p-3 rounded-full size-10 flex-shrink-0">
