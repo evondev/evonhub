@@ -24,7 +24,7 @@ export function LessonOutline(_props: LessonOutlineProps) {
 
   const lessonId = searchParams.get("id")?.toString() || "";
 
-  useEffect(() => {
+  const handleLeaveContainer = () => {
     const element = document.getElementById(lessonId);
     if (element && containerRef.current) {
       containerRef.current.scrollTo({
@@ -35,6 +35,11 @@ export function LessonOutline(_props: LessonOutlineProps) {
         behavior: "smooth",
       });
     }
+  };
+
+  useEffect(() => {
+    handleLeaveContainer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lessonId]);
 
   useEffect(() => {
@@ -68,6 +73,7 @@ export function LessonOutline(_props: LessonOutlineProps) {
       <div
         className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg"
         ref={containerRef}
+        onMouseLeave={handleLeaveContainer}
       >
         {lectures.map((item) => {
           const activeLesson = item.lessons.find(

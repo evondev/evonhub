@@ -1,5 +1,9 @@
 import { CourseItemData } from "@/modules/course/types";
-import { UserPermission, UserStatus } from "@/shared/constants/user.constants";
+import {
+  UserPermission,
+  UserRole,
+  UserStatus,
+} from "@/shared/constants/user.constants";
 import { Document, Schema } from "mongoose";
 
 export interface UserModelProps extends Document {
@@ -27,6 +31,7 @@ export interface UserModelProps extends Document {
   packageExpire: Date;
   _destroy: boolean;
 }
-export interface UserItemData extends Omit<UserModelProps, "courses"> {
+export interface UserItemData extends Omit<UserModelProps, "courses" | "role"> {
   courses: CourseItemData[];
+  role: UserRole;
 }

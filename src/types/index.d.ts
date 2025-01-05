@@ -3,15 +3,6 @@ import { ILesson } from "@/database/lesson.model";
 import { IUser } from "@/database/user.model";
 import { ECommonStatus, EReactionType, EUserStatus } from "@/types/enums";
 
-export type TMenuLink = {
-  title: string;
-  icon: React.ReactNode;
-  url: string;
-  isAdmin?: boolean;
-  isAuth?: boolean;
-  isHideMobile?: boolean;
-  isExpert?: boolean;
-};
 export interface CreateUserParams {
   clerkId: string;
   name: string;

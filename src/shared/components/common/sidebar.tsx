@@ -1,16 +1,23 @@
 "use client";
-import { adminRoutes, menuLinks } from "@/constants";
+import { adminRoutes, menuLinks } from "@/shared/constants/common.constants";
+import { UserRole } from "@/shared/constants/user.constants";
+import { useLessonDetailsPath } from "@/shared/hooks";
 import { useGlobalStore } from "@/store";
-import { Role } from "@/types/enums";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import MenuLink from "./MenuLink";
+import { MenuLink } from "./menu-link";
 
-const Sidebar = ({ role }: { role: string }) => {
+export interface SidebarProps {
+  role?: UserRole;
+}
+
+export function Sidebar({ role }: SidebarProps) {
   const { currentUser } = useGlobalStore();
   const pathname = usePathname();
   const isActiveLink = (url: string) => pathname === url;
+  const { isLessonPage } = useLessonDetailsPath();
+  if (isLessonPage) return null;
   return (
     <aside className="fixed top-0 left-0 pb-8 px-5 hidden xl:block bgDarkMode bottom-0 w-[300px] z-50 sidebar border-r border-gray-200 dark:border-opacity-10">
       <Link href="/" className="flex items-center gap-2 py-3 mb-5 h-20">
@@ -27,11 +34,11 @@ const Sidebar = ({ role }: { role: string }) => {
       </Link>
       <ul className="flex flex-col gap-3">
         {menuLinks.map((link) => {
-          if (adminRoutes.includes(link.url) && Role.ADMIN !== role)
+          if (adminRoutes.includes(link.url) && UserRole.Admin !== role)
             return null;
           if (
             (link.isAdmin || link.isExpert) &&
-            ![Role.ADMIN, Role.EXPERT].includes(role as Role)
+            ![UserRole.Admin, UserRole.Expert].includes(role as UserRole)
           )
             return null;
           if (link.isAuth && !currentUser?._id) return null;
@@ -44,6 +51,4 @@ const Sidebar = ({ role }: { role: string }) => {
       </ul>
     </aside>
   );
-};
-
-export default Sidebar;
+}

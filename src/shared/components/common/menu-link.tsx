@@ -1,14 +1,15 @@
-import { TMenuLink } from "@/types";
+import { MenuLinkItemProps } from "@/shared/types";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
+
 interface MenuLinkProps {
-  link: TMenuLink;
+  link: MenuLinkItemProps;
   isActiveLink: (url: string) => boolean;
 }
-const MenuLink = ({ link, isActiveLink }: MenuLinkProps) => {
+
+export function MenuLink({ link, isActiveLink }: MenuLinkProps) {
   return (
     <Link
-      prefetch={false}
       href={link.url}
       className={twMerge(
         "flex items-center gap-3 py-2.5 px-3 rounded-lg transition-all font-medium",
@@ -21,6 +22,4 @@ const MenuLink = ({ link, isActiveLink }: MenuLinkProps) => {
       <span>{link.title}</span>
     </Link>
   );
-};
-
-export default MenuLink;
+}

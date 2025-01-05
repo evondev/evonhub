@@ -83,49 +83,53 @@ export function LessonContent(_props: LessonContentProps) {
   if (!lessonDetails) return <EmptyData text="Bài học không tồn tại!" />;
 
   return (
-    <div className="lg:mb-8">
-      <FullScreen handle={handle}>
-        <div className="relative group aspect-video lg:mb-5">
-          {videoId ? (
-            <div className="relative">
-              <div
-                className={cn("player-bar h-1 absolute top-0 left-0 z-10 w-0")}
-              ></div>
-              <MuxPlayer
-                streamType="on-demand"
-                playbackId={videoId}
-                className="w-full h-full inline-block align-bottom"
-                ref={videoRef}
-                autoPlay
-              />
-            </div>
-          ) : iframeId ? (
-            <div className="size-full lg:border borderDarkMode lg:rounded-lg bgDarkMode overflow-hidden">
-              <iframe
-                src={`https://drive.google.com/file/d/${iframeId}/preview`}
-                className="size-full object-fill"
-                allow="autoplay"
-              ></iframe>
-            </div>
-          ) : (
-            <div className="w-full h-full lg:border borderDarkMode lg:rounded-lg bgDarkMode"></div>
-          )}
-          <div className="hidden lg:block">
-            {prevLesson && (
-              <PlayerNavigation
-                action="prev"
-                lessonId={prevLesson}
-              ></PlayerNavigation>
+    <div>
+      <div className=" lg:relative lg:h-full lg:overflow-hidden lg:max-h-[80vh] lg:min-h-[400px] lg:mb-8">
+        <FullScreen handle={handle}>
+          <div className="relative group aspect-video lg:aspect-auto lg:pt-[65%] lg:overflow-hidden lg:static lg:mb-5">
+            {videoId ? (
+              <div className="size-full lg:border borderDarkMode lg:rounded-lg bgDarkMode overflow-hidden lg:absolute lg:left-0 lg:top-0">
+                <div
+                  className={cn(
+                    "player-bar h-1 absolute top-0 left-0 z-10 w-0"
+                  )}
+                ></div>
+                <MuxPlayer
+                  streamType="on-demand"
+                  playbackId={videoId}
+                  className="w-full h-full inline-block align-bottom"
+                  ref={videoRef}
+                  autoPlay
+                />
+              </div>
+            ) : iframeId ? (
+              <div className="size-full lg:border borderDarkMode lg:rounded-lg bgDarkMode overflow-hidden lg:absolute lg:left-0 lg:top-0">
+                <iframe
+                  src={`https://drive.google.com/file/d/${iframeId}/preview`}
+                  className="size-full object-fill"
+                  allow="autoplay"
+                ></iframe>
+              </div>
+            ) : (
+              <div className="w-full h-full lg:border borderDarkMode lg:rounded-lg bgDarkMode"></div>
             )}
-            {nextLesson && (
-              <PlayerNavigation
-                action="next"
-                lessonId={nextLesson}
-              ></PlayerNavigation>
-            )}
+            <div className="hidden lg:block">
+              {prevLesson && (
+                <PlayerNavigation
+                  action="prev"
+                  lessonId={prevLesson}
+                ></PlayerNavigation>
+              )}
+              {nextLesson && (
+                <PlayerNavigation
+                  action="next"
+                  lessonId={nextLesson}
+                ></PlayerNavigation>
+              )}
+            </div>
           </div>
-        </div>
-      </FullScreen>
+        </FullScreen>
+      </div>
       <div className="flex lg:hidden items-center justify-end gap-2 p-2">
         {prevLesson && (
           <PlayerNavigation

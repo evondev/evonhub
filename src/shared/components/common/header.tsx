@@ -1,10 +1,11 @@
 "use client";
 import { commonPath } from "@/constants";
+import { useLessonDetailsPath } from "@/shared/hooks";
+import { cn } from "@/shared/utils";
 import { UserButton, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import { ModeToggle } from "./ModeToggle";
-import Notification from "./noti/Notification";
+import { ModeToggle } from "../../../components/ModeToggle";
 
 const IconSearch = (
   <svg
@@ -32,14 +33,28 @@ const IconSearch = (
     />
   </svg>
 );
-const Header = ({ notifications }: { notifications: any[] }) => {
+export const Header = () => {
   const auth = useAuth();
+  const { isLessonPage } = useLessonDetailsPath();
   return (
     <div
-      className="top py-3 px-5 bgDarkMode flex items-center justify-between gap-5 static xl:fixed top-0 left-[300px] right-0 z-50 xl:h-16 shadow-sm"
+      className={cn(
+        "top py-3 px-5 bgDarkMode flex items-center justify-between gap-5 static xl:fixed top-0  right-0 z-50 xl:h-16 shadow-sm",
+        {
+          "left-0": isLessonPage,
+          "left-[300px]": !isLessonPage,
+        }
+      )}
       id="header"
     >
-      <Link href="/" className="flex items-center gap-2 lg:hidden">
+      <Link
+        href="/study"
+        scroll={false}
+        className={cn("items-center gap-2", {
+          flex: isLessonPage,
+          hidden: !isLessonPage,
+        })}
+      >
         <div className="bg-primary p-3 rounded-full size-10 flex-shrink-0">
           <Image
             width={48}
@@ -63,9 +78,9 @@ const Header = ({ notifications }: { notifications: any[] }) => {
         <ModeToggle></ModeToggle>
         {auth?.userId ? (
           <div className="flex items-center gap-3">
-            <Notification notifications={notifications}></Notification>
+            {/* <Notification/> */}
 
-            <UserButton afterSignOutUrl="/" />
+            <UserButton />
           </div>
         ) : (
           <Link
@@ -95,5 +110,3 @@ const Header = ({ notifications }: { notifications: any[] }) => {
     </div>
   );
 };
-
-export default Header;

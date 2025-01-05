@@ -1,14 +1,4 @@
 import {
-  IconComment,
-  IconCourseManage,
-  IconOrder,
-  IconPlay,
-  IconStudy,
-  IconUser,
-  IconUsers,
-} from "@/components/icons";
-import { TMenuLink } from "@/types";
-import {
   ECommonStatus,
   ECourseLevel,
   EOrderStatus,
@@ -16,61 +6,6 @@ import {
   EUserStatus,
 } from "@/types/enums";
 
-export const menuLinks: TMenuLink[] = [
-  {
-    title: "Khám phá",
-    icon: <IconPlay></IconPlay>,
-    url: "/",
-  },
-  {
-    title: "Khu vực tu luyện",
-    icon: <IconStudy></IconStudy>,
-    url: "/study",
-  },
-
-  {
-    title: "Quản lý khóa học",
-    icon: <IconCourseManage></IconCourseManage>,
-    url: "/admin/course/manage",
-    isExpert: true,
-  },
-  {
-    title: "Quản lý thành viên",
-    icon: <IconUsers></IconUsers>,
-    url: "/admin/user/manage",
-    isAdmin: true,
-  },
-  {
-    title: "Quản lý bình luận",
-    icon: <IconComment></IconComment>,
-    url: "/admin/comment/manage",
-    isAdmin: true,
-    isHideMobile: true,
-  },
-  {
-    title: "Quản lý đơn hàng",
-    icon: <IconOrder></IconOrder>,
-    url: "/admin/order/manage",
-    isExpert: true,
-  },
-  // {
-  //   title: "Quản lý Coupon",
-  //   icon: <IconCoupon></IconCoupon>,
-  //   url: "/admin/coupon/manage",
-  //   isAdmin: true,
-  // },
-  {
-    title: "Bí kíp sắp ra mắt",
-    icon: <IconStudy></IconStudy>,
-    url: "/coming-soon",
-  },
-  {
-    title: "Profile",
-    icon: <IconUser></IconUser>,
-    url: "/profile",
-    isAuth: true,
-  },
-];
 export const baseButtonClassName =
   "rounded-lg h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";
 
@@ -283,7 +218,6 @@ export const userPermissions = {
   delete_category: "delete:category",
 } satisfies Record<string, string>;
 export type TUserPermission = keyof typeof userPermissions;
-export const adminRoutes = ["/admin/overview", "/admin/user/manage"];
 export const commonPath = {
   LOGIN: "/sign-in",
 };
