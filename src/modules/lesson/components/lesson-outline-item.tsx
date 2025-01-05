@@ -34,13 +34,6 @@ export function LessonOutlineItem({
     isActive ? "text-primary font-bold dark:text-primary" : "font-medium"
   );
 
-  const handleChangeLesson = () => {
-    if (!id) return;
-    router.push(id, {
-      scroll: false,
-    });
-  };
-
   const child = (
     <>
       <IconPlay className="size-5 shrink-0" />

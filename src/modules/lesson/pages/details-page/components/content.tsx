@@ -126,7 +126,7 @@ export function LessonContent(_props: LessonContentProps) {
           </div>
         </div>
       </FullScreen>
-      <div className="flex items-center justify-end gap-2 p-2">
+      <div className="flex lg:hidden items-center justify-end gap-2 p-2">
         {prevLesson && (
           <PlayerNavigation
             action="prev"

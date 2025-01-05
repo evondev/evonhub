@@ -9,6 +9,7 @@ import {
 import { LessonOutlineItem } from "@/modules/lesson/components";
 import { useQueryLessonDetailsOutline } from "@/modules/lesson/services";
 import { useParams, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { LoadingOutline } from "./loading-outline";
 
 export interface LessonOutlineProps {}
@@ -16,16 +17,58 @@ export interface LessonOutlineProps {}
 export function LessonOutline(_props: LessonOutlineProps) {
   const params = useParams();
   const searchParams = useSearchParams();
-  const lessonId = searchParams.get("id")?.toString() || "";
-
+  const containerRef = useRef<HTMLDivElement>(null);
   const { data: lectures, isLoading } = useQueryLessonDetailsOutline({
     slug: params.course.toString(),
   });
+
+  const lessonId = searchParams.get("id")?.toString() || "";
+
+  useEffect(() => {
+    const element = document.getElementById(lessonId);
+    if (element && containerRef.current) {
+      containerRef.current.scrollTo({
+        top:
+          element.offsetTop -
+          containerRef.current.offsetTop -
+          element.clientHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [lessonId]);
+
+  useEffect(() => {
+    const element = document.getElementById(lessonId);
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node) &&
+        element
+      ) {
+        containerRef.current.scrollTo({
+          top:
+            element.offsetTop -
+            containerRef.current.offsetTop -
+            element.clientHeight,
+          behavior: "smooth",
+        });
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [lessonId]);
+
   if (isLoading) return <LoadingOutline />;
   if (lectures?.length === 0 || !lectures) return null;
+
   return (
     <div className="flex-1 h-full lg:h-auto w-full static lg:sticky top-10 xl:top-[112px] right-0 p-3 lg:p-0 h-[calc(100%-56px)] w-full lg:p-0 lg:h-auto overflow-y-auto lg:overflow-y-visible">
-      <div className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg">
+      <div
+        className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg"
+        ref={containerRef}
+      >
         {lectures.map((item) => {
           const activeLesson = item.lessons.find(
             (el) => el._id.toString() === lessonId
