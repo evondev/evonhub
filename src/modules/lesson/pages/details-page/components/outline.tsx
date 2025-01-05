@@ -38,9 +38,13 @@ export function LessonOutline(_props: LessonOutlineProps) {
   };
 
   useEffect(() => {
-    handleLeaveContainer();
+    if (!lessonId || lectures?.length === 0) return;
+    const timer = setTimeout(() => {
+      handleLeaveContainer();
+    }, 1000);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lessonId]);
+  }, [lessonId, lectures]);
 
   useEffect(() => {
     const element = document.getElementById(lessonId);
@@ -59,9 +63,9 @@ export function LessonOutline(_props: LessonOutlineProps) {
         });
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [lessonId]);
 
