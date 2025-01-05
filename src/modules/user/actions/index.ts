@@ -29,7 +29,6 @@ export async function fetchUserCourses({ userId }: { userId: string }): Promise<
       select: "title slug image rating level price salePrice views free",
       match: { status: CourseStatus.Approved },
     });
-    console.info(`File index.ts user at line 32:`, user);
 
     const courses = user.courses;
     const allPromise = Promise.all(
