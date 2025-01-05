@@ -222,7 +222,7 @@ const LessonItemUpdate = ({
             <span>Cập nhật</span>
           </Button>
           <Link
-            href={`/${course.slug}/lesson?slug=${lesson.slug}`}
+            href={`/${course.slug}/lesson?id=${lessonId}`}
             target="_blank"
             className={cn(btnClassName)}
           >
