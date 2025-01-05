@@ -10,46 +10,43 @@ import {
 import { primaryButtonClassName, reactions } from "@/constants";
 import createRating from "@/lib/actions/rating.action";
 import { cn } from "@/lib/utils";
-import { useGlobalStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
-import ButtonGradient from "../button/ButtonGradient";
-import { IconStar } from "../icons";
-import { Button } from "../ui/button";
+import ButtonGradient from "../../../components/button/ButtonGradient";
+import { IconStar } from "../../../components/icons";
+import { Button } from "../../../components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "../ui/form";
-import { Textarea } from "../ui/textarea";
+} from "../../../components/ui/form";
+import { Textarea } from "../../../components/ui/textarea";
 const ratingSchema = z.object({
   content: z.string().min(5, {
     message: "Nội dung phải có ít nhất 5 ký tự",
   }),
 });
-const RatingForm = ({ courseId }: { courseId: string }) => {
-  const { currentUser } = useGlobalStore();
+export function RatingForm({ courseId }: { courseId: string }) {
   const [rating, setRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
-  const handleRating = (rate: number) => {
-    setRating(rate);
-  };
+
   const form = useForm<z.infer<typeof ratingSchema>>({
     resolver: zodResolver(ratingSchema),
     defaultValues: {
       content: "",
     },
   });
+
   async function onSubmit(values: z.infer<typeof ratingSchema>) {
     if (rating < 1 || rating > 5) {
-      toast.error("Vui lòng chọn số sao");
+      toast.error("Vui lòng chọn reaction cho khóa học");
       return;
     }
     setIsSubmitting(true);
@@ -164,6 +161,4 @@ const RatingForm = ({ courseId }: { courseId: string }) => {
       </Form>
     </div>
   );
-};
-
-export default RatingForm;
+}

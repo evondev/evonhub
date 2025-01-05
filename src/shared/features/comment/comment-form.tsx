@@ -8,16 +8,16 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
-import { Button } from "../ui/button";
+import { Button } from "../../../components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "../ui/form";
-import { Textarea } from "../ui/textarea";
-import { useUserContext } from "../user-context";
+} from "../../../components/ui/form";
+import { Textarea } from "../../../components/ui/textarea";
+import { useUserContext } from "../../../components/user-context";
 
 const courseCommentFormSchema = z.object({
   content: z
@@ -34,12 +34,12 @@ interface CommentFormProps {
   isReply?: boolean;
   closeReply?: () => void;
 }
-const CommentForm = ({
+export function CommentForm({
   closeReply,
   comment,
   isReply,
   lessonId,
-}: CommentFormProps) => {
+}: CommentFormProps) {
   const { userInfo } = useUserContext();
   const userId = userInfo?._id.toString() || "";
 
@@ -115,6 +115,4 @@ const CommentForm = ({
       </Form>
     </div>
   );
-};
-
-export default CommentForm;
+}

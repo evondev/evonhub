@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { UserRole } from "@/shared/constants/user.constants";
 import { useGlobalStore } from "@/store";
-import { Role } from "@/types/enums";
 import React from "react";
 import { useUserContext } from "../user-context";
 
@@ -18,7 +18,7 @@ const LessonLayout = ({ children, courseId }: LessonLayoutProps) => {
 
   if (
     (!userCourses.includes(courseId) || !userInfo?._id) &&
-    userInfo?.role !== Role.ADMIN
+    userInfo?.role !== UserRole.Admin
   )
     return null;
   return (

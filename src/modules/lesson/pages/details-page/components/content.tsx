@@ -4,6 +4,7 @@ import EmptyData from "@/components/EmptyData";
 import { useQueryLessonById } from "@/modules/lesson/services";
 import { useQueryLessonsByCourseId } from "@/modules/lesson/services/data/query-lessons-by-course-id.data";
 import { IconFullScreen } from "@/shared/components";
+import { RatingForm } from "@/shared/features/rating";
 import { cn, extractDriveId } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import MuxPlayer from "@mux/mux-player-react";
@@ -165,7 +166,7 @@ export function LessonContent(_props: LessonContentProps) {
           <IconFullScreen />
           Toàn màn hình
         </button>
-        {/* <RatingForm courseId={lessonDetails.courseId}></RatingForm> */}
+        <RatingForm courseId={lessonDetails.courseId?._id}></RatingForm>
       </div>
       <div className="p-3 lg:p-0">
         <h1 className="font-extrabold text-xl lg:text-2xl lg:mb-10">

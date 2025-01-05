@@ -26,11 +26,7 @@ export enum EReactionType {
   BAD = "Bad",
   TERRIBLE = "Terrible",
 }
-export enum ECommentStatus {
-  PENDING = "pending",
-  APPROVED = "approved",
-  REJECTED = "rejected",
-}
+
 export enum ECommonStatus {
   PENDING = "pending",
   APPROVED = "approved",

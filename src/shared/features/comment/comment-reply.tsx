@@ -1,9 +1,9 @@
 "use client";
 
-import { CommentItemData } from "@/lib/actions/comment.action";
 import { cn } from "@/lib/utils";
-import CommentForm from "@/shared/features/comment/comment-form";
+import { CommentItemData } from "@/modules/comment/types";
 import { useState } from "react";
+import { CommentForm } from "./comment-form";
 
 interface CommentReplyProps {
   comment: CommentItemData;

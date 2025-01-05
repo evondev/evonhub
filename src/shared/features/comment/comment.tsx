@@ -1,30 +1,24 @@
-import { getCommentsByLesson } from "@/lib/actions/comment.action";
-import { getLessonBySlug } from "@/lib/actions/lesson.action";
-import CommentForm from "@/shared/features/comment/comment-form";
+"use client";
+
+import { useQueryCommentsByLesson } from "@/modules/comment/services";
+import { useSearchParams } from "next/navigation";
 import CommentField from "./comment-field";
+import { CommentForm } from "./comment-form";
 
-const page = async ({
-  searchParams,
-  params,
-}: {
-  params: {
-    course: string;
-  };
-  searchParams: {
-    slug: string;
-  };
-}) => {
-  const lessonDetails = await getLessonBySlug(searchParams.slug, params.course);
-  if (!lessonDetails) return null;
-  const comments = await getCommentsByLesson(lessonDetails._id);
+export interface CommentProps {}
+
+export function Comment(_props: CommentProps) {
+  const searchParams = useSearchParams();
+  const lessonId = searchParams.get("id")?.toString() || "";
+
+  const { data: comments } = useQueryCommentsByLesson({
+    lessonId,
+  });
   const rootComments = comments?.filter((item) => !item.parentId);
-  const commentLessonId = lessonDetails?._id.toString() || "";
-
-  if (!lessonDetails.courseId) return null;
 
   return (
     <div>
-      <CommentForm lessonId={commentLessonId}></CommentForm>
+      <CommentForm lessonId={lessonId}></CommentForm>
       {!!rootComments && rootComments?.length > 0 && (
         <div className="mt-10 hidden lg:flex flex-col gap-10">
           <div className="flex items-center justify-between">
@@ -41,7 +35,7 @@ const page = async ({
                 key={item._id.toString()}
                 comment={item}
                 comments={comments || []}
-                lessonId={commentLessonId}
+                lessonId={lessonId}
               />
             ))}
           </div>
@@ -49,6 +43,4 @@ const page = async ({
       )}
     </div>
   );
-};
-
-export default page;
+}

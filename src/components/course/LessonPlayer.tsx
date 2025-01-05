@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Prism from "prismjs";
 import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import RatingForm from "../rating/RatingForm";
+import RatingForm from "../../shared/features/rating/rating-form";
 
 interface LessonPlayerProps {
   lessonDetails: {
