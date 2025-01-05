@@ -1,4 +1,4 @@
-import { Role } from "@/types/enums";
+import { UserRole } from "@/shared/constants/user.constants";
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
@@ -9,8 +9,8 @@ interface GlobalState {
   setCurrentUser?: (currentUser: any) => void;
   permissions?: any[];
   setPermissions?: (permissions: any) => void;
-  userRole?: Role;
-  setUserRole?: (userRole: Role) => void;
+  userRole?: UserRole;
+  setUserRole?: (userRole: UserRole) => void;
 }
 
 export const useGlobalStore = create<GlobalState>()(
@@ -26,8 +26,8 @@ export const useGlobalStore = create<GlobalState>()(
         permissions: [],
         setPermissions: (permissions: any) =>
           set((state) => ({ permissions: permissions })),
-        userRole: Role.USER,
-        setUserRole: (userRole: Role) =>
+        userRole: UserRole.User,
+        setUserRole: (userRole: UserRole) =>
           set((state) => ({ userRole: userRole })),
       }),
 

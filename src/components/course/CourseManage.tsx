@@ -17,8 +17,8 @@ import {
 import { ICourse } from "@/database/course.model";
 import { deleteCourse } from "@/lib/actions/course.action";
 import { cn } from "@/lib/utils";
+import { UserRole } from "@/shared/constants/user.constants";
 import { useGlobalStore } from "@/store";
-import { Role } from "@/types/enums";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -133,7 +133,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                       <IconEye></IconEye>
                     </Link>
                     {userRole &&
-                      [Role.ADMIN, Role.EXPERT].includes(userRole) && (
+                      [UserRole.Admin, UserRole.Expert].includes(userRole) && (
                         <>
                           <Link
                             href={`/admin/course/update?slug=${course.slug}`}
@@ -143,7 +143,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                           </Link>
                         </>
                       )}
-                    {userRole && [Role.ADMIN].includes(userRole) && (
+                    {userRole && [UserRole.Admin].includes(userRole) && (
                       <button
                         className={cn(actionClassName)}
                         onClick={() => handleDeleteCourse(course.slug)}

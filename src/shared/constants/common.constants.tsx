@@ -47,7 +47,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     isExpert: true,
   },
   {
-    title: "Bí kíp sắp ra mắt",
+    title: "Sắp ra mắt",
     icon: <IconStudy></IconStudy>,
     url: "/coming-soon",
   },

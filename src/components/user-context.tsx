@@ -1,8 +1,9 @@
 "use client";
 import { useQueryUserById } from "@/modules/user/services";
 import { UserItemData } from "@/modules/user/types";
+import { useGlobalStore } from "@/store";
 import { useAuth } from "@clerk/nextjs";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 
 const UserContext = createContext<{
   userInfo?: UserItemData | null;
@@ -10,8 +11,12 @@ const UserContext = createContext<{
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const { userId } = useAuth();
+  const { setUserRole } = useGlobalStore();
   const { data: userInfo } = useQueryUserById({ userId: userId || "" });
-
+  useEffect(() => {
+    if (!userInfo) return;
+    setUserRole?.(userInfo?.role || "");
+  }, [setUserRole, userInfo]);
   return (
     <UserContext.Provider value={{ userInfo }}>{children}</UserContext.Provider>
   );
