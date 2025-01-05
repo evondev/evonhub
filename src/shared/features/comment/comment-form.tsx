@@ -22,7 +22,7 @@ import { useUserContext } from "../../../components/user-context";
 const courseCommentFormSchema = z.object({
   content: z
     .string({
-      message: "Vui lòng nhập chuỗi",
+      message: "Vui lòng nhập bình luận",
     })
     .min(10, { message: "Nhập tối thiểu 10 kí tự" }),
 });
