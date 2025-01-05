@@ -7,7 +7,7 @@ export interface LessonDetailsPageProps {}
 export function LessonDetailsPage(_props: LessonDetailsPageProps) {
   return (
     <>
-      <div className="lg:overflow-hidden lg:p-2 flex-shrink-0 w-full">
+      <div className="lg:overflow-hidden lg:p-2 flex-shrink-0 w-full flex flex-col gap-8">
         <LessonContent />
         <Comment />
       </div>

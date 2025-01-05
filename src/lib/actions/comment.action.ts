@@ -9,7 +9,9 @@ import {
   ReplyCommentParams,
   UpdateCommentParams,
 } from "@/types";
-import { ECommentStatus, Role } from "@/types/enums";
+
+import { CommentStatus } from "@/shared/constants/comment.constants";
+import { UserRole } from "@/shared/constants/user.constants";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -41,7 +43,7 @@ export async function getAllComments(params: GetAllCommentsParams) {
     if (params.status) {
       query.status = params.status;
     }
-    if (![Role.ADMIN].includes(findUser?.role)) {
+    if (![UserRole.Admin].includes(findUser?.role)) {
       query.user = findUser._id;
     }
     const comments = await Comment.find(query)
@@ -90,9 +92,9 @@ export async function replyComment(params: ReplyCommentParams) {
       lesson: params.user.lessonId,
       parentId: findComment._id,
       status:
-        Role.ADMIN === findUser.role
-          ? ECommentStatus.APPROVED
-          : ECommentStatus.PENDING,
+        UserRole.Admin === findUser.role
+          ? CommentStatus.Approved
+          : CommentStatus.Pending,
     });
     await newComment.save();
     await sendNotification({
