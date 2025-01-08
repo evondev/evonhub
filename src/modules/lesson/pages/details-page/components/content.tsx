@@ -8,7 +8,7 @@ import { RatingForm } from "@/shared/features/rating";
 import { cn, extractDriveId } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import MuxPlayer from "@mux/mux-player-react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Prism from "prismjs";
 import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
@@ -23,7 +23,6 @@ export function LessonContent(_props: LessonContentProps) {
   const handleExpandScreen = () => {
     toggleExpanded?.(!isExpanded);
   };
-  const params = useParams();
   const searchParams = useSearchParams();
   const videoRef = useRef<any>(null);
   const lessonId = searchParams.get("id")?.toString() || "";

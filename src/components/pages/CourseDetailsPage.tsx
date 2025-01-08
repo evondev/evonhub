@@ -171,10 +171,9 @@ const CourseDetailsPage = ({
             <Image
               alt=""
               width={1200}
-              height={600}
+              height={720}
               src={data.image}
               className="w-full h-full object-cover rounded-lg"
-              sizes="600px"
               priority
             />
           )}

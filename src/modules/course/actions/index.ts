@@ -29,6 +29,7 @@ export async function fetchCoursesIncoming(): Promise<
     connectToDatabase();
     const courses = await CourseModel.find({
       status: CourseStatus.Pending,
+      _destroy: false,
     })
       .select("title slug image level rating price salePrice views free")
       .sort({ createdAt: -1 });
