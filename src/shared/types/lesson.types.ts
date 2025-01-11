@@ -35,4 +35,7 @@ export interface LessonDetailsOutlineData {
   id: string;
   title: string;
   lessons: LessonItemData[];
+  courseId: {
+    _id: string;
+  };
 }

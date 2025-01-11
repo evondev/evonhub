@@ -11,7 +11,7 @@ export async function ComingSoonPage(_props: ComingSoonPageProps) {
       <Heading>Sắp ra mắt</Heading>
       <CourseList>
         {courses?.map((course) => (
-          <CourseItem disabled key={course.slug} data={course}></CourseItem>
+          <CourseItem key={course.slug} data={course}></CourseItem>
         ))}
       </CourseList>
     </div>

@@ -43,6 +43,11 @@ export async function fetchLessonDetailsOutline(
       .select("title lessons")
       .sort({ order: 1 })
       .populate({
+        path: "courseId",
+        model: CourseModel,
+        select: "id",
+      })
+      .populate({
         path: "lessons",
         model: LessonModel,
         select: "_id title slug user course order duration",

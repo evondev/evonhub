@@ -22,12 +22,13 @@ import {
   courseLevel,
   primaryButtonClassName,
 } from "@/constants";
-import { ICourse } from "@/database/course.model";
 import { getCouponInfo } from "@/lib/actions/coupon.action";
 import { getFreeCourse } from "@/lib/actions/course.action";
 import { userBuyCourse } from "@/lib/actions/order.action";
 import { cn } from "@/lib/utils";
-import { ECourseStatus, Role } from "@/types/enums";
+import { CourseItemData } from "@/modules/course/types";
+import { CourseStatus } from "@/shared/constants/course.constants";
+import { UserRole } from "@/shared/constants/user.constants";
 import { formatThoundsand } from "@/utils";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import Image from "next/image";
@@ -63,7 +64,7 @@ const CourseDetailsPage = ({
   ratings = [],
   user,
 }: {
-  data: Omit<ICourse, "lecture"> & {
+  data: Omit<CourseItemData, "lecture"> & {
     _id: string;
     lecture: {
       _id: string;
@@ -86,6 +87,7 @@ const CourseDetailsPage = ({
   const [discount, setDiscount] = useState(0);
   const userCourses = user?.courses?.map((item: any) => item._id) || [];
   const router = useRouter();
+  const isPending = data.status === CourseStatus.Pending;
   const handleEnrollFree = async (slug: string) => {
     if (!user?._id) {
       router.push(commonPath.LOGIN);
@@ -138,9 +140,9 @@ const CourseDetailsPage = ({
   };
   if (!data) return <PageNotFound />;
   if (
-    data.status !== ECourseStatus.APPROVED &&
-    userRole !== Role.ADMIN &&
-    userRole !== Role.EXPERT
+    data.status !== CourseStatus.Approved &&
+    userRole !== UserRole.Admin &&
+    userRole !== UserRole.Expert
   )
     return <PageNotFound />;
   const lectures = data?.lecture || [];
@@ -391,8 +393,9 @@ const CourseDetailsPage = ({
                     </button>
                   ) : (
                     <button
-                      className="w-full"
-                      onClick={() => handleBuyCourse(data.slug)}
+                      className="w-full disabled:cursor-not-allowed"
+                      onClick={() => !isPending && handleBuyCourse(data.slug)}
+                      disabled={isPending}
                     >
                       <ButtonGradient
                         className={{
@@ -400,36 +403,42 @@ const CourseDetailsPage = ({
                           main: "text-sm",
                         }}
                       >
-                        {data.cta || "Đăng ký ngay"}
+                        {isPending ? "Sắp ra mắt" : data.cta || "Đăng ký ngay"}
                       </ButtonGradient>
                     </button>
                   )}
                 </>
               )}
-              <div className="relative h-10 rounded-lg borderDarkMode flex items-center gap-5 p-2 mt-5 justify-between has-[input:focus]:border-primary transition-all">
-                <input
-                  placeholder="Nhập mã giảm giá"
-                  className="outline-none border-none bg-transparent text-sm uppercase font-bold pr-2 w-full placeholder:font-medium"
-                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                  value={couponCode}
-                />
-                <button
-                  className="text-xs font-semibold bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white rounded px-3 h-full flex-shrink-0"
-                  onClick={handleApplyCoupon}
-                  disabled={!couponCode}
-                >
-                  Áp dụng
-                </button>
-              </div>
-              <div className="text-center mt-5 text-sm">
-                Bạn chưa biết cách mua khóa học?{" "}
-                <Link
-                  href="/how-to-buy"
-                  className="text-primary underline font-semibold"
-                >
-                  Nhấn vào đây nha
-                </Link>
-              </div>
+              {!isPending && (
+                <>
+                  <div className="relative h-10 rounded-lg borderDarkMode flex items-center gap-5 p-2 mt-5 justify-between has-[input:focus]:border-primary transition-all">
+                    <input
+                      placeholder="Nhập mã giảm giá"
+                      className="outline-none border-none bg-transparent text-sm uppercase font-bold pr-2 w-full placeholder:font-medium"
+                      onChange={(e) =>
+                        setCouponCode(e.target.value.toUpperCase())
+                      }
+                      value={couponCode}
+                    />
+                    <button
+                      className="text-xs font-semibold bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white rounded px-3 h-full flex-shrink-0"
+                      onClick={handleApplyCoupon}
+                      disabled={!couponCode}
+                    >
+                      Áp dụng
+                    </button>
+                  </div>
+                  <div className="text-center mt-5 text-sm">
+                    Bạn chưa biết cách mua khóa học?{" "}
+                    <Link
+                      href="/how-to-buy"
+                      className="text-primary underline font-semibold"
+                    >
+                      Nhấn vào đây nha
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

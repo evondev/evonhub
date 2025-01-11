@@ -6,6 +6,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useUserContext } from "@/components/user-context";
+import { useQueryCourseBySlug } from "@/modules/course/services";
+import { useQueryHistoriesByUser } from "@/modules/history/services";
 import { LessonOutlineItem } from "@/modules/lesson/components";
 import { useQueryLessonDetailsOutline } from "@/modules/lesson/services";
 import { useParams, useSearchParams } from "next/navigation";
@@ -20,6 +23,18 @@ export function LessonOutline(_props: LessonOutlineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { data: lectures, isLoading } = useQueryLessonDetailsOutline({
     slug: params.course.toString(),
+  });
+
+  const { data: courseDetails } = useQueryCourseBySlug({
+    courseSlug: params.course.toString(),
+  });
+  const courseId = courseDetails?._id?.toString() || "";
+
+  const { userInfo } = useUserContext();
+  const userId = userInfo?._id || "";
+  const { data: histories } = useQueryHistoriesByUser({
+    userId,
+    courseId,
   });
 
   const lessonId = searchParams.get("id")?.toString() || "";
@@ -47,8 +62,8 @@ export function LessonOutline(_props: LessonOutlineProps) {
   }, [lessonId, lectures]);
 
   useEffect(() => {
-    const element = document.getElementById(lessonId);
     function handleClickOutside(event: MouseEvent | TouchEvent) {
+      const element = document.getElementById(lessonId);
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target as Node) &&
@@ -64,10 +79,8 @@ export function LessonOutline(_props: LessonOutlineProps) {
       }
     }
     document.addEventListener("click", handleClickOutside);
-    document.addEventListener("touchend", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
-      document.removeEventListener("touchend", handleClickOutside);
     };
   }, [lessonId]);
 
@@ -79,8 +92,6 @@ export function LessonOutline(_props: LessonOutlineProps) {
       <div
         className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg"
         ref={containerRef}
-        onMouseLeave={handleLeaveContainer}
-        onTouchEnd={handleLeaveContainer}
       >
         {lectures.map((item) => {
           const activeLesson = item.lessons.find(
@@ -108,6 +119,9 @@ export function LessonOutline(_props: LessonOutlineProps) {
                         id={lesson._id}
                         isActive={lesson._id.toString() === lessonId}
                         duration={lesson.duration}
+                        courseId={courseId}
+                        histories={histories}
+                        userId={userId}
                       ></LessonOutlineItem>
                     );
                   })}

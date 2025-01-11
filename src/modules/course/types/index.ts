@@ -43,7 +43,9 @@ export interface CourseModelProps extends Document {
   _destroy: boolean;
 }
 
-export interface CourseItemData extends Omit<CourseModelProps, ""> {}
+export interface CourseItemData extends Omit<CourseModelProps, "id"> {
+  _id: string;
+}
 export interface FetchCoursesParams {
   status: CourseStatus;
 }
