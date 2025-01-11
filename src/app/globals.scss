@@ -320,7 +320,7 @@ div[role="dialog"] {
     #00aefd
   );
   background-size: 400% 400%;
-  animation: gradient 3s linear infinite;
+  animation: gradient 5s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
 }
 @keyframes gradient {
   0% {
@@ -364,4 +364,7 @@ div[role="dialog"] {
     );
     border-radius: inherit;
   }
+}
+.gradient-secondary {
+  @apply from-[#00D583] to-[#AAFF6F] bg-gradient-to-r;
 }

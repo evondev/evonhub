@@ -3,7 +3,7 @@
 import { useUserContext } from "@/components/user-context";
 import { useQueryUserCourses } from "@/modules/user/services";
 import { CourseList } from "@/shared/components";
-import CourseItem from "../../components/course-item";
+import { CourseItem } from "../../components";
 
 export interface StudyPageContainerProps {}
 
@@ -41,6 +41,8 @@ export function StudyPageContainer({}: StudyPageContainerProps) {
           url={`/lesson?id=${
             handleGetLastUrl(course.slug) || lessons?.[index]?.[0]?._id
           }`}
+          userId={userInfo?._id}
+          courseId={course._id}
         ></CourseItem>
       ))}
     </CourseList>

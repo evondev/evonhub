@@ -1,7 +1,7 @@
 "use client";
 import { CourseList, Heading } from "@/shared/components";
 import { CourseStatus } from "@/shared/constants/course.constants";
-import CourseItem from "../../components/course-item";
+import { CourseItem } from "../../components";
 import { useQueryCourses } from "../../services";
 
 export interface ExplorePageProps {}

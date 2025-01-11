@@ -1,6 +1,6 @@
 import { CourseList, Heading } from "@/shared/components";
 import { fetchCoursesIncoming } from "../../actions";
-import CourseItem from "../../components/course-item";
+import { CourseItem } from "../../components";
 
 export interface ComingSoonPageProps {}
 

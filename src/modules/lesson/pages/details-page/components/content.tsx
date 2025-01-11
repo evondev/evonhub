@@ -35,7 +35,7 @@ export function LessonContent(_props: LessonContentProps) {
   });
 
   const lessonIndex =
-    lessonList?.findIndex((lesson) => lesson._id.toString() === lessonId) || -1;
+    lessonList?.findIndex((lesson) => lesson._id.toString() === lessonId) || 0;
   const nextLesson = lessonList?.[lessonIndex + 1]?._id;
   const prevLesson = lessonList?.[lessonIndex - 1]?._id;
   const iframeId = extractDriveId(lessonDetails?.iframe || "");

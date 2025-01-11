@@ -1,6 +1,7 @@
 "use server";
 
 import { CourseItemData } from "@/modules/course/types";
+import HistoryModel from "@/modules/history/models";
 import LessonModel from "@/modules/lesson/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { parseData } from "@/shared/helpers";
@@ -60,4 +61,22 @@ export async function fetchUserById({
   } catch (error) {
     console.log(error);
   }
+}
+
+export async function fetchUserCourseProgress({
+  userId,
+  courseId,
+}: {
+  userId: string;
+  courseId: string;
+}): Promise<number | undefined> {
+  try {
+    connectToDatabase();
+    const historyCount = await HistoryModel.countDocuments({
+      user: userId,
+      course: courseId,
+    });
+    const lessonCount = await LessonModel.countDocuments({ courseId });
+    return Math.ceil((historyCount / lessonCount) * 100);
+  } catch (error) {}
 }

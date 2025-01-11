@@ -16,14 +16,14 @@ export function getHistoriesByUserOptions({
   courseId,
 }: GetHistoriesByUserProps) {
   return queryOptions({
-    enabled: !!userId,
+    enabled: !!userId && !!courseId,
     placeholderData: keepPreviousData,
     queryFn: async () => {
       const response = await fetchHistoriesByUserId({ userId, courseId });
 
       return response;
     },
-    queryKey: [QUERY_KEYS.GET_HISTORIES_BY_USER, userId],
+    queryKey: [QUERY_KEYS.GET_HISTORIES_BY_USER, userId, courseId],
   });
 }
 

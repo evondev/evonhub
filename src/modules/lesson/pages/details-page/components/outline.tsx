@@ -10,8 +10,11 @@ import { useUserContext } from "@/components/user-context";
 import { useQueryCourseBySlug } from "@/modules/course/services";
 import { useQueryHistoriesByUser } from "@/modules/history/services";
 import { LessonOutlineItem } from "@/modules/lesson/components";
-import { useQueryLessonDetailsOutline } from "@/modules/lesson/services";
-import { useQueryLessonsByCourseId } from "@/modules/lesson/services/data/query-lessons-by-course-id.data";
+import {
+  useQueryLessonDetailsOutline,
+  useQueryLessonsByCourseId,
+} from "@/modules/lesson/services";
+import { ProgressBar } from "@/shared/components/common";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { LoadingOutline } from "./loading-outline";
@@ -99,12 +102,7 @@ export function LessonOutline(_props: LessonOutlineProps) {
   return (
     <>
       <div className="flex-1 h-full lg:h-auto w-full static lg:sticky top-10 xl:top-[112px] right-0 p-3 lg:p-0 h-[calc(100%-56px)] w-full lg:p-0 lg:h-auto overflow-y-auto lg:overflow-y-visible">
-        <div className="rounded-full h-3 bg-gray-200 mb-5 dark:bg-grayDarker ">
-          <div
-            className="h-full rounded-full from-[#00D583] to-[#AAFF6F] bg-gradient-to-r transition-all"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
+        <ProgressBar progress={progress} className="mb-5 dark:bg-grayDarker" />
         <div
           className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg"
           ref={containerRef}

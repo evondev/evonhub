@@ -13,7 +13,7 @@ export function Heading({ children, className }: HeadingProps) {
         className
       )}
     >
-      <div className="size-5 from-[#ba97f7] to-[#978df8] bg-gradient-to-tl rounded-sm"></div>
+      <div className="size-4 lg:size-5 relative top-[1px] from-[#ba97f7] to-[#978df8] bg-gradient-to-tl rounded"></div>
       {children}
     </h1>
   );

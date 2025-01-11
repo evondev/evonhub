@@ -1,6 +1,8 @@
 "use client";
+import { useQueryUserCourseProgress } from "@/modules/user/services";
 import { IconStar, IconViews } from "@/shared/components";
 import { SimpleButton } from "@/shared/components/button";
+import { ProgressBar } from "@/shared/components/common";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,17 +12,30 @@ interface CourseItemProps {
   data: CourseItemData;
   cta?: string;
   url?: string;
-  disabled?: boolean;
+  userId?: string;
+  courseId?: string;
 }
 
-const CourseItem = ({ data, cta, url, disabled }: CourseItemProps) => {
-  const link = url ? `/${data.slug}${url}` : `/course/${data.slug}`;
+export function CourseItem({
+  data,
+  cta,
+  url,
+  userId,
+  courseId,
+}: CourseItemProps) {
+  const navigateURL = url ? `/${data.slug}${url}` : `/course/${data.slug}`;
   const rating =
     data?.rating?.reduce((acc, cur) => acc + cur, 0) / data?.rating?.length ||
     5.0;
+
+  const { data: progress } = useQueryUserCourseProgress({
+    userId: userId || "",
+    courseId: courseId || "",
+  });
+
   return (
     <div className="bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest">
-      {!disabled && <Link href={link} className="absolute inset-0 z-10"></Link>}
+      <Link href={navigateURL} className="absolute inset-0 z-10"></Link>
       <div className="bg-white rounded-lg h-full flex flex-col p-3 dark:bg-grayDarker">
         <div className="relative h-[180px] block group rounded-lg">
           <Image
@@ -34,6 +49,7 @@ const CourseItem = ({ data, cta, url, disabled }: CourseItemProps) => {
           ></Image>
         </div>
         <div className="py-5 flex-1 flex flex-col">
+          {url && <ProgressBar progress={progress || 0} className="mb-2" />}
           <h3 className="text-base lg:text-lg font-bold mb-5 line-clamp-3 block">
             {data.title}
           </h3>
@@ -59,7 +75,7 @@ const CourseItem = ({ data, cta, url, disabled }: CourseItemProps) => {
             </div>
             <div className="p-1 border border-[#f6f6f8] rounded-xl bg-[#f6f6f8]/30 backdrop-blur-xl dark:bg-grayDarkest dark:border-white/10">
               <SimpleButton className="w-full">
-                {disabled ? "Sắp ra mắt" : !url ? "Xem chi tiết" : cta}
+                {!url ? "Xem chi tiết" : cta}
               </SimpleButton>
             </div>
           </div>
@@ -67,6 +83,4 @@ const CourseItem = ({ data, cta, url, disabled }: CourseItemProps) => {
       </div>
     </div>
   );
-};
-
-export default CourseItem;
+}

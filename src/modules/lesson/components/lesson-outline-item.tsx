@@ -93,11 +93,7 @@ export function LessonOutlineItem({
   return (
     <>
       <div className={className}>
-        <Checkbox
-          className="dark:data-[state=checked]:bg-[#00D583] dark:data-[state=checked]:border-[#00D583] data-[state=checked]:bg-[#00D583] data-[state=checked]:border-[#00D583]"
-          checked={checked}
-          onCheckedChange={handleCompleteLesson}
-        />
+        <Checkbox checked={checked} onCheckedChange={handleCompleteLesson} />
 
         <Link
           scroll={false}
