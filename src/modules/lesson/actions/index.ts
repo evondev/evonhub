@@ -76,13 +76,3 @@ export async function fetchLessonsByCourseId(
     return JSON.parse(JSON.stringify(lessons));
   } catch (error) {}
 }
-
-export async function countAllLessonsByCourse(
-  courseId: string
-): Promise<LessonItemData[] | undefined> {
-  try {
-    connectToDatabase();
-    const count = await LessonModel.countDocuments({ courseId });
-    return count ?? 0;
-  } catch (error) {}
-}
