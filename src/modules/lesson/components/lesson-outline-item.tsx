@@ -46,7 +46,7 @@ export function LessonOutlineItem({
   const [checked, setChecked] = useOptimistic(defaultChecked);
 
   const handleCompleteLesson = async (checked: boolean) => {
-    setChecked(checked);
+    setChecked(!checked);
     try {
       const isChecked = await mutateCompleteLesson.mutateAsync({
         lessonId: id || "",
@@ -54,9 +54,7 @@ export function LessonOutlineItem({
         courseId,
       });
       setChecked(isChecked);
-    } catch (error) {
-      setChecked(!checked);
-    }
+    } catch (error) {}
   };
 
   const child = (
@@ -95,7 +93,11 @@ export function LessonOutlineItem({
   return (
     <>
       <div className={className}>
-        <Checkbox checked={checked} onCheckedChange={handleCompleteLesson} />
+        <Checkbox
+          className="dark:data-[state=checked]:bg-[#00D583] dark:data-[state=checked]:border-[#00D583] data-[state=checked]:bg-[#00D583] data-[state=checked]:border-[#00D583]"
+          checked={checked}
+          onCheckedChange={handleCompleteLesson}
+        />
 
         <Link
           scroll={false}
