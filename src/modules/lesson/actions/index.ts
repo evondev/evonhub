@@ -2,6 +2,7 @@
 
 import CourseModel from "@/modules/course/models";
 import LectureModel from "@/modules/lecture/models";
+import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import {
   LessonDetailsOutlineData,
@@ -23,7 +24,7 @@ export async function getLessonById(
     if (!foundLesson) {
       throw new Error("Lesson not found");
     }
-    return JSON.parse(JSON.stringify(foundLesson));
+    return parseData(foundLesson);
   } catch (error) {
     console.log(error);
   }

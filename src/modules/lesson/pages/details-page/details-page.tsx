@@ -15,7 +15,7 @@ export function LessonDetailsPage(_props: LessonDetailsPageProps) {
   if (!lessonDetails) return null;
   return (
     <>
-      <div className="lg:overflow-hidden lg:p-2 flex-shrink-0 w-full flex flex-col gap-3">
+      <div className="lg:overflow-hidden flex-shrink-0 w-full flex flex-col gap-3">
         <LessonContent
           lessonId={lessonId}
           lessonDetails={lessonDetails}

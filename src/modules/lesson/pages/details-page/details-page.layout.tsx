@@ -7,6 +7,7 @@ import { cn } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import { useParams, useSearchParams } from "next/navigation";
 import { useQueryLessonById } from "../../services";
+import { LoadingLessonDetails } from "./components";
 
 export interface DetailsPageLayoutProps {
   children: React.ReactNode;
@@ -28,13 +29,14 @@ export function DetailsPageLayout({ children }: DetailsPageLayoutProps) {
   const userCourses = userInfo?.courses
     ? JSON.parse(JSON.stringify(userInfo?.courses))
     : [];
+  if (isLoading) return <LoadingLessonDetails />;
   if (!lessonDetails) return <PageNotFound />;
 
   if (
     (!userCourses.includes(courseId) || !userInfo?._id) &&
     userInfo?.role !== UserRole.Admin
   )
-    return <PageNotFound />;
+    return <LoadingLessonDetails />;
   return (
     <div
       className={cn(
