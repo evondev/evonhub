@@ -1,16 +1,14 @@
 "use client";
 
 import { useQueryCommentsByLesson } from "@/modules/comment/services";
-import { useSearchParams } from "next/navigation";
 import CommentField from "./comment-field";
 import { CommentForm } from "./comment-form";
 
-export interface CommentProps {}
+export interface CommentProps {
+  lessonId: string;
+}
 
-export function Comment(_props: CommentProps) {
-  const searchParams = useSearchParams();
-  const lessonId = searchParams.get("id")?.toString() || "";
-
+export function Comment({ lessonId }: CommentProps) {
   const { data: comments } = useQueryCommentsByLesson({
     lessonId,
   });

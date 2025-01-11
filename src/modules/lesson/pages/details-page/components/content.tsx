@@ -1,34 +1,35 @@
 "use client";
 
-import EmptyData from "@/components/EmptyData";
-import { useQueryLessonById } from "@/modules/lesson/services";
 import { useQueryLessonsByCourseId } from "@/modules/lesson/services/data/query-lessons-by-course-id.data";
 import { IconFullScreen } from "@/shared/components";
 import { RatingForm } from "@/shared/features/rating";
+import { LessonItemCutomizeData } from "@/shared/types";
 import { cn, extractDriveId } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import MuxPlayer from "@mux/mux-player-react";
-import { useSearchParams } from "next/navigation";
 import Prism from "prismjs";
 import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { Loading } from "./loading";
 import { PlayerNavigation } from "./player-navigation";
 
-export interface LessonContentProps {}
+export interface LessonContentProps {
+  isLoading?: boolean;
+  lessonId: string;
+  lessonDetails: LessonItemCutomizeData;
+}
 
-export function LessonContent(_props: LessonContentProps) {
+export function LessonContent({
+  isLoading,
+  lessonId,
+  lessonDetails,
+}: LessonContentProps) {
   const handle = useFullScreenHandle();
   const { toggleExpanded, isExpanded } = useGlobalStore();
   const handleExpandScreen = () => {
     toggleExpanded?.(!isExpanded);
   };
-  const searchParams = useSearchParams();
   const videoRef = useRef<any>(null);
-  const lessonId = searchParams.get("id")?.toString() || "";
-  const { data: lessonDetails, isLoading } = useQueryLessonById({
-    lessonId,
-  });
   const courseDetails = lessonDetails?.courseId;
   const { data: lessonList } = useQueryLessonsByCourseId({
     courseId: courseDetails?._id?.toString() || "",
@@ -80,7 +81,6 @@ export function LessonContent(_props: LessonContentProps) {
   }, [courseDetails?.slug, lessonDetails]);
 
   if (isLoading) return <Loading />;
-  if (!lessonDetails) return <EmptyData text="Bài học không tồn tại!" />;
 
   return (
     <div>

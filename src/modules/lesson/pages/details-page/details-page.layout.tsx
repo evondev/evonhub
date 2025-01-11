@@ -1,10 +1,12 @@
 "use client";
+import PageNotFound from "@/app/not-found";
 import { useUserContext } from "@/components/user-context";
 import { useQueryCourseBySlug } from "@/modules/course/services";
 import { UserRole } from "@/shared/constants/user.constants";
 import { cn } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
+import { useQueryLessonById } from "../../services";
 
 export interface DetailsPageLayoutProps {
   children: React.ReactNode;
@@ -12,6 +14,11 @@ export interface DetailsPageLayoutProps {
 
 export function DetailsPageLayout({ children }: DetailsPageLayoutProps) {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const lessonId = searchParams.get("id")?.toString() || "";
+  const { data: lessonDetails, isLoading } = useQueryLessonById({
+    lessonId,
+  });
   const { data: courseDetails } = useQueryCourseBySlug({
     courseSlug: params.course as string,
   });
@@ -21,12 +28,13 @@ export function DetailsPageLayout({ children }: DetailsPageLayoutProps) {
   const userCourses = userInfo?.courses
     ? JSON.parse(JSON.stringify(userInfo?.courses))
     : [];
+  if (!lessonDetails) return <PageNotFound />;
 
   if (
     (!userCourses.includes(courseId) || !userInfo?._id) &&
     userInfo?.role !== UserRole.Admin
   )
-    return null;
+    return <PageNotFound />;
   return (
     <div
       className={cn(

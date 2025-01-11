@@ -15,16 +15,16 @@ import {
   useQueryLessonsByCourseId,
 } from "@/modules/lesson/services";
 import { ProgressBar } from "@/shared/components/common";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { LoadingOutline } from "./loading-outline";
 
-export interface LessonOutlineProps {}
+export interface LessonOutlineProps {
+  lessonId: string;
+}
 
-export function LessonOutline(_props: LessonOutlineProps) {
+export function LessonOutline({ lessonId }: LessonOutlineProps) {
   const params = useParams();
-  const searchParams = useSearchParams();
-  const lessonId = searchParams.get("id")?.toString() || "";
   const containerRef = useRef<HTMLDivElement>(null);
   const { userInfo } = useUserContext();
   const userId = userInfo?._id || "";
