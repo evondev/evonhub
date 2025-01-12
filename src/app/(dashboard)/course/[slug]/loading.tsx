@@ -1,4 +1,4 @@
-import Skeleton from "@/components/loading/Skeleton";
+import Skeleton from "@/shared/components/skeleton";
 
 const loading = () => {
   return (
