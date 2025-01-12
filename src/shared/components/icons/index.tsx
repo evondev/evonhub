@@ -19,6 +19,7 @@ export { default as IconLongArrowRight } from "./IconLongArrowRight";
 export { default as IconOrder } from "./IconOrder";
 export { default as IconPlay } from "./IconPlay";
 export { default as IconShare } from "./IconShare";
+export { default as IconSparkles } from "./IconSparkles";
 export { default as IconStar } from "./IconStar";
 export { default as IconStudy } from "./IconStudy";
 export { default as IconTutorial } from "./IconTutorial";

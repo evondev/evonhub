@@ -42,7 +42,6 @@ export function StudyPageContainer({}: StudyPageContainerProps) {
             handleGetLastUrl(course.slug) || lessons?.[index]?.[0]?._id
           }`}
           userId={userInfo?._id}
-          courseId={course._id}
         ></CourseItem>
       ))}
     </CourseList>

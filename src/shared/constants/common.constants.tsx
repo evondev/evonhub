@@ -3,6 +3,7 @@ import {
   IconCourseManage,
   IconOrder,
   IconPlay,
+  IconSparkles,
   IconStudy,
   IconUser,
   IconUsers,
@@ -48,7 +49,7 @@ export const menuLinks: MenuLinkItemProps[] = [
   },
   {
     title: "Sắp ra mắt",
-    icon: <IconStudy></IconStudy>,
+    icon: <IconSparkles></IconSparkles>,
     url: "/coming-soon",
   },
   {

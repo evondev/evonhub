@@ -1,4 +1,5 @@
 "use client";
+import { useQueryOrderCountByCourse } from "@/modules/order/services";
 import { useQueryUserCourseProgress } from "@/modules/user/services";
 import { IconStar, IconViews } from "@/shared/components";
 import { SimpleButton } from "@/shared/components/button";
@@ -7,30 +8,29 @@ import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { CourseItemData } from "../types";
+import { CourseBadge } from "./course-badge";
 
 interface CourseItemProps {
   data: CourseItemData;
   cta?: string;
   url?: string;
   userId?: string;
-  courseId?: string;
 }
 
-export function CourseItem({
-  data,
-  cta,
-  url,
-  userId,
-  courseId,
-}: CourseItemProps) {
+export function CourseItem({ data, cta, url, userId }: CourseItemProps) {
   const navigateURL = url ? `/${data.slug}${url}` : `/course/${data.slug}`;
   const rating =
     data?.rating?.reduce((acc, cur) => acc + cur, 0) / data?.rating?.length ||
     5.0;
+  const courseId = data._id || "";
 
   const { data: progress } = useQueryUserCourseProgress({
     userId: userId || "",
-    courseId: courseId || "",
+    courseId,
+  });
+
+  const { data: orderCount } = useQueryOrderCountByCourse({
+    courseId,
   });
 
   return (
@@ -38,6 +38,7 @@ export function CourseItem({
       <Link href={navigateURL} className="absolute inset-0 z-10"></Link>
       <div className="bg-white rounded-lg h-full flex flex-col p-3 dark:bg-grayDarker">
         <div className="relative h-[180px] block group rounded-lg">
+          <CourseBadge isFree={!!data.free} orderCount={orderCount || 0} />
           <Image
             src={data.image}
             priority
@@ -49,6 +50,20 @@ export function CourseItem({
           ></Image>
         </div>
         <div className="py-5 flex-1 flex flex-col">
+          <div className="flex gap-1 mb-2 justify-end">
+            {Array(Math.ceil(rating))
+              .fill(0)
+              .map((item, index) => (
+                <Image
+                  key={index}
+                  alt="rating"
+                  src="/star.png"
+                  width={16}
+                  height={16}
+                />
+              ))}
+          </div>
+
           {url && <ProgressBar progress={progress || 0} className="mb-2" />}
           <h3 className="text-base lg:text-lg font-bold mb-5 line-clamp-3 block">
             {data.title}
