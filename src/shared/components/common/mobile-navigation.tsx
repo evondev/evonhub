@@ -24,6 +24,7 @@ export function MobileNavigation({ role }: { role: string }) {
           return (
             <li key={link.title}>
               <Link
+                target={link.isExternal ? "_blank" : "_self"}
                 href={link.url}
                 className={cn(
                   "size-10 flex items-center justify-center rounded p-1.5 transition-all",
