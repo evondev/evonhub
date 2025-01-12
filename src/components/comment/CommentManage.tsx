@@ -19,6 +19,7 @@ import { ICommentParams } from "@/types";
 import { ECommonStatus } from "@/types/enums";
 import { formUrlQuery, formatDate } from "@/utils";
 import { debounce } from "lodash";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
@@ -115,9 +116,17 @@ const CommentManage = ({ commentList }: { commentList: ICommentParams[] }) => {
                   </span>
                 </div>
               </TableCell>
-              <TableCell>{comment.content}</TableCell>
-              <TableCell className="whitespace-nowrap">
-                {comment.lesson?.title}
+              <TableCell>
+                <div className="line-clamp-2 max-w-xs">{comment.content}</div>
+              </TableCell>
+              <TableCell className="line-clamp-4 max-w-xs">
+                <Link
+                  target="_blank"
+                  href={`/${comment.lesson?.courseId?.slug}/lesson?id=${comment.lesson?._id}#${comment._id}`}
+                  className="line-clamp-4 max-w-xs font-medium hover:text-primary"
+                >
+                  {comment.lesson?.courseId?.title} - {comment.lesson?.title}
+                </Link>
               </TableCell>
               <TableCell>
                 <button

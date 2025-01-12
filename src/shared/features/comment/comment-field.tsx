@@ -4,6 +4,7 @@ import { CommentItemData } from "@/modules/comment/types";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { ObjectId } from "mongoose";
 import Image from "next/image";
+import { useEffect } from "react";
 import CommentReply from "./comment-reply";
 
 interface CommentItemProps {
@@ -31,9 +32,21 @@ const CommentField = ({
   const COMMENT_SPACING = 55;
   const isPending = comment.status === CommentStatus.Pending;
 
+  useEffect(() => {
+    const hash = window.location.hash;
+    const id = hash.replace("#", "");
+    if (!id) return;
+
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
+
   return (
     <>
       <div
+        id={comment._id.toString()}
         className={cn("ml-auto flex items-start gap-3 dark:border-opacity-50", {
           "pointer-events-none opacity-50": isPending,
           "mt-5 first:mt-0": level === 0,

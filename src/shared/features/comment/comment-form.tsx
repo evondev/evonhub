@@ -2,6 +2,8 @@
 
 import { createComment } from "@/lib/actions/comment.action";
 import { cn } from "@/lib/utils";
+import { CommentStatus } from "@/shared/constants/comment.constants";
+import { UserRole } from "@/shared/constants/user.constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
@@ -42,6 +44,7 @@ export function CommentForm({
 }: CommentFormProps) {
   const { userInfo } = useUserContext();
   const userId = userInfo?._id.toString() || "";
+  const isModerator = userInfo?.role === UserRole.Admin || UserRole.Expert;
 
   const commentForm = useForm<CourseCommentFormValues>({
     resolver: zodResolver(courseCommentFormSchema),
@@ -49,8 +52,8 @@ export function CommentForm({
   });
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
-  const slug = useSearchParams().get("slug");
-  const path = `${pathname}?slug=${slug}`;
+  const id = useSearchParams().get("id");
+  const path = `${pathname}?id=${id}`;
 
   async function onSubmit(values: CourseCommentFormValues) {
     const hasComment = await createComment({
@@ -60,6 +63,7 @@ export function CommentForm({
       level: comment && comment?.level >= 0 ? comment?.level + 1 : 0,
       parentId: comment?._id,
       path,
+      status: isModerator ? CommentStatus.Approved : CommentStatus.Pending,
     });
 
     startTransition(() => {

@@ -10,6 +10,7 @@ import {
   UpdateCommentParams,
 } from "@/types";
 
+import CourseModel from "@/modules/course/models";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { auth } from "@clerk/nextjs/server";
@@ -17,10 +18,14 @@ import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 import { sendNotification } from "./notification.action";
 
-export async function createComment(params: CreateCommentParams) {
+export async function createComment(
+  params: CreateCommentParams,
+  isReply?: boolean
+) {
   try {
     connectToDatabase();
     const newComment = await Comment.create(params);
+    // isReply will create notification for user
 
     revalidatePath(params.path || "/");
     if (!newComment) return false;
@@ -54,7 +59,12 @@ export async function getAllComments(params: GetAllCommentsParams) {
       })
       .populate({
         path: "lesson",
-        select: "title slug",
+        select: "_id title slug",
+        populate: {
+          path: "courseId",
+          model: CourseModel,
+          select: "title slug",
+        },
       });
 
     return comments;

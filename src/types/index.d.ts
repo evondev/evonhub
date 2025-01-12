@@ -1,6 +1,7 @@
 import { ICourse } from "@/database/course.model";
 import { ILesson } from "@/database/lesson.model";
 import { IUser } from "@/database/user.model";
+import { CommentStatus } from "@/shared/constants/comment.constants";
 import { ECommonStatus, EReactionType, EUserStatus } from "@/types/enums";
 
 export interface CreateUserParams {
@@ -68,13 +69,14 @@ export interface ICommentParams {
     username: string;
     avatar: string;
   };
-  course: {
-    title: string;
-    slug: string;
-  };
   lesson: {
+    _id: string;
     title: string;
     slug: string;
+    courseId: {
+      title: string;
+      slug: string;
+    };
   };
   status: ECommonStatus;
   createdAt: Date;
@@ -86,6 +88,7 @@ export interface CreateCommentParams {
   level: number;
   parentId?: string;
   path?: string;
+  status?: CommentStatus;
 }
 export interface GetAllCommentsParams {
   lesson?: string;
