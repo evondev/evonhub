@@ -19,7 +19,7 @@ export function getCourseBySlugOptions({ courseSlug }: GetCourseBySlugProps) {
 
       return response;
     },
-    queryKey: [QUERY_KEYS.GET_COURSE_BY_SLUG],
+    queryKey: [QUERY_KEYS.GET_COURSE_BY_SLUG, courseSlug],
   });
 }
 
