@@ -2,14 +2,12 @@ import Image from "next/image";
 
 export interface CourseBadgeProps {
   orderCount: number;
-  isFree?: boolean;
 }
 
-export function CourseBadge({ orderCount, isFree }: CourseBadgeProps) {
+export function CourseBadge({ orderCount }: CourseBadgeProps) {
   let url = "";
   if (orderCount >= 100) url = "/rewards.png";
   if (orderCount >= 120) url = "/star-medal.png";
-  if (isFree) url = "/free.png";
   if (!url) return null;
   return (
     <Image
