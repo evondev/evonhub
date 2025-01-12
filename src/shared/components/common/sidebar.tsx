@@ -44,7 +44,11 @@ export function Sidebar({ role }: SidebarProps) {
           if (link.isAuth && !currentUser?._id) return null;
           return (
             <li key={link.title}>
-              <MenuLink link={link} isActiveLink={isActiveLink}></MenuLink>
+              <MenuLink
+                isExternal={link.isExternal}
+                link={link}
+                isActiveLink={isActiveLink}
+              ></MenuLink>
             </li>
           );
         })}

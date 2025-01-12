@@ -1,4 +1,5 @@
 import {
+  IconBlog,
   IconComment,
   IconCourseManage,
   IconOrder,
@@ -48,10 +49,17 @@ export const menuLinks: MenuLinkItemProps[] = [
     isExpert: true,
   },
   {
+    title: "Đọc Blog",
+    icon: <IconBlog></IconBlog>,
+    url: "https://evondev.com",
+    isExternal: true,
+  },
+  {
     title: "Sắp ra mắt",
     icon: <IconSparkles></IconSparkles>,
     url: "/coming-soon",
   },
+
   {
     title: "Profile",
     icon: <IconUser></IconUser>,

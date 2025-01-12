@@ -5,11 +5,13 @@ import { twMerge } from "tailwind-merge";
 interface MenuLinkProps {
   link: MenuLinkItemProps;
   isActiveLink: (url: string) => boolean;
+  isExternal?: boolean;
 }
 
-export function MenuLink({ link, isActiveLink }: MenuLinkProps) {
+export function MenuLink({ link, isActiveLink, isExternal }: MenuLinkProps) {
   return (
     <Link
+      target={isExternal ? "_blank" : "_self"}
       href={link.url}
       className={twMerge(
         "flex items-center gap-3 py-2.5 px-3 rounded-lg transition-all font-medium",
