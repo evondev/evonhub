@@ -95,7 +95,7 @@ export function CourseItem({ data, cta, url, userId }: CourseItemProps) {
             </div>
             <div className="p-1 border border-[#f6f6f8] rounded-xl bg-[#f6f6f8]/30 backdrop-blur-xl dark:bg-grayDarkest dark:border-white/10">
               <SimpleButton className="w-full">
-                {isFree ? "Miễn phí" : !url ? "Xem chi tiết" : cta}
+                {cta ? cta : isFree ? "Miễn phí" : "Xem chi tiết"}
               </SimpleButton>
             </div>
           </div>
