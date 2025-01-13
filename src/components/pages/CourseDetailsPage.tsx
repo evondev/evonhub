@@ -316,7 +316,7 @@ const CourseDetailsPage = ({
         {userCourses?.includes(data._id) ? (
           <AlreadyEnroll
             course={data.slug}
-            lesson={data.lecture[0].lessons[0].slug}
+            lesson={data.lecture[0].lessons[0]._id}
             user={user}
           />
         ) : (
@@ -576,7 +576,7 @@ function AlreadyEnroll({
           để học hoặc
         </div>
         <Link
-          href={`/${course}/lesson?slug=${lesson}`}
+          href={`/${course}/lesson?id=${lesson}`}
           className={cn(primaryButtonClassName, "mt-5 w-full")}
         >
           Nhấn vào đây
