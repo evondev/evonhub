@@ -22,6 +22,7 @@ export { default as IconPlay } from "./IconPlay";
 export { default as IconShare } from "./IconShare";
 export { default as IconSparkles } from "./IconSparkles";
 export { default as IconStar } from "./IconStar";
+export { default as IconStarFilled } from "./IconStarFilled";
 export { default as IconStudy } from "./IconStudy";
 export { default as IconTutorial } from "./IconTutorial";
 export { default as IconUpload } from "./IconUpload";
