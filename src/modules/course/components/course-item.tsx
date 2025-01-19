@@ -54,10 +54,10 @@ export function CourseItem({ data, cta, url, userId }: CourseItemProps) {
         </div>
         <div className="flex-1 flex flex-col">
           <div className="flex gap-1 mb-2 justify-end h-4">
-            {Array(rating <= 0 ? 5 : Math.floor(rating))
+            {Array(5)
               .fill(0)
               .map((_, index) => {
-                if (rating <= 0)
+                if (Math.floor(rating) < index + 1)
                   return (
                     <IconStarFilled
                       key={index}

@@ -17,6 +17,7 @@ export { default as IconLevel } from "./IconLevel";
 export { default as IconLike } from "./IconLike";
 export { default as IconLongArrowLeft } from "./IconLongArrowLeft";
 export { default as IconLongArrowRight } from "./IconLongArrowRight";
+export { default as IconMoney } from "./IconMoney";
 export { default as IconOrder } from "./IconOrder";
 export { default as IconPlay } from "./IconPlay";
 export { default as IconShare } from "./IconShare";

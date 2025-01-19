@@ -1,6 +1,7 @@
 import {
   IconComment,
   IconCourseManage,
+  IconMoney,
   IconOrder,
   IconPlay,
   IconSparkles,
@@ -46,13 +47,16 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/order/manage",
     isExpert: true,
   },
-
   {
     title: "Sắp ra mắt",
     icon: <IconSparkles></IconSparkles>,
     url: "/coming-soon",
   },
-
+  {
+    title: "Pay as you want",
+    icon: <IconMoney></IconMoney>,
+    url: "/pay-as-you-want",
+  },
   {
     title: "Profile",
     icon: <IconUser></IconUser>,
