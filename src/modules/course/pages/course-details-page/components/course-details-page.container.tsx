@@ -177,6 +177,7 @@ export function CourseDetailsPageContainer(
           <CourseWidget
             price={price}
             salePrice={salePrice}
+            minPrice={minPrice || 0}
             isFree={isFree}
             cta={cta}
             isComingSoon={isComingSoon}
