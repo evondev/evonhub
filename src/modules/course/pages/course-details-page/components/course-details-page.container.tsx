@@ -66,7 +66,7 @@ export function CourseDetailsPageContainer(
 
   const isAlreadyEnroll = userInfo?.courses.includes(courseDetails._id);
   const isFree = price === 0 || free;
-  const isPending = status === CourseStatus.Pending;
+  const isComingSoon = status === CourseStatus.Pending;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr),400px] gap-8 items-start relative">
@@ -179,7 +179,7 @@ export function CourseDetailsPageContainer(
             salePrice={salePrice}
             isFree={isFree}
             cta={cta}
-            isPending={isPending}
+            isComingSoon={isComingSoon}
             slug={slug}
             courseId={courseDetails._id.toString()}
           />

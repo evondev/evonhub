@@ -16,7 +16,7 @@ export interface CourseWidgetProps {
   salePrice: number;
   cta?: string;
   minPrice?: number;
-  isPending?: boolean;
+  isComingSoon?: boolean;
   slug: string;
   courseId: string;
 }
@@ -27,7 +27,7 @@ export default function CourseWidget({
   salePrice,
   cta,
   minPrice,
-  isPending,
+  isComingSoon,
   slug,
   courseId,
 }: CourseWidgetProps) {
@@ -131,14 +131,14 @@ export default function CourseWidget({
           {!isFree && (
             <Button
               className="h-12 rounded-lg px-5 lg:flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] hidden text-base w-full"
-              onClick={() => !isPending && handleBuyCourse()}
-              disabled={isPending || mutationEnrollCourse.isPending}
+              onClick={() => !isComingSoon && handleBuyCourse()}
+              disabled={isComingSoon || mutationEnrollCourse.isPending}
               isLoading={mutationEnrollCourse.isPending}
             >
-              {isPending ? "Sắp ra mắt" : cta || "Đăng ký ngay"}
+              {isComingSoon ? "Sắp ra mắt" : cta || "Đăng ký ngay"}
             </Button>
           )}
-          {minPrice && !isFree && (
+          {Number(minPrice) > 0 && !isFree && !isComingSoon && (
             <div className="flex flex-col gap-2">
               <h3 className="text-sm font-semibold">Pay as you want</h3>
               <input
