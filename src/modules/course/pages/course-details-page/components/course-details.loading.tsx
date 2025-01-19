@@ -1,6 +1,8 @@
 import Skeleton from "@/shared/components/skeleton";
 
-const loading = () => {
+export interface CourseDetailsLoadingProps {}
+
+export function CourseDetailsLoading(_props: CourseDetailsLoadingProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr),400px] gap-8 items-start relative">
       <div>
@@ -18,6 +20,4 @@ const loading = () => {
       </div>
     </div>
   );
-};
-
-export default loading;
+}

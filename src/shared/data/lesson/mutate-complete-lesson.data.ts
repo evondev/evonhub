@@ -1,7 +1,7 @@
+import { handleCompleteLesson } from "@/shared/actions/history";
 import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
 import { invalidateQueriesByKeys } from "@/shared/helpers/query-helper";
 import { useMutation } from "@tanstack/react-query";
-import { handleCompleteLesson } from "../../actions";
 
 export function useMutationCompleteLesson() {
   return useMutation({

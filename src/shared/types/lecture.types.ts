@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+import { LessonItemData } from "./lesson.types";
 
 export interface LectureModelProps extends Document {
   id: string;
@@ -9,4 +10,7 @@ export interface LectureModelProps extends Document {
   _destroy: boolean;
   createdAt: Date;
 }
-export interface LectureItemData extends Omit<LectureModelProps, ""> {}
+export interface LectureItemData extends Omit<LectureModelProps, "lessons"> {
+  _id: string;
+  lessons: LessonItemData[];
+}

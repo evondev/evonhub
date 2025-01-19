@@ -1,13 +1,13 @@
 "use server";
 
 import { CourseItemData } from "@/modules/course/types";
-import HistoryModel from "@/modules/history/models";
 import LessonModel from "@/modules/lesson/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
+import HistoryModel from "@/shared/models/history.model";
 import UserModel from "../models";
-import { UserItemData } from "../types";
+import { UserInfoData, UserItemData } from "../types";
 
 export async function fetchUserCourses({ userId }: { userId: string }): Promise<
   | {
@@ -51,7 +51,7 @@ export async function fetchUserById({
   userId,
 }: {
   userId: string;
-}): Promise<UserItemData | null | undefined> {
+}): Promise<UserInfoData | null | undefined> {
   try {
     connectToDatabase();
     const findUser = await UserModel.findOne({ clerkId: userId });

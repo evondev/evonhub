@@ -1,20 +1,14 @@
 "use client";
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { useUserContext } from "@/components/user-context";
 import { useQueryCourseBySlug } from "@/modules/course/services";
 import { useQueryHistoriesByUser } from "@/modules/history/services";
-import { LessonOutlineItem } from "@/modules/lesson/components";
 import {
   useQueryLessonDetailsOutline,
   useQueryLessonsByCourseId,
 } from "@/modules/lesson/services";
 import { ProgressBar } from "@/shared/components/common";
+import { CourseOutline } from "@/shared/components/course";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { LoadingOutline } from "./loading-outline";
@@ -107,43 +101,13 @@ export function LessonOutline({ lessonId }: LessonOutlineProps) {
           className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg"
           ref={containerRef}
         >
-          {lectures.map((item) => {
-            const activeLesson = item.lessons.find(
-              (el) => el._id.toString() === lessonId
-            );
-
-            return (
-              <Accordion
-                type="single"
-                collapsible
-                className="w-full mb-3 lg:mb-5"
-                key={item.title}
-                defaultValue={activeLesson?.lectureId?.title || ""}
-              >
-                <AccordionItem value={item.title || ""}>
-                  <AccordionTrigger className="font-bold dark:text-text5 text-sm lg:text-base">
-                    <div className="line-clamp-1 text-left">{item.title}</div>
-                  </AccordionTrigger>
-                  <AccordionContent className="bg-white dark:bg-grayDarker rounded-lg mt-3 lg:mt-5">
-                    {item.lessons.map((lesson) => {
-                      return (
-                        <LessonOutlineItem
-                          key={lesson._id}
-                          title={lesson.title}
-                          id={lesson._id}
-                          isActive={lesson._id.toString() === lessonId}
-                          duration={lesson.duration}
-                          courseId={courseId}
-                          histories={histories}
-                          userId={userId}
-                        ></LessonOutlineItem>
-                      );
-                    })}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            );
-          })}
+          <CourseOutline
+            lectures={lectures}
+            courseId={courseId}
+            userId={userId}
+            histories={histories}
+            lessonId={lessonId}
+          />
         </div>
       </div>
     </>

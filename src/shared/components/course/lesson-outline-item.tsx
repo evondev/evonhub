@@ -6,9 +6,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useMutationCompleteLesson } from "@/modules/history/services/data/mutate-complete-lesson.data";
-import { HistoryItemData } from "@/modules/history/types";
 import { IconClock, IconPlay } from "@/shared/components";
+import { useMutationCompleteLesson } from "@/shared/data";
+import { HistoryItemData } from "@/shared/types/history.types";
 import { cn } from "@/shared/utils";
 import Link from "next/link";
 import { useOptimistic } from "react";
@@ -82,7 +82,7 @@ export function LessonOutlineItem({
       )}
     </>
   );
-  if (!id) {
+  if (!id || !userId) {
     return (
       <div className={className} id={id}>
         {child}

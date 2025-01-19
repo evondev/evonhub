@@ -1,12 +1,12 @@
 "use client";
 import { useQueryUserById } from "@/modules/user/services";
-import { UserItemData } from "@/modules/user/types";
+import { UserInfoData } from "@/modules/user/types";
 import { useGlobalStore } from "@/store";
 import { useAuth } from "@clerk/nextjs";
 import { createContext, useContext, useEffect } from "react";
 
 const UserContext = createContext<{
-  userInfo?: UserItemData | null;
+  userInfo?: UserInfoData | null;
 } | null>(null);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {

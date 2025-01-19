@@ -120,6 +120,10 @@ const courseSchema = new Schema<CourseModelProps>({
     type: Boolean,
     default: false,
   },
+  minPrice: {
+    type: Number,
+    default: 0,
+  },
 });
 const CourseModel = models.Course || mongoose.model("Course", courseSchema);
 export default CourseModel;

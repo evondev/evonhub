@@ -1,10 +1,10 @@
-import { CourseItemData } from "@/modules/course/types";
 import {
   UserPermission,
   UserRole,
   UserStatus,
 } from "@/shared/constants/user.constants";
 import { Document, Schema } from "mongoose";
+import { CourseItemData } from "./course.types";
 
 export interface UserModelProps extends Document {
   _id: string;
@@ -33,9 +33,5 @@ export interface UserModelProps extends Document {
 }
 export interface UserItemData extends Omit<UserModelProps, "courses" | "role"> {
   courses: CourseItemData[];
-  role: UserRole;
-}
-export interface UserInfoData extends Omit<UserModelProps, "courses" | "role"> {
-  courses: string[];
   role: UserRole;
 }
