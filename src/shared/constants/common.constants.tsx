@@ -48,14 +48,14 @@ export const menuLinks: MenuLinkItemProps[] = [
     isExpert: true,
   },
   {
-    title: "Sắp ra mắt",
-    icon: <IconSparkles></IconSparkles>,
-    url: "/coming-soon",
-  },
-  {
     title: "Pay as you want",
     icon: <IconMoney></IconMoney>,
     url: "/pay-as-you-want",
+  },
+  {
+    title: "Sắp ra mắt",
+    icon: <IconSparkles></IconSparkles>,
+    url: "/coming-soon",
   },
   {
     title: "Profile",

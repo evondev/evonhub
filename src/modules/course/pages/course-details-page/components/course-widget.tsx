@@ -5,6 +5,7 @@ import { commonPath } from "@/constants";
 import { userMutationEnrollCourse } from "@/modules/course/services/data/mutation-enroll";
 import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-enroll-free.data";
 import { IconPlay, IconStudy, IconUsers } from "@/shared/components";
+import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -138,15 +139,23 @@ export default function CourseWidget({
               {isComingSoon ? "Sắp ra mắt" : cta || "Đăng ký ngay"}
             </Button>
           )}
-          {Number(minPrice) > 0 && !isFree && !isComingSoon && (
-            <div className="flex flex-col gap-2">
+          {Number(minPrice) > 0 && !isFree && (
+            <div
+              className={cn("flex flex-col gap-2", {
+                "opacity-50 pointer-events-none": isComingSoon,
+              })}
+            >
               <h3 className="text-sm font-semibold">Pay as you want</h3>
               <input
                 type="number"
                 className="h-12 rounded-lg bgDarkMode px-3 text-sm border border-primary font-semibold shadow-main"
-                placeholder={`Giá tối thiểu là ${minPrice || 0} vnđ`}
-                defaultValue={yourPrice}
-                onChange={(e) => setYourPrice(Number(e.target.value))}
+                placeholder={`Giá tối thiểu là ${
+                  formatThoundsand(minPrice || 0) || 0
+                } vnđ`}
+                onChange={(e) =>
+                  !isComingSoon && setYourPrice(Number(e.target.value))
+                }
+                disabled={isComingSoon}
               />
             </div>
           )}
