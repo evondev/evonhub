@@ -2,7 +2,7 @@
 
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
-import HistoryModel from "../models";
+import HistoryModel from "@/shared/models/history.model";
 import { HistoryItemData } from "../types";
 
 interface HistoriesByUserIdProps {
