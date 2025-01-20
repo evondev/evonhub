@@ -1,10 +1,12 @@
 import { CourseItemData } from "@/modules/course/types";
 import {
+  UserPackage,
   UserPermission,
   UserRole,
   UserStatus,
 } from "@/shared/constants/user.constants";
 import { Document, Schema } from "mongoose";
+import { EnumValues } from "zod";
 
 export interface UserModelProps extends Document {
   _id: string;
@@ -27,8 +29,9 @@ export interface UserModelProps extends Document {
     bankNumber: string;
     bankBranch: string;
   };
-  package: "none" | "basic" | "pro" | "premium" | "master";
-  packageExpire: Date;
+  package: EnumValues<UserPackage>;
+  packageEndDate: Date;
+  packageStartDate: Date;
   _destroy: boolean;
 }
 export interface UserItemData extends Omit<UserModelProps, "courses" | "role"> {

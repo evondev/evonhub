@@ -1,4 +1,5 @@
 import {
+  UserPackage,
   UserPermission,
   UserRole,
   UserStatus,
@@ -86,10 +87,14 @@ const userSchema = new Schema({
   },
   package: {
     type: String,
-    enum: ["none", "basic", "pro", "premium", "master"],
-    default: "none",
+    enum: Object.values(UserPackage),
+    default: UserPackage.None,
   },
-  packageExpire: {
+  packageStartDate: {
+    type: Date,
+    default: Date.now,
+  },
+  packageEndDate: {
     type: Date,
   },
 });

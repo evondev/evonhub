@@ -24,3 +24,10 @@ export enum UserRole {
   Expert = "EXPERT",
   User = "USER",
 }
+export enum UserPackage {
+  None = "none",
+  Month = "month",
+  Quarter = "quarter",
+  HalfYear = "half-year",
+  Year = "year",
+}
