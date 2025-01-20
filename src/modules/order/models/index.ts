@@ -1,4 +1,5 @@
 import { OrderStatus } from "@/shared/constants/order.constants";
+import { UserPackage } from "@/shared/constants/user.constants";
 import mongoose, { models, Schema } from "mongoose";
 import { OrderModelProps } from "../types";
 
@@ -11,7 +12,7 @@ const orderSchema = new Schema<OrderModelProps>({
   course: {
     type: Schema.Types.ObjectId,
     ref: "Course",
-    required: true,
+    required: false,
   },
   status: {
     type: String,
@@ -42,6 +43,11 @@ const orderSchema = new Schema<OrderModelProps>({
   _destroy: {
     type: Boolean,
     default: false,
+  },
+  package: {
+    type: String,
+    enum: Object.values(UserPackage),
+    default: UserPackage.None,
   },
 });
 const OrderModel = models.Order || mongoose.model("Order", orderSchema);

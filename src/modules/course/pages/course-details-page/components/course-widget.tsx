@@ -14,7 +14,6 @@ export interface CourseWidgetProps {
   price: number;
   salePrice: number;
   cta?: string;
-  minPrice?: number;
   isComingSoon?: boolean;
   slug: string;
   courseId: string;
@@ -25,7 +24,6 @@ export default function CourseWidget({
   price,
   salePrice,
   cta,
-  minPrice,
   isComingSoon,
   slug,
   courseId,

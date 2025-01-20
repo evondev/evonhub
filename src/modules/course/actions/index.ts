@@ -5,9 +5,10 @@ import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { OrderStatus } from "@/shared/constants/order.constants";
-import { UserStatus } from "@/shared/constants/user.constants";
+import { UserPackage, UserStatus } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
+import { UserItemData } from "@/shared/types/user.types";
 import CourseModel from "../models";
 import { CourseItemData, FetchCoursesParams } from "../types";
 
@@ -165,6 +166,66 @@ export async function handleEnrollCourse({
       course: courseId,
       total,
       amount,
+      code: `DH${new Date().getTime().toString().slice(-8)}`,
+    });
+    await newOrder.save();
+    return {
+      order: newOrder,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function handleEnrollPackage({
+  userId,
+  amount,
+  plan,
+}: {
+  userId: string;
+  amount: number;
+  plan: UserPackage;
+}) {
+  try {
+    connectToDatabase();
+    const findUser: UserItemData | null = await UserModel.findById(userId);
+    if (!findUser)
+      return {
+        error: "Vui lòng đăng nhập để thanh toán",
+      };
+    const allPackages = Object.values(UserPackage);
+    if (!allPackages.includes(plan)) {
+      return {
+        error: "Gói không tồn tại",
+      };
+    }
+
+    const isPlanActive =
+      findUser.isMembership &&
+      findUser.package === plan &&
+      findUser.packageEndDate > new Date();
+
+    if (isPlanActive) {
+      return {
+        error: "Bạn đã đăng ký gói này rồi",
+      };
+    }
+
+    const existOrder = await OrderModel.findOne({
+      user: userId,
+      package: plan,
+      status: OrderStatus.Pending,
+    });
+    if (existOrder) {
+      return {
+        error: `Bạn đang có một đơn hàng đang chờ xử lý. Truy cập vào https://evonhub.dev/order/${existOrder.code} để xem`,
+      };
+    }
+    const newOrder = new OrderModel({
+      user: userId,
+      package: plan,
+      amount,
+      total: amount,
       code: `DH${new Date().getTime().toString().slice(-8)}`,
     });
     await newOrder.save();

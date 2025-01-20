@@ -2,8 +2,9 @@
 import { usersHTML, usersJS, usersJSAdvanced, usersReact } from "@/data";
 import Coupon from "@/database/coupon.model";
 import Course from "@/database/course.model";
-import Order from "@/database/order.model";
 import User from "@/database/user.model";
+import OrderModel from "@/modules/order/models";
+import { UserPackage } from "@/shared/constants/user.constants";
 import { EOrderStatus, EUserStatus, Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import { FilterQuery } from "mongoose";
@@ -22,7 +23,7 @@ interface CreateOrderParams {
 export async function createOrder(params: CreateOrderParams) {
   try {
     connectToDatabase();
-    const newOrder = new Order({
+    const newOrder = new OrderModel({
       ...params,
       code: `DH${new Date().getTime().toString().slice(-8)}`,
     });
@@ -32,8 +33,9 @@ export async function createOrder(params: CreateOrderParams) {
 interface UpdateOrderParams {
   code: string;
   user: string;
-  course: string;
+  course?: string;
   status: EOrderStatus;
+  plan?: UserPackage;
 }
 export async function updateOrder(params: UpdateOrderParams) {
   try {
@@ -44,22 +46,31 @@ export async function updateOrder(params: UpdateOrderParams) {
     if (![Role.ADMIN, Role.EXPERT].includes(user?.role)) return;
     const findUser = await User.findById(params.user);
     if (!findUser) return;
-    const findOrder = await Order.findOne({
+    const findOrder = await OrderModel.findOne({
       code: params.code,
     });
     if (findOrder?.status === EOrderStatus.REJECTED) return;
-    await Order.updateOne({ code: params.code }, { status: params.status });
+    await OrderModel.updateOne(
+      { code: params.code },
+      { status: params.status }
+    );
 
     if (params.status === EOrderStatus.APPROVED) {
-      // add course to user
-      if (!findUser.courses.includes(params.course)) {
+      if (params.plan && params.plan !== UserPackage.None) {
+        findUser.package = params.plan;
+        findUser.isMembership = true;
+      } else if (!findUser.courses.includes(params.course)) {
         findUser.courses.push(params.course);
       }
     } else {
-      // remove course from user
-      findUser.courses = findUser.courses.filter(
-        (course: any) => course.toString() !== params.course
-      );
+      if (params.plan && params.plan !== UserPackage.None) {
+        findUser.package = UserPackage.None;
+        findUser.isMembership = false;
+      } else {
+        findUser.courses = findUser.courses.filter(
+          (course: any) => course.toString() !== params.course
+        );
+      }
     }
     await findUser.save();
     revalidatePath("/admin/order/manage");
@@ -80,15 +91,15 @@ export async function getAllOrders(params: {
     const userCourses = await Course.find({ author: findUser?._id });
     const { page = 1, limit = 10, searchQuery } = params;
     const skipAmount = (page - 1) * limit;
-    const query: FilterQuery<typeof Order> = {};
+    const query: FilterQuery<typeof OrderModel> = {};
     if (searchQuery) {
       query.$or = [{ code: { $regex: searchQuery, $options: "i" } }];
     }
     if (params.freeOrders) {
       query.total = 0;
     }
-    query.course = { $in: userCourses.map((course) => course._id) };
-    const orders = await Order.find(query)
+    // query.course = { $in: userCourses.map((course) => course._id) };
+    const orders = await OrderModel.find(query)
       .limit(params.limit || 500)
       .populate({
         path: "course",
@@ -164,7 +175,7 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
         { $inc: { used: 1 } }
       );
     }
-    const existOrder = await Order.findOne({
+    const existOrder = await OrderModel.findOne({
       user: params.user,
       course: params.course,
       status: EOrderStatus.PENDING,
@@ -174,7 +185,7 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
         error: `Bạn đang có một đơn hàng đang chờ xử lý. Truy cập vào https://evonhub.dev/order/${existOrder.code} để xem`,
       };
     }
-    const newOrder = new Order({
+    const newOrder = new OrderModel({
       ...params,
       code: `DH${new Date().getTime().toString().slice(-8)}`,
     });
@@ -189,8 +200,9 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
 export async function getOrderDetails(orderId: string) {
   try {
     connectToDatabase();
-    const order = await Order.findOne({ code: orderId })
+    const order = await OrderModel.findOne({ code: orderId })
       .select("code amount total status")
+      .populate("user")
       .populate({
         path: "course",
         model: Course,
@@ -210,11 +222,11 @@ export async function getOrderDetails(orderId: string) {
 export async function deleteUnpaidOrders(params: { userId: string }) {
   try {
     connectToDatabase();
-    const query: FilterQuery<typeof Order> = {};
+    const query: FilterQuery<typeof OrderModel> = {};
     const findUser = await User.findById(params.userId);
     const userCourses = await Course.find({ author: findUser?._id });
     query.course = { $in: userCourses.map((course) => course._id) };
-    const orders = await Order.find({
+    const orders = await OrderModel.find({
       status: EOrderStatus.PENDING,
       createdAt: {
         // 24 hours ago
@@ -227,7 +239,7 @@ export async function deleteUnpaidOrders(params: { userId: string }) {
       return {
         error: "Không có đơn hàng trùng lặp",
       };
-    await Order.deleteMany({
+    await OrderModel.deleteMany({
       _id: { $in: orders.map((order) => order._id) },
     });
     revalidatePath("/admin/order/manage");

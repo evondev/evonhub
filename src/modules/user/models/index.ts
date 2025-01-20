@@ -4,9 +4,10 @@ import {
   UserRole,
   UserStatus,
 } from "@/shared/constants/user.constants";
+import { UserModelProps } from "@/shared/types/user.types";
 import { model, models, Schema } from "mongoose";
 
-const userSchema = new Schema({
+const userSchema = new Schema<UserModelProps>({
   clerkId: {
     type: String,
     required: true,
@@ -96,6 +97,10 @@ const userSchema = new Schema({
   },
   packageEndDate: {
     type: Date,
+  },
+  isMembership: {
+    type: Boolean,
+    default: false,
   },
 });
 userSchema.index({ clerkId: 1 }, { unique: true });

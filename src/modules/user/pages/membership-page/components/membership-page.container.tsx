@@ -1,8 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useUserContext } from "@/components/user-context";
+import { commonPath } from "@/constants";
+import { userMutationEnrollPackage } from "@/modules/course/services/data/mutation-enroll-package";
 import { Heading } from "@/shared/components";
 import { UserPackage } from "@/shared/constants/user.constants";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import PackageItem from "./package-item";
@@ -44,8 +48,31 @@ export function MembershipPageContainer(_props: MembershipPageContainerProps) {
     },
   ];
 
+  const mutationEnrollPackage = userMutationEnrollPackage();
+  const { userInfo } = useUserContext();
+  const userId = userInfo?._id.toString() || "";
+  const router = useRouter();
+  const amount = Number(
+    packages.find((item) => item.package === selectedPackage)?.price
+  );
   const handleMembership = async () => {
-    toast.error("Chức năng này đang được phát triển");
+    if (!userInfo?._id) {
+      toast.error("Vui lòng đăng nhập để thực hiện chức năng này");
+      router.push(commonPath.LOGIN);
+      return;
+    }
+    try {
+      const response = await mutationEnrollPackage.mutateAsync({
+        amount,
+        userId,
+        plan: selectedPackage,
+      });
+      if (response?.error) {
+        toast.error(response?.error);
+        return;
+      }
+      router.push(`/order/${response?.order.code}`);
+    } catch (error) {}
   };
 
   return (
