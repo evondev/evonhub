@@ -1,6 +1,6 @@
 "use client";
 import { useQueryUserById } from "@/modules/user/services";
-import { UserInfoData } from "@/modules/user/types";
+import { UserInfoData } from "@/shared/types/user.types";
 import { useGlobalStore } from "@/store";
 import { useAuth } from "@clerk/nextjs";
 import { createContext, useContext, useEffect } from "react";

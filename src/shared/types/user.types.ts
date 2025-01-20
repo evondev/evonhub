@@ -1,9 +1,11 @@
 import {
+  UserPackage,
   UserPermission,
   UserRole,
   UserStatus,
 } from "@/shared/constants/user.constants";
 import { Document, Schema } from "mongoose";
+import { EnumValues } from "zod";
 import { CourseItemData } from "./course.types";
 
 export interface UserModelProps extends Document {
@@ -27,11 +29,16 @@ export interface UserModelProps extends Document {
     bankNumber: string;
     bankBranch: string;
   };
-  package: "none" | "basic" | "pro" | "premium" | "master";
-  packageExpire: Date;
+  package: EnumValues<UserPackage>;
+  packageEndDate: Date;
+  packageStartDate: Date;
   _destroy: boolean;
 }
 export interface UserItemData extends Omit<UserModelProps, "courses" | "role"> {
   courses: CourseItemData[];
+  role: UserRole;
+}
+export interface UserInfoData extends Omit<UserModelProps, "courses" | "role"> {
+  courses: string[];
   role: UserRole;
 }

@@ -6,8 +6,8 @@ import { CourseStatus } from "@/shared/constants/course.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import HistoryModel from "@/shared/models/history.model";
+import { UserInfoData, UserItemData } from "@/shared/types/user.types";
 import UserModel from "../models";
-import { UserInfoData, UserItemData } from "../types";
 
 export async function fetchUserCourses({ userId }: { userId: string }): Promise<
   | {

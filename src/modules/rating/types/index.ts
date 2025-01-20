@@ -1,6 +1,6 @@
 import { CourseItemData } from "@/modules/course/types";
-import { UserItemData } from "@/modules/user/types";
 import { RatingStatus } from "@/shared/constants/rating.constants";
+import { UserItemData } from "@/shared/types/user.types";
 import { Document, Schema } from "mongoose";
 
 export interface RatingModelProps extends Document {

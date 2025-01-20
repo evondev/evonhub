@@ -1,6 +1,6 @@
 import { CourseItemData } from "@/modules/course/types";
-import { UserItemData } from "@/modules/user/types";
 import { LessonItemData } from "@/shared/types";
+import { UserItemData } from "@/shared/types/user.types";
 import { Schema } from "mongoose";
 
 export interface HistoryModelProps extends Document {

@@ -1,6 +1,6 @@
-import { UserItemData } from "@/modules/user/types";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { LessonItemData } from "@/shared/types";
+import { UserItemData } from "@/shared/types/user.types";
 import { Schema } from "mongoose";
 
 export interface CommentModelProps extends Document {
