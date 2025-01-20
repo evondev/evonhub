@@ -5,10 +5,8 @@ import { commonPath } from "@/constants";
 import { userMutationEnrollCourse } from "@/modules/course/services/data/mutation-enroll";
 import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-enroll-free.data";
 import { IconPlay, IconStudy, IconUsers } from "@/shared/components";
-import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "react-toastify";
 
 export interface CourseWidgetProps {
@@ -37,8 +35,6 @@ export default function CourseWidget({
   const { userInfo } = useUserContext();
   const userId = userInfo?._id.toString() || "";
   const router = useRouter();
-  const [yourPrice, setYourPrice] = useState(0);
-  const isCustomPrice = !!minPrice && yourPrice < minPrice;
 
   const handleEnrollFree = async () => {
     try {
@@ -64,15 +60,11 @@ export default function CourseWidget({
       router.push(commonPath.LOGIN);
       return;
     }
-    if (isCustomPrice) {
-      toast.error("Giá bạn nhập vào không hợp lệ");
-      return;
-    }
     const response = await mutationEnrollCourse.mutateAsync({
       userId,
       courseId,
-      amount: yourPrice,
-      total: yourPrice,
+      amount: price,
+      total: price,
     });
     if (response?.error) {
       toast.error(response?.error);
@@ -138,26 +130,6 @@ export default function CourseWidget({
             >
               {isComingSoon ? "Sắp ra mắt" : cta || "Đăng ký ngay"}
             </Button>
-          )}
-          {Number(minPrice) > 0 && !isFree && (
-            <div
-              className={cn("flex flex-col gap-2", {
-                "opacity-50 pointer-events-none": isComingSoon,
-              })}
-            >
-              <h3 className="text-sm font-semibold">Pay as you want</h3>
-              <input
-                type="number"
-                className="h-12 rounded-lg bgDarkMode px-3 text-sm border border-primary font-semibold shadow-main"
-                placeholder={`Giá tối thiểu là ${
-                  formatThoundsand(minPrice || 0) || 0
-                } vnđ`}
-                onChange={(e) =>
-                  !isComingSoon && setYourPrice(Number(e.target.value))
-                }
-                disabled={isComingSoon}
-              />
-            </div>
           )}
         </div>
       </div>

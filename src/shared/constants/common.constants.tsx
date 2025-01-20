@@ -48,9 +48,9 @@ export const menuLinks: MenuLinkItemProps[] = [
     isExpert: true,
   },
   {
-    title: "Pay as you want",
+    title: "Membership",
     icon: <IconMoney></IconMoney>,
-    url: "/pay-as-you-want",
+    url: "/membership",
   },
   {
     title: "Sắp ra mắt",
