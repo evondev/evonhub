@@ -18,7 +18,7 @@ import {
 } from "@/constants";
 import { deleteUnpaidOrders, updateOrder } from "@/lib/actions/order.action";
 import { cn } from "@/lib/utils";
-import { UserPackage } from "@/shared/constants/user.constants";
+import { MembershipPlan } from "@/shared/constants/user.constants";
 import { EOrderStatus } from "@/types/enums";
 import { formUrlQuery, formatDate, formatThoundsand } from "@/utils";
 import Link from "next/link";
@@ -54,7 +54,7 @@ const OrderManage = ({
     course: string;
     status: EOrderStatus;
     code: string;
-    plan: UserPackage;
+    plan: MembershipPlan;
   }) => {
     try {
       await updateOrder({
@@ -220,9 +220,9 @@ const OrderManage = ({
                     {order?.course && (
                       <div className="font-bold">{order?.course?.title}</div>
                     )}
-                    {order?.package !== UserPackage.None && (
+                    {order?.plan !== MembershipPlan.None && (
                       <div className="font-bold text-primary">
-                        Gói: {order?.package}
+                        Gói: {order?.plan}
                       </div>
                     )}
                   </div>

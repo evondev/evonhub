@@ -4,9 +4,10 @@ import Coupon from "@/database/coupon.model";
 import Course from "@/database/course.model";
 import User from "@/database/user.model";
 import OrderModel from "@/modules/order/models";
-import { UserPackage } from "@/shared/constants/user.constants";
+import { MembershipPlan } from "@/shared/constants/user.constants";
 import { EOrderStatus, EUserStatus, Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
+import dayjs from "dayjs";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -35,7 +36,7 @@ interface UpdateOrderParams {
   user: string;
   course?: string;
   status: EOrderStatus;
-  plan?: UserPackage;
+  plan?: MembershipPlan;
 }
 export async function updateOrder(params: UpdateOrderParams) {
   try {
@@ -56,16 +57,31 @@ export async function updateOrder(params: UpdateOrderParams) {
     );
 
     if (params.status === EOrderStatus.APPROVED) {
-      if (params.plan && params.plan !== UserPackage.None) {
-        findUser.package = params.plan;
+      if (params.plan && params.plan !== MembershipPlan.None) {
+        findUser.plan = params.plan;
         findUser.isMembership = true;
+        switch (params.plan) {
+          case MembershipPlan.Personal:
+            findUser.planEndDate = dayjs().add(1, "month").toDate();
+            break;
+          case MembershipPlan.Starter:
+            findUser.planEndDate = dayjs().add(3, "month").toDate();
+            break;
+          case MembershipPlan.Master:
+            findUser.planEndDate = dayjs().add(6, "month").toDate();
+            break;
+          case MembershipPlan.Premium:
+            findUser.planEndDate = dayjs().add(1, "year").toDate();
+            break;
+        }
       } else if (!findUser.courses.includes(params.course)) {
         findUser.courses.push(params.course);
       }
     } else {
-      if (params.plan && params.plan !== UserPackage.None) {
-        findUser.package = UserPackage.None;
+      if (params.plan && params.plan !== MembershipPlan.None) {
+        findUser.plan = MembershipPlan.None;
         findUser.isMembership = false;
+        findUser.planEndDate = undefined;
       } else {
         findUser.courses = findUser.courses.filter(
           (course: any) => course.toString() !== params.course

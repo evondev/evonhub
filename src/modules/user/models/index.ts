@@ -1,5 +1,5 @@
 import {
-  UserPackage,
+  MembershipPlan,
   UserPermission,
   UserRole,
   UserStatus,
@@ -86,16 +86,16 @@ const userSchema = new Schema<UserModelProps>({
     type: Boolean,
     default: false,
   },
-  package: {
+  plan: {
     type: String,
-    enum: Object.values(UserPackage),
-    default: UserPackage.None,
+    enum: Object.values(MembershipPlan),
+    default: MembershipPlan.None,
   },
-  packageStartDate: {
+  planStartDate: {
     type: Date,
     default: Date.now,
   },
-  packageEndDate: {
+  planEndDate: {
     type: Date,
   },
   isMembership: {

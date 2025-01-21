@@ -13,7 +13,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const { userId } = useAuth();
   const { setUserRole } = useGlobalStore();
   const { data: userInfo } = useQueryUserById({ userId: userId || "" });
-  console.log("UserProvider ~ userInfo:", userInfo);
   useEffect(() => {
     if (!userInfo) return;
     setUserRole?.(userInfo?.role || "");

@@ -1,5 +1,5 @@
 import {
-  UserPackage,
+  MembershipPlan,
   UserPermission,
   UserRole,
   UserStatus,
@@ -28,9 +28,9 @@ export interface UserModelProps extends Document {
     bankNumber: string;
     bankBranch: string;
   };
-  package: UserPackage;
-  packageEndDate: Date;
-  packageStartDate: Date;
+  plan: MembershipPlan;
+  planEndDate: Date;
+  planStartDate: Date;
   isMembership: boolean;
   _destroy: boolean;
 }

@@ -1,5 +1,5 @@
 import { OrderStatus } from "@/shared/constants/order.constants";
-import { UserPackage } from "@/shared/constants/user.constants";
+import { MembershipPlan } from "@/shared/constants/user.constants";
 import { Schema } from "mongoose";
 
 export interface OrderModelProps extends Document {
@@ -14,6 +14,6 @@ export interface OrderModelProps extends Document {
   total: number;
   couponCode: string;
   _destroy: boolean;
-  package: UserPackage;
+  plan: MembershipPlan;
 }
 export interface OrderItemData extends Omit<OrderModelProps, ""> {}

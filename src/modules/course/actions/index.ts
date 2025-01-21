@@ -5,7 +5,7 @@ import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { OrderStatus } from "@/shared/constants/order.constants";
-import { UserPackage, UserStatus } from "@/shared/constants/user.constants";
+import { MembershipPlan, UserStatus } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { UserItemData } from "@/shared/types/user.types";
@@ -184,7 +184,7 @@ export async function handleEnrollPackage({
 }: {
   userId: string;
   amount: number;
-  plan: UserPackage;
+  plan: MembershipPlan;
 }) {
   try {
     connectToDatabase();
@@ -193,8 +193,8 @@ export async function handleEnrollPackage({
       return {
         error: "Vui lòng đăng nhập để thanh toán",
       };
-    const allPackages = Object.values(UserPackage);
-    if (!allPackages.includes(plan)) {
+    const allPlans = Object.values(MembershipPlan);
+    if (!allPlans.includes(plan)) {
       return {
         error: "Gói không tồn tại",
       };
@@ -202,8 +202,8 @@ export async function handleEnrollPackage({
 
     const isPlanActive =
       findUser.isMembership &&
-      findUser.package === plan &&
-      findUser.packageEndDate > new Date();
+      findUser.plan === plan &&
+      findUser.planEndDate > new Date();
 
     if (isPlanActive) {
       return {

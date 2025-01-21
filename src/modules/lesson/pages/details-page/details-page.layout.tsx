@@ -3,7 +3,7 @@ import PageNotFound from "@/app/not-found";
 import { useUserContext } from "@/components/user-context";
 import { useQueryCourseBySlug } from "@/modules/course/services";
 import { UserRole } from "@/shared/constants/user.constants";
-import { cn } from "@/shared/utils";
+import { cn, handleCheckMembership } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import { useParams, useSearchParams } from "next/navigation";
 import { useQueryLessonById } from "../../services";
@@ -29,12 +29,17 @@ export function DetailsPageLayout({ children }: DetailsPageLayoutProps) {
   const userCourses = userInfo?.courses
     ? JSON.parse(JSON.stringify(userInfo?.courses))
     : [];
+  const isMembership = handleCheckMembership({
+    isMembership: userInfo?.isMembership,
+    endDate: userInfo?.planEndDate || new Date().toISOString(),
+  });
   if (isLoading) return <LoadingLessonDetails />;
   if (!lessonDetails) return <PageNotFound />;
 
   if (
     (!userCourses.includes(courseId) || !userInfo?._id) &&
-    userInfo?.role !== UserRole.Admin
+    userInfo?.role !== UserRole.Admin &&
+    !isMembership
   )
     return <LoadingLessonDetails />;
   return (
