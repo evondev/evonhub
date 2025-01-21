@@ -55,6 +55,7 @@ export async function updateOrder(params: UpdateOrderParams) {
       { code: params.code },
       { status: params.status }
     );
+    console.info(`File order.action.ts params at line 58:`, params);
 
     if (params.status === EOrderStatus.APPROVED) {
       if (params.plan && params.plan !== MembershipPlan.None) {

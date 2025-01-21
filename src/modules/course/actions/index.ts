@@ -213,7 +213,7 @@ export async function handleEnrollPackage({
 
     const existOrder = await OrderModel.findOne({
       user: userId,
-      package: plan,
+      plan,
       status: OrderStatus.Pending,
     });
     if (existOrder) {
@@ -223,7 +223,7 @@ export async function handleEnrollPackage({
     }
     const newOrder = new OrderModel({
       user: userId,
-      package: plan,
+      plan,
       amount,
       total: amount,
       code: `DH${new Date().getTime().toString().slice(-8)}`,

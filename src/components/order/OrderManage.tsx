@@ -104,7 +104,7 @@ const OrderManage = ({
           course: order?.course?._id,
           status: EOrderStatus.REJECTED,
           code: order.code,
-          plan: order.package,
+          plan: order.plan,
         });
       }
     });
@@ -292,7 +292,7 @@ const OrderManage = ({
                                   course: order?.course?._id,
                                   status: EOrderStatus.APPROVED,
                                   code: order.code,
-                                  plan: order.package,
+                                  plan: order.plan,
                                 })
                               }
                             >
