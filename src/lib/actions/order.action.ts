@@ -218,7 +218,7 @@ export async function getOrderDetails(orderId: string) {
   try {
     connectToDatabase();
     const order = await OrderModel.findOne({ code: orderId })
-      .select("code amount total status")
+      .select("code amount total status plan")
       .populate("user")
       .populate({
         path: "course",

@@ -2,6 +2,7 @@ import PageNotFound from "@/app/not-found";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { orderStatus } from "@/constants";
 import { getOrderDetails } from "@/lib/actions/order.action";
+import { MembershipPlan } from "@/shared/constants/user.constants";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,7 +16,13 @@ const page = async ({
 }) => {
   if (!params.orderId) return <PageNotFound />;
   const orderDetails = await getOrderDetails(params.orderId);
-  const bankInfo = orderDetails?.user?.bank;
+  const bankInfo = orderDetails?.course?.author?.bank || {};
+  const isOrderMembership = orderDetails?.plan !== MembershipPlan.None;
+  if (isOrderMembership) {
+    bankInfo.bankNumber = "33366668888";
+    bankInfo.bankAccount = "TRAN ANH TUAN";
+    bankInfo.bankName = "ACB";
+  }
   if (!orderDetails || !bankInfo || !bankInfo.bankNumber)
     return <PageNotFound />;
   if (orderDetails.status === orderStatus.APPROVED)

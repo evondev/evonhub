@@ -42,12 +42,17 @@ export function MembershipPageContainer(_props: MembershipPageContainerProps) {
   return (
     <div>
       <Heading>Membership</Heading>
-      <div className="mb-5">
+      <div className="mb-2">
         Tính năng này cho phép các bạn đăng ký các gói từ{" "}
         <strong>1 tháng</strong>, <strong>3 tháng</strong>,{" "}
         <strong>6 tháng</strong> và <strong>1 năm</strong>. Khi các bạn đăng ký
         các gói này thì có thể học toàn bộ khóa học trong thời hạn mà các bạn
         chọn.
+      </div>
+      <div className="mb-5">
+        Sau khi thanh toán xong thì các bạn có thể vào khu vực học tập để có thể
+        truy cập các khóa học nhé. Các huy hiệu và gói của các bạn mình sẽ cập
+        nhật ở trang cá nhân sau.
       </div>
       <div className="grid lg:grid-cols-2 2xl:grid-cols-4 max-w-[700px] 2xl:max-w-full gap-2">
         {membershipPlans.map((item, index) => (
