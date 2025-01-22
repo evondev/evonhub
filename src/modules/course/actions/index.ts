@@ -9,6 +9,7 @@ import { MembershipPlan, UserStatus } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { UserItemData } from "@/shared/types/user.types";
+import { handleCheckMembership } from "@/shared/utils";
 import CourseModel from "../models";
 import { CourseItemData, FetchCoursesParams } from "../types";
 
@@ -201,9 +202,10 @@ export async function handleEnrollPackage({
     }
 
     const isPlanActive =
-      findUser.isMembership &&
-      findUser.plan === plan &&
-      findUser.planEndDate > new Date();
+      handleCheckMembership({
+        isMembership: findUser.isMembership,
+        endDate: findUser.planEndDate,
+      }) && plan === findUser.plan;
 
     if (isPlanActive) {
       return {

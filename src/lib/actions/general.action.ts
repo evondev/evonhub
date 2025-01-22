@@ -3,8 +3,8 @@ import Course from "@/database/course.model";
 import History from "@/database/history.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
-import Order from "@/database/order.model";
 import User from "@/database/user.model";
+import OrderModel from "@/modules/order/models";
 import { CourseParams } from "@/types";
 import { ECourseStatus, EOrderStatus } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
@@ -124,11 +124,11 @@ export async function countOverview() {
     const user = await User.countDocuments({
       courses: { $in: userCourses.map((course) => course._id) },
     });
-    const order = await Order.countDocuments({
+    const order = await OrderModel.countDocuments({
       status: EOrderStatus.APPROVED,
       course: { $in: userCourses.map((course) => course._id) },
     });
-    const income = await Order.aggregate([
+    const income = await OrderModel.aggregate([
       {
         $match: {
           status: EOrderStatus.APPROVED,
