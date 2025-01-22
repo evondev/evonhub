@@ -1,7 +1,7 @@
 "use server";
 import Course from "@/database/course.model";
-import Order from "@/database/order.model";
 import User, { IUser } from "@/database/user.model";
+import OrderModel from "@/modules/order/models";
 import {
   CreateUserParams,
   DeleteUserParams,
@@ -224,9 +224,12 @@ export async function removeCourseFromUser({
     user.courses = user.courses.filter((c: any) => c.toString() !== courseId);
     await user.save();
     revalidatePath(path);
-    const findOrder = await Order.findOne({ user: user._id, course: courseId });
+    const findOrder = await OrderModel.findOne({
+      user: user._id,
+      course: courseId,
+    });
     if (findOrder) {
-      await Order.findByIdAndUpdate(findOrder._id, {
+      await OrderModel.findByIdAndUpdate(findOrder._id, {
         status: EOrderStatus.REJECTED,
       });
     }

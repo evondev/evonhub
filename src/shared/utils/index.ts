@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -43,4 +44,14 @@ export const extractDriveId = (input: string) => {
   }
 
   return null;
+};
+
+export const handleCheckMembership = ({
+  isMembership = false,
+  endDate = new Date().toISOString(),
+}: {
+  isMembership?: boolean;
+  endDate: string | Date;
+}) => {
+  return !!isMembership && dayjs().isBefore(dayjs(endDate));
 };

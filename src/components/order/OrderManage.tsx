@@ -18,6 +18,7 @@ import {
 } from "@/constants";
 import { deleteUnpaidOrders, updateOrder } from "@/lib/actions/order.action";
 import { cn } from "@/lib/utils";
+import { MembershipPlan } from "@/shared/constants/user.constants";
 import { EOrderStatus } from "@/types/enums";
 import { formUrlQuery, formatDate, formatThoundsand } from "@/utils";
 import Link from "next/link";
@@ -47,11 +48,13 @@ const OrderManage = ({
     course,
     status,
     code,
+    plan,
   }: {
     user: string;
     course: string;
     status: EOrderStatus;
     code: string;
+    plan: MembershipPlan;
   }) => {
     try {
       await updateOrder({
@@ -59,6 +62,7 @@ const OrderManage = ({
         user,
         course,
         status,
+        plan,
       });
     } catch (error) {}
   };
@@ -100,6 +104,7 @@ const OrderManage = ({
           course: order?.course?._id,
           status: EOrderStatus.REJECTED,
           code: order.code,
+          plan: order.plan,
         });
       }
     });
@@ -212,7 +217,14 @@ const OrderManage = ({
                 </TableCell>
                 <TableCell>
                   <div className="w-[200px]">
-                    <div className="font-bold">{order?.course?.title}</div>
+                    {order?.course && (
+                      <div className="font-bold">{order?.course?.title}</div>
+                    )}
+                    {order?.plan !== MembershipPlan.None && (
+                      <div className="font-bold text-primary">
+                        Gói: {order?.plan}
+                      </div>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell>
@@ -280,6 +292,7 @@ const OrderManage = ({
                                   course: order?.course?._id,
                                   status: EOrderStatus.APPROVED,
                                   code: order.code,
+                                  plan: order.plan,
                                 })
                               }
                             >

@@ -1,5 +1,6 @@
 "use server";
 
+import CourseModel from "@/modules/course/models";
 import { CourseItemData } from "@/modules/course/types";
 import LessonModel from "@/modules/lesson/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
@@ -7,6 +8,7 @@ import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import HistoryModel from "@/shared/models/history.model";
 import { UserInfoData, UserItemData } from "@/shared/types/user.types";
+import { handleCheckMembership } from "@/shared/utils";
 import UserModel from "../models";
 
 export async function fetchUserCourses({ userId }: { userId: string }): Promise<
@@ -23,15 +25,30 @@ export async function fetchUserCourses({ userId }: { userId: string }): Promise<
         courses: [],
         lessons: [],
       };
-    const user: UserItemData = await UserModel.findOne({
+    const findUser: UserItemData | null = await UserModel.findOne({
       clerkId: userId,
-    }).populate({
-      path: "courses",
-      select: "title slug image rating level price salePrice views free",
-      match: { status: CourseStatus.Approved },
     });
+    if (!findUser) return;
+    const isMembership = handleCheckMembership({
+      isMembership: findUser?.isMembership,
+      endDate: findUser?.planEndDate || new Date().toISOString(),
+    });
+    let courses: CourseItemData[] = [];
+    if (isMembership) {
+      courses = await CourseModel.find({
+        status: CourseStatus.Approved,
+      }).select("title slug image rating level price salePrice views free");
+    } else {
+      const user = await UserModel.findOne({
+        clerkId: userId,
+      }).populate({
+        path: "courses",
+        select: "title slug image rating level price salePrice views free",
+        match: { status: CourseStatus.Approved },
+      });
+      courses = user?.courses || [];
+    }
 
-    const courses = user.courses;
     const allPromise = Promise.all(
       courses.map(async (item) => {
         return LessonModel.find({ courseId: item._id, _destroy: false }).select(

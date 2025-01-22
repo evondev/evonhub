@@ -15,7 +15,7 @@ const page = async ({
 }) => {
   if (!params.orderId) return <PageNotFound />;
   const orderDetails = await getOrderDetails(params.orderId);
-  const bankInfo = orderDetails?.course?.author?.bank;
+  const bankInfo = orderDetails?.user?.bank;
   if (!orderDetails || !bankInfo || !bankInfo.bankNumber)
     return <PageNotFound />;
   if (orderDetails.status === orderStatus.APPROVED)
@@ -33,16 +33,18 @@ const page = async ({
     );
   return (
     <div className="bg-white rounded-lg bgDarkMode p-5 flex text-sm lg:text-base flex-col gap-3 font-medium">
-      <div>
-        Cám ơn bạn đã đặt mua khóa học{" "}
-        <Link
-          href={`/course/${orderDetails?.course?.slug}`}
-          className="text-primary font-semibold underline"
-        >
-          {orderDetails?.course.title}
-        </Link>
-        .
-      </div>
+      {orderDetails?.course && (
+        <div>
+          Cám ơn bạn đã đặt mua khóa học{" "}
+          <Link
+            href={`/course/${orderDetails?.course?.slug}`}
+            className="text-primary font-semibold underline"
+          >
+            {orderDetails?.course?.title}
+          </Link>
+          .
+        </div>
+      )}
       <div>
         {" "}
         Bạn vui lòng thanh toán vào thông tin tài khoản dưới đây với nội dung
