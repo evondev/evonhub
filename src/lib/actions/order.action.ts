@@ -3,8 +3,10 @@ import { usersHTML, usersJS, usersJSAdvanced, usersReact } from "@/data";
 import Coupon from "@/database/coupon.model";
 import Course from "@/database/course.model";
 import User from "@/database/user.model";
+import CourseModel from "@/modules/course/models";
 import OrderModel from "@/modules/order/models";
-import { MembershipPlan } from "@/shared/constants/user.constants";
+import UserModel from "@/modules/user/models";
+import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
 import { EOrderStatus, EUserStatus, Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import dayjs from "dayjs";
@@ -102,8 +104,8 @@ export async function getAllOrders(params: {
 }) {
   try {
     connectToDatabase();
-    const findUser = await User.findById(params.userId);
-    const userCourses = await Course.find({ author: findUser?._id });
+    const findUser = await UserModel.findById(params.userId);
+    const userCourses = await CourseModel.find({ author: findUser?._id });
     const { page = 1, limit = 10, searchQuery } = params;
     const skipAmount = (page - 1) * limit;
     const query: FilterQuery<typeof OrderModel> = {};
@@ -113,17 +115,19 @@ export async function getAllOrders(params: {
     if (params.freeOrders) {
       query.total = 0;
     }
-    query.course = { $in: userCourses.map((course) => course._id) };
+    if (findUser?.role === UserRole.Expert) {
+      query.course = { $in: userCourses.map((course) => course._id) };
+    }
     const orders = await OrderModel.find(query)
       .limit(params.limit || 500)
       .populate({
         path: "course",
-        model: Course,
+        model: CourseModel,
         select: "title",
       })
       .populate({
         path: "user",
-        model: User,
+        model: UserModel,
         select: "username email",
       })
       .skip(skipAmount)
