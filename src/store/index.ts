@@ -11,6 +11,8 @@ interface GlobalState {
   setPermissions?: (permissions: any) => void;
   userRole?: UserRole;
   setUserRole?: (userRole: UserRole) => void;
+  isMembershipUserActive?: boolean;
+  setIsMembershipUserActive?: (isMembershipUserActive: boolean) => void;
 }
 
 export const useGlobalStore = create<GlobalState>()(
@@ -29,6 +31,9 @@ export const useGlobalStore = create<GlobalState>()(
         userRole: UserRole.User,
         setUserRole: (userRole: UserRole) =>
           set((state) => ({ userRole: userRole })),
+        isMembershipUserActive: false,
+        setIsMembershipUserActive: (isMembershipUserActive: boolean) =>
+          set((state) => ({ isMembershipUserActive: isMembershipUserActive })),
       }),
 
       {

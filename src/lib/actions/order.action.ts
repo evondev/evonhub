@@ -55,8 +55,6 @@ export async function updateOrder(params: UpdateOrderParams) {
       { code: params.code },
       { status: params.status }
     );
-    console.info(`File order.action.ts params at line 58:`, params);
-
     if (params.status === EOrderStatus.APPROVED) {
       if (params.plan && params.plan !== MembershipPlan.None) {
         findUser.plan = params.plan;
@@ -115,7 +113,7 @@ export async function getAllOrders(params: {
     if (params.freeOrders) {
       query.total = 0;
     }
-    // query.course = { $in: userCourses.map((course) => course._id) };
+    query.course = { $in: userCourses.map((course) => course._id) };
     const orders = await OrderModel.find(query)
       .limit(params.limit || 500)
       .populate({

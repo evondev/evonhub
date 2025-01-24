@@ -19,6 +19,7 @@ import { useQueryLessonDetailsOutline } from "@/modules/lesson/services";
 import { useQueryRatingsByCourse } from "@/modules/rating/services";
 import { CourseOutline } from "@/shared/components/course";
 import { CourseStatus } from "@/shared/constants/course.constants";
+import { handleCheckMembership } from "@/shared/utils";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import AlreadyEnroll from "./already-enroll";
@@ -44,6 +45,10 @@ export function CourseDetailsPageContainer(
     slug: params.slug.toString(),
   });
   const { userInfo } = useUserContext();
+  const isMembershipAlready = handleCheckMembership({
+    isMembership: userInfo?.isMembership,
+    endDate: userInfo?.planEndDate || new Date().toISOString(),
+  });
   if (isFetchingCourse) return <CourseDetailsLoading />;
   if (!courseDetails?._id) return <PageNotFound />;
   const {
@@ -169,13 +174,12 @@ export function CourseDetailsPageContainer(
         </div>
       </div>
       <div className="flex flex-col gap-5 sticky top-5 xl:top-[104px] right-0">
-        {isAlreadyEnroll && (
+        {isAlreadyEnroll || isMembershipAlready ? (
           <AlreadyEnroll
             course={slug}
             lesson={lectures?.[0].lessons[0]._id || ""}
           ></AlreadyEnroll>
-        )}
-        {!isAlreadyEnroll && (
+        ) : (
           <CourseWidget
             price={price}
             salePrice={salePrice}

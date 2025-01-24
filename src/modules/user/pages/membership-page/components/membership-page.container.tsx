@@ -51,10 +51,10 @@ export function MembershipPageContainer(_props: MembershipPageContainerProps) {
       </div>
       <div className="mb-5">
         Sau khi thanh toán xong thì các bạn có thể vào khu vực học tập để có thể
-        truy cập các khóa học nhé. Các huy hiệu và gói của các bạn mình sẽ cập
-        nhật ở trang cá nhân sau.
+        truy cập các khóa học. Còn thông tin gói và thời hạn các bạn có thể truy
+        cập vào mục <strong>Profile</strong>
       </div>
-      <div className="grid lg:grid-cols-2 2xl:grid-cols-4 max-w-[700px] 2xl:max-w-full gap-2">
+      <div className="grid lg:grid-cols-2 xl:grid-cols-4 2xl:max-w-full gap-5 xl:gap-2">
         {membershipPlans.map((item, index) => (
           <PlanItem
             isActive={item.plan === MembershipPlan.Master}

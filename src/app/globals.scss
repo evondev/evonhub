@@ -7,7 +7,7 @@
     @apply text-white bg-primary;
   }
   body {
-    @apply bg-[#F6F6F8] text-grayPrimary dark:text-white dark:bg-grayDarkest antialiased;
+    @apply bg-[#F6F6F8] text-grayPrimary dark:text-white dark:bg-grayDarkest antialiased overflow-x-hidden;
   }
   .wrapper {
     max-width: 2600px;
@@ -373,4 +373,54 @@ div[role="dialog"] {
 }
 .button-mix {
   @apply h-12 rounded-full px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-sm;
+}
+:root {
+  --tab-gradient1: #407cff 318deg, #da8bff 1turn;
+  --tab-gradient2: #ff65f2 318deg, #fcb564 1turn;
+  --size: 1.5px;
+  --duration: 5s;
+}
+.rounded-animation {
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 2px;
+  width: 100% !important;
+  height: calc(100% - 1px) !important;
+  background-color: transparent !important;
+  border-radius: 12px;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.rounded-animation:before {
+  content: "";
+  width: 200%;
+  aspect-ratio: 1;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  animation: spinner 4s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+  background: conic-gradient(
+      from 0deg at 50% 51.35%,
+      rgba(185, 215, 243, 0) 0deg,
+      rgba(185, 215, 243, 0) 289.4deg,
+      var(--tab-gradient1)
+    ),
+    conic-gradient(
+      from 180deg at 50% 51.35%,
+      rgba(185, 215, 243, 0) 0deg,
+      rgba(185, 215, 243, 0) 287.46deg,
+      var(--tab-gradient2)
+    );
+  border-radius: inherit;
+}
+@keyframes spinner {
+  100% {
+    transform: translate(-50%, -50%) rotate(1turn);
+  }
 }

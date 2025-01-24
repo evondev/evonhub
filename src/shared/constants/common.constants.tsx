@@ -27,6 +27,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <IconCourseManage></IconCourseManage>,
     url: "/admin/course/manage",
     isExpert: true,
+    isHideMobile: true,
   },
   {
     title: "Quản lý thành viên",

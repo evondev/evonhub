@@ -1,8 +1,8 @@
 "use client";
+import { useUserContext } from "@/components/user-context";
 import { adminRoutes, menuLinks } from "@/shared/constants/common.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { useLessonDetailsPath } from "@/shared/hooks";
-import { useGlobalStore } from "@/store";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,7 +13,7 @@ export interface SidebarProps {
 }
 
 export function Sidebar({ role }: SidebarProps) {
-  const { currentUser } = useGlobalStore();
+  const { userInfo } = useUserContext();
   const pathname = usePathname();
   const isActiveLink = (url: string) => pathname === url;
   const { isLessonPage } = useLessonDetailsPath();
@@ -41,7 +41,7 @@ export function Sidebar({ role }: SidebarProps) {
             ![UserRole.Admin, UserRole.Expert].includes(role as UserRole)
           )
             return null;
-          if (link.isAuth && !currentUser?._id) return null;
+          if (link.isAuth && !userInfo?._id) return null;
           return (
             <li key={link.title}>
               <MenuLink
