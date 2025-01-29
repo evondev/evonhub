@@ -27,7 +27,6 @@ export async function createComment(
     const newComment = await Comment.create(params);
     // isReply will create notification for user
 
-    revalidatePath(params.path || "/");
     if (!newComment) return false;
 
     return true;
@@ -52,6 +51,7 @@ export async function getAllComments(params: GetAllCommentsParams) {
       query.user = findUser._id;
     }
     const comments = await Comment.find(query)
+      .sort({ createdAt: -1 })
       .populate({
         path: "user",
         model: User,

@@ -3,7 +3,9 @@
 import { createComment } from "@/lib/actions/comment.action";
 import { cn } from "@/lib/utils";
 import { CommentStatus } from "@/shared/constants/comment.constants";
+import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
 import { UserRole } from "@/shared/constants/user.constants";
+import { getQueryClient } from "@/shared/libs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
@@ -26,7 +28,8 @@ const courseCommentFormSchema = z.object({
     .string({
       message: "Vui lòng nhập bình luận",
     })
-    .min(10, { message: "Nhập tối thiểu 10 kí tự" }),
+    .min(10, { message: "Nhập tối thiểu 10 kí tự" })
+    .max(250, { message: "Nhập tối đa 250 kí tự" }),
 });
 type CourseCommentFormValues = z.infer<typeof courseCommentFormSchema>;
 
@@ -55,6 +58,7 @@ export function CommentForm({
   const id = useSearchParams().get("id");
   const path = `${pathname}?id=${id}`;
 
+  const queryClient = getQueryClient();
   async function onSubmit(values: CourseCommentFormValues) {
     const hasComment = await createComment({
       content: values.content,
@@ -62,7 +66,6 @@ export function CommentForm({
       user: userId,
       level: comment && comment?.level >= 0 ? comment?.level + 1 : 0,
       parentId: comment?._id,
-      path,
       status: isModerator ? CommentStatus.Approved : CommentStatus.Pending,
     });
 
@@ -75,6 +78,9 @@ export function CommentForm({
       toast.success("Đăng bình luận thành công");
       commentForm.setValue("content", "");
       closeReply?.();
+    });
+    queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_COMMENTS_BY_LESSON, lessonId],
     });
   }
 

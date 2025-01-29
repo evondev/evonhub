@@ -119,9 +119,9 @@ export async function handleEnrollCourse({
       return {
         error: "Tài khoản của bạn đã bị khóa",
       };
-    const userCourses = findUser.courses.map((course: any) =>
-      course.toString()
-    );
+    const userCourses = findUser.courses
+      .filter(Boolean)
+      .map((course: any) => course.toString());
     if (userCourses.includes(courseId))
       return {
         error: "Bạn đã sở hữu khóa học này rồi",

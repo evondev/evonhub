@@ -37,11 +37,13 @@ export async function fetchCommentsByLesson(
     connectToDatabase();
     const comments = await CommentModel.find<CommentItemData>({
       lesson: lessonId,
-    }).populate({
-      path: "user",
-      model: UserModel,
-      select: "name avatar",
-    });
+    })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "user",
+        model: UserModel,
+        select: "name avatar",
+      });
 
     return JSON.parse(JSON.stringify(comments));
   } catch (error) {

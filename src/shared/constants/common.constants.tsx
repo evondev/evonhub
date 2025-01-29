@@ -59,10 +59,17 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/coming-soon",
   },
   {
+    title: "Mã giảm giá",
+    icon: <IconMoney></IconMoney>,
+    url: "/coupons",
+    isHideMobile: true,
+  },
+  {
     title: "Profile",
     icon: <IconUser></IconUser>,
     url: "/profile",
     isAuth: true,
+    isHideMobile: true,
   },
 ];
 export const adminRoutes = ["/admin/overview", "/admin/user/manage"];
