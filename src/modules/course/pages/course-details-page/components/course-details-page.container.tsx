@@ -177,7 +177,7 @@ export function CourseDetailsPageContainer(
         {isAlreadyEnroll || isMembershipAlready ? (
           <AlreadyEnroll
             course={slug}
-            lesson={lectures?.[0].lessons[0]._id || ""}
+            lesson={lectures?.[0].lessons?.[0]._id || ""}
           ></AlreadyEnroll>
         ) : (
           <CourseWidget
