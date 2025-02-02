@@ -79,11 +79,16 @@ export async function updateOrder(params: UpdateOrderParams) {
         findUser.courses.push(params.course);
       }
     } else {
-      if (params.plan && params.plan !== MembershipPlan.None) {
+      if (
+        params.plan &&
+        params.plan !== MembershipPlan.None &&
+        params.plan !== findUser.plan &&
+        findUser.isMembership
+      ) {
         findUser.plan = MembershipPlan.None;
         findUser.isMembership = false;
         findUser.planEndDate = undefined;
-      } else {
+      } else if (!params.plan || params.plan === MembershipPlan.None) {
         findUser.courses = findUser.courses.filter(
           (course: any) => course.toString() !== params.course
         );
