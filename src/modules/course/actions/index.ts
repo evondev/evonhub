@@ -22,10 +22,14 @@ export async function fetchCourses(
     if (params.status) {
       searchQuery.status = params.status;
     }
-    const courses = await CourseModel.find(searchQuery)
+    const courses: CourseItemData[] = await CourseModel.find(searchQuery)
       .select("title slug image level rating price salePrice views free")
       .sort({ createdAt: -1 });
-    return parseData(courses);
+    const allCourses = (parseData(courses) as CourseItemData[]) || [];
+    allCourses.forEach(async (course) => {
+      await updateCourseViews(course.slug);
+    });
+    return allCourses;
   } catch (error) {}
 }
 
@@ -49,6 +53,7 @@ export async function fetchCourseBySlug(
 ): Promise<CourseItemData | undefined> {
   try {
     connectToDatabase();
+    await updateCourseViews(slug);
     let searchQuery: any = {};
     searchQuery.slug = slug;
     const course = await CourseModel.findOne(searchQuery).select(
@@ -234,6 +239,15 @@ export async function handleEnrollPackage({
     return {
       order: newOrder,
     };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateCourseViews(slug: string) {
+  try {
+    connectToDatabase();
+    await CourseModel.findOneAndUpdate({ slug }, { $inc: { views: 1 } });
   } catch (error) {
     console.log(error);
   }

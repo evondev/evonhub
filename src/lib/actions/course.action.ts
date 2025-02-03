@@ -205,14 +205,7 @@ export async function updateCourseWithLecture(params: {
     console.log(error);
   }
 }
-export async function updateCourseViews(slug: string) {
-  try {
-    connectToDatabase();
-    await Course.findOneAndUpdate({ slug }, { $inc: { views: 1 } });
-  } catch (error) {
-    console.log(error);
-  }
-}
+
 export async function getFreeCourse(slug: string) {
   try {
     connectToDatabase();
