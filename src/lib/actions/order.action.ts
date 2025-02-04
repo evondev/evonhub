@@ -75,8 +75,10 @@ export async function updateOrder(params: UpdateOrderParams) {
             findUser.planEndDate = dayjs().add(1, "year").toDate();
             break;
         }
+        await findUser.save();
       } else if (!findUser.courses.includes(params.course)) {
         findUser.courses.push(params.course);
+        await findUser.save();
       }
     } else {
       if (
@@ -88,13 +90,14 @@ export async function updateOrder(params: UpdateOrderParams) {
         findUser.plan = MembershipPlan.None;
         findUser.isMembership = false;
         findUser.planEndDate = undefined;
+        await findUser.save();
       } else if (!params.plan || params.plan === MembershipPlan.None) {
         findUser.courses = findUser.courses.filter(
           (course: any) => course.toString() !== params.course
         );
+        await findUser.save();
       }
     }
-    await findUser.save();
     revalidatePath("/admin/order/manage");
   } catch (error) {
     console.log(error);
