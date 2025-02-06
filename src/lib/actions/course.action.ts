@@ -144,9 +144,9 @@ export async function getAllCoursesUser(
     if (findUser && findUser?.role !== Role.ADMIN) {
       searchQuery.author = findUser._id;
     }
-    const courses = await Course.find(searchQuery).select(
-      "title slug image createdAt status price _id free rating views"
-    );
+    const courses = await Course.find(searchQuery)
+      .select("title slug image createdAt status price _id free rating views")
+      .sort({ createdAt: -1 });
     return courses;
   } catch (error) {}
 }
