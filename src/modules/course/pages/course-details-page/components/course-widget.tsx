@@ -110,7 +110,7 @@ export default function CourseWidget({
               <span>Có tài liệu kèm theo</span>
             </div>
           </div>
-          {isFree && (
+          {isFree && !isComingSoon && (
             <button
               type="button"
               onClick={handleEnrollFree}
@@ -119,7 +119,7 @@ export default function CourseWidget({
               Lụm liền
             </button>
           )}
-          {!isFree && (
+          {(!isFree || isComingSoon) && (
             <Button
               className="h-12 rounded-lg px-5 lg:flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] hidden text-base w-full"
               onClick={() => !isComingSoon && handleBuyCourse()}
