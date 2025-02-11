@@ -44,10 +44,10 @@ export async function updateOrder(params: UpdateOrderParams) {
   try {
     connectToDatabase();
     const { userId } = auth();
-    const user = await User.findOne({ clerkId: userId });
+    const user = await UserModel.findOne({ clerkId: userId });
     if (!user) return;
     if (![Role.ADMIN, Role.EXPERT].includes(user?.role)) return;
-    const findUser = await User.findById(params.user);
+    const findUser = await UserModel.findById(params.user);
     if (!findUser) return;
     const findOrder = await OrderModel.findOne({
       code: params.code,
@@ -151,7 +151,7 @@ export async function getAllOrders(params: {
 export async function userBuyCourse(params: Partial<CreateOrderParams>) {
   try {
     connectToDatabase();
-    const findUser = await User.findById(params.user);
+    const findUser = await UserModel.findById(params.user);
     if (!findUser)
       return {
         error: "Vui lòng đăng nhập để mua khóa học",
@@ -250,7 +250,7 @@ export async function deleteUnpaidOrders(params: { userId: string }) {
   try {
     connectToDatabase();
     const query: FilterQuery<typeof OrderModel> = {};
-    const findUser = await User.findById(params.userId);
+    const findUser = await UserModel.findById(params.userId);
     const userCourses = await Course.find({ author: findUser?._id });
     query.course = { $in: userCourses.map((course) => course._id) };
     const orders = await OrderModel.find({

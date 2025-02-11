@@ -2,7 +2,7 @@
 import Course, { ICourse } from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
-import User from "@/database/user.model";
+import UserModel from "@/modules/user/models";
 import { CourseParams, CreateCourseParams, UpdateCourseParams } from "@/types";
 import { ECourseStatus, Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
@@ -18,7 +18,7 @@ export async function createCourse({
   try {
     connectToDatabase();
     const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
       return undefined;
     const allCourse = await Course.find();
@@ -50,7 +50,7 @@ export async function updateCourse({
   try {
     connectToDatabase();
     const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
       return undefined;
     const allCourse = await Course.find();
@@ -84,7 +84,7 @@ export async function getCourseBySlugUser(
     connectToDatabase();
     const { userId } = auth();
     if (!userId) return undefined;
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
       return undefined;
     let searchQuery: any = {};
@@ -130,7 +130,7 @@ export async function getAllCoursesUser(
   try {
     connectToDatabase();
     const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     if (
       findUser &&
       findUser?.role &&
@@ -170,7 +170,7 @@ export async function deleteCourse(slug: string) {
     connectToDatabase();
     connectToDatabase();
     const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     if (![Role.ADMIN].includes(findUser?.role)) return undefined;
     await Course.findOneAndUpdate(
       { slug },
@@ -210,7 +210,7 @@ export async function getFreeCourse(slug: string) {
   try {
     connectToDatabase();
     const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     if (!findUser)
       return {
         type: "error",

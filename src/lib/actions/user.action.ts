@@ -1,7 +1,9 @@
 "use server";
 import Course from "@/database/course.model";
 import User, { IUser } from "@/database/user.model";
+import CourseModel from "@/modules/course/models";
 import OrderModel from "@/modules/order/models";
+import UserModel from "@/modules/user/models";
 import {
   CreateUserParams,
   DeleteUserParams,
@@ -19,7 +21,7 @@ import { createOrder } from "./order.action";
 export async function createUser(userData: CreateUserParams) {
   try {
     connectToDatabase();
-    const user = await User.create(userData);
+    const user = await UserModel.create(userData);
     return user;
   } catch (error) {
     console.log(error);
@@ -29,11 +31,11 @@ export async function updateUser(params: UpdateUserParams) {
   try {
     connectToDatabase();
     const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
       return undefined;
     const { clerkId, updateData, path } = params;
-    await User.findOneAndUpdate({ clerkId }, updateData, {
+    await UserModel.findOneAndUpdate({ clerkId }, updateData, {
       new: true,
     });
     revalidatePath(path);
@@ -45,11 +47,11 @@ export async function updateUserByUsername(params: any) {
   try {
     connectToDatabase();
     const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
       return undefined;
     const { username, updateData } = params;
-    await User.findOneAndUpdate({ username }, updateData);
+    await UserModel.findOneAndUpdate({ username }, updateData);
     // revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -59,13 +61,13 @@ export async function deleteUser(params: DeleteUserParams) {
   try {
     connectToDatabase();
     const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN].includes(findUser?.role)) return undefined;
-    const user = await User.findOne({ clerkId: params.clerkId });
+    const user = await UserModel.findOne({ clerkId: params.clerkId });
     if (!user) {
       throw new Error("User not found");
     }
-    const deletedUser = await User.findByIdAndUpdate(user._id, {
+    const deletedUser = await UserModel.findByIdAndUpdate(user._id, {
       status: EUserStatus.INACTIVE,
     });
     return deletedUser;
@@ -77,7 +79,7 @@ export async function getUserById({ userId }: { userId: string }) {
   try {
     connectToDatabase();
     if (!userId) return undefined;
-    let user = await User.findOne({ clerkId: userId }).populate({
+    let user = await UserModel.findOne({ clerkId: userId }).populate({
       path: "courses",
       model: Course,
       select: "title slug free",
@@ -97,7 +99,7 @@ export async function getUserByUsername(params: {
     let query: any = {};
     if (username) query.username = username;
     if (email) query.email = email;
-    const user = await User.findOne(query).populate({
+    const user = await UserModel.findOne(query).populate({
       path: "courses",
       model: Course,
     });
@@ -112,7 +114,7 @@ export async function getAllUsers(
   try {
     connectToDatabase();
     const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN].includes(findUser?.role)) return undefined;
     const { page = 1, pageSize = 10, searchQuery, paidUser } = params;
     const skipAmount = (page - 1) * pageSize;
@@ -133,7 +135,7 @@ export async function getAllUsers(
         ),
       };
     }
-    const users = await User.find(query)
+    const users = await UserModel.find(query)
       .select("avatar name username status createdAt email")
       .populate({
         path: "courses",
@@ -146,7 +148,7 @@ export async function getAllUsers(
       .sort({
         createdAt: -1,
       });
-    const totalUsers = await User.countDocuments(query);
+    const totalUsers = await UserModel.countDocuments(query);
     const isNext = totalUsers > skipAmount + users.length;
     return {
       users,
@@ -173,7 +175,7 @@ export async function addCourseToUser({
 }: AddCourseToUserParams) {
   try {
     connectToDatabase();
-    const user = await User.findOne({ clerkId: userId });
+    const user = await UserModel.findOne({ clerkId: userId });
     if (!user) {
       throw new Error("User not found");
     }
@@ -195,7 +197,7 @@ export async function addCourseToUser({
       status: EOrderStatus.APPROVED,
     });
     revalidatePath(path);
-    const findCourse = await Course.findById(courseId);
+    const findCourse = await CourseModel.findById(courseId);
     if (!findCourse?.title) return;
     await sendNotification({
       title: "Hệ thống",
@@ -217,7 +219,7 @@ export async function removeCourseFromUser({
 }) {
   try {
     connectToDatabase();
-    const user = await User.findOne({ clerkId: userId });
+    const user = await UserModel.findOne({ clerkId: userId });
     if (!user) {
       throw new Error("User not found");
     }
@@ -244,7 +246,7 @@ export async function getUserInfo({
 }): Promise<IUser | null | undefined> {
   try {
     connectToDatabase();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
 
     if (!findUser?._id) return null;
 

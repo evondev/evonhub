@@ -11,6 +11,7 @@ import {
 } from "@/types";
 
 import CourseModel from "@/modules/course/models";
+import UserModel from "@/modules/user/models";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { auth } from "@clerk/nextjs/server";
@@ -39,7 +40,7 @@ export async function getAllComments(params: GetAllCommentsParams) {
     connectToDatabase();
     const { userId } = auth();
     if (!userId) return undefined;
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     let query: any = {};
     if (params.lesson) {
       query.lesson = params.lesson;
@@ -76,7 +77,7 @@ export async function replyComment(params: ReplyCommentParams) {
   try {
     connectToDatabase();
     const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     const findComment = await Comment.findById(params.commentId)
       .populate({
         path: "lesson",

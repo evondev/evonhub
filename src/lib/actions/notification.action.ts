@@ -2,7 +2,7 @@
 
 import Course from "@/database/course.model";
 import Notification from "@/database/notification.model";
-import User from "@/database/user.model";
+import UserModel from "@/modules/user/models";
 import { EUserStatus } from "@/types/enums";
 import { connectToDatabase } from "../mongoose";
 
@@ -16,7 +16,7 @@ export async function sendNotification(params: {
     connectToDatabase();
     let users: any = params.users;
     if (params.isSendToAll) {
-      users = await User.find({
+      users = await UserModel.find({
         status: EUserStatus.ACTIVE,
         courses: {
           $in: await Course.find({ _destroy: false }).distinct("_id"),

@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/components/user-context";
-import { commonPath } from "@/constants";
 import { userMutationEnrollCourse } from "@/modules/course/services/data/mutation-enroll";
 import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-enroll-free.data";
 import { IconPlay, IconStudy, IconUsers } from "@/shared/components";
@@ -35,29 +34,18 @@ export default function CourseWidget({
   const router = useRouter();
 
   const handleEnrollFree = async () => {
-    try {
-      if (!userId) {
-        toast.error("Vui lòng đăng nhập để thực hiện chức năng này");
-        return;
-      }
-      const response = await mutationEnrollFree.mutateAsync({
-        slug,
-        userId,
-      });
-      if (response?.type === "success") {
-        toast.success(response?.message);
-        return;
-      }
-      toast.error(response?.message);
-    } catch (error) {}
+    const response = await mutationEnrollFree.mutateAsync({
+      slug,
+      userId,
+    });
+    if (response?.type === "success") {
+      toast.success(response?.message);
+      return;
+    }
+    toast.error(response?.message);
   };
 
   const handleBuyCourse = async () => {
-    if (!userInfo?._id) {
-      toast.error("Vui lòng đăng nhập để thực hiện chức năng này");
-      router.push(commonPath.LOGIN);
-      return;
-    }
     const response = await mutationEnrollCourse.mutateAsync({
       userId,
       courseId,

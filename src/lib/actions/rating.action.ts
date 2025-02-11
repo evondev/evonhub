@@ -1,7 +1,7 @@
 "use server";
 import Course from "@/database/course.model";
 import Rating from "@/database/rating.model";
-import User from "@/database/user.model";
+import UserModel from "@/modules/user/models";
 import { ERatingStatus } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -16,7 +16,7 @@ export default async function createRating(params: {
   try {
     connectToDatabase();
     const { userId } = auth();
-    const findUser = await User.findOne({ clerkId: userId });
+    const findUser = await UserModel.findOne({ clerkId: userId });
     if (!findUser) return;
     const findRating = await Rating.findOne({
       user: findUser._id,
