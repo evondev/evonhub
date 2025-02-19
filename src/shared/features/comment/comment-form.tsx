@@ -47,7 +47,8 @@ export function CommentForm({
 }: CommentFormProps) {
   const { userInfo } = useUserContext();
   const userId = userInfo?._id.toString() || "";
-  const isModerator = userInfo?.role === UserRole.Admin || UserRole.Expert;
+  const isModerator =
+    userInfo?.role === UserRole.Admin || userInfo?.role === UserRole.Expert;
 
   const commentForm = useForm<CourseCommentFormValues>({
     resolver: zodResolver(courseCommentFormSchema),
