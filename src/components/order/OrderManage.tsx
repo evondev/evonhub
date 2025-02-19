@@ -43,7 +43,7 @@ const OrderManage = ({
   allOrders: any[];
   userId: string;
 }) => {
-  const handleRejectOrder = async ({
+  const handleOrder = async ({
     user,
     course,
     status,
@@ -99,7 +99,7 @@ const OrderManage = ({
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        handleRejectOrder({
+        handleOrder({
           user: order.user?._id,
           course: order?.course?._id,
           status: EOrderStatus.REJECTED,
@@ -287,7 +287,7 @@ const OrderManage = ({
                             <span
                               className={cn(actionClassName)}
                               onClick={() =>
-                                handleRejectOrder({
+                                handleOrder({
                                   user: order.user?._id,
                                   course: order?.course?._id,
                                   status: EOrderStatus.APPROVED,
