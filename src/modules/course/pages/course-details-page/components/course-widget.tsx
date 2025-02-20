@@ -56,7 +56,11 @@ export default function CourseWidget({
       toast.error(response?.error);
       return;
     }
-    router.push(`/order/${response?.order.code}`);
+    if (response?.order?.code) {
+      router.push(`/order/${response?.order?.code}`);
+    } else {
+      router.push("/sign-in");
+    }
   };
 
   return (
