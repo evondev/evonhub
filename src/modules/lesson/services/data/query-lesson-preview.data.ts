@@ -13,7 +13,7 @@ interface GetLessonPreviewProps {
 
 export function getLessonPreviewOptions({
   lessonId,
-  enabled,
+  enabled = false,
 }: GetLessonPreviewProps) {
   return queryOptions({
     enabled,

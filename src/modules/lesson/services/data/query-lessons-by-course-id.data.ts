@@ -13,7 +13,7 @@ interface GetLessonsByCourseIdProps {
 
 export function getLessonsByCourseIdOptions({
   courseId,
-  enabled,
+  enabled = false,
 }: GetLessonsByCourseIdProps) {
   return queryOptions({
     enabled,

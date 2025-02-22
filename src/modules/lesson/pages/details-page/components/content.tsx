@@ -36,7 +36,7 @@ export function LessonContent({
 
   const { data: lessonList } = useQueryLessonsByCourseId({
     courseId: courseDetails?._id?.toString() || "",
-    enabled: canAccessContent,
+    enabled: !!canAccessContent,
   });
 
   const lessonIndex =
