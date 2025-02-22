@@ -17,12 +17,14 @@ export interface LessonContentProps {
   isLoading?: boolean;
   lessonId: string;
   lessonDetails: LessonItemCutomizeData;
+  canAccessContent?: boolean;
 }
 
 export function LessonContent({
   isLoading,
   lessonId,
   lessonDetails,
+  canAccessContent = false,
 }: LessonContentProps) {
   const handle = useFullScreenHandle();
   const { toggleExpanded, isExpanded } = useGlobalStore();
@@ -31,8 +33,10 @@ export function LessonContent({
   };
   const videoRef = useRef<any>(null);
   const courseDetails = lessonDetails?.courseId;
+
   const { data: lessonList } = useQueryLessonsByCourseId({
     courseId: courseDetails?._id?.toString() || "",
+    enabled: canAccessContent,
   });
 
   const lessonIndex =
@@ -114,37 +118,41 @@ export function LessonContent({
             ) : (
               <div className="w-full h-full lg:border borderDarkMode lg:rounded-lg bgDarkMode"></div>
             )}
-            <div className="hidden lg:block">
-              {prevLesson && (
-                <PlayerNavigation
-                  action="prev"
-                  lessonId={prevLesson}
-                ></PlayerNavigation>
-              )}
-              {nextLesson && (
-                <PlayerNavigation
-                  action="next"
-                  lessonId={nextLesson}
-                ></PlayerNavigation>
-              )}
-            </div>
+            {canAccessContent && (
+              <div className="hidden lg:block">
+                {prevLesson && (
+                  <PlayerNavigation
+                    action="prev"
+                    lessonId={prevLesson}
+                  ></PlayerNavigation>
+                )}
+                {nextLesson && (
+                  <PlayerNavigation
+                    action="next"
+                    lessonId={nextLesson}
+                  ></PlayerNavigation>
+                )}
+              </div>
+            )}
           </div>
         </FullScreen>
       </div>
-      <div className="flex lg:hidden items-center justify-end gap-2 px-2 py-6">
-        {prevLesson && (
-          <PlayerNavigation
-            action="prev"
-            lessonId={prevLesson}
-          ></PlayerNavigation>
-        )}
-        {nextLesson && (
-          <PlayerNavigation
-            action="next"
-            lessonId={nextLesson}
-          ></PlayerNavigation>
-        )}
-      </div>
+      {canAccessContent && (
+        <div className="flex lg:hidden items-center justify-end gap-2 px-2 py-6">
+          {prevLesson && (
+            <PlayerNavigation
+              action="prev"
+              lessonId={prevLesson}
+            ></PlayerNavigation>
+          )}
+          {nextLesson && (
+            <PlayerNavigation
+              action="next"
+              lessonId={nextLesson}
+            ></PlayerNavigation>
+          )}
+        </div>
+      )}
 
       <div className="hidden lg:flex items-center justify-end mb-5 gap-3">
         <button
@@ -166,7 +174,9 @@ export function LessonContent({
           <IconFullScreen />
           Toàn màn hình
         </button>
-        <RatingForm courseId={lessonDetails.courseId?._id}></RatingForm>
+        {canAccessContent && (
+          <RatingForm courseId={lessonDetails.courseId?._id}></RatingForm>
+        )}
       </div>
       <div className="px-3 lg:p-0">
         <h1 className="font-extrabold text-xl lg:text-2xl lg:mb-10">
@@ -174,8 +184,8 @@ export function LessonContent({
         </h1>
       </div>
 
-      {lessonDetails.content && (
-        <div className="lesson-content hidden lg:block  p-5 rounded-lg bgDarkMode borderDarkMode text-sm">
+      {lessonDetails.content && canAccessContent && (
+        <div className="lesson-content hidden lg:block overflow-hidden break-all  p-5 rounded-lg bgDarkMode borderDarkMode text-sm">
           <div
             dangerouslySetInnerHTML={{ __html: lessonDetails.content }}
           ></div>

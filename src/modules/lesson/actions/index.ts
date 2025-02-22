@@ -33,6 +33,20 @@ export async function getLessonById(
     console.log(error);
   }
 }
+export async function getLessonPreview(
+  lessonId: string
+): Promise<LessonItemCutomizeData | undefined> {
+  try {
+    connectToDatabase();
+    const foundLesson = await LessonModel.findById(lessonId).select("trial");
+    if (!foundLesson) {
+      throw new Error("Lesson not found");
+    }
+    return parseData(foundLesson);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export async function fetchLessonDetailsOutline(
   slug: string

@@ -34,6 +34,7 @@ export function LessonOutline({ lessonId }: LessonOutlineProps) {
   const courseId = courseDetails?._id?.toString() || "";
   const { data: lessonList } = useQueryLessonsByCourseId({
     courseId,
+    enabled: !!courseId,
   });
 
   const { data: histories } = useQueryHistoriesByUser({

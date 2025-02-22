@@ -8,13 +8,15 @@ import { fetchLessonsByCourseId } from "../../actions";
 
 interface GetLessonsByCourseIdProps {
   courseId: string;
+  enabled?: boolean;
 }
 
 export function getLessonsByCourseIdOptions({
   courseId,
+  enabled,
 }: GetLessonsByCourseIdProps) {
   return queryOptions({
-    enabled: !!courseId,
+    enabled,
     placeholderData: keepPreviousData,
     queryFn: async () => {
       const response = await fetchLessonsByCourseId(courseId);
@@ -27,8 +29,9 @@ export function getLessonsByCourseIdOptions({
 
 export function useQueryLessonsByCourseId({
   courseId,
+  enabled,
 }: GetLessonsByCourseIdProps) {
-  const options = getLessonsByCourseIdOptions({ courseId });
+  const options = getLessonsByCourseIdOptions({ courseId, enabled });
 
   return useQuery(options);
 }

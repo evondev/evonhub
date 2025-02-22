@@ -92,15 +92,13 @@ export function LessonOutlineItem({
       id={id}
       href={`/${course}/lesson?id=${id}&isPreview=true`}
       className="px-2 py-1 rounded-full bg-primary text-white text-xs font-semibold"
+      target="_blank"
+      rel="noreferrer"
     >
       Học thử
     </Link>
   ) : null;
-  console.info(
-    `File lesson-outline-item.tsx userId at line 99:`,
-    { userId },
-    { id }
-  );
+
   if (!id || !userId) {
     return (
       <div className={className} id={id}>

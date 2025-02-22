@@ -7,6 +7,7 @@ import { cn, handleCheckMembership } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import { useParams, useSearchParams } from "next/navigation";
 import { useQueryLessonById } from "../../services";
+import { useQueryLessonPreview } from "../../services/data/query-lesson-preview.data";
 import { LoadingLessonDetails } from "./components";
 
 export interface DetailsPageLayoutProps {
@@ -21,9 +22,18 @@ export function DetailsPageLayout({ children }: DetailsPageLayoutProps) {
   const userCourses = userInfo?.courses
     ? JSON.parse(JSON.stringify(userInfo?.courses))
     : [];
+  const lessonId = searchParams.get("id")?.toString() || "";
+
   const { data: courseDetails } = useQueryCourseBySlug({
     courseSlug: params.course as string,
   });
+  const { data: lessonPreview, isLoading: isLoadingPreview } =
+    useQueryLessonPreview({
+      lessonId,
+      enabled: !!lessonId,
+    });
+
+  const isLessonPreview = lessonPreview?.trial === true;
 
   const courseId = courseDetails?._id?.toString();
   const isMembershipActive = handleCheckMembership({
@@ -32,20 +42,28 @@ export function DetailsPageLayout({ children }: DetailsPageLayoutProps) {
   });
   const isOwnedCourse =
     (userCourses.includes(courseId) && userInfo?._id) || isMembershipActive;
-  const lessonId = searchParams.get("id")?.toString() || "";
-  const { data: lessonDetails, isLoading } = useQueryLessonById({
+
+  const {
+    data: lessonDetails,
+    isLoading,
+    isFetched,
+  } = useQueryLessonById({
     lessonId,
     enabled: !!isOwnedCourse && !!lessonId,
   });
-  if (isLoading) return <LoadingLessonDetails />;
-  if (!lessonDetails) return <PageNotFound />;
+
+  if (isLoading || isLoadingPreview) return <LoadingLessonDetails />;
 
   if (
     !isOwnedCourse &&
     userInfo?.role !== UserRole.Admin &&
-    !isMembershipActive
+    !isMembershipActive &&
+    !isLessonPreview
   )
     return <LoadingLessonDetails />;
+
+  if (isFetched && !lessonDetails?._id) return <PageNotFound />;
+
   return (
     <div
       className={cn(
