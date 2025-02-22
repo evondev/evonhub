@@ -24,21 +24,27 @@ export function DetailsPageLayout({ children }: DetailsPageLayoutProps) {
   const { data: courseDetails } = useQueryCourseBySlug({
     courseSlug: params.course as string,
   });
+
   const courseId = courseDetails?._id?.toString();
-  const isOwnedCourse = userCourses.includes(courseId) && userInfo?._id;
+  const isMembershipActive = handleCheckMembership({
+    isMembership: userInfo?.isMembership,
+    endDate: userInfo?.planEndDate || new Date().toISOString(),
+  });
+  const isOwnedCourse =
+    (userCourses.includes(courseId) && userInfo?._id) || isMembershipActive;
   const lessonId = searchParams.get("id")?.toString() || "";
   const { data: lessonDetails, isLoading } = useQueryLessonById({
     lessonId,
     enabled: !!isOwnedCourse && !!lessonId,
   });
-  const isMembership = handleCheckMembership({
-    isMembership: userInfo?.isMembership,
-    endDate: userInfo?.planEndDate || new Date().toISOString(),
-  });
   if (isLoading) return <LoadingLessonDetails />;
   if (!lessonDetails) return <PageNotFound />;
 
-  if (!isOwnedCourse && userInfo?.role !== UserRole.Admin && !isMembership)
+  if (
+    !isOwnedCourse &&
+    userInfo?.role !== UserRole.Admin &&
+    !isMembershipActive
+  )
     return <LoadingLessonDetails />;
   return (
     <div

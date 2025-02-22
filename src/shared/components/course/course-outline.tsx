@@ -14,6 +14,8 @@ export interface CourseOutlineProps {
   courseId: string;
   histories?: HistoryItemData[];
   userId?: string;
+  isExpandedAll?: boolean;
+  courseSlug?: string;
 }
 
 export function CourseOutline({
@@ -22,6 +24,8 @@ export function CourseOutline({
   courseId = "",
   histories = [],
   userId = "",
+  isExpandedAll = false,
+  courseSlug = "",
 }: CourseOutlineProps) {
   return (
     <>
@@ -36,7 +40,9 @@ export function CourseOutline({
             collapsible
             className="w-full mb-3 lg:mb-5"
             key={item.title}
-            defaultValue={activeLesson?.lectureId?.title || ""}
+            defaultValue={
+              isExpandedAll ? item.title : activeLesson?.lectureId?.title || ""
+            }
           >
             <AccordionItem value={item.title || ""}>
               <AccordionTrigger className="font-bold dark:text-text5 text-sm lg:text-base">
@@ -54,6 +60,8 @@ export function CourseOutline({
                       courseId={courseId}
                       histories={histories}
                       userId={userId}
+                      isPreview={lesson.trial}
+                      course={courseSlug}
                     ></LessonOutlineItem>
                   );
                 })}

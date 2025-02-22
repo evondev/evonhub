@@ -40,3 +40,27 @@ export interface LessonDetailsOutlineData {
     _id: string;
   };
 }
+
+export interface UpdateLessonProps {
+  lessonId: string;
+  path: string;
+  data: Partial<LessonModelProps>;
+}
+
+export interface UpdateLessonDragProps {
+  lessons: {
+    _id: string;
+    lectureId: string;
+  }[];
+  path: string;
+}
+
+export interface UpdateLessonOrderProps {
+  lessons: {
+    _id: string;
+    lectureId: string;
+    order: number;
+    slug: string;
+  }[];
+  path: string;
+}

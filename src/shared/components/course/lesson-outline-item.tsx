@@ -22,6 +22,8 @@ export interface LessonOutlineItemProps {
   courseId: string;
   histories?: HistoryItemData[];
   userId: string;
+  isPreview?: boolean;
+  course?: string;
 }
 
 export function LessonOutlineItem({
@@ -32,6 +34,8 @@ export function LessonOutlineItem({
   courseId,
   histories,
   userId,
+  isPreview,
+  course = "",
 }: LessonOutlineItemProps) {
   const className = cn(
     "mb-5 pb-5 border-b border-dashed dark:border-b-slate-500 last:pb-0 last:mb-0 last:border-b-0 flex items-center gap-2 dark:text-text5 text-sm",
@@ -82,10 +86,26 @@ export function LessonOutlineItem({
       )}
     </>
   );
+
+  const previewButton = isPreview ? (
+    <Link
+      id={id}
+      href={`/${course}/lesson?id=${id}&isPreview=true`}
+      className="px-2 py-1 rounded-full bg-primary text-white text-xs font-semibold"
+    >
+      Học thử
+    </Link>
+  ) : null;
+  console.info(
+    `File lesson-outline-item.tsx userId at line 99:`,
+    { userId },
+    { id }
+  );
   if (!id || !userId) {
     return (
       <div className={className} id={id}>
         {child}
+        {previewButton}
       </div>
     );
   }

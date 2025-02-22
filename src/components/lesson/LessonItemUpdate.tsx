@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { editorOptions } from "@/constants";
-import { updateLesson } from "@/lib/actions/lesson.action";
 import { cn } from "@/lib/utils";
+import { updateLesson } from "@/modules/lesson/actions";
+import { UpdateLessonValues } from "@/shared/form-schemas";
 import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -19,26 +20,10 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import slugify from "slugify";
-import { z } from "zod";
 import { IconEdit } from "../icons";
+import { Switch } from "../ui/switch";
 
-const formSchema = z.object({
-  video: z.string().optional(),
-  content: z.string().optional(),
-  slug: z.string().optional(),
-  title: z.string().optional(),
-  duration: z.number().optional(),
-  assetId: z.string().optional(),
-  iframe: z.string().optional(),
-});
-const btnClassName =
-  "text-sm py-2 px-5 h-12 rounded-md font-semibold w-[125px] flex items-center justify-center";
-const LessonItemUpdate = ({
-  lessonId,
-  slug,
-  lesson,
-  course,
-}: {
+interface LessonItemUpdateProps {
   lessonId: string;
   slug: string;
   lesson: {
@@ -55,11 +40,18 @@ const LessonItemUpdate = ({
     slug: string;
     lectures: any[];
   };
-}) => {
+}
+
+const LessonItemUpdate = ({
+  lessonId,
+  slug,
+  lesson,
+  course,
+}: LessonItemUpdateProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const editorRef = useRef<any>(null);
   const { theme } = useTheme();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<UpdateLessonValues>({
     defaultValues: {
       video: lesson.video,
       content: lesson.content,
@@ -70,7 +62,8 @@ const LessonItemUpdate = ({
       iframe: lesson.iframe,
     },
   });
-  async function onSubmitLesson(values: z.infer<typeof formSchema>) {
+
+  async function onSubmitLesson(values: UpdateLessonValues) {
     setIsSubmitting(true);
     try {
       const res = await updateLesson({
@@ -99,6 +92,7 @@ const LessonItemUpdate = ({
       setIsSubmitting(false);
     }
   }
+
   return (
     <Form {...form}>
       <form
@@ -208,26 +202,43 @@ const LessonItemUpdate = ({
             </FormItem>
           )}
         />
-
-        <div className="flex items-center justify-end gap-1">
-          <Button
-            className={cn(
-              btnClassName,
-              "rounded-full border border-current gap-1 hover:bg-gray-50 dark:hover:bg-grayDarkest dark:border-opacity-10 dark:border-gray-200"
+        <div className="flex items-center justify-between">
+          <FormField
+            control={form.control}
+            name="trial"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormLabel>Trial</FormLabel>
+                <FormControl>
+                  <Switch
+                    className="!mt-0"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
             )}
-            type="submit"
-            isLoading={isSubmitting}
-          >
-            <IconEdit />
-            <span>Cập nhật</span>
-          </Button>
-          <Link
-            href={`/${course.slug}/lesson?id=${lessonId}`}
-            target="_blank"
-            className={cn(btnClassName)}
-          >
-            Xem trước
-          </Link>
+          />
+          <div className="flex items-center justify-end gap-1">
+            <Button
+              className={cn(
+                "text-sm py-2 px-5 h-12 rounded-md font-semibold w-[125px] flex items-center justify-center",
+                "rounded-full border border-current gap-1 hover:bg-gray-50 dark:hover:bg-grayDarkest dark:border-opacity-10 dark:border-gray-200"
+              )}
+              type="submit"
+              isLoading={isSubmitting}
+            >
+              <IconEdit />
+              <span>Cập nhật</span>
+            </Button>
+            <Link
+              href={`/${course.slug}/lesson?id=${lessonId}`}
+              target="_blank"
+              className="text-sm py-2 px-5 h-12 rounded-md font-semibold w-[125px] flex items-center justify-center"
+            >
+              Xem trước
+            </Link>
+          </div>
         </div>
       </form>
     </Form>

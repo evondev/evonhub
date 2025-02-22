@@ -17,14 +17,13 @@ import { Input } from "@/components/ui/input";
 import { baseButtonClassName, primaryButtonClassName } from "@/constants";
 import { updateCourseWithLecture } from "@/lib/actions/course.action";
 import { deleteLecture, updateLecture } from "@/lib/actions/lecture.action";
+import { addLesson, deleteLesson } from "@/lib/actions/lesson.action";
+import { cn } from "@/lib/utils";
 import {
-  addLesson,
-  deleteLesson,
   updateLectureLessonOrder,
   updateLesson,
   updateLessonOrder,
-} from "@/lib/actions/lesson.action";
-import { cn } from "@/lib/utils";
+} from "@/modules/lesson/actions";
 import { convertSlug, move, reorder } from "@/utils";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
@@ -152,8 +151,8 @@ const CourseContent = ({
     }
   };
   const handleAddLecture = async () => {
-    setIsSubmitting((draf) => {
-      draf.lecture = true;
+    setIsSubmitting((draft) => {
+      draft.lecture = true;
     });
     try {
       await updateCourseWithLecture({
@@ -165,8 +164,8 @@ const CourseContent = ({
       toast.error("Có lỗi xảy ra khi thêm chương mới");
       console.log(error);
     } finally {
-      setIsSubmitting((draf) => {
-        draf.lecture = false;
+      setIsSubmitting((draft) => {
+        draft.lecture = false;
       });
     }
   };
@@ -193,8 +192,8 @@ const CourseContent = ({
     }
   };
   const handleSaveLecture = async (index: number) => {
-    setIsSubmitting((draf) => {
-      draf.lecture = true;
+    setIsSubmitting((draft) => {
+      draft.lecture = true;
     });
     try {
       await updateLecture({
@@ -207,8 +206,8 @@ const CourseContent = ({
     } catch (error) {
       console.log(error);
     } finally {
-      setIsSubmitting((draf) => {
-        draf.lecture = false;
+      setIsSubmitting((draft) => {
+        draft.lecture = false;
       });
       setLectureInput("");
       setEditLectureIndex("");
@@ -225,8 +224,8 @@ const CourseContent = ({
       iframe: string;
     }
   ) => {
-    setIsSubmitting((draf) => {
-      draf.lesson = true;
+    setIsSubmitting((draft) => {
+      draft.lesson = true;
     });
     try {
       await updateLesson({
@@ -243,8 +242,8 @@ const CourseContent = ({
     } catch (error) {
       console.log(error);
     } finally {
-      setIsSubmitting((draf) => {
-        draf.lesson = false;
+      setIsSubmitting((draft) => {
+        draft.lesson = false;
       });
       setEditLessonIndex("");
       setLessonData({

@@ -2,11 +2,7 @@
 import Course from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson, { ILesson } from "@/database/lesson.model";
-import {
-  CreateLessonParams,
-  DeleteLessonParams,
-  UpdateLessonParams,
-} from "@/types";
+import { CreateLessonParams, DeleteLessonParams } from "@/types";
 import { ECourseStatus } from "@/types/enums";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
@@ -70,30 +66,7 @@ export async function deleteLesson({
     console.log(error);
   }
 }
-export async function updateLesson({
-  lessonId,
-  data,
-  path,
-}: UpdateLessonParams) {
-  try {
-    connectToDatabase();
-    const allLesson = await Lesson.find();
-    const existLessonSlug = allLesson.find(
-      (lesson) => lesson.slug === data.slug && lesson.courseId === data.courseId
-    );
-    if (existLessonSlug && existLessonSlug._id.toString() !== lessonId) {
-      return {
-        type: "error",
-        message: "Đường dẫn bài học đã tồn tại!",
-      };
-    }
-    await Lesson.findByIdAndUpdate(lessonId, data);
 
-    revalidatePath(path);
-  } catch (error) {
-    console.log(error);
-  }
-}
 export async function getLessonsByLectureId(lectureId: string) {
   try {
     connectToDatabase();
@@ -176,87 +149,4 @@ export async function getAllLectureByCourseId(courseId: string) {
   } catch (error) {
     console.log(error);
   }
-}
-export async function updateLessonDrag({
-  lessons,
-  path,
-}: {
-  lessons: {
-    _id: string;
-    lectureId: string;
-  }[];
-  path: string;
-}) {
-  try {
-    connectToDatabase();
-    await Promise.all(
-      lessons.map(async (l, index) => {
-        await updateLesson({
-          lessonId: l._id,
-          path,
-          data: {
-            lectureId: l.lectureId as any,
-            order: index + 1,
-          },
-        });
-      })
-    );
-
-    revalidatePath(path);
-  } catch (error) {
-    console.log(error);
-  }
-}
-export async function updateLessonOrder(params: {
-  lessons: {
-    _id: string;
-    lectureId: string;
-    order: number;
-    slug: string;
-  }[];
-  path: string;
-}) {
-  try {
-    connectToDatabase();
-
-    await Promise.all(
-      params.lessons.map(async (item, index) => {
-        return Lesson.findOneAndUpdate(
-          {
-            slug: item.slug,
-          },
-          {
-            order: index + 1,
-          }
-        );
-      })
-    );
-    revalidatePath(params.path);
-  } catch (error) {}
-}
-export async function updateLectureLessonOrder(params: {
-  lectures: any[];
-  path: string;
-}) {
-  try {
-    connectToDatabase();
-
-    await Promise.all(
-      params.lectures.map(async (item, index) => {
-        await Lecture.findOneAndUpdate(
-          {
-            _id: item._id,
-          },
-          {
-            lessons: item.lessons,
-          }
-        );
-        await updateLessonOrder({
-          lessons: item.lessons,
-          path: params.path,
-        });
-      })
-    );
-    revalidatePath(params.path);
-  } catch (error) {}
 }

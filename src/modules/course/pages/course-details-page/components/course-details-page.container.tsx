@@ -63,8 +63,8 @@ export function CourseDetailsPageContainer(
     slug,
     cta,
     status,
-    minPrice,
   } = courseDetails;
+
   const embed = intro?.includes("v=")
     ? intro?.split("v=")[1]?.split("&")[0]
     : intro?.split("/").at(-1);
@@ -134,6 +134,8 @@ export function CourseDetailsPageContainer(
             <CourseOutline
               lectures={lectures || []}
               courseId={courseDetails._id}
+              courseSlug={slug}
+              isExpandedAll
             />
           </CourseSection>
           <CourseSection title="Yêu cầu">
