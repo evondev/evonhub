@@ -185,7 +185,7 @@ export function LessonContent({
       </div>
 
       {lessonDetails.content && canAccessContent && (
-        <div className="lesson-content hidden lg:block overflow-hidden break-all  p-5 rounded-lg bgDarkMode borderDarkMode text-sm">
+        <div className="lesson-content hidden lg:block overflow-hidden break-all  p-5 rounded-lg bgDarkMode borderDarkMode text-sm !leading-loose">
           <div
             dangerouslySetInnerHTML={{ __html: lessonDetails.content }}
           ></div>
