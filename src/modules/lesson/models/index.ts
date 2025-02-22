@@ -59,6 +59,10 @@ const lessonSchema = new Schema<LessonModelProps>({
     type: Boolean,
     default: false,
   },
+  trial: {
+    type: Boolean,
+    default: false,
+  },
 });
 const LessonModel = models.Lesson || mongoose.model("Lesson", lessonSchema);
 export default LessonModel;

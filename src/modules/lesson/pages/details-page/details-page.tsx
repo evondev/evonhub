@@ -11,6 +11,7 @@ export function LessonDetailsPage(_props: LessonDetailsPageProps) {
   const lessonId = searchParams.get("id")?.toString() || "";
   const { data: lessonDetails, isLoading } = useQueryLessonById({
     lessonId,
+    enabled: !!lessonId,
   });
   if (!lessonDetails) return null;
   return (

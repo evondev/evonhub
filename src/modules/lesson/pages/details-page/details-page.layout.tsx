@@ -16,19 +16,21 @@ export interface DetailsPageLayoutProps {
 export function DetailsPageLayout({ children }: DetailsPageLayoutProps) {
   const params = useParams();
   const searchParams = useSearchParams();
-  const lessonId = searchParams.get("id")?.toString() || "";
-  const { data: lessonDetails, isLoading } = useQueryLessonById({
-    lessonId,
-  });
-  const { data: courseDetails } = useQueryCourseBySlug({
-    courseSlug: params.course as string,
-  });
-  const courseId = courseDetails?._id?.toString();
   const { isExpanded } = useGlobalStore();
   const { userInfo } = useUserContext();
   const userCourses = userInfo?.courses
     ? JSON.parse(JSON.stringify(userInfo?.courses))
     : [];
+  const { data: courseDetails } = useQueryCourseBySlug({
+    courseSlug: params.course as string,
+  });
+  const courseId = courseDetails?._id?.toString();
+  const isOwnedCourse = userCourses.includes(courseId) && userInfo?._id;
+  const lessonId = searchParams.get("id")?.toString() || "";
+  const { data: lessonDetails, isLoading } = useQueryLessonById({
+    lessonId,
+    enabled: !!isOwnedCourse && !!lessonId,
+  });
   const isMembership = handleCheckMembership({
     isMembership: userInfo?.isMembership,
     endDate: userInfo?.planEndDate || new Date().toISOString(),
@@ -36,11 +38,7 @@ export function DetailsPageLayout({ children }: DetailsPageLayoutProps) {
   if (isLoading) return <LoadingLessonDetails />;
   if (!lessonDetails) return <PageNotFound />;
 
-  if (
-    (!userCourses.includes(courseId) || !userInfo?._id) &&
-    userInfo?.role !== UserRole.Admin &&
-    !isMembership
-  )
+  if (!isOwnedCourse && userInfo?.role !== UserRole.Admin && !isMembership)
     return <LoadingLessonDetails />;
   return (
     <div

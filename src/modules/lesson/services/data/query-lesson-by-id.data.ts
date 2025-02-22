@@ -8,11 +8,15 @@ import { getLessonById } from "../../actions";
 
 interface GetLessonByIdProps {
   lessonId: string;
+  enabled?: boolean;
 }
 
-export function getLessonByIdOptions({ lessonId }: GetLessonByIdProps) {
+export function getLessonByIdOptions({
+  lessonId,
+  enabled,
+}: GetLessonByIdProps) {
   return queryOptions({
-    enabled: !!lessonId,
+    enabled,
     placeholderData: keepPreviousData,
     queryFn: async () => {
       const response = await getLessonById(lessonId);
@@ -23,8 +27,8 @@ export function getLessonByIdOptions({ lessonId }: GetLessonByIdProps) {
   });
 }
 
-export function useQueryLessonById({ lessonId }: GetLessonByIdProps) {
-  const options = getLessonByIdOptions({ lessonId });
+export function useQueryLessonById({ lessonId, enabled }: GetLessonByIdProps) {
+  const options = getLessonByIdOptions({ lessonId, enabled });
 
   return useQuery(options);
 }

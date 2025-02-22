@@ -18,6 +18,7 @@ export interface LessonModelProps extends Document {
   createdAt: Date;
   assetId: string;
   iframe: string;
+  trial: boolean;
   _destroy: boolean;
 }
 export interface LessonItemData
