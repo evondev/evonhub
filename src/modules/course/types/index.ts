@@ -53,3 +53,11 @@ export interface CourseItemData
 export interface FetchCoursesParams {
   status: CourseStatus;
 }
+
+export interface FetchCoursesManageProps {
+  search?: string;
+  limit: number;
+  page: number;
+  isFree?: boolean;
+  status?: CourseStatus;
+}

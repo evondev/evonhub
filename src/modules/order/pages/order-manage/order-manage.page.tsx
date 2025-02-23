@@ -22,6 +22,7 @@ import {
   IconDelete,
 } from "@/shared/components";
 import { LabelStatus, PaginationControl } from "@/shared/components/common";
+import { statusActions } from "@/shared/constants/common.constants";
 import { OrderStatus, orderStatuses } from "@/shared/constants/order.constants";
 import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
 import { formatDate, formatThoundsand } from "@/shared/utils";
@@ -31,6 +32,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@radix-ui/react-tooltip";
+import Image from "next/image";
 import Link from "next/link";
 import {
   parseAsBoolean,
@@ -58,6 +60,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
     search: parseAsString.withDefault(""),
     isFree: parseAsBoolean.withDefault(false),
     page: parseAsInteger.withDefault(1),
+    status: parseAsString.withDefault(""),
   });
   const { data: orders } = useQueryOrders({
     enabled: canAccess,
@@ -67,6 +70,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
     filter: filters.search,
     isFree: filters.isFree,
     userId: userInfo?._id,
+    status: filters.status as OrderStatus,
   });
 
   const mutationUpdateOrder = userMutationUpdateOrder();
@@ -131,7 +135,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
             className="w-full lg:w-[300px] h-10"
             onChange={(e) => setFilters({ search: e.target.value })}
           />
-          <div className="flex justify-end gap-5">
+          <div className="flex justify-end gap-2">
             <PaginationControl
               onClick={() => setFilters({ page: filters.page - 1 })}
               disabled={filters.page <= 1}
@@ -147,18 +151,38 @@ export function OrderManagePage(_props: OrderManagePageProps) {
         </div>
       </div>
       {userInfo?.role === UserRole.Admin && (
-        <div className="mb-2 flex items-center justify-between px-4 py-2 bgDarkMode borderDarkMode rounded-lg">
-          <div className="flex items-center gap-3 text-sm font-medium">
-            <Switch
-              checked={filters.isFree}
-              onCheckedChange={(checked) => setFilters({ isFree: checked })}
-            />
-            <Label
-              htmlFor="freeOrders"
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <span>Đơn hàng miễn phí</span>
-            </Label>
+        <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg">
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-3 text-sm font-medium">
+              <Switch
+                checked={filters.isFree}
+                onCheckedChange={(checked) => setFilters({ isFree: checked })}
+              />
+              <Label
+                htmlFor="freeOrders"
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <span>Đơn hàng miễn phí</span>
+              </Label>
+            </div>
+            <div className="hidden lg:flex gap-3">
+              {statusActions.map((item, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={cn(
+                    "text-xs font-semibold px-2 py-1 rounded-lg flex items-center gap-2 h-7",
+                    item.className
+                  )}
+                  onClick={() => setFilters({ status: item.value })}
+                >
+                  {item.text}
+                  {filters.status === item.value && (
+                    <IconCircleCheck className="size-4" />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
           <Button
             className="hidden lg:flex font-semibold p-2 h-auto text-xs rounded-md bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white"
@@ -194,8 +218,9 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                   <TableCell>
                     <div className="flex flex-col gap-1">
                       <span className="font-semibold">{order.code}</span>
-                      <div className="text-xs">
-                        {formatDate(order.createdAt)}
+                      <div className="text-xs text-gray-400">
+                        <span>Ngày tạo:</span>{" "}
+                        <span>{formatDate(order.createdAt)}</span>
                       </div>
                     </div>
                   </TableCell>
@@ -207,8 +232,14 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                         </div>
                       )}
                       {order?.plan !== MembershipPlan.None && (
-                        <div className="font-bold text-primary">
-                          Gói: {order?.plan}
+                        <div className="font-bold uppercase text-base flex items-center gap-2">
+                          <Image
+                            src="/star-medal.png"
+                            alt=""
+                            width={32}
+                            height={32}
+                          />
+                          <span>{order?.plan}</span>
                         </div>
                       )}
                     </div>
@@ -216,7 +247,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                   <TableCell>
                     <Link
                       href={`/admin/user/update?email=${order.user?.email}`}
-                      className="flex flex-col"
+                      className="flex flex-col gap-1"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -280,8 +311,9 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                             <TooltipTrigger>
                               <OrderAction
                                 onClick={() => handleApproveOrder(order)}
+                                className="hover:border-green-500"
                               >
-                                <IconCircleCheck />
+                                <IconCircleCheck className="text-green-500" />
                               </OrderAction>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -296,8 +328,9 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                             <TooltipTrigger>
                               <OrderAction
                                 onClick={() => handleRejectOrder(order)}
+                                className="hover:border-red-500"
                               >
-                                <IconDelete />
+                                <IconDelete className="text-red-500" />
                               </OrderAction>
                             </TooltipTrigger>
                             <TooltipContent>

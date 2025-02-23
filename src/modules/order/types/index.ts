@@ -31,6 +31,7 @@ export interface FetchOrdersProps {
   isFree?: boolean;
   userRole?: UserRole;
   userId?: string;
+  status?: OrderStatus;
 }
 
 export interface UpdateOrderProps {

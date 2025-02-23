@@ -5,13 +5,23 @@ import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { OrderStatus } from "@/shared/constants/order.constants";
-import { MembershipPlan, UserStatus } from "@/shared/constants/user.constants";
+import {
+  MembershipPlan,
+  UserRole,
+  UserStatus,
+} from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { UserItemData } from "@/shared/types/user.types";
 import { handleCheckMembership } from "@/shared/utils";
+import { auth } from "@clerk/nextjs/server";
+import { FilterQuery } from "mongoose";
 import CourseModel from "../models";
-import { CourseItemData, FetchCoursesParams } from "../types";
+import {
+  CourseItemData,
+  FetchCoursesManageProps,
+  FetchCoursesParams,
+} from "../types";
 
 export async function fetchCourses(
   params: FetchCoursesParams
@@ -251,4 +261,54 @@ export async function updateCourseViews(slug: string) {
   } catch (error) {
     console.log(error);
   }
+}
+
+export async function fetchCoursesManage({
+  isFree = false,
+  search,
+  limit = 10,
+  page,
+  status,
+}: FetchCoursesManageProps): Promise<CourseItemData[] | undefined> {
+  try {
+    connectToDatabase();
+
+    const { userId } = auth();
+    const findUser = await UserModel.findOne({ clerkId: userId });
+
+    if (!findUser) return;
+
+    if (![UserRole.Admin, UserRole.Expert].includes(findUser?.role))
+      return undefined;
+
+    const query: FilterQuery<typeof CourseModel> = {};
+    const skip = (page - 1) * limit;
+
+    if (status) {
+      query.$or = [{ status: { $regex: status, $options: "i" } }];
+    }
+
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { desc: { $regex: search, $options: "i" } },
+        { content: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    if (isFree) {
+      query.free = isFree;
+    }
+
+    if (findUser?.role !== UserRole.Admin) {
+      query.author = findUser._id;
+    }
+    const courses = await CourseModel.find(query)
+      .limit(limit)
+      .skip(skip)
+      .sort({ createdAt: -1 })
+      .select("title slug image createdAt status price _id free rating views");
+
+    return parseData(courses);
+  } catch (error) {}
 }

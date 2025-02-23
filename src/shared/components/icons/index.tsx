@@ -23,6 +23,7 @@ export { default as IconLongArrowRight } from "./IconLongArrowRight";
 export { default as IconMoney } from "./IconMoney";
 export { default as IconOrder } from "./IconOrder";
 export { default as IconPlay } from "./IconPlay";
+export { default as IconPlus } from "./IconPlus";
 export { default as IconShare } from "./IconShare";
 export { default as IconSparkles } from "./IconSparkles";
 export { default as IconStar } from "./IconStar";

@@ -3,6 +3,11 @@ export enum CourseStatus {
   Approved = "approved",
   Rejected = "rejected",
 }
+export enum CommonStatus {
+  Pending = "pending",
+  Approved = "approved",
+  Rejected = "rejected",
+}
 export enum CourseLabel {
   New = "new",
   Hot = "hot",

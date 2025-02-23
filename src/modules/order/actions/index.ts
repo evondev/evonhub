@@ -38,6 +38,7 @@ export async function fetchOrders({
   isFree,
   userRole,
   userId,
+  status,
 }: FetchOrdersProps): Promise<OrderItemData[] | undefined> {
   try {
     connectToDatabase();
@@ -56,11 +57,17 @@ export async function fetchOrders({
       query.total = 0;
     }
 
+    if (status) {
+      query.$or = [{ status: { $regex: status, $options: "i" } }];
+    }
+
     if (userRole === UserRole.Expert) {
       query.course = {
         $in: findCourses.map((course) => course._id),
       };
     }
+
+    console.info(`File index.ts query at line 70:`, query, status);
 
     const orders = await OrderModel.find(query)
       .limit(limit)

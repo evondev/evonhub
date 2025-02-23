@@ -56,7 +56,7 @@ export function UserManagePage(_props: UserManagePageProps) {
           onChange={(e) => setFilters({ search: e.target.value })}
         />
       </div>
-      <div className="mb-2 flex items-center justify-between px-4 py-2 bgDarkMode borderDarkMode rounded-lg">
+      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg">
         <div className="flex items-center gap-3 text-sm font-medium">
           <Switch
             checked={filters.isPaidUser}
