@@ -1,5 +1,8 @@
+export { default as IconArrowLeft } from "./IconArrowLeft";
+export { default as IconArrowRight } from "./IconArrowRight";
 export { default as IconBlog } from "./IconBlog";
 export { default as IconCategory } from "./IconCategory";
+export { default as IconCircleCheck } from "./IconCircleCheck";
 export { default as IconClock } from "./IconClock";
 export { default as IconComment } from "./IconComment";
 export { default as IconCoupon } from "./IconCoupon";
