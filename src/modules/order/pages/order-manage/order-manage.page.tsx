@@ -50,14 +50,16 @@ export function OrderManagePage(_props: OrderManagePageProps) {
   const canAccess =
     !!userInfo?._id &&
     [UserRole.Admin, UserRole.Expert].includes(userInfo.role);
+
   const [filters, setFilters] = useQueryStates({
     search: parseAsString.withDefault(""),
     isFree: parseAsBoolean.withDefault(false),
     page: parseAsInteger.withDefault(1),
     status: parseAsString.withDefault(""),
   });
+
   const { data: orders } = useQueryOrders({
-    enabled: canAccess,
+    enabled: !!canAccess,
     limit: 20,
     page: filters.page,
     userRole: userInfo?.role,

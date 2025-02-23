@@ -49,19 +49,22 @@ export function CourseManagePage(_props: CourseManagePageProps) {
     status: parseAsString.withDefault(""),
   });
 
+  const { userInfo } = useUserContext();
+  const userRole = userInfo?.role;
+
+  const canEdit =
+    userRole && [UserRole.Admin, UserRole.Expert].includes(userRole);
+
   const { data: courses } = useQueryCoursesManage({
     search: filters.search,
     page: filters.page,
     limit: 10,
     isFree: filters.isFree,
     status: filters.status as CourseStatus,
+    enabled: !!canEdit,
   });
 
-  const { userInfo } = useUserContext();
-  const userRole = userInfo?.role;
-
-  const canEdit =
-    userRole && [UserRole.Admin, UserRole.Expert].includes(userRole);
+  if (!canEdit) return null;
 
   return (
     <>

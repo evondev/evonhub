@@ -42,6 +42,7 @@ export async function fetchOrders({
 }: FetchOrdersProps): Promise<OrderItemData[] | undefined> {
   try {
     connectToDatabase();
+    if (userRole === UserRole.User) return;
 
     const skip = (page - 1) * limit;
     const query: FilterQuery<typeof OrderModel> = {};
@@ -66,8 +67,6 @@ export async function fetchOrders({
         $in: findCourses.map((course) => course._id),
       };
     }
-
-    console.info(`File index.ts query at line 70:`, query, status);
 
     const orders = await OrderModel.find(query)
       .limit(limit)

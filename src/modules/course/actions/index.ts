@@ -278,8 +278,7 @@ export async function fetchCoursesManage({
 
     if (!findUser) return;
 
-    if (![UserRole.Admin, UserRole.Expert].includes(findUser?.role))
-      return undefined;
+    if (![UserRole.Admin, UserRole.Expert].includes(findUser?.role)) return;
 
     const query: FilterQuery<typeof CourseModel> = {};
     const skip = (page - 1) * limit;
