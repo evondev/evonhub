@@ -1,35 +1,7 @@
-import OrderManage from "@/components/order/OrderManage";
-import { getAllOrders } from "@/lib/actions/order.action";
-import { getUserById } from "@/lib/actions/user.action";
-import { Role } from "@/types/enums";
-import { auth } from "@clerk/nextjs/server";
+import { OrderManagePage } from "@/modules/order/pages";
 
-const page = async ({
-  searchParams,
-}: {
-  searchParams: {
-    page: number;
-    search: string;
-    freeOrders: boolean;
-  };
-}) => {
-  const { userId } = auth();
-  if (!userId) return null;
-  const findUser = await getUserById({ userId });
-  if (!findUser || ![Role.ADMIN, Role.EXPERT].includes(findUser.role))
-    return null;
-  const allOrders = await getAllOrders({
-    userId: findUser._id,
-    searchQuery: searchParams?.search,
-    page: searchParams.page ? +searchParams.page : 1,
-    freeOrders: searchParams?.freeOrders,
-  });
-  return (
-    <OrderManage
-      allOrders={allOrders ? JSON.parse(JSON.stringify(allOrders)) : []}
-      userId={findUser._id.toString()}
-    />
-  );
-};
+export interface OrderManagePageRootProps {}
 
-export default page;
+export default function OrderManagePageRoot(_props: OrderManagePageRootProps) {
+  return <OrderManagePage />;
+}

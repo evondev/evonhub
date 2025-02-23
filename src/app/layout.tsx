@@ -8,6 +8,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
 import Script from "next/script";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "prismjs/themes/prism.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -58,7 +59,9 @@ export default async function RootLayout({
                 disableTransitionOnChange
               >
                 <Providers>
-                  <UserProvider>{children}</UserProvider>
+                  <UserProvider>
+                    <NuqsAdapter>{children}</NuqsAdapter>
+                  </UserProvider>
                 </Providers>
               </ThemeProvider>
             </ReactQueryProvider>

@@ -20,7 +20,7 @@ export function Heading({
     >
       <div
         className={cn(
-          "size-4 lg:size-5 relative top-[1px] from-[#ba97f7] to-[#978df8] bg-gradient-to-tl rounded relative top-0.5",
+          "size-4 lg:size-5 relative top-[1px] from-[#ba97f7] to-[#978df8] bg-gradient-to-tl rounded relative",
           squareClassName
         )}
       ></div>

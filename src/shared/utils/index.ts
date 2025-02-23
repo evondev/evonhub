@@ -55,3 +55,12 @@ export const handleCheckMembership = ({
 }) => {
   return !!isMembership && dayjs().isBefore(dayjs(endDate));
 };
+
+export const formatDate = (date: Date): string => {
+  return new Date(date).toLocaleDateString("vi-VN");
+};
+
+export const formatThoundsand = (num: number): string => {
+  if (!num) return "0";
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};
