@@ -26,12 +26,6 @@ import { statusActions } from "@/shared/constants/common.constants";
 import { OrderStatus, orderStatuses } from "@/shared/constants/order.constants";
 import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
 import { formatDate, formatThoundsand } from "@/shared/utils";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@radix-ui/react-tooltip";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -85,24 +79,35 @@ export function OrderManagePage(_props: OrderManagePageProps) {
   };
 
   const handleApproveOrder = async (order: OrderItemData) => {
-    const response = await mutationUpdateOrder.mutateAsync({
-      orderUser: order.user?._id,
-      course: order?.course?._id,
-      status: OrderStatus.Approved,
-      code: order.code,
-      plan: order.plan,
-      userRole: userInfo?.role,
-      amount: order.total,
+    Swal.fire({
+      title: `Bạn muốn duyệt đơn hàng ${order.code}?`,
+      text: "Vui lòng kiểm tra kỹ trước khi thực hiện",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Hủy",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await mutationUpdateOrder.mutateAsync({
+          orderUser: order.user?._id,
+          course: order?.course?._id,
+          status: OrderStatus.Approved,
+          code: order.code,
+          plan: order.plan,
+          userRole: userInfo?.role,
+          amount: order.total,
+        });
+        if (response) {
+          toast.success("Duyệt đơn hàng thành công");
+        }
+      }
     });
-    if (response) {
-      toast.success("Duyệt đơn hàng thành công");
-    }
   };
 
   const handleRejectOrder = (order: OrderItemData) => {
     Swal.fire({
-      title: "Bạn có chắc chắn muốn hủy đơn hàng?",
-      text: "Hành động này không thể hoàn tác",
+      title: `Bạn muốn hủy bỏ đơn hàng ${order.code}?`,
+      text: "Vui lòng kiểm tra kỹ trước khi thực hiện",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Đồng ý",
@@ -129,13 +134,15 @@ export function OrderManagePage(_props: OrderManagePageProps) {
     <>
       <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between min-h-10">
         <Heading className="mb-0">Quản lý đơn hàng</Heading>
-        <Button
-          className="hidden lg:flex font-semibold px-4 h-10 text-sm rounded-md bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white"
-          onClick={handleUpdateFreeOrder}
-          disabled={mutationUpdateFreeOrder.isPending}
-        >
-          Duyệt đơn hàng miễn phí
-        </Button>
+        {userInfo?.role === UserRole.Admin && (
+          <Button
+            className="hidden lg:flex font-semibold px-4 h-10 text-sm rounded-md bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white"
+            onClick={handleUpdateFreeOrder}
+            disabled={mutationUpdateFreeOrder.isPending}
+          >
+            Duyệt đơn hàng miễn phí
+          </Button>
+        )}
       </div>
       {userInfo?.role === UserRole.Admin && (
         <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg">
@@ -304,40 +311,18 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                     )}
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-4 justify-end text-gray-400 dark:text-white">
+                    <div className="flex items-center gap-3 justify-end text-gray-400 dark:text-white">
                       {orderStatus.isPending && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <OrderAction
-                                onClick={() => handleApproveOrder(order)}
-                                className="hover:border-green-500"
-                              >
-                                <IconCircleCheck className="text-green-500" />
-                              </OrderAction>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Duyệt đơn hàng</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
-                      {!orderStatus.isRejected && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <OrderAction
-                                onClick={() => handleRejectOrder(order)}
-                                className="hover:border-red-500"
-                              >
-                                <IconDelete className="text-red-500" />
-                              </OrderAction>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Hủy đơn hàng</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                        <>
+                          <OrderAction
+                            onClick={() => handleApproveOrder(order)}
+                          >
+                            <IconCircleCheck />
+                          </OrderAction>
+                          <OrderAction onClick={() => handleRejectOrder(order)}>
+                            <IconDelete />
+                          </OrderAction>
+                        </>
                       )}
                     </div>
                   </TableCell>
