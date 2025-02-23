@@ -1,27 +1,7 @@
-import UserManage from "@/components/user/UserManage";
-import { getAllUsers } from "@/lib/actions/user.action";
+import { UserManagePage } from "@/modules/user/pages";
 
-const page = async ({
-  searchParams,
-}: {
-  searchParams: {
-    page: number;
-    search: string;
-    paidUser: boolean;
-  };
-}) => {
-  const data = await getAllUsers({
-    searchQuery: searchParams?.search,
-    page: searchParams.page ? +searchParams.page : 1,
-    paidUser: searchParams?.paidUser,
-  });
-  if (!data?.users) return null;
-  return (
-    <UserManage
-      users={JSON.parse(JSON.stringify(data.users)) || []}
-      count={data.total}
-    />
-  );
-};
+export interface UserManagePageRootProps {}
 
-export default page;
+export default function UserManagePageRoot(_props: UserManagePageRootProps) {
+  return <UserManagePage />;
+}

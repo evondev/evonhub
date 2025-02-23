@@ -21,7 +21,7 @@ import {
   IconCircleCheck,
   IconDelete,
 } from "@/shared/components";
-import { LabelStatus } from "@/shared/components/common";
+import { LabelStatus, PaginationControl } from "@/shared/components/common";
 import { OrderStatus, orderStatuses } from "@/shared/constants/order.constants";
 import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
 import { formatDate, formatThoundsand } from "@/shared/utils";
@@ -44,7 +44,7 @@ import { userMutationUpdateFreeOrder } from "../../services/data/mutation-update
 import { userMutationUpdateOrder } from "../../services/data/mutation-update-order.data";
 import { useQueryOrders } from "../../services/data/query-orders.data";
 import { OrderItemData } from "../../types";
-import { OrderAction, OrderPagination } from "./components";
+import { OrderAction } from "./components";
 
 export interface OrderManagePageProps {}
 
@@ -128,21 +128,21 @@ export function OrderManagePage(_props: OrderManagePageProps) {
         <div className="flex gap-5 items-center">
           <Input
             placeholder="DH1234567"
-            className="w-full lg:w-[300px] h-12"
+            className="w-full lg:w-[300px] h-10"
             onChange={(e) => setFilters({ search: e.target.value })}
           />
           <div className="flex justify-end gap-5">
-            <OrderPagination
+            <PaginationControl
               onClick={() => setFilters({ page: filters.page - 1 })}
               disabled={filters.page <= 1}
             >
               <IconArrowLeft />
-            </OrderPagination>
-            <OrderPagination
+            </PaginationControl>
+            <PaginationControl
               onClick={() => setFilters({ page: filters.page + 1 })}
             >
               <IconArrowRight />
-            </OrderPagination>
+            </PaginationControl>
           </div>
         </div>
       </div>
