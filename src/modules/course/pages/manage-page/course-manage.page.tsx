@@ -65,14 +65,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
 
   return (
     <>
-      <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
-        <Heading className="mb-0">Quản lý khóa học</Heading>
-        <Input
-          placeholder="Tìm kiếm khóa học"
-          className="w-full lg:w-[300px]"
-          onChange={(e) => setFilters({ search: e.target.value })}
-        />
-      </div>
+      <Heading className="min-h-10">Quản lý khóa học</Heading>
       <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg">
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-3 text-sm font-medium">
@@ -106,19 +99,26 @@ export function CourseManagePage(_props: CourseManagePageProps) {
             ))}
           </div>
         </div>
-        <div className="flex justify-end gap-3">
-          <PaginationControl
-            onClick={() => setFilters({ page: filters.page - 1 })}
-            disabled={filters.page <= 1}
-          >
-            <IconArrowLeft />
-          </PaginationControl>
-          <PaginationControl
-            onClick={() => setFilters({ page: filters.page + 1 })}
-            disabled={Number(courses?.length) <= 0}
-          >
-            <IconArrowRight />
-          </PaginationControl>
+        <div className="flex gap-3">
+          <Input
+            placeholder="Tìm kiếm khóa học"
+            className="w-full lg:w-[300px] h-10"
+            onChange={(e) => setFilters({ search: e.target.value })}
+          />
+          <div className="flex justify-end gap-3">
+            <PaginationControl
+              onClick={() => setFilters({ page: filters.page - 1 })}
+              disabled={filters.page <= 1}
+            >
+              <IconArrowLeft />
+            </PaginationControl>
+            <PaginationControl
+              onClick={() => setFilters({ page: filters.page + 1 })}
+              disabled={Number(courses?.length) <= 0}
+            >
+              <IconArrowRight />
+            </PaginationControl>
+          </div>
         </div>
       </div>
       <Link

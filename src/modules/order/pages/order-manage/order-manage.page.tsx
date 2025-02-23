@@ -127,28 +127,15 @@ export function OrderManagePage(_props: OrderManagePageProps) {
 
   return (
     <>
-      <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
+      <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between min-h-10">
         <Heading className="mb-0">Quản lý đơn hàng</Heading>
-        <div className="flex gap-5 items-center">
-          <Input
-            placeholder="DH1234567"
-            className="w-full lg:w-[300px] h-10"
-            onChange={(e) => setFilters({ search: e.target.value })}
-          />
-          <div className="flex justify-end gap-2">
-            <PaginationControl
-              onClick={() => setFilters({ page: filters.page - 1 })}
-              disabled={filters.page <= 1}
-            >
-              <IconArrowLeft />
-            </PaginationControl>
-            <PaginationControl
-              onClick={() => setFilters({ page: filters.page + 1 })}
-            >
-              <IconArrowRight />
-            </PaginationControl>
-          </div>
-        </div>
+        <Button
+          className="hidden lg:flex font-semibold px-4 h-10 text-sm rounded-md bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white"
+          onClick={handleUpdateFreeOrder}
+          disabled={mutationUpdateFreeOrder.isPending}
+        >
+          Duyệt đơn hàng miễn phí
+        </Button>
       </div>
       {userInfo?.role === UserRole.Admin && (
         <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg">
@@ -184,13 +171,26 @@ export function OrderManagePage(_props: OrderManagePageProps) {
               ))}
             </div>
           </div>
-          <Button
-            className="hidden lg:flex font-semibold p-2 h-auto text-xs rounded-md bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white"
-            onClick={handleUpdateFreeOrder}
-            disabled={mutationUpdateFreeOrder.isPending}
-          >
-            Duyệt đơn hàng miễn phí
-          </Button>
+          <div className="flex gap-3 items-center">
+            <Input
+              placeholder="DH1234567"
+              className="w-full lg:w-[300px] h-10"
+              onChange={(e) => setFilters({ search: e.target.value })}
+            />
+            <div className="flex justify-end gap-3">
+              <PaginationControl
+                onClick={() => setFilters({ page: filters.page - 1 })}
+                disabled={filters.page <= 1}
+              >
+                <IconArrowLeft />
+              </PaginationControl>
+              <PaginationControl
+                onClick={() => setFilters({ page: filters.page + 1 })}
+              >
+                <IconArrowRight />
+              </PaginationControl>
+            </div>
+          </div>
         </div>
       )}
       <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">

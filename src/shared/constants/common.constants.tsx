@@ -31,6 +31,12 @@ export const menuLinks: MenuLinkItemProps[] = [
     isHideMobile: true,
   },
   {
+    title: "Quản lý đơn hàng",
+    icon: <IconOrder></IconOrder>,
+    url: "/admin/order/manage",
+    isExpert: true,
+  },
+  {
     title: "Quản lý thành viên",
     icon: <IconUsers></IconUsers>,
     url: "/admin/user/manage",
@@ -42,12 +48,6 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/comment/manage",
     isAdmin: true,
     isHideMobile: true,
-  },
-  {
-    title: "Quản lý đơn hàng",
-    icon: <IconOrder></IconOrder>,
-    url: "/admin/order/manage",
-    isExpert: true,
   },
   {
     title: "Membership",
