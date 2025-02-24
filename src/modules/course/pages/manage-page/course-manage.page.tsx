@@ -24,7 +24,10 @@ import {
   IconStudy,
 } from "@/shared/components";
 import { LabelStatus, PaginationControl } from "@/shared/components/common";
-import { statusActions } from "@/shared/constants/common.constants";
+import {
+  ITEMS_PER_PAGE,
+  statusActions,
+} from "@/shared/constants/common.constants";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { cn } from "@/shared/utils";
@@ -58,7 +61,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
   const { data: courses } = useQueryCoursesManage({
     search: filters.search,
     page: filters.page,
-    limit: 10,
+    limit: ITEMS_PER_PAGE,
     isFree: filters.isFree,
     status: filters.status as CourseStatus,
     enabled: !!canEdit,

@@ -1,5 +1,4 @@
 import {
-  IconComment,
   IconCourseManage,
   IconMoney,
   IconOrder,
@@ -42,13 +41,13 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/user/manage",
     isAdmin: true,
   },
-  {
-    title: "Quản lý bình luận",
-    icon: <IconComment></IconComment>,
-    url: "/admin/comment/manage",
-    isAdmin: true,
-    isHideMobile: true,
-  },
+  // {
+  //   title: "Quản lý bình luận",
+  //   icon: <IconComment></IconComment>,
+  //   url: "/admin/comment/manage",
+  //   isAdmin: true,
+  //   isHideMobile: true,
+  // },
   {
     title: "Membership",
     icon: <IconMoney></IconMoney>,
@@ -93,3 +92,5 @@ export const statusActions = [
     className: "bg-orange-100 text-orange-500 border border-orange-500",
   },
 ];
+
+export const ITEMS_PER_PAGE = 10;

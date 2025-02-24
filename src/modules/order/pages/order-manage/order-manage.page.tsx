@@ -22,7 +22,10 @@ import {
   IconDelete,
 } from "@/shared/components";
 import { LabelStatus, PaginationControl } from "@/shared/components/common";
-import { statusActions } from "@/shared/constants/common.constants";
+import {
+  ITEMS_PER_PAGE,
+  statusActions,
+} from "@/shared/constants/common.constants";
 import { OrderStatus, orderStatuses } from "@/shared/constants/order.constants";
 import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
 import { formatDate, formatThoundsand } from "@/shared/utils";
@@ -60,7 +63,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
 
   const { data: orders } = useQueryOrders({
     enabled: !!canAccess,
-    limit: 20,
+    limit: ITEMS_PER_PAGE,
     page: filters.page,
     userRole: userInfo?.role,
     filter: filters.search,

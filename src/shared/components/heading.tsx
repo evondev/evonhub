@@ -14,7 +14,7 @@ export function Heading({
   return (
     <h1
       className={cn(
-        "text-2xl lg:text-3xl font-extrabold mb-8 flex items-baseline gap-2",
+        "text-2xl lg:text-3xl font-extrabold mb-8 flex items-center gap-2",
         className
       )}
     >

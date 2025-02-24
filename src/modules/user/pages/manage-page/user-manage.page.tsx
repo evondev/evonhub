@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/table";
 import { userStatus } from "@/constants";
 import { cn } from "@/lib/utils";
-import { IconArrowLeft, IconArrowRight, IconStar } from "@/shared/components";
+import { Heading, IconArrowLeft, IconArrowRight } from "@/shared/components";
 import { LabelStatus, PaginationControl } from "@/shared/components/common";
+import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -37,7 +38,7 @@ export function UserManagePage(_props: UserManagePageProps) {
   const { data } = useQueryUsers({
     search: filters.search,
     page: filters.page,
-    limit: 20,
+    limit: ITEMS_PER_PAGE,
     isPaid: filters.isPaidUser,
   });
 
@@ -47,9 +48,7 @@ export function UserManagePage(_props: UserManagePageProps) {
   return (
     <>
       <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
-        <h1 className="text-2xl lg:text-3xl font-bold">
-          Quản lý thành viên ({total})
-        </h1>
+        <Heading className="mb-0">Quản lý thành viên ({total})</Heading>
         <Input
           placeholder="Tìm kiếm thành viên"
           className="w-full lg:w-[300px]"
@@ -86,7 +85,6 @@ export function UserManagePage(_props: UserManagePageProps) {
       <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
-            <TableHead className="hidden lg:table-cell star"></TableHead>
             <TableHead>Thông tin</TableHead>
             <TableHead>Khóa học</TableHead>
             <TableHead>Trạng thái</TableHead>
@@ -95,11 +93,6 @@ export function UserManagePage(_props: UserManagePageProps) {
         <TableBody>
           {users.map((item) => (
             <TableRow key={item.username}>
-              <TableCell className="hidden lg:table-cell star">
-                {item.courses.filter((el) => !el.free).length > 0 && (
-                  <IconStar className="size-6 text-primary max-w-none" />
-                )}
-              </TableCell>
               <TableCell>
                 <Link
                   href={`/admin/user/update?email=${item.email}`}
@@ -113,7 +106,7 @@ export function UserManagePage(_props: UserManagePageProps) {
                     className="size-10 object-cover rounded-full flex-shrink-0 borderDarkMode"
                   />
                   <div className="whitespace-nowrap">
-                    <h4 className="font-bold text-sm lg:text-base line-clamp-2 whitespace-nowrap max-w-[400px] block">
+                    <h4 className="font-bold text-sm line-clamp-2 whitespace-nowrap max-w-[400px] block">
                       {item.name}
                     </h4>
                     <h5>{item.username}</h5>
@@ -124,17 +117,16 @@ export function UserManagePage(_props: UserManagePageProps) {
                   </div>
                 </Link>
               </TableCell>
-              <TableCell className="pl-10 lg:pl-4">
-                <div className="flex flex-col gap-3 font-semibold">
+              <TableCell className="pl-10">
+                <div className="flex flex-col items-start lg:flex-row flex-wrap gap-2 font-semibold">
                   {item.courses.map((course, index) => (
                     <Link
                       href={`/course/${course.slug}`}
                       key={index}
-                      className="flex text-sm items-baseline gap-1 lg:max-w-xs break-words lg:text-balance whitespace-nowrap lg:whitespace-normal"
+                      className="inline-block px-3 py-1 rounded-full bg-gray-100 dark:bg-grayDarkest dark:text-gray-200 text-xs whitespace-nowrap"
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <span className="size-2 bg-current rounded-sm shrink-0"></span>{" "}
                       {course.title}
                     </Link>
                   ))}
