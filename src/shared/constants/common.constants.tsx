@@ -58,12 +58,12 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <IconSparkles></IconSparkles>,
     url: "/coming-soon",
   },
-  {
-    title: "Mã giảm giá",
-    icon: <IconMoney></IconMoney>,
-    url: "/coupons",
-    isHideMobile: true,
-  },
+  // {
+  //   title: "Mã giảm giá",
+  //   icon: <IconMoney></IconMoney>,
+  //   url: "/coupons",
+  //   isHideMobile: true,
+  // },
   {
     title: "Profile",
     icon: <IconUser></IconUser>,
