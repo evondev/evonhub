@@ -64,7 +64,7 @@ export function UserManagePage(_props: UserManagePageProps) {
           />
           <Label
             htmlFor="paidUser"
-            className="flex items-center gap-2 cursor-pointer"
+            className="hidden lg:flex items-center gap-2 cursor-pointer"
           >
             <span>Thành viên trả phí</span>
           </Label>
@@ -104,8 +104,6 @@ export function UserManagePage(_props: UserManagePageProps) {
                 <Link
                   href={`/admin/user/update?email=${item.email}`}
                   className="flex items-center gap-3"
-                  target="_blank"
-                  rel="noreferrer"
                 >
                   <Image
                     src={item.avatar}
