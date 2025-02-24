@@ -207,6 +207,7 @@ export async function handleEnrollCourse({
       total,
       amount,
       code: `DH${new Date().getTime().toString().slice(-8)}`,
+      status,
     });
     await newOrder.save();
     return {
