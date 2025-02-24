@@ -68,8 +68,8 @@ export function CourseManagePage(_props: CourseManagePageProps) {
 
   return (
     <>
-      <Heading className="min-h-10">Quản lý khóa học</Heading>
-      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg">
+      <Heading className="lg:min-h-10">Quản lý khóa học</Heading>
+      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-3 text-sm font-medium">
             <Switch
@@ -78,7 +78,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
             />
             <Label
               htmlFor="paidUser"
-              className="flex items-center gap-2 cursor-pointer"
+              className="hidden lg:flex items-center gap-2 cursor-pointer"
             >
               <span>Khóa học miễn phí</span>
             </Label>
@@ -105,7 +105,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
         <div className="flex gap-3">
           <Input
             placeholder="Tìm kiếm khóa học"
-            className="w-full lg:w-[300px] h-10"
+            className="hidden lg:block w-full lg:w-[300px] h-10"
             onChange={(e) => setFilters({ search: e.target.value })}
           />
           <div className="flex justify-end gap-3">
@@ -123,10 +123,15 @@ export function CourseManagePage(_props: CourseManagePageProps) {
             </PaginationControl>
           </div>
         </div>
+        <Input
+          placeholder="Tìm kiếm khóa học"
+          className="lg:hidden w-full lg:w-[300px] h-10"
+          onChange={(e) => setFilters({ search: e.target.value })}
+        />
       </div>
       <Link
         href="/admin/course/add-new"
-        className="fixed bottom-10 right-10 z-50 size-10 bg-primary text-white flex items-center justify-center rounded-full"
+        className="fixed bottom-10 right-10 z-50 size-10 bg-primary text-white hidden lg:flex items-center justify-center rounded-full"
         target="_blank"
       >
         <IconPlus />
@@ -158,7 +163,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
                       />
                       <div className="flex flex-col gap-1">
                         <div className="flex items-start gap-2">
-                          <div className="font-bold line-clamp-2 w-[400px] block text-base text-balance">
+                          <div className="font-bold line-clamp-2 w-[400px] block text-sm text-balance">
                             {course.title}
                           </div>
                         </div>

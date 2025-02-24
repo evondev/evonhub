@@ -138,7 +138,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
         <Heading className="mb-0">Quản lý đơn hàng</Heading>
         {userInfo?.role === UserRole.Admin && (
           <Button
-            className="hidden lg:flex font-semibold px-4 h-10 text-sm rounded-md bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white"
+            className="flex font-semibold px-4 h-10 text-sm rounded-md bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white"
             onClick={handleUpdateFreeOrder}
             disabled={mutationUpdateFreeOrder.isPending}
           >
@@ -147,7 +147,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
         )}
       </div>
       {userInfo?.role === UserRole.Admin && (
-        <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg">
+        <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-3 text-sm font-medium">
               <Switch
@@ -156,7 +156,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
               />
               <Label
                 htmlFor="freeOrders"
-                className="flex items-center gap-2 cursor-pointer"
+                className="hidden lg:flex items-center gap-2 cursor-pointer"
               >
                 <span>Đơn hàng miễn phí</span>
               </Label>
@@ -183,7 +183,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
           <div className="flex gap-3 items-center">
             <Input
               placeholder="DH1234567"
-              className="w-full lg:w-[300px] h-10"
+              className="w-full lg:w-[300px] h-10 hidden lg:block"
               onChange={(e) => setFilters({ search: e.target.value })}
             />
             <div className="flex justify-end gap-3">
@@ -200,6 +200,11 @@ export function OrderManagePage(_props: OrderManagePageProps) {
               </PaginationControl>
             </div>
           </div>
+          <Input
+            placeholder="DH1234567"
+            className="w-full lg:w-[300px] h-10 block lg:hidden"
+            onChange={(e) => setFilters({ search: e.target.value })}
+          />
         </div>
       )}
       <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
