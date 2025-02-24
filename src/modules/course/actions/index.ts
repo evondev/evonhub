@@ -125,46 +125,70 @@ export async function handleEnrollCourse({
 }) {
   try {
     connectToDatabase();
+
     const findUser = await UserModel.findById(userId);
+
     if (!findUser)
       return {
         error: "Vui lòng đăng nhập để mua khóa học",
       };
+
     if (findUser.status === UserStatus.Inactive)
       return {
         error: "Tài khoản của bạn đã bị khóa",
       };
+
     const userCourses = findUser.courses
       .filter(Boolean)
       .map((course: any) => course.toString());
+
     if (userCourses.includes(courseId))
       return {
         error: "Bạn đã sở hữu khóa học này rồi",
       };
+
     const findCourse = await CourseModel.findById(courseId);
-    if (findCourse.slug === "khoa-hoc-html-css-master") {
-      if (usersHTML.includes(findUser.email)) {
-        total = 0;
-        amount = 0;
-      }
+    let status: OrderStatus = OrderStatus.Pending;
+
+    if (
+      findCourse.slug === "khoa-hoc-html-css-master" &&
+      usersHTML.includes(findUser.email)
+    ) {
+      findUser.courses.push(findCourse._id);
+      await findUser.save();
+      status = OrderStatus.Approved;
+      total = 0;
+      amount = 0;
     }
-    if (findCourse.slug === "khoa-hoc-reactjs-co-ban") {
-      if (usersReact.includes(findUser.email)) {
-        total = 0;
-        amount = 0;
-      }
+    if (
+      findCourse.slug === "khoa-hoc-reactjs-co-ban" &&
+      usersReact.includes(findUser.email)
+    ) {
+      findUser.courses.push(findCourse._id);
+      await findUser.save();
+      status = OrderStatus.Approved;
+      total = 0;
+      amount = 0;
     }
-    if (findCourse.slug === "khoa-hoc-javascript-co-ban-cho-nguoi-moi") {
-      if (usersJS.includes(findUser.email)) {
-        total = 0;
-        amount = 0;
-      }
+    if (
+      findCourse.slug === "khoa-hoc-javascript-co-ban-cho-nguoi-moi" &&
+      usersJS.includes(findUser.email)
+    ) {
+      findUser.courses.push(findCourse._id);
+      await findUser.save();
+      status = OrderStatus.Approved;
+      total = 0;
+      amount = 0;
     }
-    if (findCourse.slug === "khoa-hoc-javascript-chuyen-sau") {
-      if (usersJSAdvanced.includes(findUser.email)) {
-        total = 0;
-        amount = 0;
-      }
+    if (
+      findCourse.slug === "khoa-hoc-javascript-chuyen-sau" &&
+      usersJSAdvanced.includes(findUser.email)
+    ) {
+      findUser.courses.push(findCourse._id);
+      await findUser.save();
+      status = OrderStatus.Approved;
+      total = 0;
+      amount = 0;
     }
 
     const existOrder = await OrderModel.findOne({

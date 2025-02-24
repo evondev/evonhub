@@ -231,7 +231,12 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                 <TableRow key={order._id} className="font-medium">
                   <TableCell>
                     <div className="flex flex-col gap-1">
-                      <span className="font-semibold">{order.code}</span>
+                      <Link
+                        href={`/order/${order.code}`}
+                        className="font-semibold"
+                      >
+                        {order.code}
+                      </Link>
                       <div className="text-xs text-gray-400">
                         <span>Ngày tạo:</span>{" "}
                         <span>{formatDate(order.createdAt)}</span>
