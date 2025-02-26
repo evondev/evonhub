@@ -1,4 +1,6 @@
-const IconDelete = () => {
+import { ComponentProps } from "react";
+
+const IconDelete = (props: ComponentProps<"svg">) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,6 +9,7 @@ const IconDelete = () => {
       strokeWidth={1.5}
       stroke="currentColor"
       className="w-4 h-4"
+      {...props}
     >
       <path
         strokeLinecap="round"

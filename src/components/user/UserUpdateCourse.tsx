@@ -2,13 +2,9 @@
 import {
   addCourseToUser,
   removeCourseFromUser,
-  updateUserByUsername,
 } from "@/lib/actions/user.action";
-import { cn } from "@/lib/utils";
-import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import { useState } from "react";
-import { NumericFormat } from "react-number-format";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { IconDelete } from "../icons";
@@ -66,14 +62,14 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
     setIsSubmitting(true);
     try {
       Swal.fire({
-        title: "Bạn đã xem giá tiền và discount chưa?",
+        title: "Bạn đã chắc chắn chưa ?",
         showCancelButton: true,
         confirmButtonText: "Đồng ý",
         cancelButtonText: "Hủy",
         icon: "warning",
       }).then(async (result) => {
         if (result.isConfirmed) {
-          const discountValue = Number(discount?.toString()?.replace(/,/g, ""));
+          const discountValue = 999_000;
           const res = await addCourseToUser({
             userId: user.clerkId,
             course: {
@@ -95,30 +91,9 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
       setIsSubmitting(false);
     }
   };
-  const [isUpdatePermissions, setIsUpdatePermissions] = useState(false);
-  const handleUpdatePermissions = async () => {
-    setIsUpdatePermissions(true);
-    try {
-      await updateUserByUsername({
-        username: user.username,
-        updateData: {
-          permissions: selectPermissions,
-          role: userRole,
-        },
-      });
-      toast.success("Cập nhật quyền thành công");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsUpdatePermissions(false);
-    }
-  };
+
   const [selectCourse, setSelectCourse] = useState<any>(null);
-  const [discount, setDiscount] = useState<number | string>(0);
-  const [userRole, setUserRole] = useState(user.role);
-  const [selectPermissions, setSelectPermissions] = useState<string[]>(
-    user.permissions || []
-  );
+
   return (
     <div className="l-container">
       <div className="mb-5 flex flex-col gap-3 pb-5 border-b border-dashed border-gray-400 dark:border-grayDarker">
@@ -149,28 +124,14 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
               {courses.map((course) => (
                 <SelectItem key={course._id} value={course}>
                   {course.title}
-                  <strong className="ml-5 text-secondary">
-                    {formatThoundsand(course.price)} VNĐ
-                  </strong>
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <div>
-            <NumericFormat
-              valueIsNumericString
-              thousandSeparator
-              className={cn(
-                "flex h-12 file:border-0 file:bg-transparent file:text-sm file:font-medium   focus-primary form-styles w-40"
-              )}
-              defaultValue={discount as any}
-              onChange={(e) => setDiscount(e.target.value)}
-            />
-          </div>
           <Button
             type="button"
             className={
-              "size-10 rounded flex items-center justify-center bg-primary text-white p-1 flex-shrink-0"
+              "size-12 rounded flex items-center justify-center bg-primary text-white p-1 flex-shrink-0"
             }
             onClick={handleAddCourseToUser}
             isLoading={isSubmitting}
@@ -178,21 +139,16 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
             {IconPlus}
           </Button>
         </div>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap gap-3">
           {user.courses.map((course: any, index: number) => (
             <div
-              className="flex items-center justify-between p-2 rounded-lg bg-white text-sm dark:bg-grayDarker gap-3 border borderDarkMode"
+              className="flex items-center justify-between p-2 rounded-full bg-white text-xs dark:bg-grayDarker gap-3 border borderDarkMode"
               key={index}
             >
-              <h3 className="font-semibold flex">
-                <span className="lg:min-w-[300px] block">{course.title}</span>
-                <strong className="text-secondary ml-5">
-                  {formatThoundsand(course.price)} VNĐ
-                </strong>
-              </h3>
+              <h3 className="font-semibold">{course.title}</h3>
               <Button
                 type="button"
-                className="flex w-8 h-8 p-0 items-center gap-2 rounded bg-red-100 text-red-500 font-semibold hover:opacity-85 flex-shrink-0"
+                className="p-0 hover:text-red-500 size-4"
                 onClick={() =>
                   handleRemoveCourseFromUser(course._id.toString())
                 }
