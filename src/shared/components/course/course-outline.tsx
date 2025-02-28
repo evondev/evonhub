@@ -29,7 +29,7 @@ export function CourseOutline({
 }: CourseOutlineProps) {
   return (
     <>
-      {lectures.map((item) => {
+      {lectures.map((item, index) => {
         const activeLesson = item.lessons.find(
           (el) => el._id.toString() === lessonId
         );
@@ -41,7 +41,9 @@ export function CourseOutline({
             className="w-full mb-3 lg:mb-5"
             key={item.title}
             defaultValue={
-              isExpandedAll ? item.title : activeLesson?.lectureId?.title || ""
+              isExpandedAll && index === 0
+                ? item.title
+                : activeLesson?.lectureId?.title || ""
             }
           >
             <AccordionItem value={item.title || ""}>

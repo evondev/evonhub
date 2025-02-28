@@ -108,13 +108,13 @@ export function CourseDetailsPageContainer(
                 {ratings.map((el, index) => (
                   <Tooltip key={index}>
                     <TooltipTrigger>
-                      <div className="rounded-full p-1.5 text-xs font-medium flex items-center gap-2 border borderDarkMode bgDarkMode">
+                      <div className="rounded-full p-1 text-sm font-medium flex items-center gap-2 border borderDarkMode bgDarkMode">
                         <Image
-                          width={20}
-                          height={20}
+                          width={40}
+                          height={40}
                           src={el.user.avatar}
                           alt=""
-                          className="border borderDarkMode size-5 p-0.5 object-cover rounded-full flex-shrink-0"
+                          className="border borderDarkMode size-8 p-0.5 object-cover rounded-full flex-shrink-0"
                         />
                         {el.content.slice(0, 40)}...
                       </div>
