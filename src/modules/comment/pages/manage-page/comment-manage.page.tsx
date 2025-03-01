@@ -172,10 +172,9 @@ export function CommentManagePage(_props: CommentManagePageProps) {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="line-clamp-2 text-balance max-w-xs">
+                  <div className="whitespace-nowrap pl-10 lg:pl-0">
                     {comment.content}
                     <Link
-                      target="_blank"
                       href={`/${comment.lesson?.courseId?.slug}/lesson?id=${comment.lesson?._id}#${comment._id}`}
                       className="inline ml-2 font-semibold underline"
                     >

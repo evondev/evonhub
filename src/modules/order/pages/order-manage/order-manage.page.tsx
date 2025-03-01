@@ -270,8 +270,6 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                     <Link
                       href={`/admin/user/update?email=${order.user?.email}`}
                       className="flex flex-col gap-1"
-                      target="_blank"
-                      rel="noopener noreferrer"
                     >
                       <div className="">{order.user?.username}</div>
                       <div className="text-xs text-slate-400">
