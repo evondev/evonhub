@@ -64,7 +64,7 @@ export function CommentManagePage(_props: CommentManagePageProps) {
     userId: string
   ) => {
     Swal.fire({
-      title: "Bạn có chắc muốn thay đổi trạng thái bình luận?",
+      title: "Thay đổi trạng thái bình luận?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Đồng ý",
@@ -185,7 +185,10 @@ export function CommentManagePage(_props: CommentManagePageProps) {
                 </TableCell>
                 <TableCell>
                   <LabelStatus
-                    className={cn(commonStatus[comment.status].className)}
+                    className={cn(
+                      commonStatus[comment.status].className,
+                      "cursor-pointer"
+                    )}
                     onClick={() =>
                       handleChangeStatus(
                         comment._id,
