@@ -1,4 +1,5 @@
 import {
+  IconComment,
   IconCourseManage,
   IconMoney,
   IconOrder,
@@ -9,7 +10,12 @@ import {
   IconUsers,
 } from "../components";
 import { MenuLinkItemProps } from "../types";
-import { CommonStatus } from "./course.constants";
+
+export enum CommonStatus {
+  Pending = "pending",
+  Approved = "approved",
+  Rejected = "rejected",
+}
 
 export const menuLinks: MenuLinkItemProps[] = [
   {
@@ -41,13 +47,13 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/user/manage",
     isAdmin: true,
   },
-  // {
-  //   title: "Quản lý bình luận",
-  //   icon: <IconComment></IconComment>,
-  //   url: "/admin/comment/manage",
-  //   isAdmin: true,
-  //   isHideMobile: true,
-  // },
+  {
+    title: "Quản lý bình luận",
+    icon: <IconComment />,
+    url: "/admin/comment/manage",
+    isAdmin: true,
+    isHideMobile: true,
+  },
   {
     title: "Membership",
     icon: <IconMoney></IconMoney>,
@@ -92,5 +98,26 @@ export const statusActions = [
     className: "bg-orange-100 text-orange-500 border border-orange-500",
   },
 ];
+
+export const commonStatus: Record<
+  CommonStatus,
+  {
+    text: string;
+    className: string;
+  }
+> = {
+  [CommonStatus.Pending]: {
+    text: "Chờ duyệt",
+    className: "bg-orange-500 bg-opacity-10 text-orange-500",
+  },
+  [CommonStatus.Approved]: {
+    text: "Đã duyệt",
+    className: "bg-green-500 bg-opacity-10 text-green-500",
+  },
+  [CommonStatus.Rejected]: {
+    text: "Bị từ chối",
+    className: "bg-red-500 bg-opacity-10 text-red-500",
+  },
+};
 
 export const ITEMS_PER_PAGE = 10;

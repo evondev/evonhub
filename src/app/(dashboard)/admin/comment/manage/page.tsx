@@ -1,19 +1,9 @@
-import CommentManage from "@/components/comment/CommentManage";
-import { getAllComments } from "@/lib/actions/comment.action";
-import { auth } from "@clerk/nextjs/server";
+import { CommentManagePage } from "@/modules/comment/pages";
 
-const page = async () => {
-  const { userId } = auth();
-  const commentList = await getAllComments({
-    userId: userId || "",
-  });
-  return (
-    <>
-      <CommentManage
-        commentList={commentList ? JSON.parse(JSON.stringify(commentList)) : []}
-      ></CommentManage>
-    </>
-  );
-};
+export interface CommentManagePageRootProps {}
 
-export default page;
+export default function CommentManagePageRoot(
+  _props: CommentManagePageRootProps
+) {
+  return <CommentManagePage />;
+}
