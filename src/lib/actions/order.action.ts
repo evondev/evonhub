@@ -12,10 +12,9 @@ import { auth } from "@clerk/nextjs/server";
 import dayjs from "dayjs";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
-import { Resend } from "resend";
 import { connectToDatabase } from "../mongoose";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface CreateOrderParams {
   user: string;
@@ -84,12 +83,12 @@ export async function updateOrder(params: UpdateOrderParams) {
         await findUser.save();
       }
       // Send email
-      await resend.emails.send({
-        from: "Evonhub@evonhub.dev",
-        to: findUser.email,
-        subject: "Thông báo - Đơn hàng của bạn đã được duyệt 🔥",
-        html: `<p>Cảm ơn bạn đã mua khóa học tại <strong>evonhub</strong>. Bây giờ bạn có thể truy cập vào <a href="https://evonhub.dev/study" target="_blank">khu vực học tập</a> để bắt đầu học nha.</p>`,
-      });
+      // await resend.emails.send({
+      //   from: "Evonhub@evonhub.dev",
+      //   to: findUser.email,
+      //   subject: "Thông báo - Đơn hàng của bạn đã được duyệt 🔥",
+      //   html: `<p>Cảm ơn bạn đã mua khóa học tại <strong>evonhub</strong>. Bây giờ bạn có thể truy cập vào <a href="https://evonhub.dev/study" target="_blank">khu vực học tập</a> để bắt đầu học nha.</p>`,
+      // });
     } else {
       if (
         params.plan &&

@@ -8,7 +8,6 @@ import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import dayjs from "dayjs";
 import { FilterQuery } from "mongoose";
-import { Resend } from "resend";
 import OrderModel from "../models";
 import {
   FetchOrdersProps,
@@ -16,8 +15,6 @@ import {
   UpdateFreeOrderProps,
   UpdateOrderProps,
 } from "../types";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function fetchCountOrdersByCourse(
   courseId: string
@@ -141,14 +138,14 @@ export async function handleUpdateOrder({
         findUser.courses.push(course);
         await findUser.save();
       }
-      if (Number(amount) > 0) {
-        await resend.emails.send({
-          from: "Evonhub@evonhub.dev",
-          to: findUser.email,
-          subject: "Thông báo - Đơn hàng của bạn đã được duyệt 🔥",
-          html: `<p>Cảm ơn bạn đã mua khóa học tại <strong>evonhub</strong>. Bây giờ bạn có thể truy cập vào <a href="https://evonhub.dev/study" target="_blank">khu vực học tập</a> để bắt đầu học nha.</p>`,
-        });
-      }
+      // if (Number(amount) > 0) {
+      //   await resend.emails.send({
+      //     from: "Evonhub@evonhub.dev",
+      //     to: findUser.email,
+      //     subject: "Thông báo - Đơn hàng của bạn đã được duyệt 🔥",
+      //     html: `<p>Cảm ơn bạn đã mua khóa học tại <strong>evonhub</strong>. Bây giờ bạn có thể truy cập vào <a href="https://evonhub.dev/study" target="_blank">khu vực học tập</a> để bắt đầu học nha.</p>`,
+      //   });
+      // }
     } else {
       if (
         plan &&
