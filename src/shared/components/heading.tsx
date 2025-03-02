@@ -14,17 +14,17 @@ export function Heading({
   return (
     <h1
       className={cn(
-        "text-2xl lg:text-3xl font-extrabold mb-8 flex items-center gap-2",
+        "text-2xl lg:text-3xl font-bold mb-8 flex items-center gap-2 relative w-max",
         className
       )}
     >
       <div
         className={cn(
-          "size-4 lg:size-5 relative top-[1px] from-[#ba97f7] to-[#978df8] bg-gradient-to-tl rounded relative",
+          "absolute bottom-1.5 w-1/3 h-2 from-[#ba97f7] to-[#ff979a] bg-gradient-to-r",
           squareClassName
         )}
       ></div>
-      {children}
+      <span className="relative z-10">{children}</span>
     </h1>
   );
 }

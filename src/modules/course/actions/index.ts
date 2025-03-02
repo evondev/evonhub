@@ -23,22 +23,24 @@ import {
   FetchCoursesParams,
 } from "../types";
 
-export async function fetchCourses(
-  params: FetchCoursesParams
-): Promise<CourseItemData[] | undefined> {
+export async function fetchCourses({
+  status,
+  isUpdateViews = true,
+}: FetchCoursesParams): Promise<CourseItemData[] | undefined> {
   try {
     connectToDatabase();
     let searchQuery: any = {};
-    if (params.status) {
-      searchQuery.status = params.status;
+    if (status) {
+      searchQuery.status = status;
     }
     const courses: CourseItemData[] = await CourseModel.find(searchQuery)
       .select("title slug image level rating price salePrice views free")
       .sort({ createdAt: -1 });
     const allCourses = (parseData(courses) as CourseItemData[]) || [];
-    allCourses.forEach(async (course) => {
-      await updateCourseViews(course.slug);
-    });
+    isUpdateViews &&
+      allCourses.forEach(async (course) => {
+        await updateCourseViews(course.slug);
+      });
     return allCourses;
   } catch (error) {}
 }

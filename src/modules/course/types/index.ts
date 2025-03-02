@@ -52,6 +52,7 @@ export interface CourseItemData
 }
 export interface FetchCoursesParams {
   status: CourseStatus;
+  isUpdateViews?: boolean;
 }
 
 export interface FetchCoursesManageProps {

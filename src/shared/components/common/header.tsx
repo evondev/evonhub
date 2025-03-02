@@ -7,32 +7,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "../../../components/ModeToggle";
 
-const IconSearch = (
-  <svg
-    width={22}
-    height={22}
-    viewBox="0 0 22 22"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <circle
-      cx={11}
-      cy="10.5"
-      r="8.5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M16.5 17L19.5 20"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
 export const Header = () => {
   const auth = useAuth();
   const { isLessonPage } = useLessonDetailsPath();
