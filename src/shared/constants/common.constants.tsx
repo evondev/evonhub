@@ -1,5 +1,6 @@
 import {
   IconComment,
+  IconCoupon,
   IconCourseManage,
   IconMoney,
   IconOrder,
@@ -51,6 +52,13 @@ export const menuLinks: MenuLinkItemProps[] = [
     title: "Quản lý bình luận",
     icon: <IconComment />,
     url: "/admin/comment/manage",
+    isAdmin: true,
+    isHideMobile: true,
+  },
+  {
+    title: "Quản lý coupon",
+    icon: <IconCoupon />,
+    url: "/admin/coupon/manage",
     isAdmin: true,
     isHideMobile: true,
   },

@@ -1,6 +1,5 @@
 "use server";
 import { usersHTML, usersJS, usersJSAdvanced, usersReact } from "@/data";
-import Coupon from "@/database/coupon.model";
 import Course from "@/database/course.model";
 import User from "@/database/user.model";
 import CourseModel from "@/modules/course/models";
@@ -205,12 +204,7 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
         params.discount = 0;
       }
     }
-    if (params.couponCode) {
-      await Coupon.findOneAndUpdate(
-        { code: params.couponCode.toUpperCase() },
-        { $inc: { used: 1 } }
-      );
-    }
+
     const existOrder = await OrderModel.findOne({
       user: params.user,
       course: params.course,

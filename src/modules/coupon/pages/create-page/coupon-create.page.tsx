@@ -23,21 +23,42 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useQueryCourses } from "@/modules/course/services";
+import { CourseItemData } from "@/modules/course/types";
 import { Heading } from "@/shared/components";
+import { Tag } from "@/shared/components/tag";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
+import { toast } from "react-toastify";
 import { createCouponSchema } from "../../schemas";
+import { userMutationCreateCoupon } from "../../services";
 import { CreateCouponFormValues } from "../../types";
 
 export interface CouponCreatePageProps {}
 
 export function CouponCreatePage(_props: CouponCreatePageProps) {
-  const [date, setDate] = useState<Date>();
+  const [selectedCourses, setSelectedCourses] = useState<
+    {
+      courseId: string;
+      title: string;
+    }[]
+  >([]);
+  const router = useRouter();
+
+  const mutationCreateCoupon = userMutationCreateCoupon();
+
+  const [date, setDate] = useState<{
+    startDate: Date;
+    endDate: Date;
+  }>({
+    startDate: new Date(),
+    endDate: new Date(),
+  });
   const form = useForm<CreateCouponFormValues>({
     resolver: zodResolver(createCouponSchema),
     defaultValues: {},
@@ -47,7 +68,40 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
     isUpdateViews: false,
   });
 
-  async function onSubmit(values: CreateCouponFormValues) {}
+  async function onSubmit(values: CreateCouponFormValues) {
+    const response = await mutationCreateCoupon.mutateAsync({
+      ...values,
+      amount: parseInt(values.amount),
+      limit: values.limit || 0,
+      startDate: date.startDate,
+      endDate: date.endDate,
+      courses: selectedCourses.map((course) => course.courseId),
+    });
+
+    if (!response) {
+      toast.error("Tạo mã giảm giá thất bại");
+      return;
+    }
+
+    toast.success("Tạo mã giảm giá thành công");
+    router.push("/admin/coupon/manage");
+  }
+
+  const handleSelectCourse = (checked: boolean, course: CourseItemData) => {
+    if (checked) {
+      setSelectedCourses((prev) => [
+        ...prev,
+        {
+          courseId: course._id,
+          title: course.title,
+        },
+      ]);
+    } else {
+      setSelectedCourses((prev) =>
+        prev.filter((item) => item.courseId !== course._id)
+      );
+    }
+  };
   return (
     <div>
       <Heading>Tạo mã giảm giá</Heading>
@@ -92,8 +146,6 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
                   <FormLabel>Số tiền</FormLabel>
                   <FormControl>
                     <NumericFormat
-                      valueIsNumericString
-                      thousandSeparator
                       className={cn(
                         "flex h-12 file:border-0 file:bg-transparent file:text-sm file:font-medium   focus-primary form-styles w-40"
                       )}
@@ -140,14 +192,21 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {date ? format(date, "PPP") : <span>Chọn ngày</span>}
+                          {date ? (
+                            format(date.startDate, "dd/MM/yyyy")
+                          ) : (
+                            <span>Chọn ngày</span>
+                          )}
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
+                      <PopoverContent className="w-full p-0">
                         <Calendar
                           mode="single"
-                          selected={date}
-                          onSelect={setDate}
+                          selected={date.startDate}
+                          onSelect={(date) =>
+                            date &&
+                            setDate((prev) => ({ ...prev, startDate: date }))
+                          }
                           initialFocus
                         />
                       </PopoverContent>
@@ -174,14 +233,21 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {date ? format(date, "PPP") : <span>Chọn ngày</span>}
+                          {date ? (
+                            format(date.endDate, "dd/MM/yyyy")
+                          ) : (
+                            <span>Chọn ngày</span>
+                          )}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
                         <Calendar
                           mode="single"
-                          selected={date}
-                          onSelect={setDate}
+                          selected={date.endDate}
+                          onSelect={(date) =>
+                            date &&
+                            setDate((prev) => ({ ...prev, endDate: date }))
+                          }
                           initialFocus
                         />
                       </PopoverContent>
@@ -191,31 +257,54 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="courses"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline">Chọn khóa học</Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start">
-                        {courses?.map((course) => (
-                          <DropdownMenuCheckboxItem key={course._id}>
-                            {course.title}
-                          </DropdownMenuCheckboxItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex flex-col gap-5">
+              <FormField
+                control={form.control}
+                name="courses"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild className="w-full">
+                          <Button variant="outline">Chọn khóa học</Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-full">
+                          {courses?.map((course) => (
+                            <DropdownMenuCheckboxItem
+                              key={course._id}
+                              checked={selectedCourses.some(
+                                (item) => item.courseId === course._id
+                              )}
+                              onCheckedChange={(checked) =>
+                                handleSelectCourse(checked, course)
+                              }
+                            >
+                              {course.title}
+                            </DropdownMenuCheckboxItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex flex-wrap gap-3">
+                {selectedCourses.length > 0 &&
+                  selectedCourses.map((course) => (
+                    <Tag key={course.title}>{course.title}</Tag>
+                  ))}
+              </div>
+            </div>
           </div>
-          <Button type="submit">Tạo mã giảm giá</Button>
+          <Button
+            type="submit"
+            variant="primary"
+            className="w-fit ml-auto flex"
+            isLoading={mutationCreateCoupon.isPending}
+          >
+            Tạo mã giảm giá
+          </Button>
         </form>
       </Form>
     </div>

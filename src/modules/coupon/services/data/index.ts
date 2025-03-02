@@ -1,2 +1,1 @@
-export * from "./query-comment-by-lesson";
-export * from "./query-comments-manage.data";
+export * from "./mutation-create-coupon.data";

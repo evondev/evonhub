@@ -8,7 +8,7 @@ const config: Config = {
     extend: {
       colors: {
         secondary: "#2C8FFF",
-        primary: "#978df8",
+        primary: "#9770F8",
         text4: "#C9CAD1",
         text3: "#A3A3A3",
         text2: "#686A70",
@@ -22,6 +22,7 @@ const config: Config = {
         grayDark: "#1C1F25",
         grayDarker: "#1F2026",
         grayDarkest: "#1A1B1E",
+        textPrimary: "#12131A",
       },
       screens: {
         "2xl": "1600px",

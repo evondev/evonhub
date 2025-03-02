@@ -20,3 +20,15 @@ export interface CouponModelProps extends Document {
 }
 
 export type CreateCouponFormValues = z.infer<typeof createCouponSchema>;
+export interface CouponItemData extends CouponModelProps {}
+
+export interface CreateCouponProps {
+  title: string;
+  code: string;
+  amount: number;
+  limit?: number;
+  startDate?: Date;
+  endDate?: Date;
+  courses?: string[];
+  users?: string[];
+}

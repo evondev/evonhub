@@ -21,6 +21,6 @@ const couponSchema = new Schema<CouponModelProps>({
   users: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
-const Coupon = models.Coupon || model("Coupon", couponSchema);
+const CouponModel = models.Coupon || model("Coupon", couponSchema);
 
-export default Coupon;
+export default CouponModel;
