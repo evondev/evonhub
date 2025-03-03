@@ -130,3 +130,4 @@ export const commonStatus: Record<
 };
 
 export const ITEMS_PER_PAGE = 10;
+export const MAXIUM_DISCOUNT = 250_000;

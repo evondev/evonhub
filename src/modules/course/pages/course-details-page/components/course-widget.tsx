@@ -7,6 +7,7 @@ import { CouponItemData } from "@/modules/coupon/types";
 import { userMutationEnrollCourse } from "@/modules/course/services/data/mutation-enroll";
 import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-enroll-free.data";
 import { IconPlay, IconStudy, IconUsers } from "@/shared/components";
+import { MAXIUM_DISCOUNT } from "@/shared/constants/common.constants";
 import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
 import { useRouter } from "next/navigation";
@@ -61,6 +62,10 @@ export default function CourseWidget({
   };
 
   const handleBuyCourse = async () => {
+    if (discount > MAXIUM_DISCOUNT) {
+      toast.error("Mã giảm giá không hợp lệ");
+      return;
+    }
     const response = await mutationEnrollCourse.mutateAsync({
       userId,
       courseId,
@@ -86,7 +91,7 @@ export default function CourseWidget({
       courseId,
     });
 
-    if (!response?.amount) {
+    if (!response?.amount || response?.amount > MAXIUM_DISCOUNT) {
       setMessage({ error: "Invalid coupon" });
       return;
     }
