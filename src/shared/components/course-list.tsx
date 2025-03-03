@@ -19,7 +19,7 @@ export function CourseList({ children, isLoading }: CourseListProps) {
     children
   );
   return (
-    <div className="grid xl:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4 course-slider">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-8">
       {child}
     </div>
   );

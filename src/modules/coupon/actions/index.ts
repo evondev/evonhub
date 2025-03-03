@@ -1,7 +1,9 @@
 "use server";
 
 import UserModel from "@/modules/user/models";
+import { CouponStatus } from "@/shared/constants/coupon.constants";
 import { UserRole } from "@/shared/constants/user.constants";
+import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { auth } from "@clerk/nextjs/server";
 import CouponModel from "../models";
@@ -43,6 +45,18 @@ export async function handleCreateCoupon({
       amount,
     });
     return true;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function fetchCoupons(): Promise<CouponItemData[] | undefined> {
+  try {
+    connectToDatabase();
+    const coupons = await CouponModel.find({
+      status: CouponStatus.Active,
+    });
+    return parseData(coupons);
   } catch (error) {
     console.log(error);
   }

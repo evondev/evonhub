@@ -1,11 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useUserContext } from "@/components/user-context";
 import { userMutationEnrollCourse } from "@/modules/course/services/data/mutation-enroll";
 import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-enroll-free.data";
 import { IconPlay, IconStudy, IconUsers } from "@/shared/components";
 import { formatThoundsand } from "@/utils";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 export interface CourseWidgetProps {
@@ -32,6 +34,8 @@ export default function CourseWidget({
   const { userInfo } = useUserContext();
   const userId = userInfo?._id.toString() || "";
   const router = useRouter();
+  const [discount, setDiscount] = useState(0);
+  const [couponCode, setCouponCode] = useState("");
 
   const handleEnrollFree = async () => {
     const response = await mutationEnrollFree.mutateAsync({
@@ -62,6 +66,8 @@ export default function CourseWidget({
       router.push("/sign-in");
     }
   };
+
+  const handleApplyCoupon = async () => {};
 
   return (
     <>
@@ -101,6 +107,20 @@ export default function CourseWidget({
               <IconStudy className="size-4 flex-shrink-0" />
               <span>Có tài liệu kèm theo</span>
             </div>
+          </div>
+          <div className="flex rounded-lg border borderDarkMode p-2 h-12 overflow-hidden">
+            <Input
+              placeholder="Nhập mã giảm giá"
+              className="border-none uppercase !shadow-none !font-bold h-auto"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value)}
+            />
+            <Button
+              className="text-white bg-grayDarkest h-auto dark:bg-white dark:text-grayDarkest"
+              onClick={handleApplyCoupon}
+            >
+              Áp dụng
+            </Button>
           </div>
           {isFree && !isComingSoon && (
             <button
