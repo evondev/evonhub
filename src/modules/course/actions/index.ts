@@ -1,6 +1,7 @@
 "use server";
 
 import { usersHTML, usersJS, usersJSAdvanced, usersReact } from "@/data";
+import CouponModel from "@/modules/coupon/models";
 import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
@@ -19,26 +20,29 @@ import { FilterQuery } from "mongoose";
 import CourseModel from "../models";
 import {
   CourseItemData,
+  EnrollCourseProps,
   FetchCoursesManageProps,
   FetchCoursesParams,
 } from "../types";
 
-export async function fetchCourses(
-  params: FetchCoursesParams
-): Promise<CourseItemData[] | undefined> {
+export async function fetchCourses({
+  status,
+  isUpdateViews = true,
+}: FetchCoursesParams): Promise<CourseItemData[] | undefined> {
   try {
     connectToDatabase();
     let searchQuery: any = {};
-    if (params.status) {
-      searchQuery.status = params.status;
+    if (status) {
+      searchQuery.status = status;
     }
     const courses: CourseItemData[] = await CourseModel.find(searchQuery)
       .select("title slug image level rating price salePrice views free")
       .sort({ createdAt: -1 });
     const allCourses = (parseData(courses) as CourseItemData[]) || [];
-    allCourses.forEach(async (course) => {
-      await updateCourseViews(course.slug);
-    });
+    isUpdateViews &&
+      allCourses.forEach(async (course) => {
+        await updateCourseViews(course.slug);
+      });
     return allCourses;
   } catch (error) {}
 }
@@ -117,12 +121,9 @@ export async function handleEnrollCourse({
   courseId,
   total,
   amount,
-}: {
-  userId: string;
-  courseId: string;
-  total: number;
-  amount: number;
-}) {
+  couponCode,
+  couponId,
+}: EnrollCourseProps) {
   try {
     connectToDatabase();
 
@@ -138,6 +139,25 @@ export async function handleEnrollCourse({
         error: "Tài khoản của bạn đã bị khóa",
       };
 
+    const findCoupon = await CouponModel.findOne({
+      code: couponCode,
+    });
+
+    const findCourse: CourseItemData | null = await CourseModel.findById(
+      courseId
+    );
+
+    if (!findCourse)
+      return {
+        error: "Khóa học không tồn tại",
+      };
+
+    if (findCoupon?.amount && findCourse.price - total !== findCoupon?.amount) {
+      return {
+        error: "Mã giảm giá không hợp lệ",
+      };
+    }
+
     const userCourses = findUser.courses
       .filter(Boolean)
       .map((course: any) => course.toString());
@@ -147,7 +167,6 @@ export async function handleEnrollCourse({
         error: "Bạn đã sở hữu khóa học này rồi",
       };
 
-    const findCourse = await CourseModel.findById(courseId);
     let status: OrderStatus = OrderStatus.Pending;
 
     if (
@@ -208,6 +227,8 @@ export async function handleEnrollCourse({
       amount,
       code: `DH${new Date().getTime().toString().slice(-8)}`,
       status,
+      couponCode,
+      coupon: couponId,
     });
     await newOrder.save();
     return {

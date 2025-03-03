@@ -69,7 +69,8 @@ export default async function RootLayout({
           <ToastContainer
             autoClose={4000}
             position="top-right"
-            className="max-w-[400px]"
+            className="min-w-[350px] max-w-full top-0 right-0"
+            bodyClassName={`${manrope.className} font-semibold`}
           ></ToastContainer>
           <Script
             id="mux-uploader"

@@ -1,3 +1,3 @@
-export function parseData(data: any[]) {
+export function parseData(data: any[] | any): any {
   return JSON.parse(JSON.stringify(data));
 }

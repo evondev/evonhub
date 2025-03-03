@@ -9,14 +9,18 @@ import { fetchCourses } from "../../actions";
 
 interface GetCoursesProps {
   status: CourseStatus;
+  isUpdateViews?: boolean;
 }
 
-export function getCoursesOptions({ status }: GetCoursesProps) {
+export function getCoursesOptions({
+  status,
+  isUpdateViews = true,
+}: GetCoursesProps) {
   return queryOptions({
     enabled: !!status,
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      const response = await fetchCourses({ status });
+      const response = await fetchCourses({ status, isUpdateViews });
 
       return response;
     },
@@ -24,8 +28,8 @@ export function getCoursesOptions({ status }: GetCoursesProps) {
   });
 }
 
-export function useQueryCourses({ status }: GetCoursesProps) {
-  const options = getCoursesOptions({ status });
+export function useQueryCourses({ status, isUpdateViews }: GetCoursesProps) {
+  const options = getCoursesOptions({ status, isUpdateViews });
 
   return useQuery(options);
 }

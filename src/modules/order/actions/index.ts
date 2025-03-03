@@ -1,5 +1,6 @@
 "use server";
 
+import CouponModel from "@/modules/coupon/models";
 import CourseModel from "@/modules/course/models";
 import UserModel from "@/modules/user/models";
 import { OrderStatus } from "@/shared/constants/order.constants";
@@ -75,6 +76,11 @@ export async function fetchOrders({
         path: "course",
         model: CourseModel,
         select: "title",
+      })
+      .populate({
+        path: "coupon",
+        model: CouponModel,
+        select: "code amount",
       })
       .populate({
         path: "user",

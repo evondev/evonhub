@@ -1,11 +1,17 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useUserContext } from "@/components/user-context";
+import { fetchCoupon } from "@/modules/coupon/actions";
+import { CouponItemData } from "@/modules/coupon/types";
 import { userMutationEnrollCourse } from "@/modules/course/services/data/mutation-enroll";
 import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-enroll-free.data";
 import { IconPlay, IconStudy, IconUsers } from "@/shared/components";
+import { MAXIUM_DISCOUNT } from "@/shared/constants/common.constants";
+import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 export interface CourseWidgetProps {
@@ -32,6 +38,16 @@ export default function CourseWidget({
   const { userInfo } = useUserContext();
   const userId = userInfo?._id.toString() || "";
   const router = useRouter();
+  const [discount, setDiscount] = useState(0);
+  const [couponCode, setCouponCode] = useState("");
+  const [findCoupon, setFindCoupon] = useState<CouponItemData | null>(null);
+  const [message, setMessage] = useState<{
+    error?: string;
+    success?: string;
+  }>({
+    error: "",
+    success: "",
+  });
 
   const handleEnrollFree = async () => {
     const response = await mutationEnrollFree.mutateAsync({
@@ -46,11 +62,17 @@ export default function CourseWidget({
   };
 
   const handleBuyCourse = async () => {
+    if (discount > MAXIUM_DISCOUNT) {
+      toast.error("Mã giảm giá không hợp lệ");
+      return;
+    }
     const response = await mutationEnrollCourse.mutateAsync({
       userId,
       courseId,
       amount: price,
-      total: price,
+      total: price - discount,
+      couponId: findCoupon?._id || "",
+      couponCode,
     });
     if (response?.error) {
       toast.error(response?.error);
@@ -63,6 +85,23 @@ export default function CourseWidget({
     }
   };
 
+  const handleApplyCoupon = async () => {
+    const response = await fetchCoupon({
+      code: couponCode,
+      courseId,
+    });
+
+    if (!response?.amount || response?.amount > MAXIUM_DISCOUNT) {
+      setMessage({ error: "Invalid coupon" });
+      return;
+    }
+    setMessage({
+      success: `Coupon applied: -${formatThoundsand(response.amount)} VNĐ`,
+    });
+    setFindCoupon(response);
+    setDiscount(response.amount);
+  };
+
   return (
     <>
       <div className="bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest">
@@ -73,8 +112,12 @@ export default function CourseWidget({
                 <strong className="text-xl text-primary">Miễn phí</strong>
               ) : (
                 <>
-                  <strong className="text-lg lg:text-xl text-primary">
-                    {formatThoundsand(price)} VNĐ
+                  <strong
+                    className={cn("text-lg lg:text-xl", {
+                      "text-primary": discount > 0,
+                    })}
+                  >
+                    {formatThoundsand(price - discount)} VNĐ
                   </strong>
                   <span className="text-sm line-through text-slate-400">
                     {formatThoundsand(salePrice)} VNĐ
@@ -102,6 +145,7 @@ export default function CourseWidget({
               <span>Có tài liệu kèm theo</span>
             </div>
           </div>
+
           {isFree && !isComingSoon && (
             <button
               type="button"
@@ -112,14 +156,53 @@ export default function CourseWidget({
             </button>
           )}
           {(!isFree || isComingSoon) && (
-            <Button
-              className="h-12 rounded-lg px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
-              onClick={() => !isComingSoon && handleBuyCourse()}
-              disabled={isComingSoon || mutationEnrollCourse.isPending}
-              isLoading={mutationEnrollCourse.isPending}
-            >
-              {isComingSoon ? "Sắp ra mắt" : cta || "Đăng ký ngay"}
-            </Button>
+            <>
+              <div className="flex flex-col gap-1">
+                <div
+                  className={cn(
+                    "flex rounded-lg border borderDarkMode p-2 h-12 overflow-hidden",
+                    {
+                      "!border-red-500": !!message.error?.length,
+                      "!border-green-500": !!message.success?.length,
+                    }
+                  )}
+                >
+                  <Input
+                    placeholder="Nhập mã giảm giá"
+                    className="border-none uppercase !shadow-none !font-bold h-auto"
+                    value={couponCode}
+                    onChange={(e) =>
+                      setCouponCode(e.target.value.toUpperCase())
+                    }
+                  />
+                  <Button
+                    className="text-white bg-grayDarkest h-auto dark:bg-white dark:text-grayDarkest"
+                    onClick={handleApplyCoupon}
+                    disabled={!couponCode}
+                  >
+                    Áp dụng
+                  </Button>
+                </div>
+                {message.error && message.error?.length > 0 && (
+                  <div className="text-sm font-semibold text-red-500">
+                    {message.error}
+                  </div>
+                )}
+                {message.success && message.success?.length > 0 && (
+                  <div className="text-sm font-semibold text-green-500">
+                    {message.success}
+                  </div>
+                )}
+              </div>
+              <Button
+                className="h-12 rounded-lg px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
+                onClick={() => !isComingSoon && handleBuyCourse()}
+                disabled={isComingSoon || mutationEnrollCourse.isPending}
+                isLoading={mutationEnrollCourse.isPending}
+              >
+                {isComingSoon ? "Sắp ra mắt" : cta || "Đăng ký ngay"}
+              </Button>
+            </>
           )}
         </div>
       </div>

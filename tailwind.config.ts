@@ -22,6 +22,7 @@ const config: Config = {
         grayDark: "#1C1F25",
         grayDarker: "#1F2026",
         grayDarkest: "#1A1B1E",
+        textPrimary: "#12131A",
       },
       screens: {
         "2xl": "1600px",

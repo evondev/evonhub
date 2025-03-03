@@ -427,3 +427,14 @@ div[role="dialog"] {
     transform: translate(-50%, -50%) rotate(1turn);
   }
 }
+// Button Loading
+.button-loading {
+  display: grid;
+  grid-template-areas: "stack";
+  & > * {
+    grid-area: stack;
+  }
+  .animate-spin {
+    @apply mx-auto;
+  }
+}

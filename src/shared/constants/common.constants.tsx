@@ -1,6 +1,7 @@
 import {
-  IconComment,
+  IconCoupon,
   IconCourseManage,
+  IconCube,
   IconMoney,
   IconOrder,
   IconPlay,
@@ -29,6 +30,12 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/study",
   },
   {
+    title: "Săn mã giảm giá",
+    icon: <IconCube />,
+    url: "/coupons",
+    isHideMobile: true,
+  },
+  {
     title: "Quản lý khóa học",
     icon: <IconCourseManage></IconCourseManage>,
     url: "/admin/course/manage",
@@ -47,10 +54,17 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/user/manage",
     isAdmin: true,
   },
+  // {
+  //   title: "Quản lý bình luận",
+  //   icon: <IconComment />,
+  //   url: "/admin/comment/manage",
+  //   isAdmin: true,
+  //   isHideMobile: true,
+  // },
   {
-    title: "Quản lý bình luận",
-    icon: <IconComment />,
-    url: "/admin/comment/manage",
+    title: "Quản lý coupon",
+    icon: <IconCoupon />,
+    url: "/admin/coupon/manage",
     isAdmin: true,
     isHideMobile: true,
   },
@@ -64,12 +78,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <IconSparkles></IconSparkles>,
     url: "/coming-soon",
   },
-  // {
-  //   title: "Mã giảm giá",
-  //   icon: <IconMoney></IconMoney>,
-  //   url: "/coupons",
-  //   isHideMobile: true,
-  // },
+
   {
     title: "Profile",
     icon: <IconUser></IconUser>,
@@ -121,3 +130,4 @@ export const commonStatus: Record<
 };
 
 export const ITEMS_PER_PAGE = 10;
+export const MAXIUM_DISCOUNT = 250_000;

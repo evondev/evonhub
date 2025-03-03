@@ -52,6 +52,7 @@ export interface CourseItemData
 }
 export interface FetchCoursesParams {
   status: CourseStatus;
+  isUpdateViews?: boolean;
 }
 
 export interface FetchCoursesManageProps {
@@ -60,4 +61,13 @@ export interface FetchCoursesManageProps {
   page: number;
   isFree?: boolean;
   status?: CourseStatus;
+}
+
+export interface EnrollCourseProps {
+  userId: string;
+  courseId: string;
+  total: number;
+  amount: number;
+  couponId?: string;
+  couponCode?: string;
 }
