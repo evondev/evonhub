@@ -26,7 +26,6 @@ export function CouponItem({ coupon }: CouponItemProps) {
         variant="primary"
         className="w-full text-base font-bold"
         onClick={handleCopyCouponCode}
-        disabled={isCopied}
       >
         {isCopied ? "Copied" : "Copy"}
       </Button>

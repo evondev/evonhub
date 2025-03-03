@@ -173,6 +173,7 @@ export default function CourseWidget({
                   <Button
                     className="text-white bg-grayDarkest h-auto dark:bg-white dark:text-grayDarkest"
                     onClick={handleApplyCoupon}
+                    disabled={!couponCode}
                   >
                     Áp dụng
                   </Button>
