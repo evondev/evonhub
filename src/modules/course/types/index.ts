@@ -62,3 +62,12 @@ export interface FetchCoursesManageProps {
   isFree?: boolean;
   status?: CourseStatus;
 }
+
+export interface EnrollCourseProps {
+  userId: string;
+  courseId: string;
+  total: number;
+  amount: number;
+  couponId?: string;
+  couponCode?: string;
+}

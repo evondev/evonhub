@@ -48,6 +48,10 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
       title: string;
     }[]
   >([]);
+  console.log(
+    " coupon-create.page.tsx:47 - CouponCreatePage - selectedCourses:",
+    selectedCourses
+  );
   const router = useRouter();
 
   const mutationCreateCoupon = userMutationCreateCoupon();

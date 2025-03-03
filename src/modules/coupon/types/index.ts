@@ -32,3 +32,8 @@ export interface CreateCouponProps {
   courses?: string[];
   users?: string[];
 }
+
+export interface FetchCouponProps {
+  code: string;
+  courseId: string;
+}

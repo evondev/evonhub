@@ -14,7 +14,7 @@ const couponSchema = new Schema<CouponModelProps>({
   status: {
     type: String,
     enum: Object.values(CouponStatus),
-    default: CouponStatus.InActive,
+    default: CouponStatus.Active,
   },
   courses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
   createdBy: { type: Schema.Types.ObjectId, ref: "User" },

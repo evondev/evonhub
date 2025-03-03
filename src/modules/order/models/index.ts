@@ -40,6 +40,10 @@ const orderSchema = new Schema<OrderModelProps>({
   couponCode: {
     type: String,
   },
+  coupon: {
+    type: Schema.Types.ObjectId,
+    ref: "Coupon",
+  },
   _destroy: {
     type: Boolean,
     default: false,

@@ -1,3 +1,4 @@
+import { CouponItemData } from "@/modules/coupon/types";
 import { CourseItemData } from "@/modules/course/types";
 import { OrderStatus } from "@/shared/constants/order.constants";
 import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
@@ -14,14 +15,16 @@ export interface OrderModelProps extends Document {
   amount: number;
   discount: number;
   total: number;
+  coupon: Schema.Types.ObjectId;
   couponCode: string;
-  _destroy: boolean;
   plan: MembershipPlan;
+  _destroy: boolean;
 }
 export interface OrderItemData
-  extends Omit<OrderModelProps, "user" | "course"> {
+  extends Omit<OrderModelProps, "user" | "course" | "coupon"> {
   user: UserItemData;
   course?: CourseItemData;
+  coupon?: CouponItemData;
 }
 
 export interface FetchOrdersProps {

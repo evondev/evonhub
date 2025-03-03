@@ -218,6 +218,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
             <TableHead>Thành viên</TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead>Số tiền</TableHead>
+            <TableHead>Coupon</TableHead>
             <TableHead className="text-center">Hành động</TableHead>
           </TableRow>
         </TableHeader>
@@ -320,6 +321,16 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                             {formatThoundsand(order.total)}
                           </p>
                         )}
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {!!order.coupon?.amount && (
+                      <div className="flex flex-col gap-2">
+                        <div className="font-bold">{order.coupon?.code}</div>
+                        <div className="text-green-500 font-bold">
+                          -{formatThoundsand(order.coupon?.amount || 0)}
+                        </div>
                       </div>
                     )}
                   </TableCell>
