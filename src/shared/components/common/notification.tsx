@@ -4,31 +4,32 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useGlobalStore } from "@/store";
+import { useUserContext } from "@/components/user-context";
+import { useQueryNotificationsByUser } from "@/modules/notifications/services/data/query-notifications-by-user";
+import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
+import { invalidateQueriesByKeys } from "@/shared/helpers/query-helper";
 import { getTimestamp } from "@/utils";
+import { IconBell } from "../icons";
 
-const IconNoti = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="w-6 h-6"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5"
-    />
-  </svg>
-);
-const Notification = ({ notifications }: { notifications: any[] }) => {
-  const { currentUser } = useGlobalStore();
+const Notification = () => {
+  const { userInfo } = useUserContext();
+
+  const { data: notifications } = useQueryNotificationsByUser({
+    userId: userInfo?._id || "",
+    enabled: !!userInfo?._id,
+  });
+
+  const handleRefetchNotifications = () => {
+    invalidateQueriesByKeys(QUERY_KEYS.GET_NOTIFICATIONS_BY_USER);
+  };
+
   return (
     <Popover>
-      <PopoverTrigger className="size-10 flex items-center justify-center bg-white rounded-lg dark:bg-grayDarker border border-gray-200 dark:border-opacity-10">
-        {IconNoti}
+      <PopoverTrigger
+        className="size-10 flex items-center justify-center bg-white rounded-lg dark:bg-grayDarker border border-gray-200 dark:border-opacity-10"
+        onClick={handleRefetchNotifications}
+      >
+        <IconBell />
       </PopoverTrigger>
       <PopoverContent
         align="end"
@@ -37,7 +38,7 @@ const Notification = ({ notifications }: { notifications: any[] }) => {
         <div className="p-3 font-bold text-base border-b border-b-gray-200 dark:border-opacity-10">
           Thông báo
         </div>
-        {notifications?.length > 0 && (
+        {notifications && notifications?.length > 0 && (
           <div className="p-3  max-h-[300px] overflow-y-auto">
             {notifications.map((el) => (
               <div

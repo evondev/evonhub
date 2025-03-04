@@ -2,12 +2,12 @@
 import Course from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson, { ILesson } from "@/database/lesson.model";
+import { sendNotification } from "@/modules/notifications/actions";
 import { CreateLessonParams, DeleteLessonParams } from "@/types";
 import { ECourseStatus } from "@/types/enums";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
-import { sendNotification } from "./notification.action";
 
 export async function addLesson(params: CreateLessonParams) {
   try {
@@ -39,7 +39,7 @@ export async function addLesson(params: CreateLessonParams) {
     await sendNotification({
       title: "Thông báo",
       content: `Khóa học <strong>${course.title}</strong> vừa có bài học mới.`,
-      isSendToAll: true,
+      isSendAll: true,
     });
   } catch (error) {
     console.log(error);

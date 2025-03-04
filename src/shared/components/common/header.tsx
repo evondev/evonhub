@@ -6,6 +6,7 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "../../../components/ModeToggle";
+import Notification from "./notification";
 
 export const Header = () => {
   const auth = useAuth();
@@ -51,11 +52,10 @@ export const Header = () => {
         </Link>
       )}
       <div className="flex items-center gap-3">
-        <ModeToggle></ModeToggle>
+        <ModeToggle />
         {auth?.userId ? (
           <div className="flex items-center gap-3">
-            {/* <Notification/> */}
-
+            <Notification />
             <UserButton />
           </div>
         ) : (

@@ -1,5 +1,6 @@
 export { default as IconArrowLeft } from "./IconArrowLeft";
 export { default as IconArrowRight } from "./IconArrowRight";
+export { default as IconBell } from "./IconBell";
 export { default as IconBlog } from "./IconBlog";
 export { default as IconCategory } from "./IconCategory";
 export { default as IconCircleCheck } from "./IconCircleCheck";

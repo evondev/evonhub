@@ -1,8 +1,8 @@
 "use server";
 
-import { sendNotification } from "@/lib/actions/notification.action";
 import CourseModel from "@/modules/course/models";
 import LessonModel from "@/modules/lesson/models";
+import { sendNotification } from "@/modules/notifications/actions";
 import UserModel from "@/modules/user/models";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { UserRole } from "@/shared/constants/user.constants";

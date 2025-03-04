@@ -2,6 +2,7 @@
 import Course from "@/database/course.model";
 import User, { IUser } from "@/database/user.model";
 import CourseModel from "@/modules/course/models";
+import { sendNotification } from "@/modules/notifications/actions";
 import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
 import {
@@ -15,7 +16,6 @@ import { auth } from "@clerk/nextjs/server";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
-import { sendNotification } from "./notification.action";
 import { createOrder } from "./order.action";
 
 export async function createUser(userData: CreateUserParams) {

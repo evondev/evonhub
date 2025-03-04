@@ -11,13 +11,13 @@ import {
 } from "@/types";
 
 import CourseModel from "@/modules/course/models";
+import { sendNotification } from "@/modules/notifications/actions";
 import UserModel from "@/modules/user/models";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
-import { sendNotification } from "./notification.action";
 
 export async function createComment(
   params: CreateCommentParams,
@@ -82,7 +82,7 @@ export async function replyComment(params: ReplyCommentParams) {
       .populate({
         path: "lesson",
         model: Lesson,
-        select: "title slug",
+        select: "title slug _id",
       })
       .populate({
         path: "user",
@@ -110,7 +110,7 @@ export async function replyComment(params: ReplyCommentParams) {
     await newComment.save();
     await sendNotification({
       title: "Hệ thống",
-      content: `<strong class="text-secondary">${findComment.user.username}</strong> vừa trả lời bình luận của bạn tại bài học <a href="/${findComment.course.slug}/lesson?slug=${findComment.lesson.slug}" class="text-primary font-bold">${findComment.lesson.title}</a>`,
+      content: `<strong class="text-secondary">${findComment.user.username}</strong> vừa trả lời bình luận của bạn tại bài học <a href="/${findComment.course.slug}/lesson?id=${findComment.lesson._id}" class="text-primary font-bold">${findComment.lesson.title}</a>`,
       users: [findComment.user._id],
     });
     revalidatePath(params.user.path);
