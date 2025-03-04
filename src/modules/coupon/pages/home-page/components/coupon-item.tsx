@@ -19,12 +19,12 @@ export function CouponItem({ coupon }: CouponItemProps) {
   };
 
   return (
-    <div className="p-3 rounded-lg border borderDarkMode bgDarkMode">
+    <div className="p-3 rounded-lg border borderDarkMode bgDarkMode flex flex-col">
       <Image alt="" src="/coupons.png" width={40} height={40} />
       <h2 className="font-bold mb-5 text-lg lg:text-xl">{coupon.title}</h2>
       <Button
         variant="primary"
-        className="w-full text-base font-bold"
+        className="w-full text-base font-bold mt-auto"
         onClick={handleCopyCouponCode}
       >
         {isCopied ? "Copied" : "Copy"}
