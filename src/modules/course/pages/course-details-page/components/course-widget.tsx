@@ -71,7 +71,7 @@ export default function CourseWidget({
       courseId,
       amount: price,
       total: price - discount,
-      couponId: findCoupon?._id || "",
+      couponId: findCoupon?._id.toString() || "",
       couponCode,
     });
     if (response?.error) {
@@ -80,8 +80,6 @@ export default function CourseWidget({
     }
     if (response?.order?.code) {
       router.push(`/order/${response?.order?.code}`);
-    } else {
-      router.push("/sign-in");
     }
   };
 

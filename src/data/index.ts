@@ -836,7 +836,6 @@ export const usersHTML = [
   "khoahocreactjs@gmail.com",
   "nguyenkhanhvu2001qbh@gmail.com",
   "doantuan178@gmail.com",
-  "doantuan178@gmail.com",
   "truonghoangdung57@gmail.com",
   "ruaruababa3333@gmail.com",
   "huylinnnn@gmail.com",

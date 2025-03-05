@@ -3,6 +3,7 @@
 import { usersHTML, usersJS, usersJSAdvanced, usersReact } from "@/data";
 import CouponModel from "@/modules/coupon/models";
 import OrderModel from "@/modules/order/models";
+import { OrderItemData } from "@/modules/order/types";
 import UserModel from "@/modules/user/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { OrderStatus } from "@/shared/constants/order.constants";
@@ -123,7 +124,13 @@ export async function handleEnrollCourse({
   amount,
   couponCode,
   couponId,
-}: EnrollCourseProps) {
+}: EnrollCourseProps): Promise<
+  | {
+      order?: OrderItemData;
+      error?: string;
+    }
+  | undefined
+> {
   try {
     connectToDatabase();
 
