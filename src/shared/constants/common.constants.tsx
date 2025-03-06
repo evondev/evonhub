@@ -32,6 +32,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     title: "Săn mã giảm giá",
     icon: <IconCube />,
     url: "/coupons",
+    isNew: true,
   },
   {
     title: "Quản lý khóa học",
@@ -70,6 +71,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     title: "Membership",
     icon: <IconMoney />,
     url: "/membership",
+    isHot: true,
   },
   {
     title: "Sắp ra mắt",

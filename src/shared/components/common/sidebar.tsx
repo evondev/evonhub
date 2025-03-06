@@ -48,6 +48,8 @@ export function Sidebar({ role }: SidebarProps) {
                 isExternal={link.isExternal}
                 link={link}
                 isActiveLink={isActiveLink}
+                isNew={link.isNew}
+                isHot={link.isHot}
               ></MenuLink>
             </li>
           );

@@ -7,4 +7,6 @@ export type MenuLinkItemProps = {
   isHideMobile?: boolean;
   isExpert?: boolean;
   isExternal?: boolean;
+  isNew?: boolean;
+  isHot?: boolean;
 };
