@@ -36,7 +36,8 @@ export default function CourseWidget({
   const mutationEnrollFree = userMutationEnrollFree();
   const mutationEnrollCourse = userMutationEnrollCourse();
   const { userInfo } = useUserContext();
-  const userId = userInfo?._id.toString() || "";
+  const userId = userInfo?._id || "";
+
   const router = useRouter();
   const [discount, setDiscount] = useState(0);
   const [couponCode, setCouponCode] = useState("");
@@ -71,9 +72,10 @@ export default function CourseWidget({
       courseId,
       amount: price,
       total: price - discount,
-      couponId: findCoupon?._id.toString() || "",
+      couponId: findCoupon?._id || "",
       couponCode,
     });
+
     if (response?.error) {
       toast.error(response?.error);
       return;

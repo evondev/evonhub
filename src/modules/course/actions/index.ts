@@ -133,6 +133,11 @@ export async function handleEnrollCourse({
 > {
   try {
     connectToDatabase();
+    if (!userId) {
+      return {
+        error: "Không tìm thấy tài khoản!",
+      };
+    }
 
     const findUser = await UserModel.findById(userId);
 
@@ -227,16 +232,28 @@ export async function handleEnrollCourse({
         error: `Bạn đang có một đơn hàng đang chờ xử lý. Truy cập vào https://evonhub.dev/order/${existOrder.code} để xem`,
       };
     }
-    const newOrder = new OrderModel({
+    const orderObject: {
+      user: string;
+      course: string;
+      total: number;
+      amount: number;
+      code: string;
+      status: OrderStatus;
+      couponCode?: string;
+      coupon?: string;
+    } = {
       user: userId,
       course: courseId,
       total,
       amount,
       code: `DH${new Date().getTime().toString().slice(-8)}`,
       status,
-      couponCode,
-      coupon: couponId,
-    });
+    };
+    if (couponCode && couponId) {
+      orderObject.couponCode = couponCode;
+      orderObject.coupon = couponId;
+    }
+    const newOrder = new OrderModel(orderObject);
     await newOrder.save();
     return {
       order: newOrder,
