@@ -20,7 +20,6 @@ import { cn } from "@/lib/utils";
 import { UserRole } from "@/shared/constants/user.constants";
 import { useGlobalStore } from "@/store";
 import { formatThoundsand } from "@/utils";
-import Image from "next/image";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import LabelStatus from "../common/LabelStatus";
@@ -78,7 +77,7 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <Image
+                    <img
                       src={course.image}
                       alt={course.title}
                       width={200}

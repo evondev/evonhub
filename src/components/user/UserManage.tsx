@@ -21,7 +21,6 @@ import { cn } from "@/lib/utils";
 import { EUserStatus } from "@/types/enums";
 import { formUrlQuery } from "@/utils";
 import { debounce } from "lodash";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -177,7 +176,7 @@ const UserManage = ({
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <Image
+                  <img
                     src={item.avatar}
                     alt={item.username}
                     width={64}

@@ -109,14 +109,14 @@ export function CourseDetailsPageContainer(
                   <Tooltip key={index}>
                     <TooltipTrigger>
                       <div className="rounded-full p-1 text-sm font-medium flex items-center gap-2 border borderDarkMode bgDarkMode">
-                        <Image
+                        <img
                           width={40}
                           height={40}
                           src={el.user.avatar}
                           alt=""
                           className="border borderDarkMode size-8 p-0.5 object-cover rounded-full flex-shrink-0"
                         />
-                        {el.content.slice(0, 40)}...
+                        {el.content.slice(0, 120)}...
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="max-w-sm text-xs">
