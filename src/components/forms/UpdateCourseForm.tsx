@@ -29,7 +29,6 @@ import { ECourseInfo } from "@/types/enums";
 import { updateCourseSchema } from "@/utils/formSchema";
 import { UploadDropzone } from "@/utils/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -380,7 +379,7 @@ export default function UpdateCourseForm({
                     <>
                       {image && (
                         <div className="relative group">
-                          <Image
+                          <img
                             src={image}
                             alt="Course Image"
                             width={800}
