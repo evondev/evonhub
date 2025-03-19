@@ -3,7 +3,6 @@ import {
   addCourseToUser,
   removeCourseFromUser,
 } from "@/lib/actions/user.action";
-import Image from "next/image";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
@@ -97,13 +96,12 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
   return (
     <div className="l-container">
       <div className="mb-5 flex flex-col gap-3 pb-5 border-b border-dashed border-gray-400 dark:border-grayDarker">
-        <Image
+        <img
           src={user.avatar}
           alt={user.username}
           width={100}
           height={100}
           className="rounded-full"
-          priority
         />
         <div className="flex flex-col gap-1">
           <h1 className="font-bold text-xl">{user.username}</h1>

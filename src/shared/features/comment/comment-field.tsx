@@ -3,7 +3,6 @@ import { cn, timeAgo } from "@/lib/utils";
 import { CommentItemData } from "@/modules/comment/types";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { ObjectId } from "mongoose";
-import Image from "next/image";
 import { useEffect } from "react";
 import CommentReply from "./comment-reply";
 
@@ -56,7 +55,7 @@ const CommentField = ({
         }}
       >
         <div className="borderDarkMode bgDarkMode size-10 shrink-0 rounded-full border">
-          <Image
+          <img
             alt={comment.user?.name}
             className="size-full rounded-full object-cover"
             height={40}

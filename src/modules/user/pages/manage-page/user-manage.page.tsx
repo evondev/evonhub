@@ -16,7 +16,6 @@ import { cn } from "@/lib/utils";
 import { Heading, IconArrowLeft, IconArrowRight } from "@/shared/components";
 import { LabelStatus, PaginationControl } from "@/shared/components/common";
 import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
-import Image from "next/image";
 import Link from "next/link";
 import {
   parseAsBoolean,
@@ -98,7 +97,7 @@ export function UserManagePage(_props: UserManagePageProps) {
                   href={`/admin/user/update?email=${item.email}`}
                   className="flex items-center gap-3"
                 >
-                  <Image
+                  <img
                     src={item.avatar}
                     alt={item.username}
                     width={64}
