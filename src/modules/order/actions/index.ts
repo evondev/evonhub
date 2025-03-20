@@ -124,6 +124,7 @@ export async function handleUpdateOrder({
       if (plan && plan !== MembershipPlan.None) {
         findUser.plan = plan;
         findUser.isMembership = true;
+        findUser.planStartDate = dayjs().toDate();
         switch (plan) {
           case MembershipPlan.Personal:
             findUser.planEndDate = dayjs().add(1, "month").toDate();
@@ -162,6 +163,7 @@ export async function handleUpdateOrder({
         findUser.plan = MembershipPlan.None;
         findUser.isMembership = false;
         findUser.planEndDate = undefined;
+        findUser.planStartDate = undefined;
         await findUser.save();
       } else if (!plan || plan === MembershipPlan.None) {
         findUser.courses = findUser.courses.filter(
