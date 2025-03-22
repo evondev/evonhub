@@ -2625,7 +2625,7 @@ export const usersJSAdvanced = [
   "raiden592001@gmail.com",
 ];
 export const usersReact = [
-  "trananhtuan400@gmail.com",
+  "maitheson2942002@gmail.com",
   "quocbao.qmt@gmail.com",
   "nguynkhanh05@gmail.com",
   "phamhoan879@gmail.com",
