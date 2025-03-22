@@ -192,7 +192,7 @@ export async function handleEnrollCourse({
       amount = 0;
     }
     if (
-      ["khoa-hoc-reactjs-co-ban", "khoa-hoc-reactjs-remake"].includes(
+      ["khoa-hoc-reactjs-co-ban", "khoa-hoc-reactjs-chuyen-sau"].includes(
         findCourse.slug
       ) &&
       usersReact.includes(findUser.email)
