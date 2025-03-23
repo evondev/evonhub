@@ -12,7 +12,19 @@ export interface RatingModelProps extends Document {
   status: RatingStatus;
 }
 export interface RatingItemData
-  extends Omit<RatingModelProps, "courses" | "user"> {
-  courses: CourseItemData[];
+  extends Omit<RatingModelProps, "course" | "user"> {
+  _id: string;
+  course: CourseItemData;
   user: UserItemData;
+}
+
+export interface FetchRatingManageProps {
+  limit: number;
+  page: number;
+  status?: RatingStatus;
+}
+
+export interface HandleRatingStatusProps {
+  ratingId: string;
+  status: RatingStatus;
 }

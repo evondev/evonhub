@@ -367,18 +367,18 @@ const CourseContent = ({
                         <div className="flex items-center gap-2 font-bold">
                           <IconCube />
                           <p>{lecture.title}</p>
-                          <button
-                            className="size-5 flex items-center justify-center hover:opacity-50"
+                          <span
+                            className="size-5 flex items-center justify-center hover:opacity-50 cursor-pointer"
                             onClick={() => setEditLectureIndex(lecture._id)}
                           >
                             <IconEdit />
-                          </button>
-                          <button
-                            className="size-5 hover:opacity-50 flex items-center justify-center"
+                          </span>
+                          <span
+                            className="size-5 hover:opacity-50 flex items-center justify-center cursor-pointer"
                             onClick={() => handleDeleteLecture(lecture._id)}
                           >
                             <IconDelete />
-                          </button>
+                          </span>
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="bg-transparent mt-5">
