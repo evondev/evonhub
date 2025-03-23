@@ -1,5 +1,5 @@
 import {
-  IconCoupon,
+  IconComment,
   IconCourseManage,
   IconCube,
   IconMoney,
@@ -63,12 +63,19 @@ export const menuLinks: MenuLinkItemProps[] = [
     isHideMobile: true,
   },
   {
-    title: "Quản lý coupon",
-    icon: <IconCoupon />,
-    url: "/admin/coupon/manage",
+    title: "Quản lý bình luận",
+    icon: <IconComment />,
+    url: "/admin/comment/manage",
     isAdmin: true,
     isHideMobile: true,
   },
+  // {
+  //   title: "Quản lý coupon",
+  //   icon: <IconCoupon />,
+  //   url: "/admin/coupon/manage",
+  //   isAdmin: true,
+  //   isHideMobile: true,
+  // },
   {
     title: "Membership",
     icon: <IconMoney />,
