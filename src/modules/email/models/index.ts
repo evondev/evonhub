@@ -15,6 +15,7 @@ const emailSchema = new Schema<EmailModelProps>({
     required: true,
   },
   status: {
+    type: String,
     enum: Object.values(EmailStatus),
     default: EmailStatus.Success,
   },

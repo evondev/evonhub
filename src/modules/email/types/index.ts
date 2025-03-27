@@ -1,3 +1,4 @@
+import { EmailModelProps } from "@/shared/types/email.types";
 import { z } from "zod";
 import { sendEmailSchema } from "../schemas";
 
@@ -12,3 +13,4 @@ export interface FetchEmailsProps {
   limit: number;
   page: number;
 }
+export interface EmailItemData extends EmailModelProps {}

@@ -7,7 +7,11 @@ import { SendEmailCommand, sesClient } from "@/shared/libs/aws-ses";
 import { EmailStatus } from "@/shared/types/email.types";
 import { FilterQuery } from "mongoose";
 import EmailModel from "../models";
-import { FetchEmailsProps, HandleSendEmailsProps } from "../types";
+import {
+  EmailItemData,
+  FetchEmailsProps,
+  HandleSendEmailsProps,
+} from "../types";
 
 export async function handleSendEmails({
   to,
@@ -60,7 +64,7 @@ export async function fetchEmails({
   search,
   page = 1,
   limit = ITEMS_PER_PAGE,
-}: FetchEmailsProps) {
+}: FetchEmailsProps): Promise<EmailItemData[] | undefined> {
   try {
     connectToDatabase();
     const query: FilterQuery<typeof EmailModel> = {};
@@ -75,6 +79,7 @@ export async function fetchEmails({
     const emails = await EmailModel.find(query).skip(skip).limit(limit).sort({
       createdAt: -1,
     });
+
     return parseData(emails);
   } catch (error) {
     console.error(error);
