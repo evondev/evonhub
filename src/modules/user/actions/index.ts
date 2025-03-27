@@ -178,3 +178,24 @@ export async function fetchUsers({
     console.log(error);
   }
 }
+
+export async function fetchUsersByCourseId({
+  courseId,
+  isGetAll,
+}: {
+  courseId: string;
+  isGetAll?: boolean;
+}): Promise<UserItemData[] | undefined> {
+  try {
+    connectToDatabase();
+    const query: FilterQuery<typeof UserModel> = {};
+    if (!isGetAll) {
+      query.courses = courseId;
+    }
+    const users = await UserModel.find(query);
+
+    return parseData(users);
+  } catch (error) {
+    console.log(error);
+  }
+}
