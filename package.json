@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.772.0",
     "@clerk/clerk-sdk-node": "^5.1.6",
     "@clerk/nextjs": "^5.7.5",
     "@hookform/resolvers": "^3.3.4",
@@ -39,6 +40,8 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "i": "^0.3.7",
     "immer": "^10.0.4",
     "lodash": "^4.17.21",

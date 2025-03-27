@@ -14,6 +14,7 @@ export { default as IconDashboard } from "./IconDashboard";
 export { default as IconDelete } from "./IconDelete";
 export { default as IconDrag } from "./IconDrag";
 export { default as IconEdit } from "./IconEdit";
+export { default as IconEmail } from "./IconEmail";
 export { default as IconEye } from "./IconEye";
 export { default as IconFavorite } from "./IconFavorite";
 export { default as IconFullScreen } from "./IconFullScreen";
