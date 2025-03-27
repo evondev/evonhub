@@ -1,4 +1,4 @@
-import { EmailModelProps } from "@/shared/types/email.types";
+import { EmailModelProps, EmailStatus } from "@/shared/types/email.types";
 import mongoose, { models, Schema } from "mongoose";
 
 const emailSchema = new Schema<EmailModelProps>({
@@ -13,6 +13,10 @@ const emailSchema = new Schema<EmailModelProps>({
   recipients: {
     type: [String],
     required: true,
+  },
+  status: {
+    enum: Object.values(EmailStatus),
+    default: EmailStatus.Success,
   },
   createdAt: {
     type: Date,

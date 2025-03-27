@@ -7,3 +7,8 @@ export interface HandleSendEmailsProps {
   title: string;
   content: string;
 }
+export interface FetchEmailsProps {
+  search?: string;
+  limit: number;
+  page: number;
+}

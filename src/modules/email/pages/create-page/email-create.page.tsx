@@ -44,9 +44,7 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
   });
   const editorRef = useRef<any>(null);
   const { theme } = useTheme();
-  const [emails, setEmails] = useState<string[]>([]);
   const [selectedCourseId, setSelectedCourseId] = useState("");
-
   const [sendOptions, setSendOptions] = useState({
     test: false,
     all: false,
@@ -75,7 +73,9 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
     });
     if (response?.$metadata?.httpStatusCode === 200) {
       toast.success("Gửi email thành công");
+      return;
     }
+    toast.error("Gửi email thất bại");
   }
 
   async function onSubmit(values: SendEmailFormValues) {
@@ -87,11 +87,12 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
         });
         return;
       }
-      if (sendOptions.all) {
-        console.log("Send all email");
-        return;
-      }
       if (users?.length === 0) return;
+      await handleSendEmails({
+        to: users?.map((user) => user.email) || [],
+        values,
+      });
+      return;
     } catch (error) {
       console.error(error);
     } finally {
