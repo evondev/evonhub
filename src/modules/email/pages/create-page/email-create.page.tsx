@@ -49,6 +49,7 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
     test: false,
     all: false,
   });
+
   const { data: courses } = useQueryCourses({
     status: CourseStatus.Approved,
     isUpdateViews: false,
@@ -57,6 +58,7 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
     courseId: selectedCourseId,
     isGetAll: sendOptions.all,
   });
+
   const mutationSendEmails = userMutationSendEmails();
 
   async function handleSendEmails({
@@ -71,7 +73,8 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
       title: values.title,
       content: values.content,
     });
-    if (response?.$metadata?.httpStatusCode === 200) {
+
+    if (response) {
       toast.success("Gửi email thành công");
       return;
     }
@@ -95,8 +98,6 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
       return;
     } catch (error) {
       console.error(error);
-    } finally {
-      form.reset();
     }
   }
 
@@ -138,7 +139,7 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
                         (editorRef.current = editor).setContent("");
                       }}
                       value={field.value}
-                      {...editorOptions(field, theme)}
+                      {...editorOptions(field, theme, 600)}
                     />
                   </FormControl>
                   <FormMessage className="text-red-400" />

@@ -1,6 +1,10 @@
 "use server";
 
-import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
+import {
+  ITEMS_PER_PAGE,
+  MAX_RECIPIENTS,
+  RATE_LIMIT,
+} from "@/shared/constants/common.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { SendEmailCommand, sesClient } from "@/shared/libs/aws-ses";
@@ -13,39 +17,52 @@ import {
   HandleSendEmailsProps,
 } from "../types";
 
+async function sendEmailBatch(
+  emails: string[],
+  title: string,
+  content: string
+) {
+  const params = {
+    Source: process.env.EMAIL_FROM,
+    Destination: {
+      ToAddresses: emails,
+    },
+    Message: {
+      Subject: {
+        Data: title,
+        Charset: "UTF-8",
+      },
+      Body: {
+        Html: {
+          Data: content,
+          Charset: "UTF-8",
+        },
+      },
+    },
+  };
+
+  const command = new SendEmailCommand(params);
+  return sesClient.send(command);
+}
+
 export async function handleSendEmails({
   to,
   title,
   content,
-}: HandleSendEmailsProps) {
+}: HandleSendEmailsProps): Promise<boolean | undefined> {
   try {
     connectToDatabase();
+    let emailStatus = EmailStatus.Failed;
 
-    const params = {
-      Source: process.env.EMAIL_FROM,
-      Destination: {
-        ToAddresses: to,
-      },
-      Message: {
-        Subject: {
-          Data: title,
-          Charset: "UTF-8",
-        },
-        Body: {
-          Html: {
-            Data: content,
-            Charset: "UTF-8",
-          },
-        },
-      },
-    };
+    for (let i = 0; i < to.length; i += MAX_RECIPIENTS) {
+      const batch = to.slice(i, i + MAX_RECIPIENTS); // Lấy tối đa 50 email
+      await sendEmailBatch(batch, title, content);
 
-    const command = new SendEmailCommand(params);
-    const response = await sesClient.send(command);
-    let emailStatus = EmailStatus.Success;
-    if (response?.$metadata?.httpStatusCode !== 200) {
-      emailStatus = EmailStatus.Failed;
+      const delayMs = Math.ceil(batch.length / RATE_LIMIT) * 1000;
+      await new Promise((resolve) => setTimeout(resolve, delayMs)); // Delay giữa các batch
     }
+
+    emailStatus = EmailStatus.Success;
 
     await EmailModel.create({
       title,
@@ -54,7 +71,7 @@ export async function handleSendEmails({
       status: emailStatus,
     });
 
-    return response;
+    return true;
   } catch (error) {
     console.error(error);
   }

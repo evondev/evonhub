@@ -16,14 +16,14 @@ export function getUsersByCourseOptions({
   isGetAll,
 }: GetUserByCourseProps) {
   return queryOptions({
-    enabled: !!courseId,
+    enabled: !!courseId || !!isGetAll,
     placeholderData: keepPreviousData,
     queryFn: async () => {
       const response = await fetchUsersByCourseId({ courseId, isGetAll });
 
       return response;
     },
-    queryKey: [QUERY_KEYS.GET_USERS_BY_COURSE, courseId],
+    queryKey: [QUERY_KEYS.GET_USERS_BY_COURSE, courseId, isGetAll],
   });
 }
 

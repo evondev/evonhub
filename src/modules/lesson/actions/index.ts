@@ -81,7 +81,7 @@ export async function fetchLessonDetailsOutline(
         },
       });
     if (!lectureList) return [];
-    return JSON.parse(JSON.stringify(lectureList));
+    return parseData(lectureList);
   } catch (error) {}
 }
 

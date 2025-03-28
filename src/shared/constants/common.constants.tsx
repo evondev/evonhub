@@ -147,3 +147,5 @@ export const commonStatus: Record<
 
 export const ITEMS_PER_PAGE = 10;
 export const MAXIUM_DISCOUNT = 500_000;
+export const MAX_RECIPIENTS = 40; // Giới hạn SES
+export const RATE_LIMIT = 14; //

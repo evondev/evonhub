@@ -83,12 +83,13 @@ export async function fetchUserById({
 }): Promise<UserInfoData | null | undefined> {
   try {
     connectToDatabase();
+    if (!userId) return null;
 
     const findUser = await UserModel.findOne({ clerkId: userId });
 
     if (!findUser?._id) return null;
 
-    return JSON.parse(JSON.stringify(findUser));
+    return parseData(findUser);
   } catch (error) {
     console.log(error);
   }

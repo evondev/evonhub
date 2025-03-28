@@ -76,7 +76,7 @@ export async function fetchCourseBySlug(
     );
     if (!course) return undefined;
 
-    return JSON.parse(JSON.stringify(course));
+    return parseData(course);
   } catch (error) {
     console.log("error:", error);
   }
