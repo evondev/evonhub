@@ -76,7 +76,6 @@ export function EmailManagePage(_props: EmailManagePageProps) {
         <TableHeader>
           <TableRow>
             <TableHead>Tiêu đề</TableHead>
-            <TableHead>Nội dung</TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead>Đã gửi</TableHead>
           </TableRow>
@@ -87,14 +86,6 @@ export function EmailManagePage(_props: EmailManagePageProps) {
             emails.map((item) => (
               <TableRow key={item.title}>
                 <TableCell>{item.title}</TableCell>
-                <TableCell>
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: item.content,
-                    }}
-                    className="line-clamp-5 max-w-sm"
-                  ></div>
-                </TableCell>
                 <TableCell>
                   <LabelStatus className="capitalize">
                     {item.status}

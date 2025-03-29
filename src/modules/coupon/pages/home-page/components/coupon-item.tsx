@@ -1,34 +1,34 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { CouponItemData } from "@/modules/coupon/types";
-import Image from "next/image";
-import { useState } from "react";
+import { IconCopy } from "@/shared/components";
+import { cn } from "@/shared/utils";
+import { toast } from "react-toastify";
 
 export interface CouponItemProps {
   coupon: CouponItemData;
+  color: string;
 }
 
-export function CouponItem({ coupon }: CouponItemProps) {
-  const [isCopied, setIsCopied] = useState(false);
+export function CouponItem({ coupon, color }: CouponItemProps) {
   const handleCopyCouponCode = () => {
-    setIsCopied(true);
     navigator.clipboard.writeText(coupon.code);
-    setTimeout(() => {
-      setIsCopied(false);
-    }, 500);
+    toast.success("Sao chép mã giảm giá thành công");
   };
 
   return (
-    <div className="p-3 rounded-lg border borderDarkMode bgDarkMode flex flex-col">
-      <Image alt="" src="/coupons.png" width={40} height={40} />
-      <h2 className="font-bold mb-5 text-lg lg:text-xl">{coupon.title}</h2>
-      <Button
-        variant="primary"
-        className="w-full text-base font-bold mt-auto"
+    <div className="p-3 rounded-lg border borderDarkMode bgDarkMode flex justify-between gap-3 items-center relative overflow-hidden pl-6 group cursor-pointer">
+      <div
+        className={cn("w-3 absolute top-0 left-0 h-full")}
+        style={{ backgroundColor: color }}
+      ></div>
+      <h2 className="font-bold text-sm lg:text-base">{coupon.title}</h2>
+      <button
+        type="button"
+        className={`size-10 rounded-full bgDarkMode border borderDarkMode flex items-center shrink-0 justify-center hover:bg-gray-100 dark:hover:bg-opacity-10`}
         onClick={handleCopyCouponCode}
       >
-        {isCopied ? "Copied" : "Copy"}
-      </Button>
+        <IconCopy />
+      </button>
     </div>
   );
 }

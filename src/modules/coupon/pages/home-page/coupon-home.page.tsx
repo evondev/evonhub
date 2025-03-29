@@ -9,17 +9,19 @@ export interface CouponHomePageProps {}
 export function CouponHomePage(_props: CouponHomePageProps) {
   const { data: coupons } = useQueryCoupons({});
 
-  console.log(" coupon-home.page.tsx:12 - CouponHomePage - coupons:", coupons);
-
+  const colors = ["#ffb86c", "#ff79c6", "#50fa7b", "#bd93f9", "#8be9fd"];
   return (
     <>
       <div className="flex items-center justify-between mb-10">
         <Heading className="mb-0">Săn mã giảm giá</Heading>
       </div>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-8">
-        {coupons?.map((coupon) => (
-          <CouponItem key={coupon._id} coupon={coupon} />
-        ))}
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5">
+        {coupons?.map((coupon) => {
+          const randomColor = colors[Math.floor(Math.random() * colors.length)];
+          return (
+            <CouponItem color={randomColor} key={coupon._id} coupon={coupon} />
+          );
+        })}
       </div>
     </>
   );
