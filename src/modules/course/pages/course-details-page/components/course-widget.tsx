@@ -8,6 +8,7 @@ import { userMutationEnrollCourse } from "@/modules/course/services/data/mutatio
 import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-enroll-free.data";
 import { IconPlay, IconStudy, IconUsers } from "@/shared/components";
 import { MAXIUM_DISCOUNT } from "@/shared/constants/common.constants";
+import { CouponType } from "@/shared/constants/coupon.constants";
 import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
 import { useRouter } from "next/navigation";
@@ -99,7 +100,11 @@ export default function CourseWidget({
       success: `Coupon applied: -${formatThoundsand(response.amount)} VNĐ`,
     });
     setFindCoupon(response);
-    setDiscount(response.amount);
+    if (response?.type === CouponType.Percentage) {
+      setDiscount((price * response.amount) / 100);
+    } else {
+      setDiscount(response.amount);
+    }
   };
 
   return (

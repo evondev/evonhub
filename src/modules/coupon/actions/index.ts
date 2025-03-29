@@ -1,5 +1,6 @@
 "use server";
 
+import CourseModel from "@/modules/course/models";
 import UserModel from "@/modules/user/models";
 import { CouponStatus } from "@/shared/constants/coupon.constants";
 import { UserRole } from "@/shared/constants/user.constants";
@@ -17,6 +18,8 @@ export async function handleCreateCoupon({
   startDate,
   endDate,
   amount,
+  status,
+  type,
 }: CreateCouponProps): Promise<boolean | undefined> {
   try {
     connectToDatabase();
@@ -43,6 +46,8 @@ export async function handleCreateCoupon({
       endDate,
       createdBy: findUser._id,
       amount,
+      status,
+      type,
     });
     return true;
   } catch (error) {
@@ -55,7 +60,18 @@ export async function fetchCoupons(): Promise<CouponItemData[] | undefined> {
     connectToDatabase();
     const coupons = await CouponModel.find({
       status: CouponStatus.Active,
-    });
+    })
+      .populate({
+        model: CourseModel,
+        path: "courses",
+        select: "title slug",
+      })
+      .populate({
+        model: UserModel,
+        path: "createdBy",
+        select: "avatar username",
+      })
+      .sort({ createdAt: -1 });
     return parseData(coupons);
   } catch (error) {
     console.log(error);

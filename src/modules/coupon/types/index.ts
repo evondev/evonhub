@@ -1,4 +1,6 @@
-import { CouponStatus } from "@/shared/constants/coupon.constants";
+import { CouponStatus, CouponType } from "@/shared/constants/coupon.constants";
+import { CourseItemData } from "@/shared/types/course.types";
+import { UserItemData } from "@/shared/types/user.types";
 import { Document, Schema } from "mongoose";
 import { z } from "zod";
 import { createCouponSchema } from "../schemas";
@@ -17,10 +19,15 @@ export interface CouponModelProps extends Document {
   courses: Schema.Types.ObjectId[];
   users: Schema.Types.ObjectId[];
   createdBy: Schema.Types.ObjectId;
+  type: CouponType;
 }
 
 export type CreateCouponFormValues = z.infer<typeof createCouponSchema>;
-export interface CouponItemData extends CouponModelProps {}
+export interface CouponItemData
+  extends Omit<CouponModelProps, "courses" | "createdBy"> {
+  courses: CourseItemData[];
+  createdBy: UserItemData;
+}
 
 export interface CreateCouponProps {
   title: string;
@@ -31,6 +38,8 @@ export interface CreateCouponProps {
   endDate?: Date;
   courses?: string[];
   users?: string[];
+  type: CouponType;
+  status: CouponStatus;
 }
 
 export interface FetchCouponProps {

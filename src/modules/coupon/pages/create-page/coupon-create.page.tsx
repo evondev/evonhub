@@ -21,11 +21,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { useQueryCourses } from "@/modules/course/services";
 import { CourseItemData } from "@/modules/course/types";
 import { Heading } from "@/shared/components";
 import { Tag } from "@/shared/components/tag";
+import { CouponStatus, CouponType } from "@/shared/constants/coupon.constants";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
@@ -51,6 +53,7 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
   const router = useRouter();
 
   const mutationCreateCoupon = userMutationCreateCoupon();
+  const [isPercentage, setIsPercentage] = useState(false);
 
   const [date, setDate] = useState<{
     startDate: Date;
@@ -76,6 +79,8 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
       startDate: date.startDate,
       endDate: date.endDate,
       courses: selectedCourses.map((course) => course.courseId),
+      type: isPercentage ? CouponType.Percentage : CouponType.Fixed,
+      status: values.status,
     });
 
     if (!response) {
@@ -257,44 +262,85 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
                 </FormItem>
               )}
             />
-            <div className="flex flex-col gap-5">
-              <FormField
-                control={form.control}
-                name="courses"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild className="w-full">
-                          <Button variant="outline">Chọn khóa học</Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="w-full">
-                          {courses?.map((course) => (
-                            <DropdownMenuCheckboxItem
-                              key={course._id}
-                              checked={selectedCourses.some(
-                                (item) => item.courseId === course._id
-                              )}
-                              onCheckedChange={(checked) =>
-                                handleSelectCourse(checked, course)
-                              }
-                            >
-                              {course.title}
-                            </DropdownMenuCheckboxItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex flex-wrap gap-3">
-                {selectedCourses.length > 0 &&
-                  selectedCourses.map((course) => (
-                    <Tag key={course.title}>{course.title}</Tag>
-                  ))}
-              </div>
+
+            <FormItem className="flex items-center gap-2">
+              <FormLabel>Coupon phần trăm</FormLabel>
+              <FormControl>
+                <Switch
+                  checked={isPercentage}
+                  onCheckedChange={(checked) => {
+                    setIsPercentage(checked);
+                    form.setValue(
+                      "type",
+                      checked ? CouponType.Percentage : CouponType.Fixed
+                    );
+                  }}
+                  className="!mt-0"
+                />
+              </FormControl>
+            </FormItem>
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem className="flex items-center gap-2">
+                  <FormLabel>Trạng thái</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value === CouponStatus.Active}
+                      onCheckedChange={(checked) => {
+                        field.onChange(
+                          checked ? CouponStatus.Active : CouponStatus.InActive
+                        );
+                      }}
+                      className="!mt-0"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="flex flex-col gap-5">
+            <FormField
+              control={form.control}
+              name="courses"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild className="w-full">
+                        <Button variant="outline">Chọn khóa học</Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="start"
+                        className="w-full h-[220px] overflow-y-auto"
+                      >
+                        {courses?.map((course) => (
+                          <DropdownMenuCheckboxItem
+                            key={course._id}
+                            checked={selectedCourses.some(
+                              (item) => item.courseId === course._id
+                            )}
+                            onCheckedChange={(checked) =>
+                              handleSelectCourse(checked, course)
+                            }
+                          >
+                            {course.title}
+                          </DropdownMenuCheckboxItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex flex-wrap gap-3">
+              {selectedCourses.length > 0 &&
+                selectedCourses.map((course) => (
+                  <Tag key={course.title}>{course.title}</Tag>
+                ))}
             </div>
           </div>
           <Button

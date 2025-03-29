@@ -5,3 +5,6 @@ export * from "./mobile-navigation";
 export * from "./pagination-control";
 export * from "./progress-bar";
 export * from "./sidebar";
+export * from "./status-badge";
+export * from "./table-action";
+export * from "./table-actions";

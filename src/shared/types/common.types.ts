@@ -10,3 +10,9 @@ export type MenuLinkItemProps = {
   isNew?: boolean;
   isHot?: boolean;
 };
+export type StatusBadgeVariant =
+  | "success"
+  | "error"
+  | "warning"
+  | "info"
+  | "default";

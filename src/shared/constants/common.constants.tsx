@@ -11,7 +11,7 @@ import {
   IconUser,
   IconUsers,
 } from "../components";
-import { MenuLinkItemProps } from "../types";
+import { MenuLinkItemProps, StatusBadgeVariant } from "../types";
 
 export enum CommonStatus {
   Pending = "pending",
@@ -142,6 +142,23 @@ export const commonStatus: Record<
   [CommonStatus.Rejected]: {
     text: "Bị từ chối",
     className: "bg-red-500 bg-opacity-10 text-red-500",
+  },
+};
+
+export const commonStatuses: Record<
+  string,
+  {
+    variant: StatusBadgeVariant;
+    title: string;
+  }
+> = {
+  active: {
+    variant: "success",
+    title: "Hoạt động",
+  },
+  inactive: {
+    variant: "warning",
+    title: "Chờ duyệt",
   },
 };
 

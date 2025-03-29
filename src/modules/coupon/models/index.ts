@@ -1,4 +1,4 @@
-import { CouponStatus } from "@/shared/constants/coupon.constants";
+import { CouponStatus, CouponType } from "@/shared/constants/coupon.constants";
 import { model, models, Schema } from "mongoose";
 import { CouponModelProps } from "../types";
 
@@ -19,6 +19,11 @@ const couponSchema = new Schema<CouponModelProps>({
   courses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
   createdBy: { type: Schema.Types.ObjectId, ref: "User" },
   users: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  type: {
+    type: String,
+    enum: Object.values(CouponType),
+    default: CouponType.Fixed,
+  },
 });
 
 const CouponModel = models.Coupon || model("Coupon", couponSchema);
