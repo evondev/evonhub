@@ -13,6 +13,7 @@ import {
   TableAction,
   TableActions,
 } from "@/shared/components/common";
+import { Tag } from "@/shared/components/tag";
 import { formatDate } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,6 +37,7 @@ export function CouponManagePage(_props: CouponManagePageProps) {
       <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
+            <TableHead>Tiêu đề</TableHead>
             <TableHead>Mã giảm giá</TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead>Áp dụng</TableHead>
@@ -48,6 +50,9 @@ export function CouponManagePage(_props: CouponManagePageProps) {
           {coupons?.map((coupon) => (
             <TableRow key={coupon.id}>
               <TableCell>
+                <strong>{coupon.title}</strong>
+              </TableCell>
+              <TableCell>
                 <strong>{coupon.code}</strong>
               </TableCell>
               <TableCell>
@@ -58,13 +63,15 @@ export function CouponManagePage(_props: CouponManagePageProps) {
                 )}
               </TableCell>
               <TableCell className="font-medium">
-                {coupon.courses.map((course) => {
-                  return (
-                    <div key={course.slug} className="w-[300px]">
-                      {course.title}
-                    </div>
-                  );
-                })}
+                <div className="flex gap-3 flex-wrap max-w-xl">
+                  {coupon.courses.map((course) => {
+                    return (
+                      <Tag key={course.slug}>
+                        <div className="line-clamp-1">{course.title}</div>
+                      </Tag>
+                    );
+                  })}
+                </div>
               </TableCell>
               <TableCell className="text-gray-600 whitespace-nowrap">
                 <span>{formatDate(coupon.startDate)}</span> -{" "}

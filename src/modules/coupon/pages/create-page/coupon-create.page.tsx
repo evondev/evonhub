@@ -346,7 +346,7 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
           <Button
             type="submit"
             variant="primary"
-            className="w-fit ml-auto flex"
+            className="w-fit ml-auto flex mt-10"
             isLoading={mutationCreateCoupon.isPending}
           >
             Tạo mã giảm giá

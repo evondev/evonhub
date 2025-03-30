@@ -7,6 +7,7 @@ import { UserRole } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { auth } from "@clerk/nextjs/server";
+import { FilterQuery } from "mongoose";
 import CouponModel from "../models";
 import { CouponItemData, CreateCouponProps, FetchCouponProps } from "../types";
 
@@ -55,12 +56,18 @@ export async function handleCreateCoupon({
   }
 }
 
-export async function fetchCoupons(): Promise<CouponItemData[] | undefined> {
+export async function fetchCoupons({
+  status,
+}: {
+  status?: CouponStatus;
+}): Promise<CouponItemData[] | undefined> {
   try {
     connectToDatabase();
-    const coupons = await CouponModel.find({
-      status: CouponStatus.Active,
-    })
+    const query: FilterQuery<typeof CouponModel> = {};
+    if (status) {
+      query.status = status;
+    }
+    const coupons = await CouponModel.find(query)
       .populate({
         model: CourseModel,
         path: "courses",

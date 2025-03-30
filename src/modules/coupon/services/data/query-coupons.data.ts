@@ -1,3 +1,4 @@
+import { CouponStatus } from "@/shared/constants/coupon.constants";
 import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
 import {
   keepPreviousData,
@@ -6,14 +7,16 @@ import {
 } from "@tanstack/react-query";
 import { fetchCoupons } from "../../actions";
 
-interface GetCouponsProps {}
+interface GetCouponsProps {
+  status?: CouponStatus;
+}
 
-export function getCouponsOptions({}: GetCouponsProps) {
+export function getCouponsOptions({ status }: GetCouponsProps) {
   return queryOptions({
     enabled: true,
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      const response = await fetchCoupons();
+      const response = await fetchCoupons({ status });
 
       return response;
     },
@@ -21,8 +24,8 @@ export function getCouponsOptions({}: GetCouponsProps) {
   });
 }
 
-export function useQueryCoupons({}: GetCouponsProps) {
-  const options = getCouponsOptions({});
+export function useQueryCoupons({ status }: GetCouponsProps) {
+  const options = getCouponsOptions({ status });
 
   return useQuery(options);
 }
