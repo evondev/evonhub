@@ -5,6 +5,7 @@ import CouponModel from "@/modules/coupon/models";
 import OrderModel from "@/modules/order/models";
 import { OrderItemData } from "@/modules/order/types";
 import UserModel from "@/modules/user/models";
+import { CouponType } from "@/shared/constants/coupon.constants";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { OrderStatus } from "@/shared/constants/order.constants";
 import {
@@ -164,7 +165,11 @@ export async function handleEnrollCourse({
         error: "Khóa học không tồn tại",
       };
 
-    if (findCoupon?.amount && findCourse.price - total !== findCoupon?.amount) {
+    if (
+      findCoupon?.amount &&
+      findCourse.price - total !== findCoupon?.amount &&
+      findCoupon?.type !== CouponType.Percentage
+    ) {
       return {
         error: "Mã giảm giá không hợp lệ",
       };

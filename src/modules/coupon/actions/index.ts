@@ -85,7 +85,7 @@ export async function fetchCoupons({
   }
 }
 
-export async function fetchCoupon({
+export async function handleCheckCoupon({
   code,
   courseId,
 }: FetchCouponProps): Promise<CouponItemData | undefined> {
@@ -122,6 +122,25 @@ export async function fetchCoupon({
     if (!isActive) {
       return;
     }
+    return parseData(findCoupon);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function fetchCouponByCode({
+  code,
+}: {
+  code: string;
+}): Promise<CouponItemData | undefined> {
+  try {
+    connectToDatabase();
+    const findCoupon: CouponItemData | null = await CouponModel.findOne({
+      code,
+    });
+
+    if (!findCoupon) return;
+
     return parseData(findCoupon);
   } catch (error) {
     console.log(error);

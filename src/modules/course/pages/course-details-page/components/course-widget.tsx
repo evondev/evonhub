@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserContext } from "@/components/user-context";
-import { fetchCoupon } from "@/modules/coupon/actions";
+import { handleCheckCoupon } from "@/modules/coupon/actions";
 import { CouponItemData } from "@/modules/coupon/types";
 import { userMutationEnrollCourse } from "@/modules/course/services/data/mutation-enroll";
 import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-enroll-free.data";
@@ -87,7 +87,7 @@ export default function CourseWidget({
   };
 
   const handleApplyCoupon = async () => {
-    const response = await fetchCoupon({
+    const response = await handleCheckCoupon({
       code: couponCode,
       courseId,
     });
@@ -96,9 +96,15 @@ export default function CourseWidget({
       setMessage({ error: "Invalid coupon" });
       return;
     }
-    setMessage({
-      success: `Coupon applied: -${formatThoundsand(response.amount)} VNĐ`,
-    });
+    if (response?.type === CouponType.Fixed) {
+      setMessage({
+        success: `Coupon applied: -${formatThoundsand(response.amount)} VNĐ`,
+      });
+    } else {
+      setMessage({
+        success: `Coupon applied: -${response.amount}%`,
+      });
+    }
     setFindCoupon(response);
     if (response?.type === CouponType.Percentage) {
       setDiscount((price * response.amount) / 100);
