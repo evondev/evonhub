@@ -7,7 +7,7 @@
     @apply text-white bg-primary;
   }
   body {
-    @apply bg-[#F6F6F8] text-grayPrimary dark:text-white dark:bg-grayDarkest antialiased overflow-x-hidden;
+    @apply bg-[#F6F6F8] text-grayPrimary dark:text-[#cbd5e1] dark:bg-grayDarkest antialiased overflow-x-hidden;
   }
   .wrapper {
     max-width: 2600px;
@@ -170,8 +170,11 @@ div[role="dialog"] {
   }
 }
 // content
+.break-text {
+  word-break: break-word;
+}
 .lesson-content {
-  @apply text-sm lg:text-base;
+  @apply text-sm lg:text-[17px] font-medium;
   p,
   ul,
   ol,
@@ -198,11 +201,11 @@ div[role="dialog"] {
     @apply font-bold mb-5 text-lg lg:text-xl leading-snug;
   }
   a {
-    @apply text-secondary;
+    @apply text-third;
   }
 
   & > div > *:not(pre) code {
-    @apply text-sm font-semibold text-secondary rounded-sm;
+    @apply font-semibold text-third rounded py-0.5 text-base px-2 bg-third/10;
   }
   code {
     @apply text-sm font-medium;
