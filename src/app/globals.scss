@@ -205,7 +205,8 @@ div[role="dialog"] {
   }
 
   & > div > *:not(pre) code {
-    @apply font-semibold text-third rounded py-0.5 text-base px-2 bg-third/10;
+    @apply font-semibold text-third text-base px-2 py-0.5 text-sm rounded-sm bg-third/10;
+    font-family: inherit;
   }
   code {
     @apply text-sm font-medium;
