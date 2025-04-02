@@ -57,9 +57,10 @@ export function LessonContent({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    Prism.highlightAll();
-  }, [lessonDetails?.content.length]);
+    setTimeout(() => {
+      Prism.highlightAll();
+    }, 2000);
+  }, [lessonDetails, canAccessContent]);
 
   useEffect(() => {
     if (!lessonDetails) return;
@@ -188,6 +189,7 @@ export function LessonContent({
             <IconFullScreen />
             Toàn màn hình
           </button>
+
           {canAccessContent && (
             <RatingForm courseId={lessonDetails.courseId?._id}></RatingForm>
           )}
@@ -198,6 +200,11 @@ export function LessonContent({
           {lessonDetails.title}
         </h1>
       </div>
+      {!hasVideo && (
+        <div className="mb-10">
+          <RatingForm courseId={lessonDetails.courseId?._id}></RatingForm>
+        </div>
+      )}
 
       {lessonDetails.content && canAccessContent && (
         <div className="lesson-content hidden lg:block overflow-hidden break-text  p-5 rounded-lg bgDarkMode borderDarkMode text-sm !leading-loose">
