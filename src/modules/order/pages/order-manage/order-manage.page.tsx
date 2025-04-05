@@ -68,7 +68,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
     userRole: userInfo?.role,
     filter: filters.search,
     isFree: filters.isFree,
-    userId: userInfo?._id,
+    userId: userInfo?._id.toString(),
     status: filters.status as OrderStatus,
   });
 
@@ -94,8 +94,8 @@ export function OrderManagePage(_props: OrderManagePageProps) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const response = await mutationUpdateOrder.mutateAsync({
-          orderUser: order.user?._id,
-          course: order?.course?._id,
+          orderUser: order.user?._id.toString(),
+          course: order?.course?._id.toString(),
           status: OrderStatus.Approved,
           code: order.code,
           plan: order.plan,

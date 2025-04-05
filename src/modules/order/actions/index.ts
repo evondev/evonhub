@@ -75,17 +75,17 @@ export async function fetchOrders({
       .populate({
         path: "course",
         model: CourseModel,
-        select: "title",
+        select: "_id title",
       })
       .populate({
         path: "coupon",
         model: CouponModel,
-        select: "code amount",
+        select: "_id code amount",
       })
       .populate({
         path: "user",
         model: UserModel,
-        select: "username email",
+        select: "_id username email",
       });
 
     return parseData(orders);
