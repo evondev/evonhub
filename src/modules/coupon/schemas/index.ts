@@ -18,9 +18,11 @@ export const createCouponSchema = z.object({
   startDate: z.date().optional(),
   endDate: z.date().optional(),
   users: z.array(z.string()).optional(),
-  type: z.enum([CouponType.Fixed, CouponType.Percentage], {
-    required_error: "Vui lòng chọn loại mã giảm giá",
-    invalid_type_error: "Vui lòng chọn loại mã giảm giá",
-  }),
-  status: z.enum([CouponStatus.Active, CouponStatus.InActive]),
+  type: z
+    .enum([CouponType.Fixed, CouponType.Percentage], {
+      required_error: "Vui lòng chọn loại mã giảm giá",
+      invalid_type_error: "Vui lòng chọn loại mã giảm giá",
+    })
+    .optional(),
+  status: z.enum([CouponStatus.Active, CouponStatus.InActive]).optional(),
 });

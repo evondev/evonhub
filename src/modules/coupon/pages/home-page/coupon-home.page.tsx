@@ -10,6 +10,7 @@ export interface CouponHomePageProps {}
 export function CouponHomePage(_props: CouponHomePageProps) {
   const { data: coupons } = useQueryCoupons({
     status: CouponStatus.Active,
+    shouldFilterOutdated: true,
   });
 
   return (

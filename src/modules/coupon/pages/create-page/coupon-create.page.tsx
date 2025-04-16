@@ -72,24 +72,28 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
   });
 
   async function onSubmit(values: CreateCouponFormValues) {
-    const response = await mutationCreateCoupon.mutateAsync({
-      ...values,
-      amount: parseInt(values.amount),
-      limit: values.limit || 0,
-      startDate: date.startDate,
-      endDate: date.endDate,
-      courses: selectedCourses.map((course) => course.courseId),
-      type: isPercentage ? CouponType.Percentage : CouponType.Fixed,
-      status: values.status,
-    });
+    try {
+      const response = await mutationCreateCoupon.mutateAsync({
+        ...values,
+        amount: parseInt(values.amount),
+        limit: values.limit || 0,
+        startDate: date.startDate,
+        endDate: date.endDate,
+        courses: selectedCourses.map((course) => course.courseId),
+        type: isPercentage ? CouponType.Percentage : CouponType.Fixed,
+        status: values.status || CouponStatus.Active,
+      });
 
-    if (!response) {
-      toast.error("Tạo mã giảm giá thất bại");
-      return;
+      if (!response) {
+        toast.error("Tạo mã giảm giá thất bại");
+        return;
+      }
+
+      toast.success("Tạo mã giảm giá thành công");
+      router.push("/admin/coupon/manage");
+    } catch (error) {
+      console.log("error", error);
     }
-
-    toast.success("Tạo mã giảm giá thành công");
-    router.push("/admin/coupon/manage");
   }
 
   const handleSelectCourse = (checked: boolean, course: CourseItemData) => {

@@ -58,14 +58,21 @@ export async function handleCreateCoupon({
 
 export async function fetchCoupons({
   status,
+  shouldFilterOutdated,
 }: {
   status?: CouponStatus;
+  shouldFilterOutdated?: boolean;
 }): Promise<CouponItemData[] | undefined> {
   try {
     connectToDatabase();
     const query: FilterQuery<typeof CouponModel> = {};
     if (status) {
       query.status = status;
+    }
+    if (shouldFilterOutdated) {
+      query.endDate = {
+        $gte: new Date(),
+      };
     }
     const coupons = await CouponModel.find(query)
       .populate({

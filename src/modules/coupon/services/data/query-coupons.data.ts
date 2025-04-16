@@ -9,14 +9,18 @@ import { fetchCoupons } from "../../actions";
 
 interface GetCouponsProps {
   status?: CouponStatus;
+  shouldFilterOutdated?: boolean;
 }
 
-export function getCouponsOptions({ status }: GetCouponsProps) {
+export function getCouponsOptions({
+  status,
+  shouldFilterOutdated,
+}: GetCouponsProps) {
   return queryOptions({
     enabled: true,
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      const response = await fetchCoupons({ status });
+      const response = await fetchCoupons({ status, shouldFilterOutdated });
 
       return response;
     },
@@ -24,8 +28,11 @@ export function getCouponsOptions({ status }: GetCouponsProps) {
   });
 }
 
-export function useQueryCoupons({ status }: GetCouponsProps) {
-  const options = getCouponsOptions({ status });
+export function useQueryCoupons({
+  status,
+  shouldFilterOutdated,
+}: GetCouponsProps) {
+  const options = getCouponsOptions({ status, shouldFilterOutdated });
 
   return useQuery(options);
 }
