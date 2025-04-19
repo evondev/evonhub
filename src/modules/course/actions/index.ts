@@ -29,22 +29,35 @@ import {
 
 export async function fetchCourses({
   status,
-  isUpdateViews = true,
+  limit = 20,
+  page = 1,
+  search,
+  isFree,
 }: FetchCoursesParams): Promise<CourseItemData[] | undefined> {
   try {
     connectToDatabase();
-    let searchQuery: any = {};
-    if (status) {
-      searchQuery.status = status;
+    let query: FilterQuery<typeof CourseModel> = {};
+
+    const skip = (page - 1) * limit;
+    if (search) {
+      query.$or = [{ title: { $regex: search, $options: "i" } }];
     }
-    const courses: CourseItemData[] = await CourseModel.find(searchQuery)
+
+    if (status) {
+      query.status = status;
+    }
+
+    if (isFree) {
+      query.free = isFree;
+    }
+
+    const courses: CourseItemData[] = await CourseModel.find(query)
       .select("title slug image level rating price salePrice views free")
+      .limit(limit)
+      .skip(skip)
       .sort({ createdAt: -1 });
     const allCourses = (parseData(courses) as CourseItemData[]) || [];
-    isUpdateViews &&
-      allCourses.forEach(async (course) => {
-        await updateCourseViews(course.slug);
-      });
+
     return allCourses;
   } catch (error) {}
 }

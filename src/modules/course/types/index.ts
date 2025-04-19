@@ -50,10 +50,6 @@ export interface CourseItemData
   _id: string;
   lecture: LectureItemData[];
 }
-export interface FetchCoursesParams {
-  status: CourseStatus;
-  isUpdateViews?: boolean;
-}
 
 export interface FetchCoursesManageProps {
   search?: string;
@@ -62,6 +58,8 @@ export interface FetchCoursesManageProps {
   isFree?: boolean;
   status?: CourseStatus;
 }
+
+export interface FetchCoursesParams extends Partial<FetchCoursesManageProps> {}
 
 export interface EnrollCourseProps {
   userId: string;

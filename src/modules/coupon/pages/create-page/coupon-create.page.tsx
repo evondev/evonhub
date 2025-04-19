@@ -318,7 +318,7 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent
                         align="start"
-                        className="w-full h-[220px] overflow-y-auto"
+                        className="w-full h-[220px] lg:h-auto overflow-y-auto"
                       >
                         {courses?.map((course) => (
                           <DropdownMenuCheckboxItem

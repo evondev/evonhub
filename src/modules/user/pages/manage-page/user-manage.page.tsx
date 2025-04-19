@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { Heading, IconArrowLeft, IconArrowRight } from "@/shared/components";
 import { LabelStatus, PaginationControl } from "@/shared/components/common";
 import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
+import { debounce } from "lodash";
 import Link from "next/link";
 import {
   parseAsBoolean,
@@ -41,6 +42,11 @@ export function UserManagePage(_props: UserManagePageProps) {
     isPaid: filters.isPaidUser,
   });
 
+  const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFilters({ search: value });
+  }, 500);
+
   if (!data) return null;
   const { total, users } = data;
 
@@ -51,7 +57,7 @@ export function UserManagePage(_props: UserManagePageProps) {
         <Input
           placeholder="Tìm kiếm thành viên"
           className="w-full lg:w-[300px]"
-          onChange={(e) => setFilters({ search: e.target.value })}
+          onChange={handleSearch}
         />
       </div>
       <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg">

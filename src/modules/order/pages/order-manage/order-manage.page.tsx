@@ -29,6 +29,7 @@ import {
 import { OrderStatus, orderStatuses } from "@/shared/constants/order.constants";
 import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
 import { formatDate, formatThoundsand } from "@/shared/utils";
+import { debounce } from "lodash";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -135,6 +136,11 @@ export function OrderManagePage(_props: OrderManagePageProps) {
     });
   };
 
+  const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFilters({ search: value });
+  }, 500);
+
   return (
     <>
       <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between min-h-10">
@@ -187,7 +193,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
             <Input
               placeholder="DH1234567"
               className="w-full lg:w-[300px] h-10 hidden lg:block"
-              onChange={(e) => setFilters({ search: e.target.value })}
+              onChange={handleSearch}
             />
             <div className="flex justify-end gap-3">
               <PaginationControl
@@ -206,7 +212,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
           <Input
             placeholder="DH1234567"
             className="w-full lg:w-[300px] h-10 block lg:hidden"
-            onChange={(e) => setFilters({ search: e.target.value })}
+            onChange={handleSearch}
           />
         </div>
       )}

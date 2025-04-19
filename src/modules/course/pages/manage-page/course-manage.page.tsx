@@ -32,6 +32,7 @@ import { CourseStatus } from "@/shared/constants/course.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
+import { debounce } from "lodash";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -66,6 +67,11 @@ export function CourseManagePage(_props: CourseManagePageProps) {
     status: filters.status as CourseStatus,
     enabled: !!canEdit,
   });
+
+  const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFilters({ search: value });
+  }, 500);
 
   if (!canEdit) return null;
 
@@ -109,7 +115,8 @@ export function CourseManagePage(_props: CourseManagePageProps) {
           <Input
             placeholder="Tìm kiếm khóa học"
             className="hidden lg:block w-full lg:w-[300px] h-10"
-            onChange={(e) => setFilters({ search: e.target.value })}
+            onChange={handleSearch}
+            defaultValue={filters.search}
           />
           <div className="flex justify-end gap-3">
             <PaginationControl

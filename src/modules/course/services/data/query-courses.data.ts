@@ -6,30 +6,28 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { fetchCourses } from "../../actions";
+import { FetchCoursesParams } from "../../types";
 
-interface GetCoursesProps {
+interface GetCoursesProps extends FetchCoursesParams {
   status: CourseStatus;
   isUpdateViews?: boolean;
 }
 
-export function getCoursesOptions({
-  status,
-  isUpdateViews = true,
-}: GetCoursesProps) {
+export function getCoursesOptions(props: GetCoursesProps) {
   return queryOptions({
-    enabled: !!status,
+    enabled: !!props.status,
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      const response = await fetchCourses({ status, isUpdateViews });
+      const response = await fetchCourses(props);
 
       return response;
     },
-    queryKey: [QUERY_KEYS.GET_COURSES, status],
+    queryKey: [QUERY_KEYS.GET_COURSES, props],
   });
 }
 
-export function useQueryCourses({ status, isUpdateViews }: GetCoursesProps) {
-  const options = getCoursesOptions({ status, isUpdateViews });
+export function useQueryCourses(props: GetCoursesProps) {
+  const options = getCoursesOptions(props);
 
   return useQuery(options);
 }

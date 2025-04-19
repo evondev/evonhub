@@ -118,7 +118,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
             <SelectTrigger>
               <SelectValue placeholder="Chọn khóa học" />
             </SelectTrigger>
-            <SelectContent className="h-[200px] overflow-y-auto">
+            <SelectContent className="h-[200px] lg:h-auto overflow-y-auto">
               {courses.map((course) => (
                 <SelectItem key={course._id} value={course}>
                   {course.title}
