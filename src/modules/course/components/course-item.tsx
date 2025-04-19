@@ -15,9 +15,16 @@ interface CourseItemProps {
   cta?: string;
   url?: string;
   userId?: string;
+  shouldHideInfo?: boolean;
 }
 
-export function CourseItem({ data, cta, url, userId }: CourseItemProps) {
+export function CourseItem({
+  data,
+  cta,
+  url,
+  userId,
+  shouldHideInfo = false,
+}: CourseItemProps) {
   const navigateURL = url ? `/${data.slug}${url}` : `/course/${data.slug}`;
   const hasRating = data.rating?.length > 1;
   const rating = !hasRating
@@ -53,55 +60,59 @@ export function CourseItem({ data, cta, url, userId }: CourseItemProps) {
           ></Image>
         </div>
         <div className="flex-1 flex flex-col">
-          <div className="flex gap-1 mb-2 justify-end h-4">
-            {Array(5)
-              .fill(0)
-              .map((_, index) => {
-                if (Math.floor(rating) < index + 1)
+          {!shouldHideInfo && (
+            <div className="flex gap-1 mb-2 justify-end h-4">
+              {Array(5)
+                .fill(0)
+                .map((_, index) => {
+                  if (Math.floor(rating) < index + 1)
+                    return (
+                      <IconStarFilled
+                        key={index}
+                        className="size-4 fill-gray-300 dark:fill-white/50"
+                      />
+                    );
                   return (
-                    <IconStarFilled
+                    <Image
                       key={index}
-                      className="size-4 fill-gray-300 dark:fill-white/50"
+                      alt="rating"
+                      src="/star.png"
+                      width={16}
+                      height={16}
                     />
                   );
-                return (
-                  <Image
-                    key={index}
-                    alt="rating"
-                    src="/star.png"
-                    width={16}
-                    height={16}
-                  />
-                );
-              })}
-          </div>
+                })}
+            </div>
+          )}
 
           {url && <ProgressBar progress={progress || 0} className="mb-2" />}
           <h3 className="text-base lg:text-lg font-bold mb-5 line-clamp-3 block">
             {data.title}
           </h3>
           <div className="mt-auto">
-            <div className="flex items-center gap-3 mb-3 justify-between">
-              <div className="flex items-center gap-3 text-xs lg:text-sm font-medium text-gray-500 dark:text-white dark:text-opacity-60">
-                <div className="flex items-center gap-2">
-                  <IconStar className="size-4 stroke-current fill-transparent flex-shrink-0" />
-                  <span>
-                    {data.rating?.length > 1 ? data.rating?.length : 0}
-                  </span>
+            {!shouldHideInfo && (
+              <div className="flex items-center gap-3 mb-3 justify-between">
+                <div className="flex items-center gap-3 text-xs lg:text-sm font-medium text-gray-500 dark:text-white dark:text-opacity-60">
+                  <div className="flex items-center gap-2">
+                    <IconStar className="size-4 stroke-current fill-transparent flex-shrink-0" />
+                    <span>
+                      {data.rating?.length > 1 ? data.rating?.length : 0}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <IconViews className="size-4 stroke-current fill-transparent flex-shrink-0" />
+                    <span>{data.views}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <IconViews className="size-4 stroke-current fill-transparent flex-shrink-0" />
-                  <span>{data.views}</span>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <div className="flex items-center gap-2">
-                  <div className="text-sm lg:text-base font-bold text-secondary">
-                    {isFree ? "" : `${formatThoundsand(data.price)}`}
+                <div className="flex items-center">
+                  <div className="flex items-center gap-2">
+                    <div className="text-sm lg:text-base font-bold text-secondary">
+                      {isFree ? "" : `${formatThoundsand(data.price)}`}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
             <div className="p-1 border border-[#f6f6f8] rounded-xl bg-[#f6f6f8]/30 backdrop-blur-xl dark:bg-grayDarkest dark:border-white/10">
               <SimpleButton className="w-full">
                 {cta ? cta : isFree ? "Miễn phí" : "Xem chi tiết"}
