@@ -78,13 +78,17 @@ export async function fetchCoursesIncoming(): Promise<
 }
 
 export async function fetchCourseBySlug(
-  slug: string
+  slug: string,
+  status?: CourseStatus
 ): Promise<CourseItemData | undefined> {
   try {
     connectToDatabase();
     await updateCourseViews(slug);
     let searchQuery: any = {};
     searchQuery.slug = slug;
+    if (status) {
+      searchQuery.status = status;
+    }
     const course = await CourseModel.findOne(searchQuery).select(
       "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author minPrice"
     );

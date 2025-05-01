@@ -2,6 +2,7 @@
 import PageNotFound from "@/app/not-found";
 import { useUserContext } from "@/components/user-context";
 import { useQueryCourseBySlug } from "@/modules/course/services";
+import { CourseStatus } from "@/shared/constants/course.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { cn, handleCheckMembership } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
@@ -26,6 +27,7 @@ export function DetailsPageLayout({ children }: DetailsPageLayoutProps) {
 
   const { data: courseDetails } = useQueryCourseBySlug({
     courseSlug: params.course as string,
+    status: CourseStatus.Approved,
   });
   const { data: lessonPreview, isLoading: isLoadingPreview } =
     useQueryLessonPreview({
