@@ -164,5 +164,5 @@ export const commonStatuses: Record<
 
 export const ITEMS_PER_PAGE = 10;
 export const MAXIUM_DISCOUNT = 500_000;
-export const MAX_RECIPIENTS = 30; // Giới hạn SES
+export const MAX_RECIPIENTS = 20; // Giới hạn SES
 export const RATE_LIMIT = 10; //
