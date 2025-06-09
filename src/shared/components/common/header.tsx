@@ -6,6 +6,7 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "../../../components/ModeToggle";
+import { IconSparkles } from "../icons";
 import Notification from "./notification";
 
 export const Header = () => {
@@ -42,14 +43,28 @@ export const Header = () => {
         <span className="text-lg font-bold">evonHub</span>
       </Link>
       {!isLessonPage && (
-        <Link
-          href="https://evondev.com/huong-dan-mua-khoa-hoc/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="h-10 rounded-full px-5 lg:flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] hidden text-sm"
-        >
-          Hướng dẫn mua khóa học
-        </Link>
+        <div className="hidden lg:flex items-center gap-2 text-base">
+          <IconSparkles className="text-primary size-6" />
+          <span className="font-medium">Bạn đến từ KTcity ?</span>
+          <Link
+            href="https://evondev.com/huong-dan-mua-khoa-hoc/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold text-primary underline"
+          >
+            Nhấn vào đây
+          </Link>
+          <span className="font-medium">hoặc</span>
+          <Link
+            href="https://evondev.com/huong-dan-mua-khoa-hoc/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold underline text-secondary"
+          >
+            Nhấn vào đây
+          </Link>
+          <span>để mua khóa học</span>
+        </div>
       )}
       <div className="flex items-center gap-3">
         <ModeToggle />

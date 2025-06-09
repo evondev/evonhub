@@ -87,12 +87,12 @@ export function EmailManagePage(_props: EmailManagePageProps) {
               <TableRow key={item.title}>
                 <TableCell>{item.title}</TableCell>
                 <TableCell>
-                  <LabelStatus className="capitalize">
+                  <LabelStatus className="capitalize text-green-500">
                     {item.status}
                   </LabelStatus>
                 </TableCell>
                 <TableCell>
-                  <strong>{item.recipients.length}</strong> emails
+                  <strong>{item.recipients.length}</strong> thành viên
                 </TableCell>
               </TableRow>
             ))}

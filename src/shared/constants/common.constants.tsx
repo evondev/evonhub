@@ -90,7 +90,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     isHot: true,
   },
   {
-    title: "Sắp ra mắt",
+    title: "Chưa ra mắt",
     icon: <IconSparkles />,
     url: "/coming-soon",
   },
