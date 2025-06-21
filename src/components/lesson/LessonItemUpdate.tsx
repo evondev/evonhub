@@ -195,7 +195,7 @@ const LessonItemUpdate = ({
                     );
                   }}
                   value={field.value}
-                  {...editorOptions(field, theme, 500)}
+                  {...editorOptions(field, theme, 300)}
                 />
               </FormControl>
               <FormMessage className="text-red-400" />

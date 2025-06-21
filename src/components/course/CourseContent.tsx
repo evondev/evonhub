@@ -236,6 +236,7 @@ const CourseContent = ({
           slug: convertSlug(lessonData.title || lesson.title),
           courseId: data._id as any,
           iframe: lessonData.iframe || lesson.iframe,
+          video: lessonData.video || lesson.video,
         },
       });
       toast.success("Bài học đã được cập nhật thành công");
@@ -425,6 +426,19 @@ const CourseContent = ({
                                                       setLessonData({
                                                         ...lessonData,
                                                         title: e.target.value,
+                                                      }),
+                                                    500
+                                                  )}
+                                                />
+                                                <Input
+                                                  placeholder="Nhập playbackID"
+                                                  className="font-semibold border-gray-200 dark:border-grayDarker dark:bg-grayDarkest font-sans"
+                                                  defaultValue={lesson.video}
+                                                  onChange={debounce(
+                                                    (e) =>
+                                                      setLessonData({
+                                                        ...lessonData,
+                                                        video: e.target.value,
                                                       }),
                                                     500
                                                   )}
