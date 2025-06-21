@@ -71,6 +71,7 @@ const LessonItemUpdate = ({
         path: `/admin/course/content?slug=${slug}`,
         data: {
           ...values,
+          trial: !!values.trial,
           slug:
             values.slug ||
             slugify(lesson.title, {
