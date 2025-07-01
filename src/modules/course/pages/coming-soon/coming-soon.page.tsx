@@ -8,7 +8,7 @@ export async function ComingSoonPage(_props: ComingSoonPageProps) {
   const courses = await fetchCoursesIncoming();
   return (
     <div>
-      <Heading>Sắp ra mắt</Heading>
+      <Heading>Dự định tương lai</Heading>
       <CourseList>
         {courses?.map((course) => (
           <CourseItem key={course.slug} data={course}></CourseItem>

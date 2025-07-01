@@ -6,11 +6,7 @@ export interface HeadingProps {
   squareClassName?: string;
 }
 
-export function Heading({
-  children,
-  className = "",
-  squareClassName = "",
-}: HeadingProps) {
+export function Heading({ children, className = "" }: HeadingProps) {
   return (
     <h1
       className={cn(
@@ -18,12 +14,6 @@ export function Heading({
         className
       )}
     >
-      <div
-        className={cn(
-          "absolute bottom-1.5 w-1/3 h-2 from-[#ba97f7] to-[#ff979a] bg-gradient-to-r",
-          squareClassName
-        )}
-      ></div>
       <span className="relative z-10">{children}</span>
     </h1>
   );

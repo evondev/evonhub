@@ -11,8 +11,8 @@ import { MAXIUM_DISCOUNT } from "@/shared/constants/common.constants";
 import { CouponType } from "@/shared/constants/coupon.constants";
 import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export interface CourseWidgetProps {
@@ -38,6 +38,8 @@ export default function CourseWidget({
   const mutationEnrollCourse = userMutationEnrollCourse();
   const { userInfo } = useUserContext();
   const userId = userInfo?._id || "";
+  const searchParams = useSearchParams();
+  const appliedCoupon = searchParams.get("appliedCoupon") || "";
 
   const router = useRouter();
   const [discount, setDiscount] = useState(0);
@@ -86,9 +88,9 @@ export default function CourseWidget({
     }
   };
 
-  const handleApplyCoupon = async () => {
+  const handleApplyCoupon = async (appliedCoupon?: string) => {
     const response = await handleCheckCoupon({
-      code: couponCode,
+      code: appliedCoupon || couponCode,
       courseId,
     });
 
@@ -98,11 +100,11 @@ export default function CourseWidget({
     }
     if (response?.type === CouponType.Fixed) {
       setMessage({
-        success: `Coupon applied: -${formatThoundsand(response.amount)} VNĐ`,
+        success: `Bạn đã được giảm: ${formatThoundsand(response.amount)} VNĐ`,
       });
     } else {
       setMessage({
-        success: `Coupon applied: -${response.amount}%`,
+        success: `Bạn đã được giảm: ${response.amount}%`,
       });
     }
     setFindCoupon(response);
@@ -112,6 +114,14 @@ export default function CourseWidget({
       setDiscount(response.amount);
     }
   };
+
+  useEffect(() => {
+    if (appliedCoupon) {
+      setCouponCode(appliedCoupon);
+      handleApplyCoupon(appliedCoupon);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appliedCoupon]);
 
   return (
     <>
@@ -188,19 +198,19 @@ export default function CourseWidget({
                   />
                   <Button
                     className="text-white bg-grayDarkest h-auto dark:bg-white dark:text-grayDarkest"
-                    onClick={handleApplyCoupon}
+                    onClick={() => handleApplyCoupon()}
                     disabled={!couponCode}
                   >
                     Áp dụng
                   </Button>
                 </div>
                 {message.error && message.error?.length > 0 && (
-                  <div className="text-sm font-semibold text-red-500">
+                  <div className="text-sm font-bold text-red-500">
                     {message.error}
                   </div>
                 )}
                 {message.success && message.success?.length > 0 && (
-                  <div className="text-sm font-semibold text-green-500">
+                  <div className="text-sm font-bold text-green-500">
                     {message.success}
                   </div>
                 )}

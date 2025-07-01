@@ -18,7 +18,7 @@ export default function DashboardLayout({
       <Header />
       <Main>
         <Sidebar role={userInfo?.role} />
-        <section className="px-5 lg:px-8 pb-10">
+        <section className="px-5 lg:px-8 pb-10 max-w-screen-2xl mx-auto w-full">
           {children}
           <MobileNavigation role={userInfo?.role || ""} />
         </section>

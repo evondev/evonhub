@@ -3,12 +3,10 @@ import {
   IconCourseManage,
   IconCube,
   IconEmail,
-  IconMoney,
   IconOrder,
   IconPlay,
   IconSparkles,
   IconStudy,
-  IconUser,
   IconUsers,
 } from "../components";
 import { MenuLinkItemProps, StatusBadgeVariant } from "../types";
@@ -55,20 +53,6 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/user/manage",
     isAdmin: true,
   },
-  // {
-  //   title: "Quản lý đánh giá",
-  //   icon: <IconStar />,
-  //   url: "/admin/rating/manage",
-  //   isAdmin: true,
-  //   isHideMobile: true,
-  // },
-  // {
-  //   title: "Quản lý bình luận",
-  //   icon: <IconComment />,
-  //   url: "/admin/comment/manage",
-  //   isAdmin: true,
-  //   isHideMobile: true,
-  // },
   {
     title: "Quản lý emails",
     icon: <IconEmail />,
@@ -84,23 +68,9 @@ export const menuLinks: MenuLinkItemProps[] = [
     isHideMobile: true,
   },
   {
-    title: "Membership",
-    icon: <IconMoney />,
-    url: "/membership",
-    isHot: true,
-  },
-  {
-    title: "Sắp ra mắt",
+    title: "Dự định tương lai",
     icon: <IconSparkles />,
     url: "/coming-soon",
-  },
-
-  {
-    title: "Profile",
-    icon: <IconUser />,
-    url: "/profile",
-    isAuth: true,
-    isHideMobile: true,
   },
 ];
 export const adminRoutes = ["/admin/overview", "/admin/user/manage"];

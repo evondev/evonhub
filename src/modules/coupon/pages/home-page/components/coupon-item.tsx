@@ -3,6 +3,7 @@ import { CouponItemData } from "@/modules/coupon/types";
 import { IconCopy } from "@/shared/components";
 import { CouponType } from "@/shared/constants/coupon.constants";
 import { formatThoundsand } from "@/shared/utils";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 export interface CouponItemProps {
@@ -10,9 +11,17 @@ export interface CouponItemProps {
 }
 
 export function CouponItem({ coupon }: CouponItemProps) {
+  const router = useRouter();
+
+  const randomCourse =
+    coupon.courses?.[Math.floor(Math.random() * coupon.courses?.length)];
+
   const handleCopyCouponCode = () => {
     navigator.clipboard.writeText(coupon.code);
     toast.success("Sao chép mã giảm giá thành công");
+    if (randomCourse?.slug) {
+      router.push(`/course/${randomCourse.slug}?appliedCoupon=${coupon.code}`);
+    }
   };
 
   return (

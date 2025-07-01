@@ -195,8 +195,8 @@ export function LessonContent({
           )}
         </div>
       )}
-      <div className="px-3 lg:p-0">
-        <h1 className="font-extrabold text-xl lg:text-2xl lg:mb-10">
+      <div className="p-3">
+        <h1 className="font-extrabold text-xl lg:text-2xl xl:text-3xl lg:mb-10">
           {lessonDetails.title}
         </h1>
       </div>

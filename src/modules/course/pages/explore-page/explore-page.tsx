@@ -88,8 +88,8 @@ export function ExplorePage(_props: ExplorePageProps) {
         />
       </div>
       <CourseList isLoading={isFetching}>
-        {courses?.map((course) => (
-          <CourseItem key={course.slug} data={course}></CourseItem>
+        {courses?.map((course, index) => (
+          <CourseItem key={index} data={course}></CourseItem>
         ))}
       </CourseList>
     </div>
