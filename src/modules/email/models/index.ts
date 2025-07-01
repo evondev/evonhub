@@ -23,6 +23,10 @@ const emailSchema = new Schema<EmailModelProps>({
     type: Date,
     default: Date.now,
   },
+  count: {
+    type: Number,
+    default: 0,
+  },
 });
 const EmailModel = models.Email || mongoose.model("Email", emailSchema);
 export default EmailModel;

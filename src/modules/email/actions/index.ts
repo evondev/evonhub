@@ -52,24 +52,31 @@ export async function handleSendEmails({
 }: HandleSendEmailsProps): Promise<boolean | undefined> {
   try {
     connectToDatabase();
-    let emailStatus = EmailStatus.Failed;
-
-    for (let i = 0; i < to.length; i += MAX_RECIPIENTS) {
-      const batch = to.slice(i, i + MAX_RECIPIENTS); // Lấy tối đa 50 email
-      await sendEmailBatch(batch, title, content);
-
-      const delayMs = Math.ceil(batch.length / RATE_LIMIT) * 1000;
-      await new Promise((resolve) => setTimeout(resolve, delayMs)); // Delay giữa các batch
-    }
-
-    emailStatus = EmailStatus.Success;
-
-    await EmailModel.create({
+    const emailCreated = await EmailModel.create({
       title,
       content,
       recipients: to,
-      status: emailStatus,
+      status: EmailStatus.Success,
     });
+
+    for (let i = 0; i < to.length; i += MAX_RECIPIENTS) {
+      const batch = to.slice(i, i + MAX_RECIPIENTS);
+      await sendEmailBatch(batch, title, content);
+
+      const delayMs = Math.ceil(batch.length / RATE_LIMIT) * 1000;
+      await EmailModel.findOneAndUpdate(
+        {
+          _id: emailCreated._id,
+        },
+        {
+          $inc: { count: batch.length },
+        },
+        {
+          new: true,
+        }
+      );
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
 
     return true;
   } catch (error) {

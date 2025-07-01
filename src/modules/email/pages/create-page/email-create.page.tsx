@@ -103,13 +103,13 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
 
   return (
     <div>
-      <Heading>Gửi emails</Heading>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           autoComplete="off"
           className="mx-auto max-w-3xl"
         >
+          <Heading>Gửi emails</Heading>
           <div className="flex flex-col gap-5">
             <FormField
               control={form.control}

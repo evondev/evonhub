@@ -98,7 +98,7 @@ export function CourseDetailsPageContainer(
             />
           )}
         </div>
-        <h1 className="font-bold text-xl lg:text-3xl mb-4 lg:mb-8 !leading-normal">
+        <h1 className="font-extrabold text-xl lg:text-3xl mb-4 lg:mb-8 !leading-normal">
           {title}
         </h1>
         {ratings && ratings.length > 0 && (

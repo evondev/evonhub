@@ -5,6 +5,7 @@ export interface EmailModelProps extends Document {
   recipients: string[];
   status: EmailStatus;
   createdAt: Date;
+  count: number;
 }
 export enum EmailStatus {
   Success = "success",

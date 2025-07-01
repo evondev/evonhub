@@ -36,12 +36,12 @@ export function EmailManagePage(_props: EmailManagePageProps) {
 
   return (
     <div>
-      <Heading>Quản lý thông báo</Heading>
+      <Heading>Quản lý emails</Heading>
       <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
         <div className="flex items-center gap-5"></div>
         <div className="flex gap-3">
           <Input
-            placeholder="Tìm kiếm thông báo"
+            placeholder="Tìm kiếm emails"
             className="hidden lg:block w-full lg:w-[300px] h-10"
             onChange={(e) => setFilters({ search: e.target.value })}
           />
@@ -85,14 +85,15 @@ export function EmailManagePage(_props: EmailManagePageProps) {
             emails.length > 0 &&
             emails.map((item) => (
               <TableRow key={item.title}>
-                <TableCell>{item.title}</TableCell>
+                <TableCell className="font-semibold">{item.title}</TableCell>
                 <TableCell>
                   <LabelStatus className="capitalize text-green-500">
                     {item.status}
                   </LabelStatus>
                 </TableCell>
                 <TableCell>
-                  <strong>{item.recipients.length}</strong> thành viên
+                  <strong>{item.count || item.recipients.length}</strong> thành
+                  viên
                 </TableCell>
               </TableRow>
             ))}
