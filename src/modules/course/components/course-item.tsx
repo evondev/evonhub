@@ -107,7 +107,10 @@ export function CourseItem({
                 <div className="flex items-center">
                   <div className="flex items-center gap-2">
                     <div className="text-sm lg:text-base font-bold text-secondary">
-                      {isFree ? "" : `${formatThoundsand(data.price)}`}
+                      {isFree ? "FREE" : `${formatThoundsand(data.price)}`}
+                    </div>
+                    <div className="text-sm lg:text-base font-bold line-through text-gray-500">
+                      {isFree ? "" : `${formatThoundsand(data.salePrice)}`}
                     </div>
                   </div>
                 </div>
