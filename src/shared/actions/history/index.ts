@@ -7,10 +7,12 @@ export async function handleCompleteLesson({
   lessonId,
   userId,
   courseId,
+  isSingleton = false,
 }: {
   lessonId: string;
   userId: string;
   courseId: string;
+  isSingleton?: boolean;
 }): Promise<boolean | undefined> {
   try {
     connectToDatabase();
@@ -26,7 +28,7 @@ export async function handleCompleteLesson({
         lesson: lessonId,
       });
       return true;
-    } else {
+    } else if (!isSingleton) {
       await HistoryModel.findOneAndDelete({
         lesson: lessonId,
         user: userId,

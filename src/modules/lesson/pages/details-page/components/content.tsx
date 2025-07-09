@@ -1,7 +1,9 @@
 "use client";
 
+import { useUserContext } from "@/components/user-context";
 import { useQueryLessonsByCourseId } from "@/modules/lesson/services/data/query-lessons-by-course-id.data";
 import { IconFullScreen } from "@/shared/components";
+import { useMutationCompleteLesson } from "@/shared/data";
 import { RatingForm } from "@/shared/features/rating";
 import { LessonItemCutomizeData } from "@/shared/types";
 import { cn, extractDriveId } from "@/shared/utils";
@@ -28,9 +30,10 @@ export function LessonContent({
 }: LessonContentProps) {
   const handle = useFullScreenHandle();
   const { toggleExpanded, isExpanded } = useGlobalStore();
-  const handleExpandScreen = () => {
-    toggleExpanded?.(!isExpanded);
-  };
+  const mutateCompleteLesson = useMutationCompleteLesson();
+  const { userInfo } = useUserContext();
+  const userId = userInfo?._id || "";
+
   const videoRef = useRef<any>(null);
   const courseDetails = lessonDetails?.courseId;
 
@@ -46,6 +49,22 @@ export function LessonContent({
   const iframeId = extractDriveId(lessonDetails?.iframe || "");
   const videoId = lessonDetails?.video || "";
   const hasVideo = videoId || iframeId;
+
+  const handleVideoTimeUpdate = async () => {
+    const isVideoEnded =
+      videoRef.current?.duration - videoRef.current?.currentTime <= 10;
+    if (!isVideoEnded) return;
+    await mutateCompleteLesson.mutateAsync({
+      lessonId,
+      userId,
+      courseId: courseDetails?._id?.toString() || "",
+      isSingleton: true,
+    });
+  };
+
+  const handleExpandScreen = () => {
+    toggleExpanded?.(!isExpanded);
+  };
 
   useEffect(() => {
     const links = document.querySelectorAll(".lesson-content a");
@@ -118,6 +137,7 @@ export function LessonContent({
                     ref={videoRef}
                     autoPlay
                     minResolution="1080p"
+                    onTimeUpdate={handleVideoTimeUpdate}
                   />
                 </div>
               ) : iframeId ? (
