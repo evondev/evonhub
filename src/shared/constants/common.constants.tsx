@@ -3,6 +3,7 @@ import {
   IconCourseManage,
   IconCube,
   IconEmail,
+  IconMoney,
   IconOrder,
   IconPlay,
   IconSparkles,
@@ -68,7 +69,13 @@ export const menuLinks: MenuLinkItemProps[] = [
     isHideMobile: true,
   },
   {
-    title: "Dự định tương lai",
+    title: "Membership",
+    icon: <IconMoney />,
+    url: "/membership",
+    isHot: true,
+  },
+  {
+    title: "Sắp ra mắt",
     icon: <IconSparkles />,
     url: "/coming-soon",
   },
