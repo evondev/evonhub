@@ -1,14 +1,15 @@
 "use client";
+import { formatNumberToCompact } from "@/lib/utils";
 import { useQueryOrderCountByCourse } from "@/modules/order/services";
 import { useQueryUserCourseProgress } from "@/modules/user/services";
-import { IconStar, IconStarFilled, IconViews } from "@/shared/components";
+import { IconLike, IconStarFilled, IconViews } from "@/shared/components";
 import { SimpleButton } from "@/shared/components/button";
 import { ProgressBar } from "@/shared/components/common";
+import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { CourseItemData } from "../types";
-import { CourseBadge } from "./course-badge";
 
 interface CourseItemProps {
   data: CourseItemData;
@@ -29,8 +30,8 @@ export function CourseItem({
   const hasRating = data.rating?.length > 1;
   const rating = !hasRating
     ? 0
-    : data?.rating?.reduce((acc, cur) => acc + cur, 0) / data?.rating?.length ||
-      0;
+    : data?.rating?.reduce((accumulator, current) => accumulator + current, 0) /
+        data?.rating?.length || 0;
   const courseId = data._id || "";
   const isFree = !!data.free;
 
@@ -44,11 +45,20 @@ export function CourseItem({
   });
 
   return (
-    <div className="bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest">
+    <div
+      className={cn(
+        "bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest"
+      )}
+    >
       <Link href={navigateURL} className="absolute inset-0 z-10"></Link>
       <div className="bg-white rounded-lg h-full flex flex-col p-3 gap-3 dark:bg-grayDarker">
         <div className="relative h-[180px] block group rounded-lg">
-          <CourseBadge orderCount={orderCount || 0} />
+          {isFree && (
+            <div className="flex items-center gap-2 p-2 rounded-full absolute right-2 top-2 text-xs font-bold text-white bg-secondary">
+              <IconLike className="size-4" />
+              <span>Khóa học miễn phí</span>
+            </div>
+          )}
           <Image
             src={data.image}
             priority
@@ -94,22 +104,16 @@ export function CourseItem({
               <div className="flex items-center gap-3 mb-3 justify-between">
                 <div className="flex items-center gap-3 text-xs lg:text-sm font-medium text-gray-500 dark:text-white dark:text-opacity-60">
                   <div className="flex items-center gap-2">
-                    <IconStar className="size-4 stroke-current fill-transparent flex-shrink-0" />
-                    <span>
-                      {data.rating?.length > 1 ? data.rating?.length : 0}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
                     <IconViews className="size-4 stroke-current fill-transparent flex-shrink-0" />
-                    <span>{data.views}</span>
+                    <span>{formatNumberToCompact(data.views)}</span>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <div className="flex items-center gap-2">
-                    <div className="text-sm lg:text-base font-bold text-secondary">
-                      {isFree ? "FREE" : `${formatThoundsand(data.price)}`}
+                    <div className="text-sm lg:text-lg font-bold text-secondary">
+                      {isFree ? <></> : `${formatThoundsand(data.price)}`}
                     </div>
-                    <div className="text-sm lg:text-base font-bold line-through text-gray-500">
+                    <div className="text-sm lg:text-base font-semibold line-through text-gray-500">
                       {isFree ? "" : `${formatThoundsand(data.salePrice)}`}
                     </div>
                   </div>
@@ -118,7 +122,7 @@ export function CourseItem({
             )}
             <div className="p-1 border border-[#f6f6f8] rounded-xl bg-[#f6f6f8]/30 backdrop-blur-xl dark:bg-grayDarkest dark:border-white/10">
               <SimpleButton className="w-full">
-                {cta ? cta : isFree ? "Miễn phí" : "Xem chi tiết"}
+                {cta ? cta : "Xem chi tiết"}
               </SimpleButton>
             </div>
           </div>

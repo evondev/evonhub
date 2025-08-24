@@ -25,7 +25,7 @@ export function TableAction({ icon, url, ...props }: TableActionProps) {
 
   return (
     <button
-      className="size-8 flex items-center justify-center border borderDarkMode rounded p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
+      className="size-8 flex items-center justify-center p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
       onClick={handleActionClick}
       type="button"
       {...props}

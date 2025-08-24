@@ -75,13 +75,19 @@ export function UserManagePage(_props: UserManagePageProps) {
         </div>
         <div className="flex justify-end gap-3">
           <PaginationControl
-            onClick={() => setFilters({ page: filters.page - 1 })}
+            onClick={debounce(
+              () => setFilters({ page: filters.page - 1 }),
+              300
+            )}
             disabled={filters.page <= 1}
           >
             <IconArrowLeft />
           </PaginationControl>
           <PaginationControl
-            onClick={() => setFilters({ page: filters.page + 1 })}
+            onClick={debounce(
+              () => setFilters({ page: filters.page + 1 }),
+              300
+            )}
           >
             <IconArrowRight />
           </PaginationControl>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -16,15 +17,16 @@ import {
   IconArrowRight,
   IconCircleCheck,
   IconDelete,
+  IconEye,
 } from "@/shared/components";
-import { LabelStatus, PaginationControl } from "@/shared/components/common";
+import { PaginationControl } from "@/shared/components/common";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import {
-  commonStatus,
   ITEMS_PER_PAGE,
   statusActions,
 } from "@/shared/constants/common.constants";
 import { cn, formatDate } from "@/shared/utils";
+import { debounce } from "lodash";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -109,20 +111,26 @@ export function CommentManagePage(_props: CommentManagePageProps) {
           </div>
         </div>
         <div className="flex gap-3">
-          <Input
+          {/* <Input
             placeholder="Tìm kiếm bình luận"
             className="hidden lg:block w-full lg:w-[300px] h-10"
             onChange={(e) => setFilters({ search: e.target.value })}
-          />
+          /> */}
           <div className="flex justify-end gap-3">
             <PaginationControl
-              onClick={() => setFilters({ page: filters.page - 1 })}
+              onClick={debounce(
+                () => setFilters({ page: filters.page - 1 }),
+                300
+              )}
               disabled={filters.page <= 1}
             >
               <IconArrowLeft />
             </PaginationControl>
             <PaginationControl
-              onClick={() => setFilters({ page: filters.page + 1 })}
+              onClick={debounce(
+                () => setFilters({ page: filters.page + 1 }),
+                300
+              )}
               disabled={Number(comments?.length) <= 0}
             >
               <IconArrowRight />
@@ -138,10 +146,11 @@ export function CommentManagePage(_props: CommentManagePageProps) {
       <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
-            <TableHead>Thành viên</TableHead>
-            <TableHead>Nội dung</TableHead>
-            <TableHead>Trạng thái</TableHead>
-            <TableHead className="text-center">Hành động</TableHead>
+            <TableHead>Member</TableHead>
+            <TableHead>Content</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead className="text-center">&nbsp;</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -154,56 +163,52 @@ export function CommentManagePage(_props: CommentManagePageProps) {
                     <Image
                       src={comment.user?.avatar}
                       alt=""
-                      width={40}
-                      height={40}
+                      width={32}
+                      height={32}
                       className="rounded-full shrink-0 object-cover border borderDarkMode"
                     />
                     <div className="flex flex-col">
-                      <h4 className="font-bold text-sm lg:text-base">
+                      <h4 className="font-bold text-sm">
                         {comment.user?.name}
                       </h4>
-                      <h5 className="text-xs lg:text-sm mb-2">
-                        {comment.user?.email}
-                      </h5>
-                      <span className="text-slate-400 text-xs font-medium">
-                        {formatDate(comment.createdAt)}
-                      </span>
+                      <h5 className="text-xs mb-2">{comment.user?.email}</h5>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div className="whitespace-nowrap pl-10 lg:pl-0">
-                    {comment.content}
-                    <Link
-                      href={`/${comment.lesson?.courseId?.slug}/lesson?id=${comment.lesson?._id}#${comment._id}`}
-                      className="inline ml-2 font-semibold underline"
-                    >
-                      Xem bài học
-                    </Link>
+                    {comment.content.slice(0, 50)}...
                   </div>
                 </TableCell>
                 <TableCell>
-                  <LabelStatus
-                    className={cn(
-                      commonStatus[comment.status].className,
-                      "cursor-pointer"
-                    )}
-                    onClick={() =>
+                  <span className="text-slate-400 font-medium">
+                    {formatDate(comment.createdAt)}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <Switch
+                    checked={comment.status === "approved"}
+                    onCheckedChange={(checked) =>
                       handleChangeStatus(
                         comment._id,
                         comment.status,
                         comment.user?._id || ""
                       )
                     }
-                  >
-                    {commonStatus[comment.status].text}
-                  </LabelStatus>
+                  />
                 </TableCell>
                 <TableCell>
-                  <div className="flex justify-center">
+                  <div className="flex justify-center gap-4">
+                    <Link
+                      href={`/${comment.lesson?.courseId?.slug}/lesson?id=${comment.lesson?._id}#${comment._id}`}
+                      target="_blank"
+                      className="size-8 flex items-center justify-center"
+                    >
+                      <IconEye />
+                    </Link>
                     <button
                       type="button"
-                      className="size-8 flex items-center justify-center border borderDarkMode rounded p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
+                      className="size-8 flex items-center justify-center"
                     >
                       <IconDelete />
                     </button>

@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import {
   actionClassName,
   baseButtonClassName,
+  editorOptions,
   primaryButtonClassName,
 } from "@/constants";
 import { ICourse } from "@/database/course.model";
@@ -29,9 +30,11 @@ import { ECourseInfo } from "@/types/enums";
 import { updateCourseSchema } from "@/utils/formSchema";
 import { UploadDropzone } from "@/utils/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Editor } from "@tinymce/tinymce-react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useImmer } from "use-immer";
@@ -46,7 +49,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Textarea } from "../ui/textarea";
+import { Switch } from "../ui/switch";
 
 export default function UpdateCourseForm({
   data,
@@ -56,6 +59,8 @@ export default function UpdateCourseForm({
   slug: string;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const editorRef = useRef<any>(null);
+  const { theme } = useTheme();
   const router = useRouter();
   const form = useForm<z.infer<typeof updateCourseSchema>>({
     resolver: zodResolver(updateCourseSchema),
@@ -292,27 +297,25 @@ export default function UpdateCourseForm({
                 </FormItem>
               )}
             />
-            <div></div>
-            {/* <FormField
-            control={form.control}
-            name="free"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>&nbsp;</FormLabel>
-                <FormControl>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="free-course"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                    <Label htmlFor="free-course">Khóa học miễn phí</Label>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
+            <FormField
+              control={form.control}
+              name="free"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>FREE</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center space-x-2 h-12">
+                      <Switch
+                        id="free-course"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
@@ -352,72 +355,81 @@ export default function UpdateCourseForm({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="desc"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Mô tả</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Mô tả"
-                      {...field}
-                      className="h-[250px] focus-primary"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ảnh đại diện</FormLabel>
-                  <FormControl>
-                    <>
-                      {image && (
-                        <div className="relative group">
-                          <img
-                            src={image}
-                            alt="Course Image"
-                            width={800}
-                            height={400}
-                            className="w-full h-[250px] rounded-lg object-cover"
+            <div className="col-[1/3]">
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ảnh đại diện</FormLabel>
+                    <FormControl>
+                      <>
+                        {image && (
+                          <div className="relative group">
+                            <img
+                              src={image}
+                              alt="Course Image"
+                              width={800}
+                              height={400}
+                              className="w-full aspect-video rounded-lg object-cover"
+                            />
+                            <button
+                              className={cn(
+                                actionClassName,
+                                "absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 hover:bg-red-500 hover:!text-white opacity-0 invisible group-hover:opacity-100 group-hover:visible size-10"
+                              )}
+                              onClick={() => form.setValue("image", "")}
+                            >
+                              <IconDelete />
+                            </button>
+                          </div>
+                        )}
+                        {!image && (
+                          <UploadDropzone
+                            className="justify-center items-center bg-white dark:bg-grayDarker rounded-lg h-[250px]"
+                            endpoint="imageUploader"
+                            onClientUploadComplete={(res) => {
+                              form.setValue("image", res[0].url);
+                            }}
+                            onUploadError={(error: Error) => {
+                              alert(`ERROR! ${error.message}`);
+                            }}
+                            config={{
+                              mode: "auto",
+                            }}
                           />
-                          <button
-                            className={cn(
-                              actionClassName,
-                              "absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 hover:bg-red-500 hover:!text-white opacity-0 invisible group-hover:opacity-100 group-hover:visible"
-                            )}
-                            onClick={() => form.setValue("image", "")}
-                          >
-                            <IconDelete />
-                          </button>
-                        </div>
-                      )}
-                      {!image && (
-                        <UploadDropzone
-                          className="justify-center items-center bg-white dark:bg-grayDarker rounded-lg h-[250px]"
-                          endpoint="imageUploader"
-                          onClientUploadComplete={(res) => {
-                            form.setValue("image", res[0].url);
-                          }}
-                          onUploadError={(error: Error) => {
-                            alert(`ERROR! ${error.message}`);
-                          }}
-                          config={{
-                            mode: "auto",
-                          }}
-                        />
-                      )}
-                    </>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                        )}
+                      </>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="col-[1/3]">
+              <FormField
+                control={form.control}
+                name="desc"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Mô tả</FormLabel>
+                    <FormControl>
+                      <Editor
+                        apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
+                        onInit={(_evt, editor) => {
+                          (editorRef.current = editor).setContent(
+                            field.value || ""
+                          );
+                        }}
+                        value={field.value}
+                        {...editorOptions(field, theme, 300)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="requirements"

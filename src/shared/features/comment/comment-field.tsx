@@ -2,6 +2,8 @@
 import { cn, timeAgo } from "@/lib/utils";
 import { CommentItemData } from "@/modules/comment/types";
 import { CommentStatus } from "@/shared/constants/comment.constants";
+import { UserRole } from "@/shared/constants/user.constants";
+import { useGlobalStore } from "@/store";
 import { ObjectId } from "mongoose";
 import { useEffect } from "react";
 import CommentReply from "./comment-reply";
@@ -17,6 +19,8 @@ const CommentField = ({
   comments = [],
   lessonId,
 }: CommentItemProps) => {
+  const { userRole } = useGlobalStore();
+
   const getRepliesComment = (
     comments: CommentItemData[],
     parentId: string | ObjectId
@@ -29,7 +33,8 @@ const CommentField = ({
   const replies = getRepliesComment(comments, comment._id);
   const level = comment.level || 0;
   const COMMENT_SPACING = 55;
-  const isPending = comment.status === CommentStatus.Pending;
+  const isPending =
+    comment.status === CommentStatus.Pending && userRole !== UserRole.Admin;
 
   useEffect(() => {
     const hash = window.location.hash;

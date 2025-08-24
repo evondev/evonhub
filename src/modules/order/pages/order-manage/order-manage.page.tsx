@@ -197,13 +197,19 @@ export function OrderManagePage(_props: OrderManagePageProps) {
             />
             <div className="flex justify-end gap-3">
               <PaginationControl
-                onClick={() => setFilters({ page: filters.page - 1 })}
+                onClick={debounce(
+                  () => setFilters({ page: filters.page - 1 }),
+                  300
+                )}
                 disabled={filters.page <= 1}
               >
                 <IconArrowLeft />
               </PaginationControl>
               <PaginationControl
-                onClick={() => setFilters({ page: filters.page + 1 })}
+                onClick={debounce(
+                  () => setFilters({ page: filters.page + 1 }),
+                  300
+                )}
               >
                 <IconArrowRight />
               </PaginationControl>

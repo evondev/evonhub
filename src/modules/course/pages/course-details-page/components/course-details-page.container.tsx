@@ -131,7 +131,9 @@ export function CourseDetailsPageContainer(
           </>
         )}
         <div className="flex flex-col gap-8">
-          <CourseSection title="Mô tả">{desc}</CourseSection>
+          <CourseSection title="Mô tả">
+            <div dangerouslySetInnerHTML={{ __html: desc }}></div>
+          </CourseSection>
           <CourseSection title="Nội dung">
             <CourseOutline
               lectures={lectures || []}

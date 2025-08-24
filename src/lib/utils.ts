@@ -44,3 +44,11 @@ export const extractDriveId = (input: string) => {
 
   return null;
 };
+
+export function formatNumberToCompact(number: number) {
+  const formatter = new Intl.NumberFormat("en-US", {
+    notation: "standard",
+    compactDisplay: "short",
+  });
+  return formatter.format(number);
+}

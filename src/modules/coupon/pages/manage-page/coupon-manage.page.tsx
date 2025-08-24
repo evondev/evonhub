@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Heading } from "@/shared/components";
+import { Heading, IconCopy } from "@/shared/components";
 import {
   StatusBadge,
   TableAction,
@@ -15,7 +15,6 @@ import {
 } from "@/shared/components/common";
 import { Tag } from "@/shared/components/tag";
 import { formatDate } from "@/utils";
-import Image from "next/image";
 import Link from "next/link";
 import { useQueryCoupons } from "../../services/data/query-coupons.data";
 
@@ -42,18 +41,21 @@ export function CouponManagePage(_props: CouponManagePageProps) {
             <TableHead>Trạng thái</TableHead>
             <TableHead>Áp dụng</TableHead>
             <TableHead>Thời gian</TableHead>
-            <TableHead>Tạo bởi</TableHead>
-            <TableHead>Hành động</TableHead>
+            <TableHead>&nbsp;</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {coupons?.map((coupon) => (
             <TableRow key={coupon.id}>
+              <TableCell className="font-medium">{coupon.title}</TableCell>
               <TableCell>
-                <strong>{coupon.title}</strong>
-              </TableCell>
-              <TableCell>
-                <strong>{coupon.code}</strong>
+                <div className="flex items-center gap-2">
+                  <strong>{coupon.code}</strong>
+                  <IconCopy
+                    onClick={() => navigator.clipboard.writeText(coupon.code)}
+                    className="cursor-pointer size-6"
+                  />
+                </div>
               </TableCell>
               <TableCell>
                 {new Date(coupon.endDate).getTime() < Date.now() ? (
@@ -73,21 +75,9 @@ export function CouponManagePage(_props: CouponManagePageProps) {
                   })}
                 </div>
               </TableCell>
-              <TableCell className="text-gray-600 whitespace-nowrap">
+              <TableCell className="text-slate-600 font-medium whitespace-nowrap">
                 <span>{formatDate(coupon.startDate)}</span> -{" "}
                 <span>{formatDate(coupon.endDate)}</span>
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-3">
-                  <Image
-                    alt=""
-                    width={40}
-                    height={40}
-                    src={coupon.createdBy?.avatar}
-                    className="size-10 rounded-full"
-                  />
-                  <strong>{coupon.createdBy?.username}</strong>
-                </div>
               </TableCell>
               <TableCell>
                 <TableActions>

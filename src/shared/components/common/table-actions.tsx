@@ -3,5 +3,5 @@ export interface TableActionsProps {
 }
 
 export function TableActions({ children }: TableActionsProps) {
-  return <div className="flex gap-3">{children}</div>;
+  return <div className="flex gap-2">{children}</div>;
 }

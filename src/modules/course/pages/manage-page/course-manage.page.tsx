@@ -31,7 +31,7 @@ import {
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { cn } from "@/shared/utils";
-import { formatThoundsand } from "@/utils";
+import { formatDate, formatThoundsand } from "@/utils";
 import { debounce } from "lodash";
 import Image from "next/image";
 import Link from "next/link";
@@ -120,13 +120,19 @@ export function CourseManagePage(_props: CourseManagePageProps) {
           />
           <div className="flex justify-end gap-3">
             <PaginationControl
-              onClick={() => setFilters({ page: filters.page - 1 })}
+              onClick={debounce(
+                () => setFilters({ page: filters.page - 1 }),
+                300
+              )}
               disabled={filters.page <= 1}
             >
               <IconArrowLeft />
             </PaginationControl>
             <PaginationControl
-              onClick={() => setFilters({ page: filters.page + 1 })}
+              onClick={debounce(
+                () => setFilters({ page: filters.page + 1 }),
+                300
+              )}
               disabled={Number(courses?.length) <= 0}
             >
               <IconArrowRight />
@@ -152,7 +158,8 @@ export function CourseManagePage(_props: CourseManagePageProps) {
             <TableHead>Thông tin</TableHead>
             <TableHead>Giá khóa học</TableHead>
             <TableHead>Trạng thái</TableHead>
-            <TableHead className="text-center">Hành động</TableHead>
+            <TableHead>Ngày tạo</TableHead>
+            <TableHead className="text-center">&nbsp;</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -168,7 +175,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
                         alt={course.title}
                         width={200}
                         height={200}
-                        className="w-16 h-16 object-cover rounded-md flex-shrink-0 border borderDarkMode"
+                        className="size-12 object-cover rounded-md flex-shrink-0 border borderDarkMode"
                         priority
                       />
                       <div className="flex flex-col gap-1">
@@ -177,12 +184,6 @@ export function CourseManagePage(_props: CourseManagePageProps) {
                             {course.title}
                           </div>
                         </div>
-                        <p className="font-medium text-xs text-gray-400">
-                          Ngày tạo:{" "}
-                          {new Date(course.createdAt).toLocaleDateString(
-                            "vi-VN"
-                          )}
-                        </p>
                       </div>
                     </div>
                   </TableCell>
@@ -198,11 +199,10 @@ export function CourseManagePage(_props: CourseManagePageProps) {
                     )}
                   </TableCell>
                   <TableCell>
-                    <LabelStatus
-                      className={courseStatus[course.status].className}
-                    >
-                      {courseStatus[course.status].text}
-                    </LabelStatus>
+                    <Switch checked={course.status === CourseStatus.Approved} />
+                  </TableCell>
+                  <TableCell className="text-slate-400">
+                    {formatDate(course.createdAt)}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">

@@ -1,5 +1,6 @@
 "use client";
 
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -16,13 +17,14 @@ import {
   IconArrowRight,
   IconCircleCheck,
 } from "@/shared/components";
-import { LabelStatus, PaginationControl } from "@/shared/components/common";
+import { PaginationControl } from "@/shared/components/common";
 import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
 import {
-  ratingStatus,
   RatingStatus,
   ratingStatusActions,
 } from "@/shared/constants/rating.constants";
+import { formatDate } from "@/utils";
+import { debounce } from "lodash";
 import Image from "next/image";
 import Link from "next/link";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
@@ -92,13 +94,19 @@ export function RatingManagePage(_props: RatingManagePageProps) {
         <div className="flex gap-3">
           <div className="flex justify-end gap-3">
             <PaginationControl
-              onClick={() => setFilters({ page: filters.page - 1 })}
+              onClick={debounce(
+                () => setFilters({ page: filters.page - 1 }),
+                300
+              )}
               disabled={filters.page <= 1}
             >
               <IconArrowLeft />
             </PaginationControl>
             <PaginationControl
-              onClick={() => setFilters({ page: filters.page + 1 })}
+              onClick={debounce(
+                () => setFilters({ page: filters.page + 1 }),
+                300
+              )}
               disabled={Number(ratings?.length) <= 0}
             >
               <IconArrowRight />
@@ -109,77 +117,81 @@ export function RatingManagePage(_props: RatingManagePageProps) {
       <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
-            <TableHead>Khóa học</TableHead>
-            <TableHead>Trạng thái</TableHead>
-            <TableHead>Thành viên</TableHead>
-            <TableHead>Nội dung</TableHead>
+            <TableHead>Course</TableHead>
+            <TableHead>Member</TableHead>
+            <TableHead>Content</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {ratings &&
             ratings.length > 0 &&
-            ratings.map((rating) => {
-              const icon = reactions.find(
-                (reaction) => reaction.rating === rating.rating
-              )?.icon;
-              return (
-                <TableRow key={rating._id}>
-                  <TableCell>
-                    <Link
-                      href={`/course/${rating.course.slug}`}
-                      className="flex items-center gap-3"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Image
-                        className="size-10 rounded-md border borderDarkMode object-cover shrink-0"
-                        src={rating.course?.image}
-                        alt={rating.course?.title}
-                        width={40}
-                        height={40}
-                      ></Image>
-                      <div className="text-xs lg:text-sm font-semibold w-[300px] lg:w-auto">
-                        {rating.course?.title}
+            ratings
+              .filter((rating) => !!rating.course?.slug)
+              .map((rating) => {
+                const icon = reactions.find(
+                  (reaction) => reaction.rating === rating.rating
+                )?.icon;
+                return (
+                  <TableRow key={rating._id}>
+                    <TableCell>
+                      <Link
+                        href={`/course/${rating.course?.slug}`}
+                        className="flex items-center gap-3"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Image
+                          className="size-10 rounded-md border borderDarkMode object-cover shrink-0"
+                          src={rating.course?.image}
+                          alt={rating.course?.title}
+                          width={40}
+                          height={40}
+                        ></Image>
+                        <div className="text-xs lg:text-sm font-semibold w-[200px]">
+                          {rating.course?.title}
+                        </div>
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Link
+                        href={`/admin/user/manage?search=${rating.user?.email}`}
+                        className="flex items-center gap-3 whitespace-nowrap"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <img
+                          alt=""
+                          src={rating.user?.avatar}
+                          className="size-8 rounded-full object-cover border borderDarkMode"
+                          width={32}
+                          height={32}
+                          loading="lazy"
+                        />
+                        <div className="text-xs lg:text-sm font-semibold">
+                          {rating.user?.username}
+                        </div>
+                      </Link>
+                    </TableCell>
+
+                    <TableCell>
+                      <div className="max-w-md text-left lg:text-balance font-medium leading-relaxed w-[300px] lg:w-auto">
+                        {rating.content}
                       </div>
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <LabelStatus
-                      className={ratingStatus[rating.status].className}
-                      onClick={() => handleRatingStatusChange(rating)}
-                    >
-                      {ratingStatus[rating.status].text}
-                    </LabelStatus>
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      href={`/admin/user/manage?search=${rating.user?.email}`}
-                      className="flex items-center gap-3 whitespace-nowrap"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Image src={icon || ""} alt="" width={20} height={20} />
-                      <img
-                        alt=""
-                        src={rating.user?.avatar}
-                        className="size-8 rounded-full object-cover border borderDarkMode"
-                        width={32}
-                        height={32}
-                        loading="lazy"
+                    </TableCell>
+                    <TableCell>
+                      <Switch
+                        checked={rating.status === RatingStatus.Active}
+                        onCheckedChange={() => handleRatingStatusChange(rating)}
                       />
-                      <div className="text-xs lg:text-sm font-semibold">
-                        {rating.user?.username}
-                      </div>
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <div className="max-w-md text-left lg:text-balance font-medium leading-relaxed w-[300px] lg:w-auto">
-                      {rating.content}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                    </TableCell>
+                    <TableCell className="text-slate-500">
+                      {formatDate(rating.createdAt)}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
         </TableBody>
       </Table>
     </div>
