@@ -30,7 +30,7 @@ export function ExplorePage(_props: ExplorePageProps) {
   });
   const { data: courses, isFetching } = useQueryCourses({
     status: CourseStatus.Approved,
-    limit: 8,
+    limit: 20,
     page: filters.page,
     search: filters.search,
     isFree: filters.isFree,
