@@ -6,7 +6,6 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "../../../components/ModeToggle";
-import { IconSparkles } from "../icons";
 import Notification from "./notification";
 
 export const Header = () => {
@@ -43,27 +42,19 @@ export const Header = () => {
         <span className="text-lg font-bold">evonHub</span>
       </Link>
       {!isLessonPage && (
-        <div className="hidden lg:flex items-center gap-2 text-base">
-          <IconSparkles className="text-primary size-6" />
-          <span className="font-medium">Bạn đến từ KTcity ?</span>
-          <Link
-            href="https://evondev.com/huong-dan-mua-khoa-hoc/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-bold text-primary underline"
-          >
-            Nhấn vào đây
-          </Link>
-          <span className="font-medium">hoặc</span>
-          <Link
-            href="https://evondev.com/huong-dan-mua-khoa-hoc/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-bold underline text-secondary"
-          >
-            Nhấn vào đây
-          </Link>
-          <span>để mua khóa học</span>
+        <div className="hidden lg:flex items-center gap-2 text-base font-medium">
+          <p>
+            Nhân dịp sinh nhật{" "}
+            <strong className="gradient-third bg-clip-text text-transparent">
+              Evondev
+            </strong>{" "}
+            vào ngày <strong>05/09</strong>. Giảm <strong>59%</strong> với
+            coupon{" "}
+            <strong className="gradient-primary bg-clip-text text-transparent font-black">
+              EVONDEV59
+            </strong>
+            .
+          </p>
         </div>
       )}
       <div className="flex items-center gap-3">

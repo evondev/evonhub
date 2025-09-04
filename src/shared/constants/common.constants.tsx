@@ -1,4 +1,5 @@
 import {
+  IconBlog,
   IconCoupon,
   IconCourseManage,
   IconCube,
@@ -78,6 +79,12 @@ export const menuLinks: MenuLinkItemProps[] = [
     title: "Sắp ra mắt",
     icon: <IconSparkles />,
     url: "/coming-soon",
+  },
+  {
+    title: "Hướng dẫn mua",
+    icon: <IconBlog />,
+    url: "https://evondev.com/huong-dan-mua-khoa-hoc/",
+    isExternal: true,
   },
 ];
 export const adminRoutes = ["/admin/overview", "/admin/user/manage"];
