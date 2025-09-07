@@ -2,7 +2,12 @@
 import { formatNumberToCompact } from "@/lib/utils";
 import { useQueryOrderCountByCourse } from "@/modules/order/services";
 import { useQueryUserCourseProgress } from "@/modules/user/services";
-import { IconLike, IconStarFilled, IconViews } from "@/shared/components";
+import {
+  IconLike,
+  IconStarFilled,
+  IconUsers,
+  IconViews,
+} from "@/shared/components";
 import { SimpleButton } from "@/shared/components/button";
 import { ProgressBar } from "@/shared/components/common";
 import { cn } from "@/shared/utils";
@@ -100,14 +105,18 @@ export function CourseItem({
             {data.title}
           </h3>
           <div className="mt-auto">
-            {!shouldHideInfo && (
-              <div className="flex items-center gap-3 mb-3 justify-between">
-                <div className="flex items-center gap-3 text-xs lg:text-sm font-medium text-gray-500 dark:text-white dark:text-opacity-60">
-                  <div className="flex items-center gap-2">
-                    <IconViews className="size-4 stroke-current fill-transparent flex-shrink-0" />
-                    <span>{formatNumberToCompact(data.views)}</span>
-                  </div>
+            <div className="flex items-center gap-3 mb-3 justify-between">
+              <div className="flex items-center gap-3 text-xs lg:text-sm font-medium text-gray-500 dark:text-white dark:text-opacity-60">
+                <div className="flex items-center gap-2">
+                  <IconViews className="size-4 stroke-current fill-transparent flex-shrink-0" />
+                  <span>{formatNumberToCompact(data.views)}</span>
                 </div>
+                <div className="flex items-center gap-2">
+                  <IconUsers className="size-4 stroke-current fill-transparent flex-shrink-0" />
+                  <span>{formatNumberToCompact(orderCount || 0)}</span>
+                </div>
+              </div>
+              {!shouldHideInfo && (
                 <div className="flex items-center">
                   <div className="flex items-center gap-2">
                     <div className="text-sm lg:text-lg font-bold text-secondary">
@@ -118,8 +127,8 @@ export function CourseItem({
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
             <div className="p-1 border border-[#f6f6f8] rounded-xl bg-[#f6f6f8]/30 backdrop-blur-xl dark:bg-grayDarkest dark:border-white/10">
               <SimpleButton className="w-full">
                 {cta ? cta : "Xem chi tiết"}

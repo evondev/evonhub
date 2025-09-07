@@ -22,7 +22,7 @@ export async function fetchCountOrdersByCourse(
 ): Promise<number | undefined> {
   try {
     connectToDatabase();
-    const count = await OrderModel.countDocuments({ course: courseId });
+    const count = await UserModel.countDocuments({ courses: courseId });
     return count;
   } catch (error) {
     console.log("error:", error);

@@ -147,6 +147,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
               "size-12 rounded flex items-center justify-center bg-primary text-white p-1 flex-shrink-0"
             }
             onClick={handleAddCourseToUser}
+            disabled={!selectCourse}
             isLoading={isSubmitting}
           >
             {IconPlus}
