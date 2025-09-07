@@ -52,7 +52,7 @@ export const Header = () => {
             coupon{" "}
             <strong className="gradient-primary bg-clip-text text-transparent font-black">
               EVONDEV59
-            </strong>
+            </strong>{" "}
             đến hết <strong>30/09</strong>.
           </p>
         </div>

@@ -16,7 +16,9 @@ import { cn } from "@/lib/utils";
 import { Heading, IconArrowLeft, IconArrowRight } from "@/shared/components";
 import { LabelStatus, PaginationControl } from "@/shared/components/common";
 import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
+import { membershipPlans } from "@/shared/constants/user.constants";
 import { debounce } from "lodash";
+import Image from "next/image";
 import Link from "next/link";
 import {
   parseAsBoolean,
@@ -44,7 +46,7 @@ export function UserManagePage(_props: UserManagePageProps) {
 
   const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setFilters({ search: value });
+    setFilters({ search: value, page: 1 });
   }, 500);
 
   if (!data) return null;
@@ -97,64 +99,61 @@ export function UserManagePage(_props: UserManagePageProps) {
         <TableHeader>
           <TableRow>
             <TableHead>Thông tin</TableHead>
-            <TableHead>Khóa học</TableHead>
             <TableHead>Trạng thái</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users.map((item) => (
-            <TableRow key={item.username}>
-              <TableCell>
-                <Link
-                  href={`/admin/user/update?email=${item.email}`}
-                  className="flex items-center gap-3"
-                >
-                  <img
-                    src={item.avatar}
-                    alt={item.username}
-                    width={64}
-                    height={64}
-                    className="size-10 object-cover rounded-full flex-shrink-0 borderDarkMode"
-                  />
-                  <div className="whitespace-nowrap">
-                    <h4 className="font-bold text-sm line-clamp-2 whitespace-nowrap max-w-[400px] block">
-                      {item.name}
-                    </h4>
-                    <h5>{item.username}</h5>
-                    <h5 className="font-semibold">{item.email}</h5>
-                    <p className="text-xs text-gray-400">
-                      {new Date(item?.createdAt).toLocaleDateString("vi-VN")}
-                    </p>
-                  </div>
-                </Link>
-              </TableCell>
-              <TableCell className="pl-10">
-                <div className="flex flex-col items-start lg:flex-row flex-wrap gap-2 font-semibold">
-                  {item.courses.map((course, index) => (
-                    <Link
-                      href={`/course/${course.slug}`}
-                      key={index}
-                      className="inline-block px-3 py-1 rounded-full bg-gray-100 dark:bg-grayDarkest dark:text-gray-200 text-xs whitespace-nowrap"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {course.title}
-                    </Link>
-                  ))}
-                </div>
-              </TableCell>
-              <TableCell>
-                <LabelStatus
-                  className={cn(
-                    userStatus[item.status]?.className,
-                    "cursor-pointer"
-                  )}
-                >
-                  {userStatus[item.status]?.text}
-                </LabelStatus>
-              </TableCell>
-            </TableRow>
-          ))}
+          {users.map((item) => {
+            const planDetails = membershipPlans.find(
+              (membership) => membership.plan === item?.plan
+            );
+            return (
+              <TableRow key={item.username}>
+                <TableCell>
+                  <Link
+                    href={`/admin/user/update?email=${item.email}`}
+                    className="flex items-center gap-3"
+                  >
+                    {planDetails && (
+                      <Image
+                        src={planDetails.icon}
+                        width={40}
+                        height={40}
+                        alt={planDetails.plan}
+                      />
+                    )}
+                    <img
+                      src={item.avatar}
+                      alt={item.username}
+                      width={64}
+                      height={64}
+                      className="size-10 object-cover rounded-full flex-shrink-0 borderDarkMode"
+                    />
+                    <div className="whitespace-nowrap">
+                      <h4 className="font-bold text-sm line-clamp-2 whitespace-nowrap max-w-[400px] block">
+                        {item.name}
+                      </h4>
+                      <h5>{item.username}</h5>
+                      <h5 className="font-semibold">{item.email}</h5>
+                      <p className="text-xs text-gray-400">
+                        {new Date(item?.createdAt).toLocaleDateString("vi-VN")}
+                      </p>
+                    </div>
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  <LabelStatus
+                    className={cn(
+                      userStatus[item.status]?.className,
+                      "cursor-pointer"
+                    )}
+                  >
+                    {userStatus[item.status]?.text}
+                  </LabelStatus>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </>

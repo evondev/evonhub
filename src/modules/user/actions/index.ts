@@ -161,12 +161,6 @@ export async function fetchUsers({
       .limit(limit)
       .sort({
         createdAt: -1,
-      })
-      .populate({
-        path: "courses",
-        model: CourseModel,
-        select: "title slug free",
-        match: { _destroy: false },
       });
 
     const totalUsers = await UserModel.countDocuments(query);
