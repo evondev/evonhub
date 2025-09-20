@@ -1,9 +1,9 @@
 import {
   IconAcademy,
-  IconBlog,
   IconCoupon,
   IconCourseManage,
   IconCube,
+  IconGuide,
   IconHome,
   IconMoney,
   IconOrder,
@@ -87,9 +87,10 @@ export const menuLinks: MenuLinkItemProps[] = [
   // },
   {
     title: "Hướng dẫn mua",
-    icon: <IconBlog />,
+    icon: <IconGuide />,
     url: "https://evondev.com/huong-dan-mua-khoa-hoc/",
     isExternal: true,
+    isHideMobile: true,
   },
 ];
 export const adminRoutes = ["/admin/overview", "/admin/user/manage"];

@@ -19,6 +19,7 @@ export { default as IconEmail } from "./IconEmail";
 export { default as IconEye } from "./IconEye";
 export { default as IconFavorite } from "./IconFavorite";
 export { default as IconFullScreen } from "./IconFullScreen";
+export { default as IconGuide } from "./IconGuide";
 export { default as IconHome } from "./IconHome";
 export { default as IconLevel } from "./IconLevel";
 export { default as IconLike } from "./IconLike";
