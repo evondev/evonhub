@@ -58,7 +58,6 @@ export default function CourseWidget({
       slug,
       userId,
     });
-    console.log("console.remove - handleEnrollFree - response:", response);
     if (response?.type === "success") {
       toast.success(response?.message);
       return;

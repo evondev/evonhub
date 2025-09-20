@@ -109,10 +109,6 @@ export async function fetchUserCourseProgress({
       user: userId,
       course: courseId,
     });
-    console.log(
-      "console.remove - fetchUserCourseProgress - historyCount:",
-      historyCount
-    );
 
     const lessonCount = await LessonModel.countDocuments({ courseId });
 
