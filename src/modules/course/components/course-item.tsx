@@ -34,10 +34,12 @@ export function CourseItem({
   const courseId = data._id || "";
   const isFree = !!data.free;
 
-  const { data: progress } = useQueryUserCourseProgress({
+  const { data: userProgress } = useQueryUserCourseProgress({
     userId: userId || "",
     courseId,
   });
+
+  const { progress, current, total } = userProgress || {};
 
   return (
     <div
@@ -89,7 +91,15 @@ export function CourseItem({
             </div>
           )}
 
-          {url && <ProgressBar progress={progress || 0} className="mb-2" />}
+          {url && (
+            <ProgressBar
+              progress={progress || 0}
+              current={current}
+              total={total}
+              className="mb-2"
+              shouldShowLabel
+            />
+          )}
           <h3 className="text-base lg:text-lg font-bold mb-5 line-clamp-3 block">
             {data.title}
           </h3>

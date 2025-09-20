@@ -1,3 +1,4 @@
+export * from "./badge-progress";
 export * from "./header";
 export * from "./label-status";
 export * from "./main";

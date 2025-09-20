@@ -101,7 +101,14 @@ export async function fetchUserCourseProgress({
 }: {
   userId: string;
   courseId: string;
-}): Promise<number | undefined> {
+}): Promise<
+  | {
+      progress: number;
+      current: number;
+      total: number;
+    }
+  | undefined
+> {
   try {
     connectToDatabase();
 
@@ -112,7 +119,11 @@ export async function fetchUserCourseProgress({
 
     const lessonCount = await LessonModel.countDocuments({ courseId });
 
-    return Math.ceil((historyCount / lessonCount) * 100);
+    return {
+      progress: Math.ceil((historyCount / lessonCount) * 100),
+      current: historyCount,
+      total: lessonCount,
+    };
   } catch (error) {}
 }
 
