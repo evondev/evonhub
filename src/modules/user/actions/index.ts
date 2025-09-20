@@ -109,6 +109,10 @@ export async function fetchUserCourseProgress({
       user: userId,
       course: courseId,
     });
+    console.log(
+      "console.remove - fetchUserCourseProgress - historyCount:",
+      historyCount
+    );
 
     const lessonCount = await LessonModel.countDocuments({ courseId });
 
@@ -193,4 +197,69 @@ export async function fetchUsersByCourseId({
   } catch (error) {
     console.log(error);
   }
+}
+
+export async function fetchUserCoursesContinue({
+  userId,
+}: {
+  userId: string;
+}): Promise<
+  | {
+      courses: CourseItemData[];
+      lessons: { _id: string }[];
+    }
+  | undefined
+> {
+  try {
+    connectToDatabase();
+
+    if (!userId) return;
+
+    const findUser: UserItemData | null = await UserModel.findOne({
+      clerkId: userId,
+    });
+
+    if (!findUser) return;
+
+    const isMembership = handleCheckMembership({
+      isMembership: findUser?.isMembership,
+      endDate: findUser?.planEndDate || new Date().toISOString(),
+    });
+
+    let courses: CourseItemData[] = [];
+
+    if (isMembership) {
+      courses = await CourseModel.find({
+        status: CourseStatus.Approved,
+      })
+        .select("title slug image rating level price salePrice views free")
+        .limit(2);
+    } else {
+      const user = await UserModel.findOne({
+        clerkId: userId,
+      }).populate({
+        path: "courses",
+        select: "title slug image rating level price salePrice views free",
+        match: { status: CourseStatus.Approved },
+        options: { limit: 2 },
+      });
+      courses = user?.courses;
+    }
+
+    const allLessonsPromises = Promise.all(
+      courses.map(async (item) => {
+        return LessonModel.findOne({
+          courseId: item._id,
+          _destroy: false,
+        }).select("_id");
+      })
+    );
+
+    const lessons = await allLessonsPromises;
+
+    return {
+      courses: parseData(courses),
+      lessons: parseData(lessons),
+    };
+  } catch (error) {}
 }

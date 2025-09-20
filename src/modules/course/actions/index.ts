@@ -33,6 +33,7 @@ export async function fetchCourses({
   page = 1,
   search,
   isFree,
+  isAll = true,
 }: FetchCoursesParams): Promise<CourseItemData[] | undefined> {
   try {
     connectToDatabase();
@@ -47,7 +48,7 @@ export async function fetchCourses({
       query.status = status;
     }
 
-    if (isFree) {
+    if (!isAll) {
       query.free = isFree;
     }
 

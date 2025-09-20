@@ -1,8 +1,9 @@
 "use client";
-import { ExplorePage } from "@/modules/course/pages";
 
-export interface ExplorePageRootProps {}
+import DashboardPage from "@/shared/components/dashboard";
 
-export default function ExplorePageRoot(_props: ExplorePageRootProps) {
-  return <ExplorePage />;
+export interface DashboardPageRootProps {}
+
+export default function DashboardPageRoot(_props: DashboardPageRootProps) {
+  return <DashboardPage />;
 }

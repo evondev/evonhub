@@ -1,13 +1,12 @@
 import {
+  IconAcademy,
   IconBlog,
   IconCoupon,
   IconCourseManage,
   IconCube,
-  IconEmail,
+  IconHome,
   IconMoney,
   IconOrder,
-  IconPlay,
-  IconSparkles,
   IconStudy,
   IconUsers,
 } from "../components";
@@ -21,14 +20,20 @@ export enum CommonStatus {
 
 export const menuLinks: MenuLinkItemProps[] = [
   {
-    title: "Khám phá",
-    icon: <IconPlay></IconPlay>,
+    title: "Dashboard",
+    icon: <IconHome></IconHome>,
     url: "/",
+  },
+  {
+    title: "Khám phá",
+    icon: <IconAcademy></IconAcademy>,
+    url: "/explore",
   },
   {
     title: "Khu vực học tập",
     icon: <IconStudy></IconStudy>,
     url: "/study",
+    isAuth: true,
   },
   {
     title: "Săn mã giảm giá",
@@ -55,13 +60,13 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/user/manage",
     isAdmin: true,
   },
-  {
-    title: "Quản lý emails",
-    icon: <IconEmail />,
-    url: "/admin/email/manage",
-    isAdmin: true,
-    isHideMobile: true,
-  },
+  // {
+  //   title: "Quản lý emails",
+  //   icon: <IconEmail />,
+  //   url: "/admin/email/manage",
+  //   isAdmin: true,
+  //   isHideMobile: true,
+  // },
   {
     title: "Quản lý coupon",
     icon: <IconCoupon />,
@@ -75,11 +80,11 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/membership",
     isHot: true,
   },
-  {
-    title: "Sắp ra mắt",
-    icon: <IconSparkles />,
-    url: "/coming-soon",
-  },
+  // {
+  //   title: "Sắp ra mắt",
+  //   icon: <IconSparkles />,
+  //   url: "/coming-soon",
+  // },
   {
     title: "Hướng dẫn mua",
     icon: <IconBlog />,

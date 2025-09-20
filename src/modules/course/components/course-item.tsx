@@ -1,13 +1,7 @@
 "use client";
 import { formatNumberToCompact } from "@/lib/utils";
-import { useQueryOrderCountByCourse } from "@/modules/order/services";
 import { useQueryUserCourseProgress } from "@/modules/user/services";
-import {
-  IconLike,
-  IconStarFilled,
-  IconUsers,
-  IconViews,
-} from "@/shared/components";
+import { IconStarFilled, IconViews } from "@/shared/components";
 import { SimpleButton } from "@/shared/components/button";
 import { ProgressBar } from "@/shared/components/common";
 import { cn } from "@/shared/utils";
@@ -45,10 +39,6 @@ export function CourseItem({
     courseId,
   });
 
-  const { data: orderCount } = useQueryOrderCountByCourse({
-    courseId,
-  });
-
   return (
     <div
       className={cn(
@@ -59,8 +49,7 @@ export function CourseItem({
       <div className="bg-white rounded-lg h-full flex flex-col p-3 gap-3 dark:bg-grayDarker">
         <div className="relative h-[180px] block group rounded-lg">
           {isFree && (
-            <div className="flex items-center gap-2 p-2 rounded-full absolute right-2 top-2 text-xs font-bold text-white bg-secondary">
-              <IconLike className="size-4" />
+            <div className="flex items-center gap-2 p-2 rounded-md absolute right-2 top-2 text-xs font-bold text-white bg-green-400">
               <span>Khóa học miễn phí</span>
             </div>
           )}
@@ -110,10 +99,6 @@ export function CourseItem({
                 <div className="flex items-center gap-2">
                   <IconViews className="size-4 stroke-current fill-transparent flex-shrink-0" />
                   <span>{formatNumberToCompact(data.views)}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <IconUsers className="size-4 stroke-current fill-transparent flex-shrink-0" />
-                  <span>{formatNumberToCompact(orderCount || 0)}</span>
                 </div>
               </div>
               {!shouldHideInfo && (

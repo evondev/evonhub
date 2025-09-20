@@ -16,7 +16,6 @@ export function getUserProgressOptions({
   courseId,
 }: GetUserProgressProps) {
   return queryOptions({
-    enabled: !!userId && !!courseId,
     placeholderData: keepPreviousData,
     queryFn: async () => {
       const response = await fetchUserCourseProgress({ userId, courseId });

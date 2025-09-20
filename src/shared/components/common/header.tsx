@@ -1,5 +1,7 @@
 "use client";
+import { useUserContext } from "@/components/user-context";
 import { commonPath } from "@/constants";
+import { getGreeting } from "@/shared/helpers/date.helper";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { cn } from "@/shared/utils";
 import { UserButton, useAuth } from "@clerk/nextjs";
@@ -10,6 +12,7 @@ import Notification from "./notification";
 
 export const Header = () => {
   const auth = useAuth();
+  const { userInfo } = useUserContext();
   const { isLessonPage } = useLessonDetailsPath();
   return (
     <div
@@ -41,22 +44,20 @@ export const Header = () => {
         </div>
         <span className="text-lg font-bold">evonHub</span>
       </Link>
-      {!isLessonPage && (
-        <div className="hidden lg:flex items-center gap-2 text-base font-medium">
-          <p>
-            Nhân dịp sinh nhật{" "}
-            <strong className="gradient-third bg-clip-text text-transparent">
-              Evondev
-            </strong>{" "}
-            vào ngày <strong>05/09</strong>. Giảm <strong>59%</strong> với
-            coupon{" "}
-            <strong className="gradient-primary bg-clip-text text-transparent font-black">
-              EVONDEV59
-            </strong>{" "}
-            đến hết <strong>30/09</strong>.
-          </p>
-        </div>
-      )}
+      <div className="hidden lg:block text-sm lg:text-base font-medium">
+        {!isLessonPage && (
+          <>
+            {userInfo?._id ? (
+              <>
+                {getGreeting()},{" "}
+                <strong className="text-primary">{userInfo?.name}</strong>
+              </>
+            ) : (
+              <>{getGreeting()}</>
+            )}
+          </>
+        )}
+      </div>
       <div className="flex items-center gap-3">
         <ModeToggle />
         {auth?.userId ? (

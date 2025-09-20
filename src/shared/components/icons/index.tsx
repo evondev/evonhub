@@ -1,3 +1,4 @@
+export { default as IconAcademy } from "./IconAcademy";
 export { default as IconArrowLeft } from "./IconArrowLeft";
 export { default as IconArrowRight } from "./IconArrowRight";
 export { default as IconBell } from "./IconBell";

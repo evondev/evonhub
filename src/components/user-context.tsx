@@ -8,12 +8,15 @@ import { createContext, useContext, useEffect } from "react";
 
 const UserContext = createContext<{
   userInfo?: UserInfoData | null;
+  isFetchingUser?: boolean;
 } | null>(null);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const { userId } = useAuth();
   const { setUserRole, setIsMembershipUserActive } = useGlobalStore();
-  const { data: userInfo } = useQueryUserById({ userId: userId || "" });
+  const { data: userInfo, isFetching } = useQueryUserById({
+    userId: userId || "",
+  });
 
   useEffect(() => {
     if (!userInfo) return;
@@ -29,7 +32,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }, [setIsMembershipUserActive, setUserRole, userInfo]);
 
   return (
-    <UserContext.Provider value={{ userInfo }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ userInfo, isFetchingUser: isFetching }}>
+      {children}
+    </UserContext.Provider>
   );
 };
 export const useUserContext = () => {
