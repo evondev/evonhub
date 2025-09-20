@@ -229,7 +229,7 @@ export async function fetchUserCoursesContinue({
         status: CourseStatus.Approved,
       })
         .select("title slug image rating level price salePrice views free")
-        .limit(2);
+        .limit(3);
     } else {
       const user = await UserModel.findOne({
         clerkId: userId,
@@ -237,7 +237,7 @@ export async function fetchUserCoursesContinue({
         path: "courses",
         select: "title slug image rating level price salePrice views free",
         match: { status: CourseStatus.Approved },
-        options: { limit: 2 },
+        options: { limit: 3 },
       });
       courses = user?.courses;
     }

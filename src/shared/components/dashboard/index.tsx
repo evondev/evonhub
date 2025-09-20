@@ -26,7 +26,7 @@ export default function DashboardPage(_props: DashboardPageProps) {
 
   const { data: courses, isFetching } = useQueryCourses({
     status: CourseStatus.Approved,
-    limit: 3,
+    limit: 4,
     isFree: false,
     isAll: false,
   });
@@ -39,7 +39,7 @@ export default function DashboardPage(_props: DashboardPageProps) {
     );
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-8">
       <section className="p-5 rounded-xl bg-primary text-white">
         <h1 className="font-bold lg:text-2xl">
           {userInfo?.name && (
