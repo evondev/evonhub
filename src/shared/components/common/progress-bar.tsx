@@ -8,6 +8,7 @@ export interface ProgressBarProps {
   current?: number;
   total?: number;
   shouldShowLabel?: boolean;
+  wrapperClassName?: string;
 }
 
 export function ProgressBar({
@@ -16,9 +17,10 @@ export function ProgressBar({
   current = 0,
   total = 0,
   shouldShowLabel = false,
+  wrapperClassName = "",
 }: ProgressBarProps) {
   return (
-    <div className="flex flex-col">
+    <div className={cn("flex flex-col", wrapperClassName)}>
       {shouldShowLabel && (
         <div className="flex text-xs font-medium mb-0.5">
           <strong className="font-extrabold">{current}</strong>

@@ -36,7 +36,7 @@ export function CourseItemResume({
         alt={title}
         width={600}
         height={360}
-        className="w-[150px] aspect-video object-cover rounded-lg transition-all"
+        className="w-[100px] lg:w-[150px] aspect-square object-cover rounded-lg transition-all"
         sizes="300px"
       ></Image>
       <div className="flex flex-col gap-2 flex-1 max-w-[500px]">
@@ -44,7 +44,8 @@ export function CourseItemResume({
         <BadgeProgress progress={progress || 0} />
         <ProgressBar
           progress={progress || 0}
-          className="hidden lg:block mt-1 h-1"
+          wrapperClassName="hidden lg:block mt-1"
+          className="h-1"
           current={current}
           total={total}
           shouldShowLabel
@@ -53,10 +54,16 @@ export function CourseItemResume({
       <div className="shrink-0 w-full gap-3 items-end flex justify-end lg:block lg:w-auto lg:ml-auto">
         <ProgressBar
           progress={progress || 0}
-          className="block lg:hidden flex-1 h-1"
+          className="h-1"
+          wrapperClassName="block lg:hidden flex-1"
+          shouldShowLabel
         />
         <Link href={url} className="">
-          <Button variant="primary" size="lg" className="w-max ml-auto">
+          <Button
+            variant="primary"
+            size="lg"
+            className="w-max ml-auto h-10 px-5 lg:h-12 lg:px-10"
+          >
             Học tiếp
           </Button>
         </Link>
