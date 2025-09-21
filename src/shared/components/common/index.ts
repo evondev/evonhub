@@ -1,6 +1,7 @@
 export * from "./badge-progress";
 export * from "./header";
 export * from "./label-status";
+export * from "./leaderboard-item";
 export * from "./main";
 export * from "./mobile-navigation";
 export * from "./pagination-control";

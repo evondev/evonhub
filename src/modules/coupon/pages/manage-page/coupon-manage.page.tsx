@@ -46,7 +46,7 @@ export function CouponManagePage(_props: CouponManagePageProps) {
         </TableHeader>
         <TableBody>
           {coupons?.map((coupon) => (
-            <TableRow key={coupon.id}>
+            <TableRow key={coupon._id.toString()}>
               <TableCell className="font-medium">{coupon.title}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">

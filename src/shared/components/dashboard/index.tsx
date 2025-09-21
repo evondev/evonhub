@@ -1,19 +1,18 @@
 "use client";
 
 import { useUserContext } from "@/components/user-context";
-import { formatNumberToK } from "@/lib/utils";
 import { CourseItem } from "@/modules/course/components";
 import { useQueryCourses } from "@/modules/course/services";
 import { useQueryLeaderboard } from "@/modules/score/services/data/query-leaderboard.data";
 import { useQueryUserCourseContinue } from "@/modules/user/services";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { handleGetLastUrl } from "@/shared/helpers";
-import Image from "next/image";
 import Link from "next/link";
+import { LeaderboardItem } from "../common";
 import { CourseItemResume } from "../course";
 import { CourseList } from "../course-list";
 import { CourseResumeList } from "../course/course-resume-list";
-import { IconLongArrowRight, IconStarFilled } from "../icons";
+import { IconLongArrowRight } from "../icons";
 
 export interface DashboardPageProps {}
 
@@ -35,7 +34,7 @@ export default function DashboardPage(_props: DashboardPageProps) {
     isAll: false,
   });
 
-  const { data: leaderboardData } = useQueryLeaderboard();
+  const { data: leaderboardData } = useQueryLeaderboard({ limit: 5 });
 
   if (isFetchingUser)
     return (
@@ -114,23 +113,12 @@ export default function DashboardPage(_props: DashboardPageProps) {
           <h3 className="font-bold text-base lg:text-lg">Leaderboard</h3>
           <div className="flex flex-col gap-3">
             {leaderboardData?.map((board, index) => (
-              <div key={board.user._id} className="flex items-center gap-2">
-                <strong>{index + 1}</strong>
-                <Image
-                  src={board.user.avatar}
-                  width={32}
-                  height={32}
-                  alt={board.user.username}
-                  className="size-8 rounded-full object-cover border borderDarkMode"
-                />
-                <strong className="text-sm truncate max-w-[120px]">
-                  {board.user.username}
-                </strong>
-                <span className="shrink-0 ml-auto font-bold text-sm text-primary px-3 py-1 rounded-full border borderDarkMode flex items-center gap-2">
-                  <IconStarFilled className="size-4" />
-                  {formatNumberToK(board.score)}
-                </span>
-              </div>
+              <LeaderboardItem
+                key={board.user._id}
+                user={board.user}
+                score={board.score}
+                index={index}
+              />
             ))}
           </div>
           <Link

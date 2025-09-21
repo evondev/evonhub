@@ -79,7 +79,7 @@ export function UserProfilePage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex justify-end">
+      <div className="flex items-end flex flex-col gap-5">
         <UserButton showName />
       </div>
       <div className="flex items-start gap-0 lg:gap-10 flex-col lg:flex-row">
@@ -89,15 +89,6 @@ export function UserProfilePage() {
             autoComplete="off"
             className="w-full"
           >
-            <div className="flex justify-end gap-2 mb-5 w-full">
-              <Button
-                type="submit"
-                className={primaryButtonClassName}
-                isLoading={isSubmitting}
-              >
-                Cập nhật
-              </Button>
-            </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-10 mb-10">
               <FormField
                 control={form.control}
@@ -210,6 +201,15 @@ export function UserProfilePage() {
                   />
                 </>
               )}
+            </div>
+            <div className="flex justify-end gap-2 mb-5 w-full">
+              <Button
+                type="submit"
+                className={primaryButtonClassName}
+                isLoading={isSubmitting}
+              >
+                Cập nhật
+              </Button>
             </div>
           </form>
         </Form>

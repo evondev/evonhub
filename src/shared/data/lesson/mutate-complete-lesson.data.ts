@@ -10,7 +10,8 @@ export function useMutationCompleteLesson() {
     onSuccess: () => {
       invalidateQueriesByKeys(
         QUERY_KEYS.GET_HISTORIES_BY_USER,
-        QUERY_KEYS.GET_USER_PROGRESS
+        QUERY_KEYS.GET_USER_PROGRESS,
+        QUERY_KEYS.GET_LEADERBOARD
       );
     },
   });
