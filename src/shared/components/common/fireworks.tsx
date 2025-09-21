@@ -1,11 +1,14 @@
 "use client";
 
+import { cn } from "@/shared/utils";
 import { create as createConfetti, CreateTypes } from "canvas-confetti";
 import { useEffect, useRef } from "react";
 
-export interface FireworksProps {}
+export interface FireworksProps {
+  className?: string;
+}
 
-export default function Fireworks(_props: FireworksProps) {
+export default function Fireworks({ className = "" }: FireworksProps) {
   let confettiButton: CreateTypes | null = null;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fireExplosion = async () => {
@@ -35,7 +38,10 @@ export default function Fireworks(_props: FireworksProps) {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 pointer-events-none select-none"
+      className={cn(
+        "absolute inset-0 pointer-events-none select-none",
+        className
+      )}
       style={{
         width: "100%",
         height: "100%",

@@ -11,7 +11,12 @@ import { useMutationCompleteLesson } from "@/shared/data";
 import { HistoryItemData } from "@/shared/types/history.types";
 import { cn } from "@/shared/utils";
 import Link from "next/link";
-import { useOptimistic } from "react";
+import {
+  startTransition,
+  useLayoutEffect,
+  useOptimistic,
+  useState,
+} from "react";
 
 export interface LessonOutlineItemProps {
   title: string;
@@ -37,29 +42,39 @@ export function LessonOutlineItem({
   isPreview,
   course = "",
 }: LessonOutlineItemProps) {
+  const mutateCompleteLesson = useMutationCompleteLesson();
   const className = cn(
     "mb-5 pb-5 border-b border-dashed dark:border-b-slate-500 last:pb-0 last:mb-0 last:border-b-0 flex items-center gap-2 dark:text-text5 text-sm",
     isActive ? "text-primary font-bold dark:text-primary" : "font-medium"
   );
 
-  const mutateCompleteLesson = useMutationCompleteLesson();
   const defaultChecked = histories
     ?.map((el) => el.lesson._id)
     .includes(id || "");
 
-  const [checked, setChecked] = useOptimistic(defaultChecked);
+  const [checked, setChecked] = useState(defaultChecked);
+  const [checkedOptimistic, setCheckedOptimistic] = useOptimistic(checked);
 
-  const handleCompleteLesson = async (checked: boolean) => {
-    setChecked(!checked);
-    try {
-      const isChecked = await mutateCompleteLesson.mutateAsync({
-        lessonId: id || "",
-        userId,
-        courseId,
-      });
-      setChecked(isChecked);
-    } catch (error) {}
+  const handleCompleteLesson = async () => {
+    const newStatus = !checkedOptimistic;
+    startTransition(async () => {
+      setCheckedOptimistic(newStatus);
+      try {
+        await mutateCompleteLesson.mutateAsync({
+          lessonId: id || "",
+          userId,
+          courseId,
+        });
+        setChecked(newStatus);
+      } catch (error) {
+        setCheckedOptimistic(checked);
+      }
+    });
   };
+
+  useLayoutEffect(() => {
+    setChecked(defaultChecked);
+  }, [defaultChecked]);
 
   const child = (
     <>
@@ -111,7 +126,10 @@ export function LessonOutlineItem({
   return (
     <>
       <div className={className}>
-        <Checkbox checked={checked} onCheckedChange={handleCompleteLesson} />
+        <Checkbox
+          checked={checkedOptimistic}
+          onCheckedChange={handleCompleteLesson}
+        />
 
         <Link
           scroll={false}

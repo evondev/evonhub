@@ -1,12 +1,12 @@
 import PageNotFound from "@/app/not-found";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { getOrderDetails } from "@/lib/actions/order.action";
+import Fireworks from "@/shared/components/common/fireworks";
 import { OrderStatus } from "@/shared/constants/order.constants";
 import { MembershipPlan } from "@/shared/constants/user.constants";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
-import Fireworks from "./fireworks";
 
 const page = async ({
   params,

@@ -8,6 +8,7 @@ import {
   useQueryLessonsByCourseId,
 } from "@/modules/lesson/services";
 import { ProgressBar } from "@/shared/components/common";
+import Fireworks from "@/shared/components/common/fireworks";
 import { CourseOutline } from "@/shared/components/course";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -42,7 +43,7 @@ export function LessonOutline({ lessonId }: LessonOutlineProps) {
     courseId,
   });
 
-  const progress = Math.ceil(
+  const progress = Math.floor(
     ((histories?.length ?? 0) / (lessonList?.length ?? 1)) * 100
   );
 
@@ -111,6 +112,7 @@ export function LessonOutline({ lessonId }: LessonOutlineProps) {
           />
         </div>
       </div>
+      {progress === 100 && <Fireworks className="fixed" />}
     </>
   );
 }
