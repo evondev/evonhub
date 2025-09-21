@@ -14,6 +14,7 @@ import { primaryButtonClassName } from "@/constants";
 import { updateUser } from "@/lib/actions/user.action";
 import { UserRole } from "@/shared/constants/user.constants";
 import { updateUserSchema } from "@/utils/formSchema";
+import { UserButton } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -77,7 +78,10 @@ export function UserProfilePage() {
   if (!userInfo) return null;
 
   return (
-    <>
+    <div className="flex flex-col gap-5">
+      <div className="flex justify-end">
+        <UserButton showName />
+      </div>
       <div className="flex items-start gap-0 lg:gap-10 flex-col lg:flex-row">
         <Form {...form}>
           <form
@@ -211,6 +215,6 @@ export function UserProfilePage() {
         </Form>
         <UserPlan />
       </div>
-    </>
+    </div>
   );
 }

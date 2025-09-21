@@ -26,7 +26,7 @@ export default function DashboardPage(_props: DashboardPageProps) {
 
   const { data: courses, isFetching } = useQueryCourses({
     status: CourseStatus.Approved,
-    limit: 4,
+    limit: 3,
     isFree: false,
     isAll: false,
   });

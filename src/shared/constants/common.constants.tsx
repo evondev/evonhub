@@ -1,15 +1,13 @@
 import {
-  IconAcademy,
   IconCoupon,
   IconCourseManage,
-  IconCube,
-  IconGuide,
+  IconGift,
   IconHome,
-  IconMoney,
   IconOrder,
   IconStudy,
   IconUsers,
 } from "../components";
+import IconDiscover from "../components/icons/IconDiscover";
 import { MenuLinkItemProps, StatusBadgeVariant } from "../types";
 
 export enum CommonStatus {
@@ -25,19 +23,18 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/",
   },
   {
-    title: "Khám phá",
-    icon: <IconAcademy></IconAcademy>,
+    title: "Khóa học",
+    icon: <IconDiscover />,
     url: "/explore",
   },
   {
     title: "Khu vực học tập",
     icon: <IconStudy></IconStudy>,
     url: "/study",
-    isAuth: true,
   },
   {
     title: "Săn mã giảm giá",
-    icon: <IconCube />,
+    icon: <IconGift />,
     url: "/coupons",
     isNew: true,
   },
@@ -60,36 +57,11 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/user/manage",
     isAdmin: true,
   },
-  // {
-  //   title: "Quản lý emails",
-  //   icon: <IconEmail />,
-  //   url: "/admin/email/manage",
-  //   isAdmin: true,
-  //   isHideMobile: true,
-  // },
   {
     title: "Quản lý coupon",
     icon: <IconCoupon />,
     url: "/admin/coupon/manage",
     isAdmin: true,
-    isHideMobile: true,
-  },
-  {
-    title: "Membership",
-    icon: <IconMoney />,
-    url: "/membership",
-    isHot: true,
-  },
-  // {
-  //   title: "Sắp ra mắt",
-  //   icon: <IconSparkles />,
-  //   url: "/coming-soon",
-  // },
-  {
-    title: "Hướng dẫn mua",
-    icon: <IconGuide />,
-    url: "https://evondev.com/huong-dan-mua-khoa-hoc/",
-    isExternal: true,
     isHideMobile: true,
   },
 ];

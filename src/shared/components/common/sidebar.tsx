@@ -6,6 +6,7 @@ import { useLessonDetailsPath } from "@/shared/hooks";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { IconLongArrowRight, IconStarFilled } from "../icons";
 import { MenuLink } from "./menu-link";
 
 export interface SidebarProps {
@@ -19,8 +20,8 @@ export function Sidebar({ role }: SidebarProps) {
   const { isLessonPage } = useLessonDetailsPath();
   if (isLessonPage) return null;
   return (
-    <aside className="fixed top-0 left-0 pb-8 px-5 hidden xl:block bgDarkMode bottom-0 w-[300px] z-50 sidebar border-r border-gray-200 dark:border-opacity-10">
-      <Link href="/" className="flex items-center gap-2 py-3 mb-5 h-20">
+    <aside className="fixed top-0 left-0 pb-5 px-5 hidden xl:flex flex-col bgDarkMode bottom-0 w-[300px] z-50 sidebar border-r border-gray-200 dark:border-opacity-10">
+      <Link href="/" className="flex items-center gap-2 py-3 mb-5">
         <div className="bg-primary p-3 rounded-full size-10 flex-shrink-0">
           <Image
             width={48}
@@ -55,6 +56,22 @@ export function Sidebar({ role }: SidebarProps) {
           );
         })}
       </ul>
+      <div className="mt-auto p-2 rounded-lg bg-secondary/10 relative">
+        <div className="size-8 p-2 flex items-center justify-center rounded-full bg-primary/20 text-primary absolute right-2 top-2">
+          <IconStarFilled />
+        </div>
+        <h3 className="font-bold text-base lg:text-lg">Membership!</h3>
+        <div className="text-sm">
+          Sở hữu toàn bộ khóa học 1 cách nhanh nhất.
+        </div>
+        <Link
+          href="/membership"
+          className="mt-2 flex items-center justify-between gap-2 p-2 text-sm rounded-lg bg-primary text-white font-bold"
+        >
+          <span>Khám phá ngay</span>
+          <IconLongArrowRight />
+        </Link>
+      </div>
     </aside>
   );
 }

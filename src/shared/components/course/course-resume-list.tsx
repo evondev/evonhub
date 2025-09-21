@@ -11,7 +11,7 @@ export function CourseResumeList({
 }: CourseResumeListProps) {
   const child = isLoading ? (
     <>
-      {Array(2)
+      {Array(3)
         .fill(0)
         .map((_, index) => (
           <CourseItemResumeLoading key={index} />

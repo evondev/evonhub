@@ -2,9 +2,9 @@
 
 import { useUserContext } from "@/components/user-context";
 import { useQueryUserCourses } from "@/modules/user/services";
-import { CourseList } from "@/shared/components";
+import { CourseItemResume } from "@/shared/components/course";
+import { CourseResumeList } from "@/shared/components/course/course-resume-list";
 import { handleGetLastUrl } from "@/shared/helpers";
-import { CourseItem } from "../../components";
 
 export interface StudyPageContainerProps {}
 
@@ -18,19 +18,18 @@ export function StudyPageContainer({}: StudyPageContainerProps) {
   const lessons = data?.lessons || [];
 
   return (
-    <CourseList isLoading={isFetching}>
+    <CourseResumeList isLoading={isFetching}>
       {courses.map((course, index) => (
-        <CourseItem
+        <CourseItemResume
           key={course.slug}
-          data={course}
-          cta="Tiếp tục học"
           url={`/lesson?id=${
             handleGetLastUrl(course.slug) || lessons?.[index]?.[0]?._id
           }`}
-          userId={userInfo?._id}
-          shouldHideInfo
-        ></CourseItem>
+          image={course.image}
+          title={course.title}
+          courseId={course._id}
+        ></CourseItemResume>
       ))}
-    </CourseList>
+    </CourseResumeList>
   );
 }

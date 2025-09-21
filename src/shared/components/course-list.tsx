@@ -1,12 +1,18 @@
 "use client";
+import { cn } from "@/lib/utils";
 import CourseItemLoading from "./course-item-loading";
 
 export interface CourseListProps {
   children: React.ReactNode;
   isLoading?: boolean;
+  className?: string;
 }
 
-export function CourseList({ children, isLoading }: CourseListProps) {
+export function CourseList({
+  children,
+  isLoading,
+  className,
+}: CourseListProps) {
   const child = isLoading ? (
     <>
       {Array(6)
@@ -19,7 +25,12 @@ export function CourseList({ children, isLoading }: CourseListProps) {
     children
   );
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5">
+    <div
+      className={cn(
+        "grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5",
+        className
+      )}
+    >
       {child}
     </div>
   );
