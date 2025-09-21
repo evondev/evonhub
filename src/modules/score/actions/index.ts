@@ -11,11 +11,14 @@ export const fetchLeaderBoard = async (): Promise<
   try {
     connectToDatabase();
 
-    const response = await ScoreModel.find({}).limit(5).populate({
-      path: "user",
-      model: UserModel,
-      select: "_id username avatar",
-    });
+    const response = await ScoreModel.find({})
+      .limit(5)
+      .populate({
+        path: "user",
+        model: UserModel,
+        select: "_id username avatar",
+      })
+      .sort({ score: -1 });
     return parseData(response) as ScoreItemData[];
   } catch (error) {
     console.error("Error fetching leaderboard:", error);

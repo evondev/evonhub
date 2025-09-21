@@ -24,6 +24,7 @@ export async function handleCompleteLesson({
       course: courseId,
     });
     const existScore = await ScoreModel.findOne({ user: userId });
+
     if (!existHistory) {
       await HistoryModel.create({
         user: userId,
@@ -50,10 +51,10 @@ export async function handleCompleteLesson({
         user: userId,
         course: courseId,
       });
-      await UserModel.findByIdAndUpdate(userId, {
-        $inc: { score: -10 },
-      });
-      if (existScore) {
+      if (existScore && existScore.score >= 10) {
+        await UserModel.findByIdAndUpdate(userId, {
+          $inc: { score: -10 },
+        });
         await ScoreModel.findByIdAndUpdate(existScore._id, {
           $inc: { score: -10 },
         });
