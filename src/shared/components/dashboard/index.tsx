@@ -45,7 +45,7 @@ export default function DashboardPage(_props: DashboardPageProps) {
     );
 
   return (
-    <div className="flex flex-col xl:grid grid-cols-[minmax(0,1fr),300px] gap-5">
+    <div className="flex flex-col xl:grid grid-cols-[minmax(0,1fr),300px] gap-8">
       <div className="flex flex-col gap-8">
         <section className="p-5 rounded-xl bg-primary text-white">
           <h1 className="font-bold lg:text-2xl">
@@ -104,12 +104,12 @@ export default function DashboardPage(_props: DashboardPageProps) {
         </section>
       </div>
       <div className="flex flex-col gap-8">
-        <div className="p-5 rounded-xl bgDarkMode flex flex-col gap-5">
+        {/* <div className="p-5 rounded-xl bgDarkMode flex flex-col gap-5">
           <h3 className="font-bold text-base lg:text-lg">Profile</h3>
         </div>
         <div className="p-5 rounded-xl bgDarkMode flex flex-col gap-5">
           <h3 className="font-bold text-base lg:text-lg">Notifications</h3>
-        </div>
+        </div> */}
         <div className="p-5 rounded-xl bgDarkMode flex flex-col gap-5">
           <h3 className="font-bold text-base lg:text-lg">Leaderboard</h3>
           <div className="flex flex-col gap-3">
