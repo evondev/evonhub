@@ -26,6 +26,12 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "evonhub.dev",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   async headers() {

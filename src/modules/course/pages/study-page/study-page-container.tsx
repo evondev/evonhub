@@ -22,7 +22,7 @@ export function StudyPageContainer({}: StudyPageContainerProps) {
       {courses.map((course, index) => (
         <CourseItemResume
           key={course.slug}
-          url={`/lesson?id=${
+          url={`/${course.slug}/lesson?id=${
             handleGetLastUrl(course.slug) || lessons?.[index]?.[0]?._id
           }`}
           image={course.image}
