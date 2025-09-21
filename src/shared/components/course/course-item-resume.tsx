@@ -54,6 +54,8 @@ export function CourseItemResume({
       <div className="shrink-0 w-full gap-3 items-end flex justify-end lg:block lg:w-auto lg:ml-auto">
         <ProgressBar
           progress={progress || 0}
+          current={current}
+          total={total}
           className="h-1"
           wrapperClassName="block lg:hidden flex-1"
           shouldShowLabel
