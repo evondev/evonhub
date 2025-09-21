@@ -4,14 +4,12 @@ import { commonPath } from "@/constants";
 import { getGreeting } from "@/shared/helpers/date.helper";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { cn } from "@/shared/utils";
-import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "../../../components/ModeToggle";
 import Notification from "./notification";
 
 export const Header = () => {
-  const auth = useAuth();
   const { userInfo } = useUserContext();
   const { isLessonPage } = useLessonDetailsPath();
   return (
@@ -26,7 +24,7 @@ export const Header = () => {
       id="header"
     >
       <Link
-        href="/study"
+        href="/"
         scroll={false}
         className={cn("flex items-center gap-2", {
           flex: isLessonPage,

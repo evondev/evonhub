@@ -102,6 +102,10 @@ const userSchema = new Schema<UserModelProps>({
     type: Boolean,
     default: false,
   },
+  score: {
+    type: Number,
+    default: 0,
+  },
 });
 userSchema.index({ clerkId: 1 }, { unique: true });
 const UserModel = models.User || model("User", userSchema);

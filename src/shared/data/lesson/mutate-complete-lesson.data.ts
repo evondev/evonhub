@@ -8,7 +8,10 @@ export function useMutationCompleteLesson() {
     mutationFn: handleCompleteLesson,
     mutationKey: [QUERY_KEYS.COMPLETE_LESSON],
     onSuccess: () => {
-      invalidateQueriesByKeys(QUERY_KEYS.GET_HISTORIES_BY_USER);
+      invalidateQueriesByKeys(
+        QUERY_KEYS.GET_HISTORIES_BY_USER,
+        QUERY_KEYS.GET_USER_PROGRESS
+      );
     },
   });
 }

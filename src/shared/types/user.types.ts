@@ -32,6 +32,7 @@ export interface UserModelProps extends Document {
   planEndDate: Date;
   planStartDate: Date;
   isMembership: boolean;
+  score: number;
   _destroy: boolean;
 }
 export interface UserItemData extends Omit<UserModelProps, "courses" | "role"> {
