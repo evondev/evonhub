@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { useUserContext } from "@/components/user-context";
 import { primaryButtonClassName } from "@/constants";
 import { updateUser } from "@/lib/actions/user.action";
-import { Heading } from "@/shared/components";
 import { UserRole } from "@/shared/constants/user.constants";
 import { updateUserSchema } from "@/utils/formSchema";
 import { UserButton } from "@clerk/nextjs";
@@ -80,7 +79,6 @@ export function UserProfilePage() {
 
   return (
     <div>
-      <Heading>UI will be changes soon...</Heading>
       <div className="flex flex-col gap-5">
         <div className="flex items-end flex flex-col gap-5">
           <UserButton showName />
