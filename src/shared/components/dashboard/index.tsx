@@ -13,6 +13,7 @@ import { CourseItemResume } from "../course";
 import { CourseList } from "../course-list";
 import { CourseResumeList } from "../course/course-resume-list";
 import { IconLongArrowRight } from "../icons";
+import { LeaderboardItemLoading } from "../loading";
 
 export interface DashboardPageProps {}
 
@@ -34,7 +35,8 @@ export default function DashboardPage(_props: DashboardPageProps) {
     isAll: false,
   });
 
-  const { data: leaderboardData } = useQueryLeaderboard({ limit: 5 });
+  const { data: leaderboardData, isFetching: isFetchingLeaderboard } =
+    useQueryLeaderboard({ limit: 5 });
 
   if (isFetchingUser)
     return (
@@ -103,23 +105,26 @@ export default function DashboardPage(_props: DashboardPageProps) {
         </section>
       </div>
       <div className="flex flex-col gap-8">
-        {/* <div className="p-5 rounded-xl bgDarkMode flex flex-col gap-5">
-          <h3 className="font-bold text-base lg:text-lg">Profile</h3>
-        </div>
-        <div className="p-5 rounded-xl bgDarkMode flex flex-col gap-5">
-          <h3 className="font-bold text-base lg:text-lg">Notifications</h3>
-        </div> */}
         <div className="p-5 rounded-xl bgDarkMode flex flex-col gap-5">
           <h3 className="font-bold text-base lg:text-lg">Leaderboard</h3>
-          <div className="flex flex-col gap-3">
-            {leaderboardData?.map((board, index) => (
-              <LeaderboardItem
-                key={board.user._id}
-                user={board.user}
-                score={board.score}
-                index={index}
-              />
-            ))}
+          <div className="flex flex-col gap-5">
+            {isFetchingLeaderboard && (
+              <>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <LeaderboardItemLoading key={index} />
+                ))}
+              </>
+            )}
+            {!isFetchingLeaderboard &&
+              leaderboardData?.map((board, index) => (
+                <LeaderboardItem
+                  key={board.user._id}
+                  user={board.user}
+                  score={board.score}
+                  index={index}
+                  rank={index + 1}
+                />
+              ))}
           </div>
           <Link
             href="/leaderboard"

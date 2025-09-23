@@ -1,7 +1,7 @@
 import { formatNumberToK } from "@/lib/utils";
 import { cn } from "@/shared/utils";
 import Image from "next/image";
-import { IconStarFilled } from "../icons";
+import Link from "next/link";
 
 export interface LeaderboardItemProps {
   user: {
@@ -12,6 +12,7 @@ export interface LeaderboardItemProps {
   score: number;
   index: number;
   className?: string;
+  rank?: number;
 }
 
 export function LeaderboardItem({
@@ -19,24 +20,47 @@ export function LeaderboardItem({
   score,
   index,
   className,
+  rank = 0,
 }: LeaderboardItemProps) {
+  let gemImage = "/gems/gem-blue.png";
+  switch (rank) {
+    case 1:
+      gemImage = "/gems/gem-rank1.png";
+      break;
+    case 2:
+      gemImage = "/gems/gem-rank2.png";
+      break;
+    case 3:
+      gemImage = "/gems/gem-rank3.png";
+      break;
+  }
   return (
-    <div key={user._id} className={cn("flex items-center gap-2", className)}>
+    <Link
+      href={`/user-profile/${user.username}`}
+      key={user._id}
+      className={cn("group flex items-center gap-2", className)}
+    >
       <strong>{index + 1}</strong>
       <Image
         src={user.avatar}
         width={32}
         height={32}
         alt={user.username}
-        className="size-8 rounded-full object-cover border borderDarkMode"
+        className="size-8 rounded-full object-cover"
       />
       <strong className="text-sm truncate max-w-[120px]">
         {user.username}
       </strong>
-      <span className="shrink-0 ml-auto font-bold text-xs text-primary px-2 py-1 rounded-full border borderDarkMode flex items-center gap-2 w-[70px] justify-center">
-        <IconStarFilled className="size-4 shrink-0" />
+      <span className="shrink-0 ml-auto font-bold text-xs px-2 py-1 rounded-full flex items-center gap-2 w-[70px] justify-center">
+        <Image
+          src={gemImage}
+          alt="score"
+          width={20}
+          height={20}
+          className="size-5 group-hover:animate-bounce"
+        />
         {formatNumberToK(score)}
       </span>
-    </div>
+    </Link>
   );
 }
