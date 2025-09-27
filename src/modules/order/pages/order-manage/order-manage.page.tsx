@@ -143,8 +143,8 @@ export function OrderManagePage(_props: OrderManagePageProps) {
 
   return (
     <>
-      <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between min-h-10">
-        <Heading className="mb-0">Quản lý đơn hàng</Heading>
+      <div className="mb-5 flex flex-col lg:flex-row gap-5 lg:items-center justify-between min-h-10">
+        <Heading>Quản lý đơn hàng</Heading>
         {userInfo?.role === UserRole.Admin && (
           <Button
             className="flex font-semibold px-4 h-10 text-sm rounded-md bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white"

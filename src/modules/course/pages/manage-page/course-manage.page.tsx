@@ -76,7 +76,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
   if (!canEdit) return null;
 
   return (
-    <>
+    <div className="flex flex-col gap-5">
       <Heading className="lg:min-h-10">Quản lý khóa học</Heading>
       <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
         <div className="flex items-center gap-5">
@@ -238,6 +238,6 @@ export function CourseManagePage(_props: CourseManagePageProps) {
             })}
         </TableBody>
       </Table>
-    </>
+    </div>
   );
 }

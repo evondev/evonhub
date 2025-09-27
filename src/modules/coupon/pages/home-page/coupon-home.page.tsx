@@ -14,15 +14,13 @@ export function CouponHomePage(_props: CouponHomePageProps) {
   });
 
   return (
-    <>
-      <div className="flex items-center justify-between mb-10">
-        <Heading className="mb-0">Săn mã giảm giá</Heading>
-      </div>
+    <div className="flex flex-col gap-5">
+      <Heading>Săn mã giảm giá</Heading>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6">
         {coupons?.map((coupon) => {
           return <CouponItem key={coupon._id} coupon={coupon} />;
         })}
       </div>
-    </>
+    </div>
   );
 }

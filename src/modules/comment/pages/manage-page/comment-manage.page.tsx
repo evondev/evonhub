@@ -87,8 +87,8 @@ export function CommentManagePage(_props: CommentManagePageProps) {
   };
 
   return (
-    <div>
-      <Heading className="lg:min-h-10">Quản lý bình luận</Heading>
+    <>
+      <Heading className="lg:min-h-10 mb-5">Quản lý bình luận</Heading>
       <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
         <div className="flex items-center gap-5">
           <div className="hidden lg:flex gap-3">
@@ -218,6 +218,6 @@ export function CommentManagePage(_props: CommentManagePageProps) {
             ))}
         </TableBody>
       </Table>
-    </div>
+    </>
   );
 }

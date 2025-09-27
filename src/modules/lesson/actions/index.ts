@@ -12,6 +12,7 @@ import {
   UpdateLessonOrderProps,
   UpdateLessonProps,
 } from "@/shared/types";
+import { isValidObjectId } from "@/utils";
 import { revalidatePath } from "next/cache";
 import LessonModel from "../models";
 
@@ -20,13 +21,17 @@ export async function getLessonById(
 ): Promise<LessonItemCutomizeData | undefined> {
   try {
     connectToDatabase();
+    const isValidId = isValidObjectId(lessonId);
+    if (!isValidId) {
+      return;
+    }
     const foundLesson = await LessonModel.findById(lessonId).populate({
       path: "courseId",
       model: CourseModel,
       select: "id slug",
     });
     if (!foundLesson) {
-      throw new Error("Lesson not found");
+      return;
     }
     return parseData(foundLesson);
   } catch (error) {
@@ -38,9 +43,13 @@ export async function getLessonPreview(
 ): Promise<LessonItemCutomizeData | undefined> {
   try {
     connectToDatabase();
+    const isValidId = isValidObjectId(lessonId);
+    if (!isValidId) {
+      return;
+    }
     const foundLesson = await LessonModel.findById(lessonId).select("trial");
     if (!foundLesson) {
-      throw new Error("Lesson not found");
+      return;
     }
     return parseData(foundLesson);
   } catch (error) {

@@ -29,9 +29,9 @@ export default function LeaderBoardPageRoot(_props: LeaderBoardPageRootProps) {
     toast.success("Đồng bộ điểm thành công");
   };
   return (
-    <div>
+    <>
       <div className="flex items-center gap-5 justify-between">
-        <Heading className="mb-0">LeaderBoard</Heading>
+        <Heading>LeaderBoard</Heading>
         <Button
           isLoading={mutationSyncLeaderBoard.isPending}
           variant="primary"
@@ -64,6 +64,6 @@ export default function LeaderBoardPageRoot(_props: LeaderBoardPageRootProps) {
             />
           ))}
       </div>
-    </div>
+    </>
   );
 }

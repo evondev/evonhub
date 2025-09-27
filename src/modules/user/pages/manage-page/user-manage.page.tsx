@@ -54,8 +54,8 @@ export function UserManagePage(_props: UserManagePageProps) {
 
   return (
     <>
-      <div className="mb-8 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
-        <Heading className="mb-0">Quản lý thành viên ({total})</Heading>
+      <div className="mb-5 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
+        <Heading>Quản lý thành viên ({total})</Heading>
         <Input
           placeholder="Tìm kiếm thành viên"
           className="w-full lg:w-[300px]"

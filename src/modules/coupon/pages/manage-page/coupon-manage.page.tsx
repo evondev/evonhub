@@ -24,8 +24,8 @@ export function CouponManagePage(_props: CouponManagePageProps) {
   const { data: coupons } = useQueryCoupons({});
   return (
     <>
-      <div className="flex items-center justify-between mb-8">
-        <Heading className="mb-0">Coupons</Heading>
+      <div className="flex items-center justify-between mb-5">
+        <Heading>Coupons</Heading>
         <Link
           href="/admin/coupon/create"
           className="flex items-center gap-3 px-3 w-[150px] justify-center h-12 text-sm rounded-lg bg-primary text-white font-semibold"

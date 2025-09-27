@@ -1,6 +1,7 @@
 "use server";
 
 import { usersHTML, usersJS, usersJSAdvanced, usersReact } from "@/data";
+import { getUserById } from "@/lib/actions/user.action";
 import CouponModel from "@/modules/coupon/models";
 import OrderModel from "@/modules/order/models";
 import { OrderItemData } from "@/modules/order/types";
@@ -34,6 +35,7 @@ export async function fetchCourses({
   search,
   isFree,
   isAll = true,
+  shouldFilterEnrolled = false,
 }: FetchCoursesParams): Promise<CourseItemData[] | undefined> {
   try {
     connectToDatabase();
@@ -58,6 +60,18 @@ export async function fetchCourses({
       .skip(skip)
       .sort({ createdAt: -1 });
     const allCourses = (parseData(courses) as CourseItemData[]) || [];
+    if (shouldFilterEnrolled) {
+      const { userId } = auth();
+      const mongoUser = (await getUserById({
+        userId: userId || "",
+      })) as UserItemData;
+      const userCoursesIds = mongoUser?.courses.map((course: CourseItemData) =>
+        course?._id ? course._id.toString() : ""
+      );
+      return allCourses.filter(
+        (course) => !userCoursesIds?.includes(course._id.toString())
+      );
+    }
 
     return allCourses;
   } catch (error) {}

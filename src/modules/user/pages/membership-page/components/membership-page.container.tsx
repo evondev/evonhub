@@ -40,19 +40,21 @@ export function MembershipPageContainer(_props: MembershipPageContainerProps) {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-5">
       <Heading>Membership</Heading>
-      <div className="mb-2">
-        Tính năng này cho phép các bạn đăng ký các gói từ{" "}
-        <strong>1 tháng</strong>, <strong>3 tháng</strong>,{" "}
-        <strong>6 tháng</strong> và <strong>1 năm</strong>. Khi các bạn đăng ký
-        các gói này thì có thể học toàn bộ khóa học trong thời hạn mà các bạn
-        chọn.
-      </div>
-      <div className="mb-5">
-        Sau khi thanh toán xong thì các bạn có thể vào khu vực học tập để có thể
-        truy cập các khóa học. Còn thông tin gói và thời hạn các bạn có thể truy
-        cập vào mục <strong>Profile</strong>
+      <div className="mb-5 leading-loose">
+        <div>
+          Tính năng này cho phép các bạn đăng ký các gói từ{" "}
+          <strong>1 tháng</strong>, <strong>3 tháng</strong>,{" "}
+          <strong>6 tháng</strong> và <strong>1 năm</strong>. Khi các bạn đăng
+          ký các gói này thì có thể học toàn bộ khóa học trong thời hạn mà các
+          bạn chọn.
+        </div>
+        <div>
+          Sau khi thanh toán xong thì các bạn có thể vào khu vực học tập để có
+          thể truy cập các khóa học. Còn thông tin gói và thời hạn các bạn có
+          thể truy cập vào mục <strong>Profile</strong>
+        </div>
       </div>
       <div className="grid lg:grid-cols-2 xl:grid-cols-4 2xl:max-w-full gap-5 xl:gap-2">
         {membershipPlans.map((item, index) => (

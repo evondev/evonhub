@@ -20,6 +20,7 @@ export interface LessonModelProps extends Document {
   iframe: string;
   trial: boolean;
   _destroy: boolean;
+  reactions: {};
 }
 export interface LessonItemData
   extends Omit<LessonModelProps, "_id" | "lectureId" | "courseId"> {

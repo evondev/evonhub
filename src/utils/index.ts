@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import queryString from "query-string";
 import slugify from "slugify";
 
@@ -92,4 +93,8 @@ export const move = (
   result[droppableDestination.droppableId] = destClone;
 
   return result;
+};
+
+export const isValidObjectId = (id: string): boolean => {
+  return mongoose.Types.ObjectId.isValid(id);
 };

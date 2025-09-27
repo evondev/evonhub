@@ -68,8 +68,8 @@ export function RatingManagePage(_props: RatingManagePageProps) {
   };
 
   return (
-    <div>
-      <Heading className="lg:min-h-10">Quản lý đánh giá</Heading>
+    <>
+      <Heading className="lg:min-h-10 mb-5">Quản lý đánh giá</Heading>
       <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
         <div className="flex items-center gap-5">
           <div className="flex gap-3">
@@ -194,6 +194,6 @@ export function RatingManagePage(_props: RatingManagePageProps) {
               })}
         </TableBody>
       </Table>
-    </div>
+    </>
   );
 }

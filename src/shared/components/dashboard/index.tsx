@@ -33,6 +33,7 @@ export default function DashboardPage(_props: DashboardPageProps) {
     limit: 4,
     isFree: false,
     isAll: false,
+    shouldFilterEnrolled: true,
   });
 
   const { data: leaderboardData, isFetching: isFetchingLeaderboard } =

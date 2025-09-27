@@ -58,6 +58,7 @@ export interface FetchCoursesManageProps {
   isFree?: boolean;
   status?: CourseStatus;
   isAll?: boolean;
+  shouldFilterEnrolled?: boolean;
 }
 
 export interface FetchCoursesParams extends Partial<FetchCoursesManageProps> {}

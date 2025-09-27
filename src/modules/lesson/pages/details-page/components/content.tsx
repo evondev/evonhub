@@ -12,18 +12,15 @@ import MuxPlayer from "@mux/mux-player-react";
 import Prism from "prismjs";
 import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { Loading } from "./loading";
 import { PlayerNavigation } from "./player-navigation";
 
 export interface LessonContentProps {
-  isLoading?: boolean;
   lessonId: string;
   lessonDetails: LessonItemCutomizeData;
   canAccessContent?: boolean;
 }
 
 export function LessonContent({
-  isLoading,
   lessonId,
   lessonDetails,
   canAccessContent = false,
@@ -114,8 +111,6 @@ export function LessonContent({
 
     localStorage.setItem("lastCourseLesson", JSON.stringify(data));
   }, [courseDetails?.slug, lessonDetails]);
-
-  if (isLoading) return <Loading />;
 
   return (
     <div>

@@ -38,7 +38,7 @@ export function ExplorePage(_props: ExplorePageProps) {
   }, 500);
 
   return (
-    <>
+    <div className="flex flex-col gap-5">
       <Heading>Khám phá</Heading>
       <div className="mb-8 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
         <div className="flex items-center gap-5">
@@ -89,6 +89,6 @@ export function ExplorePage(_props: ExplorePageProps) {
           <CourseItem key={index} data={course}></CourseItem>
         ))}
       </CourseList>
-    </>
+    </div>
   );
 }

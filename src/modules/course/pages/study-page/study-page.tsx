@@ -5,7 +5,7 @@ export interface StudyPageProps {}
 
 export function StudyPage(_props: StudyPageProps) {
   return (
-    <div>
+    <div className="flex flex-col gap-5">
       <Heading>Khu vực học tập</Heading>
       <StudyPageContainer />
     </div>

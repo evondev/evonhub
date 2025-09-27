@@ -11,6 +11,7 @@ import { FetchCoursesParams } from "../../types";
 interface GetCoursesProps extends FetchCoursesParams {
   status: CourseStatus;
   isUpdateViews?: boolean;
+  shouldFilterEnrolled?: boolean;
 }
 
 export function getCoursesOptions(props: GetCoursesProps) {

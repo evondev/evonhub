@@ -4,17 +4,22 @@ export interface HeadingProps {
   children: React.ReactNode;
   className?: string;
   squareClassName?: string;
+  as?: React.ElementType;
 }
 
-export function Heading({ children, className = "" }: HeadingProps) {
+export function Heading({
+  children,
+  className = "",
+  as: Component = "h1",
+}: HeadingProps) {
   return (
-    <h1
+    <Component
       className={cn(
-        "text-2xl lg:text-3xl font-extrabold mb-8 flex items-center gap-2 relative w-max text-textPrimary dark:text-white",
+        "text-2xl lg:text-3xl font-extrabold text-textPrimary dark:text-white",
         className
       )}
     >
-      <span className="relative z-10">{children}</span>
-    </h1>
+      {children}
+    </Component>
   );
 }

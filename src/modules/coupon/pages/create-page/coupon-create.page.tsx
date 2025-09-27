@@ -112,7 +112,7 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
     }
   };
   return (
-    <div>
+    <div className="flex flex-col gap-5">
       <Heading>Tạo mã giảm giá</Heading>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
