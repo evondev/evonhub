@@ -76,3 +76,21 @@ export const syncUserLeaderboard = async ({
     return undefined;
   }
 };
+
+export const fetchUserLeaderboardRank = async ({
+  userId,
+}: {
+  userId: string;
+}) => {
+  try {
+    connectToDatabase();
+    const leaderBoard = await ScoreModel.find({}).sort({ score: -1 }).limit(4);
+    const userRank = leaderBoard.findIndex(
+      (user) => user.user.toString() === userId
+    );
+    return userRank + 1;
+  } catch (error) {
+    console.error("Error fetching user rank:", error);
+    return undefined;
+  }
+};

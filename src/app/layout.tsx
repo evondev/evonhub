@@ -47,7 +47,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+    afterSignOutUrl="/"
+
+    
+    >
       <html lang="en" suppressHydrationWarning>
         <body className={`${manrope.className}`}>
           <div className="wrapper relative">

@@ -34,6 +34,11 @@ export interface UserModelProps extends Document {
   isMembership: boolean;
   score: number;
   _destroy: boolean;
+  socials: {
+    facebook?: string;
+    youtube?: string;
+    linkedin?: string;
+  };
 }
 export interface UserItemData extends Omit<UserModelProps, "courses" | "role"> {
   courses: CourseItemData[];

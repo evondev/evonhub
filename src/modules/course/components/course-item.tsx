@@ -4,7 +4,6 @@ import { useQueryUserCourseProgress } from "@/modules/user/services";
 import { IconStarFilled, IconViews } from "@/shared/components";
 import { SimpleButton } from "@/shared/components/button";
 import { ProgressBar } from "@/shared/components/common";
-import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -42,11 +41,7 @@ export function CourseItem({
   const { progress, current, total } = userProgress || {};
 
   return (
-    <div
-      className={cn(
-        "bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest"
-      )}
-    >
+    <div className="bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest">
       <Link href={navigateURL} className="absolute inset-0 z-10"></Link>
       <div className="bg-white rounded-lg h-full flex flex-col p-3 gap-3 dark:bg-grayDarker">
         <div className="relative h-[180px] block group rounded-lg">

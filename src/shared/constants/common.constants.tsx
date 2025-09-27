@@ -1,4 +1,5 @@
 import {
+  IconBlog,
   IconCoupon,
   IconCourseManage,
   IconGift,
@@ -36,6 +37,12 @@ export const menuLinks: MenuLinkItemProps[] = [
     title: "Săn mã giảm giá",
     icon: <IconGift />,
     url: "/coupons",
+    isHot: true,
+  },
+  {
+    title: "Blog",
+    icon: <IconBlog />,
+    url: "/blog",
     isNew: true,
   },
   {

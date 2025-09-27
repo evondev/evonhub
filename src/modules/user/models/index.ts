@@ -106,6 +106,20 @@ const userSchema = new Schema<UserModelProps>({
     type: Number,
     default: 0,
   },
+  socials: {
+    facebook: {
+      type: String,
+      default: "",
+    },
+    youtube: {
+      type: String,
+      default: "",
+    },
+    linkedin: {
+      type: String,
+      default: "",
+    },
+  },
 });
 userSchema.index({ clerkId: 1 }, { unique: true });
 const UserModel = models.User || model("User", userSchema);

@@ -15,7 +15,13 @@ import { FilterQuery } from "mongoose";
 import UserModel from "../models";
 import { FetchUsersProps } from "../types";
 
-export async function fetchUserCourses({ userId }: { userId: string }): Promise<
+export async function fetchUserCourses({
+  userId,
+  courseOnly,
+}: {
+  userId: string;
+  courseOnly?: boolean;
+}): Promise<
   | {
       courses: CourseItemData[];
       lessons: any[];
@@ -57,6 +63,13 @@ export async function fetchUserCourses({ userId }: { userId: string }): Promise<
         match: { status: CourseStatus.Approved },
       });
       courses = user?.courses || [];
+    }
+
+    if (courseOnly) {
+      return {
+        courses: parseData(courses),
+        lessons: [],
+      };
     }
 
     const allPromise = Promise.all(
@@ -269,4 +282,24 @@ export async function fetchUserCoursesContinue({
       lessons: parseData(lessons),
     };
   } catch (error) {}
+}
+
+export async function fetchUserByUsername({
+  username,
+}: {
+  username: string;
+}): Promise<UserInfoData | null | undefined> {
+  try {
+    connectToDatabase();
+
+    const user = await UserModel.findOne({ username }).select(
+      "isMembership planEndDate username bio avatar clerkId _id createdAt"
+    );
+
+    if (!user) return null;
+
+    return parseData(user);
+  } catch (error) {
+    console.log(error);
+  }
 }
