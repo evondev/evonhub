@@ -1,3 +1,4 @@
+import { Comment } from "@/shared/features/comment";
 import { LessonItemCutomizeData } from "@/shared/types";
 import { LessonContent, LessonOutline } from "./components";
 
@@ -23,7 +24,7 @@ export function LessonDetailsPage({
           lessonDetails={lessonDetails}
           canAccessContent={canAccessContent}
         />
-        {/* {canAccessContent && <Comment lessonId={lessonId} />} */}
+        {canAccessContent && <Comment lessonId={lessonId} />}
       </div>
       {canAccessContent && <LessonOutline lessonId={lessonId} />}
     </>
