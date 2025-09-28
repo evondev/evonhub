@@ -9,6 +9,7 @@ import { LessonItemCutomizeData } from "@/shared/types";
 import { cn, extractDriveId } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import MuxPlayer from "@mux/mux-player-react";
+import Image from "next/image";
 import Prism from "prismjs";
 import { useEffect, useRef } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
@@ -185,6 +186,14 @@ export function LessonContent({
 
       {hasVideo && (
         <div className="hidden lg:flex items-center justify-end mb-5 gap-3">
+          <div className="mr-auto hidden xl:flex items-center gap-1 [&>*]:size-10 ">
+            <Image width={80} height={80} src="/reactions/like.png" alt="" />
+            <Image width={80} height={80} src="/reactions/haha.png" alt="" />
+            <Image width={80} height={80} src="/reactions/love.png" alt="" />
+            <Image width={80} height={80} src="/reactions/sad.png" alt="" />
+            <Image width={80} height={80} src="/reactions/wow.png" alt="" />
+            <Image width={80} height={80} src="/reactions/angry.png" alt="" />
+          </div>
           <button
             onClick={handleExpandScreen}
             className={

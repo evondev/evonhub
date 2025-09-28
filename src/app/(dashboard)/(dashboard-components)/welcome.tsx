@@ -12,7 +12,7 @@ export async function Welcome(_props: WelcomeProps) {
   })) as UserItemData;
   return (
     <section className="p-5 rounded-xl bg-primary text-white">
-      <Heading className="lg:text-2xl text-white">
+      <Heading className="text-lg lg:text-2xl text-white">
         {userInfo?.name && <>Chào mừng đã quay trở lại, {userInfo?.name} 👋</>}
         {!userInfo?.name && <>Welcome to EvonHub 👋</>}
       </Heading>

@@ -40,9 +40,9 @@ export const menuLinks: MenuLinkItemProps[] = [
     isHot: true,
   },
   {
-    title: "Blog",
+    title: "Cập nhật mới",
     icon: <IconBlog />,
-    url: "/blog",
+    url: "/new-updates",
     isNew: true,
   },
   {
