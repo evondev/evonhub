@@ -1,35 +1,36 @@
 "use client";
 
-import { useUserContext } from "@/components/user-context";
-import { useQueryUserCourses } from "@/modules/user/services";
+import { Heading } from "@/shared/components";
 import { CourseItemResume } from "@/shared/components/course";
 import { CourseResumeList } from "@/shared/components/course/course-resume-list";
-import { handleGetLastUrl } from "@/shared/helpers";
+import { CourseItemData } from "../../types";
 
-export interface StudyPageContainerProps {}
+export interface StudyPageContainerProps {
+  courses?: CourseItemData[];
+  lessons?: { _id: string; slug: string }[];
+  isLoading?: boolean;
+}
 
-export function StudyPageContainer({}: StudyPageContainerProps) {
-  const { userInfo } = useUserContext();
-  const userId = userInfo?.clerkId.toString() || "";
-  const { data, isFetching } = useQueryUserCourses({
-    userId,
-  });
-  const courses = data?.courses || [];
-  const lessons = data?.lessons || [];
-
+export function StudyPageContainer({
+  courses = [],
+  lessons = [],
+  isLoading = false,
+}: StudyPageContainerProps) {
   return (
-    <CourseResumeList isLoading={isFetching}>
-      {courses.map((course, index) => (
-        <CourseItemResume
-          key={course.slug}
-          url={`/${course.slug}/lesson?id=${
-            handleGetLastUrl(course.slug) || lessons?.[index]?.[0]?._id
-          }`}
-          image={course.image}
-          title={course.title}
-          courseId={course._id}
-        ></CourseItemResume>
-      ))}
-    </CourseResumeList>
+    <div className="flex flex-col gap-8">
+      <Heading>Khu vực học tập</Heading>
+      <CourseResumeList isLoading={isLoading}>
+        {courses.map((course, index) => (
+          <CourseItemResume
+            key={course.slug}
+            slug={course.slug}
+            image={course.image}
+            title={course.title}
+            courseId={course._id}
+            lesson={lessons[index]}
+          ></CourseItemResume>
+        ))}
+      </CourseResumeList>
+    </div>
   );
 }

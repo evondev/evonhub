@@ -24,7 +24,7 @@ export async function fetchUserCourses({
 }): Promise<
   | {
       courses: CourseItemData[];
-      lessons: any[];
+      lessons: { _id: string; slug: string }[];
     }
   | undefined
 > {
@@ -221,12 +221,14 @@ export async function fetchUsersByCourseId({
 
 export async function fetchUserCoursesContinue({
   userId,
+  limit = 3,
 }: {
   userId: string;
+  limit?: number;
 }): Promise<
   | {
       courses: CourseItemData[];
-      lessons: { _id: string }[];
+      lessons: { _id: string; slug: string }[];
     }
   | undefined
 > {
@@ -253,7 +255,7 @@ export async function fetchUserCoursesContinue({
         status: CourseStatus.Approved,
       })
         .select("title slug image rating level price salePrice views free")
-        .limit(3);
+        .limit(limit);
     } else {
       const user = await UserModel.findOne({
         clerkId: userId,
@@ -261,7 +263,7 @@ export async function fetchUserCoursesContinue({
         path: "courses",
         select: "title slug image rating level price salePrice views free",
         match: { status: CourseStatus.Approved },
-        options: { limit: 3 },
+        options: { limit },
       });
       courses = user?.courses;
     }
@@ -271,7 +273,7 @@ export async function fetchUserCoursesContinue({
         return LessonModel.findOne({
           courseId: item._id,
           _destroy: false,
-        }).select("_id");
+        }).select("_id slug");
       })
     );
 

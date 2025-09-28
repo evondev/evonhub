@@ -31,6 +31,9 @@ export function ExplorePage(_props: ExplorePageProps) {
   const { data: courses, isFetching } = useQueryCourses({
     status: CourseStatus.Approved,
     limit: 20,
+    isFree: !!filters.isFree,
+    search: filters.search,
+    page: filters.page,
   });
   const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -38,51 +41,53 @@ export function ExplorePage(_props: ExplorePageProps) {
   }, 500);
 
   return (
-    <div className="flex flex-col gap-5">
-      <Heading>Khám phá</Heading>
-      <div className="mb-8 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
-        <div className="flex items-center gap-5">
-          <div className="flex items-center gap-3 text-sm font-medium">
-            <Switch
-              checked={filters.isFree}
-              onCheckedChange={(checked) => setFilters({ isFree: checked })}
-            />
-            <Label
-              htmlFor="paidUser"
-              className="hidden lg:flex items-center gap-2 cursor-pointer"
-            >
-              <span>Khóa học miễn phí</span>
-            </Label>
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-5">
+        <Heading>Khám phá</Heading>
+        <div className="flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-3 text-sm font-medium">
+              <Switch
+                checked={filters.isFree}
+                onCheckedChange={(checked) => setFilters({ isFree: checked })}
+              />
+              <Label
+                htmlFor="paidUser"
+                className="hidden lg:flex items-center gap-2 cursor-pointer"
+              >
+                <span>Khóa học miễn phí</span>
+              </Label>
+            </div>
           </div>
-        </div>
-        <div className="flex gap-3">
+          <div className="flex gap-3">
+            <Input
+              placeholder="Tìm kiếm khóa học"
+              className="hidden lg:block w-full lg:w-[300px] h-10"
+              onChange={handleSearch}
+              defaultValue={filters.search}
+            />
+            <div className="flex justify-end gap-3">
+              <PaginationControl
+                onClick={() => setFilters({ page: filters.page - 1 })}
+                disabled={filters.page <= 1}
+              >
+                <IconArrowLeft />
+              </PaginationControl>
+              <PaginationControl
+                onClick={() => setFilters({ page: filters.page + 1 })}
+                disabled={Number(courses?.length) <= 0}
+              >
+                <IconArrowRight />
+              </PaginationControl>
+            </div>
+          </div>
           <Input
             placeholder="Tìm kiếm khóa học"
-            className="hidden lg:block w-full lg:w-[300px] h-10"
+            className="lg:hidden w-full lg:w-[300px] h-10"
             onChange={handleSearch}
             defaultValue={filters.search}
           />
-          <div className="flex justify-end gap-3">
-            <PaginationControl
-              onClick={() => setFilters({ page: filters.page - 1 })}
-              disabled={filters.page <= 1}
-            >
-              <IconArrowLeft />
-            </PaginationControl>
-            <PaginationControl
-              onClick={() => setFilters({ page: filters.page + 1 })}
-              disabled={Number(courses?.length) <= 0}
-            >
-              <IconArrowRight />
-            </PaginationControl>
-          </div>
         </div>
-        <Input
-          placeholder="Tìm kiếm khóa học"
-          className="lg:hidden w-full lg:w-[300px] h-10"
-          onChange={handleSearch}
-          defaultValue={filters.search}
-        />
       </div>
       <CourseList isLoading={isFetching}>
         {courses?.map((course, index) => (

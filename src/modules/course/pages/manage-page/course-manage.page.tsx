@@ -76,74 +76,76 @@ export function CourseManagePage(_props: CourseManagePageProps) {
   if (!canEdit) return null;
 
   return (
-    <div className="flex flex-col gap-5">
-      <Heading className="lg:min-h-10">Quản lý khóa học</Heading>
-      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
-        <div className="flex items-center gap-5">
-          <div className="flex items-center gap-3 text-sm font-medium">
-            <Switch
-              checked={filters.isFree}
-              onCheckedChange={(checked) => setFilters({ isFree: checked })}
-            />
-            <Label
-              htmlFor="paidUser"
-              className="hidden lg:flex items-center gap-2 cursor-pointer"
-            >
-              <span>Khóa học miễn phí</span>
-            </Label>
-          </div>
-          <div className="hidden lg:flex gap-3">
-            {statusActions.map((item, index) => (
-              <button
-                key={index}
-                type="button"
-                className={cn(
-                  "text-xs font-semibold px-2 py-1 rounded-lg flex items-center gap-2 h-7",
-                  item.className
-                )}
-                onClick={() => setFilters({ status: item.value })}
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-5">
+        <Heading className="lg:min-h-10">Quản lý khóa học</Heading>
+        <div className="flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-3 text-sm font-medium">
+              <Switch
+                checked={filters.isFree}
+                onCheckedChange={(checked) => setFilters({ isFree: checked })}
+              />
+              <Label
+                htmlFor="paidUser"
+                className="hidden lg:flex items-center gap-2 cursor-pointer"
               >
-                {item.text}
-                {filters.status === item.value && (
-                  <IconCircleCheck className="size-4" />
-                )}
-              </button>
-            ))}
+                <span>Khóa học miễn phí</span>
+              </Label>
+            </div>
+            <div className="hidden lg:flex gap-3">
+              {statusActions.map((item, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={cn(
+                    "text-xs font-semibold px-2 py-1 rounded-lg flex items-center gap-2 h-7",
+                    item.className
+                  )}
+                  onClick={() => setFilters({ status: item.value })}
+                >
+                  {item.text}
+                  {filters.status === item.value && (
+                    <IconCircleCheck className="size-4" />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="flex gap-3">
+          <div className="flex gap-3">
+            <Input
+              placeholder="Tìm kiếm khóa học"
+              className="hidden lg:block w-full lg:w-[300px] h-10"
+              onChange={handleSearch}
+              defaultValue={filters.search}
+            />
+            <div className="flex justify-end gap-3">
+              <PaginationControl
+                onClick={debounce(
+                  () => setFilters({ page: filters.page - 1 }),
+                  300
+                )}
+                disabled={filters.page <= 1}
+              >
+                <IconArrowLeft />
+              </PaginationControl>
+              <PaginationControl
+                onClick={debounce(
+                  () => setFilters({ page: filters.page + 1 }),
+                  300
+                )}
+                disabled={Number(courses?.length) <= 0}
+              >
+                <IconArrowRight />
+              </PaginationControl>
+            </div>
+          </div>
           <Input
             placeholder="Tìm kiếm khóa học"
-            className="hidden lg:block w-full lg:w-[300px] h-10"
-            onChange={handleSearch}
-            defaultValue={filters.search}
+            className="lg:hidden w-full lg:w-[300px] h-10"
+            onChange={(e) => setFilters({ search: e.target.value })}
           />
-          <div className="flex justify-end gap-3">
-            <PaginationControl
-              onClick={debounce(
-                () => setFilters({ page: filters.page - 1 }),
-                300
-              )}
-              disabled={filters.page <= 1}
-            >
-              <IconArrowLeft />
-            </PaginationControl>
-            <PaginationControl
-              onClick={debounce(
-                () => setFilters({ page: filters.page + 1 }),
-                300
-              )}
-              disabled={Number(courses?.length) <= 0}
-            >
-              <IconArrowRight />
-            </PaginationControl>
-          </div>
         </div>
-        <Input
-          placeholder="Tìm kiếm khóa học"
-          className="lg:hidden w-full lg:w-[300px] h-10"
-          onChange={(e) => setFilters({ search: e.target.value })}
-        />
       </div>
       <Link
         href="/admin/course/add-new"

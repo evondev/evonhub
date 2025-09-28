@@ -4,12 +4,14 @@ import { commonPath } from "@/constants";
 import { getGreeting } from "@/shared/helpers/date.helper";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { cn } from "@/shared/utils";
+import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "../../../components/ModeToggle";
 import Notification from "./notification";
 
 export const Header = () => {
+  const { userId } = useAuth();
   const { userInfo } = useUserContext();
   const { isLessonPage } = useLessonDetailsPath();
   return (
@@ -58,14 +60,19 @@ export const Header = () => {
       </div>
       <div className="flex items-center gap-3">
         <ModeToggle />
-        {userInfo?._id ? (
+        {userId ? (
           <div className="flex items-center gap-3">
             <Notification />
             <Link
               href="/profile"
               className="size-10 flex border borderDarkMode rounded-lg p-1"
             >
-              <Image width={40} height={40} alt="" src={userInfo?.avatar} />
+              <Image
+                width={40}
+                height={40}
+                alt=""
+                src={userInfo?.avatar || "/award.png"}
+              />
             </Link>
           </div>
         ) : (

@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/components/user-context";
 import { useQueryUserCourseProgress } from "@/modules/user/services";
+import { handleGetLastUrl } from "@/shared/helpers";
 import Image from "next/image";
 import Link from "next/link";
 import { BadgeProgress, ProgressBar } from "../common";
@@ -12,13 +13,19 @@ export interface CourseItemResumeProps {
   title: string;
   courseId: string;
   url?: string;
+  lesson: {
+    _id: string;
+    slug: string;
+  };
+  slug: string;
 }
 
 export function CourseItemResume({
   image,
   title,
   courseId,
-  url = "/study",
+  slug,
+  lesson,
 }: CourseItemResumeProps) {
   const { userInfo } = useUserContext();
   const userId = userInfo?._id || "";
@@ -27,6 +34,7 @@ export function CourseItemResume({
     courseId,
   });
   const { progress, current, total } = userProgress || {};
+  const url = `${slug}/lesson${handleGetLastUrl(slug, lesson)}`;
 
   return (
     <div className="p-3 rounded-xl flex-wrap lg:flex-nowrap bgDarkMode flex items-center gap-3 lg:gap-5">

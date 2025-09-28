@@ -13,7 +13,6 @@ import { auth } from "@clerk/nextjs/server";
 export interface LessonNewPageProps {
   searchParams: {
     id: string;
-    slug: string;
   };
   params: {
     course: string;
@@ -25,7 +24,6 @@ export default async function LessonNewPage({
   params,
 }: LessonNewPageProps) {
   const lessonId = searchParams.id;
-  const lessonSlug = searchParams.slug;
   const courseSlug = params.course;
 
   const { userId } = auth();
@@ -47,10 +45,7 @@ export default async function LessonNewPage({
   });
 
   const isOwnedCourse =
-    (userCourseIds.includes(courseId) ||
-      isMembershipActive ||
-      isPreviewLesson) &&
-    !!lessonPreview;
+    (userCourseIds.includes(courseId) || isMembershipActive) && !!lessonPreview;
 
   if (!isOwnedCourse) return <PageNotFound />;
 
@@ -61,7 +56,7 @@ export default async function LessonNewPage({
       <LessonDetailsPage
         lessonDetails={lessonDetails}
         lessonId={lessonId}
-        isPreviewLesson={isPreviewLesson}
+        isPreviewLesson={isPreviewLesson && !isOwnedCourse}
       />
     </DetailsPageLayout>
   );

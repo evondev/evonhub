@@ -57,7 +57,6 @@ export function CommentForm({
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
   const id = useSearchParams().get("id");
-  const path = `${pathname}?id=${id}`;
 
   const queryClient = getQueryClient();
   async function onSubmit(values: CourseCommentFormValues) {

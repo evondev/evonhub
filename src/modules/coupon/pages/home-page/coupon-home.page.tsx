@@ -14,7 +14,7 @@ export function CouponHomePage(_props: CouponHomePageProps) {
   });
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-8">
       <Heading>Săn mã giảm giá</Heading>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6">
         {coupons?.map((coupon) => {

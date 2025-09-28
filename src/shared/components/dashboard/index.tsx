@@ -6,7 +6,6 @@ import { useQueryCourses } from "@/modules/course/services";
 import { useQueryLeaderboard } from "@/modules/score/services/data/query-leaderboard.data";
 import { useQueryUserCourseContinue } from "@/modules/user/services";
 import { CourseStatus } from "@/shared/constants/course.constants";
-import { handleGetLastUrl } from "@/shared/helpers";
 import Link from "next/link";
 import { LeaderboardItem } from "../common";
 import { CourseItemResume } from "../course";
@@ -81,9 +80,8 @@ export default function DashboardPage(_props: DashboardPageProps) {
                 image={course.image}
                 title={course.title}
                 courseId={course._id}
-                url={`${course.slug}/lesson?id=${
-                  handleGetLastUrl(course.slug) || userLessons?.[index]?._id
-                }`}
+                slug={course.slug}
+                lesson={userLessons[index]}
               />
             ))}
           </CourseResumeList>

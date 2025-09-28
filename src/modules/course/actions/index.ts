@@ -50,7 +50,7 @@ export async function fetchCourses({
       query.status = status;
     }
 
-    if (!isAll) {
+    if (isFree) {
       query.free = isFree;
     }
 
