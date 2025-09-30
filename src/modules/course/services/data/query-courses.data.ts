@@ -23,7 +23,17 @@ export function getCoursesOptions(props: GetCoursesProps) {
 
       return response;
     },
-    queryKey: [QUERY_KEYS.GET_COURSES, props],
+    queryKey: [
+      QUERY_KEYS.GET_COURSES,
+      props.isAll,
+      props.status,
+      props.page,
+      props.search,
+      props.isFree,
+      props.shouldFilterEnrolled,
+      props.isUpdateViews,
+      props.limit,
+    ],
   });
 }
 

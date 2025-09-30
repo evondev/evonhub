@@ -3,8 +3,9 @@ import {
   isServer,
   QueryClient,
 } from "@tanstack/react-query";
+import { cache } from "react";
 
-function makeQueryClient() {
+const makeQueryClient = cache(() => {
   return new QueryClient({
     defaultOptions: {
       dehydrate: {
@@ -14,11 +15,13 @@ function makeQueryClient() {
       },
       queries: {
         refetchOnWindowFocus: false,
+        refetchOnMount: false,
         staleTime: 10 * 60 * 1000,
+        gcTime: 20 * 60 * 1000,
       },
     },
   });
-}
+});
 
 let browserQueryClient: QueryClient | undefined;
 

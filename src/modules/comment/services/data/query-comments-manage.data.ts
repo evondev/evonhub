@@ -23,7 +23,14 @@ export function getCommentsOptions({
 
       return response;
     },
-    queryKey: [QUERY_KEYS.GET_COMMENTS, props],
+    queryKey: [
+      QUERY_KEYS.GET_COMMENTS,
+      props.limit,
+      props.page,
+      props.search,
+      props.status,
+      props.userId,
+    ],
   });
 }
 

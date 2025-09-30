@@ -12,8 +12,10 @@ export default async function StudyPageRoot(_props: StudyPageRootProps) {
     userId: userId || "",
   })) as UserItemData;
 
+  if (!mongoUser) return null;
+
   const data = await fetchUserCoursesContinue({
-    userId: mongoUser.clerkId,
+    userId: mongoUser?.clerkId,
     limit: 20,
   });
   const courses = data?.courses || [];

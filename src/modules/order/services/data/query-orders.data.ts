@@ -20,7 +20,16 @@ export function getOrdersOptions({ enabled, ...props }: GetOrdersProps) {
 
       return response;
     },
-    queryKey: [QUERY_KEYS.GET_ORDERS, props],
+    queryKey: [
+      QUERY_KEYS.GET_ORDERS,
+      props.filter,
+      props.isFree,
+      props.page,
+      props.limit,
+      props.status,
+      props.userId,
+      props.userRole,
+    ],
   });
 }
 

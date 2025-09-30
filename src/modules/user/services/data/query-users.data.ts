@@ -20,7 +20,13 @@ export function getUsersOptions({ enabled = true, ...props }: GetUsersProps) {
 
       return response;
     },
-    queryKey: [QUERY_KEYS.GET_USERS, props],
+    queryKey: [
+      QUERY_KEYS.GET_USERS,
+      props.isPaid,
+      props.limit,
+      props.page,
+      props.search,
+    ],
   });
 }
 
