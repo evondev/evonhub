@@ -6,6 +6,7 @@ import {
   IconHome,
   IconOrder,
   IconStudy,
+  IconUser,
   IconUsers,
 } from "../components";
 import IconDiscover from "../components/icons/IconDiscover";
@@ -44,6 +45,12 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <IconBlog />,
     url: "/new-updates",
     isNew: true,
+    isHideMobile: true,
+  },
+  {
+    title: "Profile",
+    icon: <IconUser />,
+    url: "/profile",
   },
   {
     title: "Quản lý khóa học",

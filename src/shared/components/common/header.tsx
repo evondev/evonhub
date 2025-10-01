@@ -4,14 +4,14 @@ import { commonPath } from "@/constants";
 import { getGreeting } from "@/shared/helpers/date.helper";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { cn } from "@/shared/utils";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "../../../components/ModeToggle";
 import Notification from "./notification";
 
 export const Header = () => {
-  const { userId } = useAuth();
+  const { userId, isSignedIn } = useAuth();
   const { userInfo } = useUserContext();
   const { isLessonPage } = useLessonDetailsPath();
   return (
@@ -47,7 +47,7 @@ export const Header = () => {
       <div className="hidden lg:block text-sm lg:text-base font-medium">
         {!isLessonPage && (
           <>
-            {userInfo?._id ? (
+            {userId && isSignedIn ? (
               <>
                 {getGreeting()},{" "}
                 <strong className="text-primary">{userInfo?.name}</strong>
@@ -60,20 +60,10 @@ export const Header = () => {
       </div>
       <div className="flex items-center gap-3">
         <ModeToggle />
-        {userId ? (
+        {userId && isSignedIn ? (
           <div className="flex items-center gap-3">
             <Notification />
-            <Link
-              href="/profile"
-              className="size-10 flex border borderDarkMode rounded-lg p-1"
-            >
-              <Image
-                width={40}
-                height={40}
-                alt=""
-                src={userInfo?.avatar || "/award.png"}
-              />
-            </Link>
+            <UserButton />
           </div>
         ) : (
           <Link
