@@ -24,6 +24,7 @@ export function getLessonsByCourseIdOptions({
       return response;
     },
     queryKey: [QUERY_KEYS.GET_LESSONS_BY_COURSE_ID, courseId],
+    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 }
 

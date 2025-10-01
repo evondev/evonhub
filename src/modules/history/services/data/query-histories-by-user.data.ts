@@ -24,6 +24,7 @@ export function getHistoriesByUserOptions({
       return response;
     },
     queryKey: [QUERY_KEYS.GET_HISTORIES_BY_USER, userId, courseId],
+    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 }
 

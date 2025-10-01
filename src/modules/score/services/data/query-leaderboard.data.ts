@@ -17,5 +17,6 @@ export function useQueryLeaderboard(props: UseQueryLeaderBoardProps) {
       return response;
     },
     queryKey: [QUERY_KEYS.GET_LEADERBOARD, props.limit],
+    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 }

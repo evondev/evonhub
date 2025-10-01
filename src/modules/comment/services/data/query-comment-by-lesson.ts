@@ -22,6 +22,7 @@ export function getCommentsByLessonOptions({
       return response;
     },
     queryKey: [QUERY_KEYS.GET_COMMENTS_BY_LESSON, lessonId],
+    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 }
 

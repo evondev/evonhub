@@ -20,6 +20,7 @@ export function getUserByIdOptions({ userId }: GetUserByIdProps) {
       return response;
     },
     queryKey: [QUERY_KEYS.GET_USER_BY_ID, userId],
+    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 }
 
