@@ -22,7 +22,6 @@ export function getLessonDetailsOutlineOptions({
       return response;
     },
     queryKey: [QUERY_KEYS.GET_LESSON_DETAILS_OUTLINE, slug],
-    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 }
 

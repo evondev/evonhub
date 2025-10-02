@@ -24,7 +24,6 @@ export function getUserCoursesOptions({
       return response;
     },
     queryKey: [QUERY_KEYS.GET_USER_COURSES, userId, courseOnly],
-    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 }
 

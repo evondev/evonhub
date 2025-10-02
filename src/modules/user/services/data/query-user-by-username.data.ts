@@ -20,7 +20,6 @@ export function useQueryUserByUsername({ username }: GetUserByUsernameProps) {
       return response;
     },
     queryKey: [QUERY_KEYS.GET_USER_BY_USERNAME, username],
-    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 
   return useQuery(options);

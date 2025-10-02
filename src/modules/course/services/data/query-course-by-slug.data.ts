@@ -25,7 +25,6 @@ export function getCourseBySlugOptions({
       return response;
     },
     queryKey: [QUERY_KEYS.GET_COURSE_BY_SLUG, courseSlug, status],
-    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 }
 

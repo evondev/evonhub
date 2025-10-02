@@ -34,7 +34,6 @@ export function getCoursesOptions(props: GetCoursesProps) {
       props.isUpdateViews,
       props.limit,
     ],
-    staleTime: 30 * 60 * 1000, // 30 minutes
   });
 }
 
