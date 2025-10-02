@@ -3,9 +3,8 @@ import {
   isServer,
   QueryClient,
 } from "@tanstack/react-query";
-import { cache } from "react";
 
-const makeQueryClient = cache(() => {
+const makeQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       dehydrate: {
@@ -21,7 +20,7 @@ const makeQueryClient = cache(() => {
       },
     },
   });
-});
+};
 
 let browserQueryClient: QueryClient | undefined;
 
