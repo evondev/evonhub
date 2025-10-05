@@ -9,6 +9,7 @@ export type MenuLinkItemProps = {
   isExternal?: boolean;
   isNew?: boolean;
   isHot?: boolean;
+  isHideForAdmin?: boolean;
 };
 export type StatusBadgeVariant =
   | "success"

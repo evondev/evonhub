@@ -4,7 +4,7 @@ import { useUserContext } from "@/components/user-context";
 import { useMutationSyncLeaderboard } from "@/modules/score/services/data/mutate-sync-leaderboard.data";
 import { useQueryLeaderboard } from "@/modules/score/services/data/query-leaderboard.data";
 import { Heading } from "@/shared/components";
-import { LeaderboardItem } from "@/shared/components/common";
+import { Card, LeaderboardItem } from "@/shared/components/common";
 import { LeaderboardItemLoading } from "@/shared/components/loading";
 import { toast } from "react-toastify";
 
@@ -54,14 +54,15 @@ export default function LeaderBoardPageRoot(_props: LeaderBoardPageRootProps) {
         )}
         {!isFetching &&
           leaderboardData?.map((board, index) => (
-            <LeaderboardItem
-              key={board.user._id}
-              user={board.user}
-              score={board.score}
-              index={index}
-              rank={index + 1}
-              className="p-4 bgDarkMode rounded-lg hover:shadow-sm"
-            />
+            <Card key={board.user._id} className="rounded-lg">
+              <LeaderboardItem
+                user={board.user}
+                score={board.score}
+                index={index}
+                rank={index + 1}
+                className="p-4 bgDarkMode rounded-lg hover:shadow-sm"
+              />
+            </Card>
           ))}
       </div>
     </>

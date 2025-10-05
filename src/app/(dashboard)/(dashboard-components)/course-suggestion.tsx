@@ -1,8 +1,8 @@
 import { fetchCourses } from "@/modules/course/actions";
 import { CourseItem } from "@/modules/course/components";
 import { CourseList } from "@/shared/components";
+import { ViewAllLink } from "@/shared/components/common";
 import { CourseStatus } from "@/shared/constants/course.constants";
-import Link from "next/link";
 
 export interface CourseSuggestionProps {}
 
@@ -18,12 +18,7 @@ export async function CourseSuggestion(_props: CourseSuggestionProps) {
     <section>
       <div className="flex items-center gap-3 justify-between mb-5">
         <h2 className="font-bold text-lg lg:text-2xl">Đề xuất</h2>
-        <Link
-          href="/explore"
-          className="font-bold text-primary capitalize text-sm lg:text-base"
-        >
-          Xem tất cả
-        </Link>
+        <ViewAllLink href="/explore" />
       </div>
       <CourseList>
         {courses?.map((course, index) => (

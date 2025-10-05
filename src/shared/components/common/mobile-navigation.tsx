@@ -21,6 +21,11 @@ export function MobileNavigation({ role }: { role: string }) {
             ![UserRole.Expert, UserRole.Admin].includes(role as UserRole)
           )
             return null;
+          if (
+            link.isHideForAdmin &&
+            [UserRole.Admin].includes(role as UserRole)
+          )
+            return null;
           return (
             <li key={link.title}>
               <Link

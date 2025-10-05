@@ -35,7 +35,7 @@ export function ProgressBar({
         )}
       >
         <div
-          className="h-full rounded-full bg-primary transition-all"
+          className="h-full rounded-[inherit] bg-green-400 transition-all"
           style={{ width: `${progress}%` }}
         ></div>
       </div>

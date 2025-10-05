@@ -11,10 +11,15 @@ export async function Welcome(_props: WelcomeProps) {
     userId: userId || "",
   })) as UserItemData;
   return (
-    <section className="p-5 rounded-xl bg-primary text-white">
-      <Heading className="text-lg lg:text-2xl text-white">
-        {userInfo?.name && <>Chào mừng đã quay trở lại, {userInfo?.name} 👋</>}
-        {!userInfo?.name && <>Welcome to EvonHub 👋</>}
+    <section className="py-2">
+      <Heading className="text-lg lg:text-2xl">
+        {userInfo?.name && (
+          <>
+            👋 Welcome back,{" "}
+            <strong className="text-primary">{userInfo?.name}</strong>
+          </>
+        )}
+        {!userInfo?.name && <>👋 Welcome to EvonHub</>}
       </Heading>
     </section>
   );

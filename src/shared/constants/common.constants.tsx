@@ -39,6 +39,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <IconGift />,
     url: "/coupons",
     isHot: true,
+    isHideForAdmin: true,
   },
   {
     title: "Cập nhật mới",
@@ -46,11 +47,13 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/new-updates",
     isNew: true,
     isHideMobile: true,
+    isHideForAdmin: true,
   },
   {
     title: "Profile",
     icon: <IconUser />,
     url: "/profile",
+    isHideForAdmin: true,
   },
   {
     title: "Quản lý khóa học",

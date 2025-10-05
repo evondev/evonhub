@@ -7,8 +7,8 @@ export interface DashboardPageRootProps {}
 
 export default function DashboardPageRoot(_props: DashboardPageRootProps) {
   return (
-    <div className="flex flex-col xl:grid grid-cols-[minmax(0,1fr),300px] gap-8">
-      <div className="flex flex-col gap-8">
+    <div className="flex flex-col md:grid grid-cols-[minmax(0,1fr),300px] gap-8 items-start">
+      <div className="flex flex-col gap-8 w-full">
         <Welcome />
         <CourseResume />
         <CourseSuggestion />

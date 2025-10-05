@@ -17,7 +17,7 @@ export const Header = () => {
   return (
     <div
       className={cn(
-        "top py-3 px-5 bgDarkMode flex items-center justify-between gap-5 static xl:fixed top-0  right-0 z-50 xl:h-16 shadow-sm",
+        "top py-3 px-5 bgDarkMode flex items-center justify-between gap-5 static xl:fixed top-0  right-0 z-50 xl:h-16 border-b border-b-grayed dark:border-opacity-10",
         {
           "left-0": isLessonPage,
           "left-[300px]": !isLessonPage,
@@ -45,18 +45,7 @@ export const Header = () => {
         <span className="text-lg font-bold">evonHub</span>
       </Link>
       <div className="hidden lg:block text-sm lg:text-base font-medium">
-        {!isLessonPage && (
-          <>
-            {userId && isSignedIn ? (
-              <>
-                {getGreeting()},{" "}
-                <strong className="text-primary">{userInfo?.name}</strong>
-              </>
-            ) : (
-              <>{getGreeting()}</>
-            )}
-          </>
-        )}
+        {!isLessonPage && getGreeting()}
       </div>
       <div className="flex items-center gap-3">
         <ModeToggle />

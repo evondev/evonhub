@@ -20,20 +20,18 @@ export function Sidebar({ role }: SidebarProps) {
   const { isLessonPage } = useLessonDetailsPath();
   if (isLessonPage) return null;
   return (
-    <aside className="fixed top-0 left-0 pb-5 px-5 hidden xl:flex flex-col bgDarkMode bottom-0 w-[300px] z-50 sidebar border-r border-gray-200 dark:border-opacity-10">
-      <Link href="/" className="flex items-center gap-2 py-3 mb-5">
-        <div className="bg-primary p-3 rounded-full size-10 flex-shrink-0">
-          <Image
-            width={48}
-            height={48}
-            src="/logo.png"
-            alt="EvonHub"
-            className="max-h-full max-w-full object-contain"
-          ></Image>
-        </div>
-        <span className="text-xl font-bold">evonHub</span>
+    <aside className="fixed top-0 left-0 pb-5 px-5 hidden xl:flex flex-col bgDarkMode bottom-0 w-[300px] z-50 sidebar border-r border-r-grayed dark:border-opacity-10">
+      <Link href="/" className="flex flex-col mx-auto items-center py-3 mb-5">
+        <Image
+          width={32}
+          height={32}
+          src="/logo-main.png"
+          alt="EvonHub"
+          className="max-h-full max-w-full object-contain"
+        ></Image>
+        <span className="text-xl font-extrabold">EvonHub</span>
       </Link>
-      <ul className="flex flex-col gap-3">
+      <ul className="flex flex-col gap-2">
         {menuLinks.map((link) => {
           if (adminRoutes.includes(link.url) && UserRole.Admin !== role)
             return null;
@@ -43,6 +41,11 @@ export function Sidebar({ role }: SidebarProps) {
           )
             return null;
           if (link.isAuth && !userInfo?._id) return null;
+          if (
+            link.isHideForAdmin &&
+            [UserRole.Admin].includes(role as UserRole)
+          )
+            return null;
           return (
             <li key={link.title}>
               <MenuLink

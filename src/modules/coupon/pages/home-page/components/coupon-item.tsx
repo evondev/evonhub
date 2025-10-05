@@ -1,6 +1,7 @@
 "use client";
 import { CouponItemData } from "@/modules/coupon/types";
 import { IconCopy } from "@/shared/components";
+import { Card } from "@/shared/components/common";
 import { CouponType } from "@/shared/constants/coupon.constants";
 import { formatThoundsand } from "@/shared/utils";
 import { useRouter } from "next/navigation";
@@ -25,7 +26,7 @@ export function CouponItem({ coupon }: CouponItemProps) {
   };
 
   return (
-    <div className="p-3 rounded-lg border borderDarkMode bgDarkMode flex flex-col relative overflow-hidden group cursor-pointer">
+    <Card className="p-3 rounded-lg bgDarkMode flex flex-col relative overflow-hidden group cursor-pointer">
       <div className="py-1 px-2 text-sm font-bold text-white gradient-secondary self-start absolute top-0 left-0">
         {formatThoundsand(coupon.amount)}
         {coupon.type === CouponType.Percentage ? "%" : ""}
@@ -40,6 +41,6 @@ export function CouponItem({ coupon }: CouponItemProps) {
           <IconCopy />
         </button>
       </div>
-    </div>
+    </Card>
   );
 }

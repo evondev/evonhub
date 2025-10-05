@@ -2,9 +2,10 @@ import { cn } from "@/shared/utils";
 
 export interface BadgeProgressProps {
   progress: number;
+  className?: string;
 }
 
-export function BadgeProgress({ progress = 0 }: BadgeProgressProps) {
+export function BadgeProgress({ progress = 0, className }: BadgeProgressProps) {
   let progressItem = {
     label: "Not Started",
     classNames: "text-gray-500 border-gray-500",
@@ -34,7 +35,8 @@ export function BadgeProgress({ progress = 0 }: BadgeProgressProps) {
     <span
       className={cn(
         "inline-block text-xs w-max p-1 px-2 rounded border border-current bg-opacity-10 font-semibold",
-        progressItem.classNames
+        progressItem.classNames,
+        className
       )}
     >
       {progressItem.label}

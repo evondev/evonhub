@@ -1,12 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/components/user-context";
 import { useQueryUserCourseProgress } from "@/modules/user/services";
 import { handleGetLastUrl } from "@/shared/helpers";
 import Image from "next/image";
 import Link from "next/link";
-import { BadgeProgress, ProgressBar } from "../common";
+import { BadgeProgress, Card, ProgressBar } from "../common";
 
 export interface CourseItemResumeProps {
   image: string;
@@ -37,7 +36,7 @@ export function CourseItemResume({
   const url = `${slug}/lesson${handleGetLastUrl(slug, lesson)}`;
 
   return (
-    <div className="p-3 rounded-xl flex-wrap lg:flex-nowrap bgDarkMode flex items-center gap-3 lg:gap-5">
+    <Card className="p-2 rounded-xl flex-wrap lg:flex-nowrap bgDarkMode flex items-center gap-3 lg:gap-5 relative overflow-clip">
       <Image
         src={image}
         priority
@@ -47,37 +46,40 @@ export function CourseItemResume({
         className="w-[100px] lg:w-[150px] aspect-square object-cover rounded-lg transition-all"
         sizes="300px"
       ></Image>
-      <div className="flex flex-col gap-2 flex-1 max-w-[500px]">
-        <h3 className="font-bold text-sm lg:text-base">{title}</h3>
-        <BadgeProgress progress={progress || 0} />
+      <div className="flex flex-col gap-2 flex-1">
+        <h3 className="font-bold text-xs sm:text-base leading-loose lg:text-base 2xl:text-lg">
+          {title}
+        </h3>
+        <div className="flex items-center justify-between gap-2">
+          <BadgeProgress progress={progress || 0} />
+          <Card className="lg:hidden rounded-lg self-end">
+            <Link
+              href={url}
+              className="font-semibold py-2 block w-max text-xs lg:text-sm px-3 lg:px-5 rounded-lg hover:text-primary dark:hover:text-white"
+            >
+              Tiếp tục học
+            </Link>
+          </Card>
+        </div>
+
         <ProgressBar
           progress={progress || 0}
-          wrapperClassName="hidden lg:block mt-1"
-          className="h-1"
+          wrapperClassName="absolute bottom-0 left-2 right-2 rounded-none"
+          className="h-[2px] lg:h-1 bg-transparent rounded-none"
           current={current}
           total={total}
-          shouldShowLabel
         />
       </div>
-      <div className="shrink-0 w-full gap-3 items-end flex justify-end lg:block lg:w-auto lg:ml-auto">
-        <ProgressBar
-          progress={progress || 0}
-          current={current}
-          total={total}
-          className="h-1"
-          wrapperClassName="block lg:hidden flex-1"
-          shouldShowLabel
-        />
-        <Link href={url} className="">
-          <Button
-            variant="primary"
-            size="lg"
-            className="w-max ml-auto h-10 px-5 lg:h-12 lg:px-10"
+      <div className="shrink-0 w-full gap-3 items-end hidden lg:flex justify-end lg:block lg:w-auto lg:ml-auto lg:absolute lg:bottom-2 lg:right-2">
+        <Card className="rounded-lg">
+          <Link
+            href={url}
+            className="font-semibold py-2 block w-full text-xs lg:text-sm px-3 lg:px-5 rounded-lg hover:text-primary dark:hover:text-white"
           >
-            Học tiếp
-          </Button>
-        </Link>
+            Tiếp tục học
+          </Link>
+        </Card>
       </div>
-    </div>
+    </Card>
   );
 }

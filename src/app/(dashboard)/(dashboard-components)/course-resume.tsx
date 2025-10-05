@@ -1,8 +1,8 @@
 import { fetchUserCoursesContinue } from "@/modules/user/actions";
+import { ViewAllLink } from "@/shared/components/common";
 import { CourseItemResume } from "@/shared/components/course";
 import { CourseResumeList } from "@/shared/components/course/course-resume-list";
 import { auth } from "@clerk/nextjs/server";
-import Link from "next/link";
 
 export interface CourseResumeProps {}
 
@@ -19,12 +19,7 @@ export async function CourseResume(_props: CourseResumeProps) {
     <section>
       <div className="flex items-center gap-3 justify-between mb-5">
         <h2 className="font-bold text-lg lg:text-2xl">Khóa học</h2>
-        <Link
-          href="/study"
-          className="font-bold text-primary capitalize text-sm lg:text-base"
-        >
-          Xem tất cả
-        </Link>
+        <ViewAllLink href="/study" />
       </div>
       <CourseResumeList>
         {userCourses?.map((course, index) => (

@@ -7,7 +7,7 @@
     @apply text-white bg-primary;
   }
   body {
-    @apply bg-[#F6F6F8] text-grayPrimary dark:text-[#cbd5e1] dark:bg-grayDarkest antialiased overflow-x-hidden;
+    @apply bg-white text-grayPrimary dark:text-[#cbd5e1] dark:bg-grayDarkest antialiased overflow-x-hidden;
   }
   .wrapper {
     max-width: 2600px;
@@ -441,4 +441,9 @@ div[role="dialog"] {
   .animate-spin {
     @apply mx-auto;
   }
+}
+// card
+.card {
+  @apply border border-gray-200;
+  box-shadow: inset 0 0 0px 4px #e5e7eb70;
 }

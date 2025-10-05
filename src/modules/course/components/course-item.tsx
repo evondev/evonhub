@@ -3,7 +3,7 @@ import { formatNumberToCompact } from "@/lib/utils";
 import { useQueryUserCourseProgress } from "@/modules/user/services";
 import { IconStarFilled, IconViews } from "@/shared/components";
 import { SimpleButton } from "@/shared/components/button";
-import { ProgressBar } from "@/shared/components/common";
+import { Card, ProgressBar } from "@/shared/components/common";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,92 +41,90 @@ export function CourseItem({
   const { progress, current, total } = userProgress || {};
 
   return (
-    <div className="bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest">
+    <Card className="rounded-lg p-5 flex flex-col gap-5 transition-all relative dark:bg-grayDarkest">
       <Link href={navigateURL} className="absolute inset-0 z-10"></Link>
-      <div className="bg-white rounded-lg h-full flex flex-col p-3 gap-3 dark:bg-grayDarker">
-        <div className="relative h-[180px] block group rounded-lg">
-          {isFree && (
-            <div className="flex items-center gap-2 p-2 rounded-md absolute right-2 top-2 text-xs font-bold text-white bg-green-400">
-              <span>Khóa học miễn phí</span>
-            </div>
-          )}
-          <Image
-            src={data.image}
-            priority
-            alt=""
-            width={600}
-            height={360}
-            className="w-full h-full object-cover rounded-lg transition-all"
-            sizes="300px"
-          ></Image>
-        </div>
-        <div className="flex-1 flex flex-col">
-          {!shouldHideInfo && (
-            <div className="flex gap-1 mb-2 justify-end h-4">
-              {Array(5)
-                .fill(0)
-                .map((_, index) => {
-                  if (Math.floor(rating) < index + 1)
-                    return (
-                      <IconStarFilled
-                        key={index}
-                        className="size-4 fill-gray-300 dark:fill-white/50"
-                      />
-                    );
+      <div className="relative h-[180px] block group rounded-lg">
+        {isFree && (
+          <div className="flex items-center gap-2 p-2 rounded-md absolute right-2 top-2 text-xs font-bold text-white bg-green-400">
+            <span>Khóa học miễn phí</span>
+          </div>
+        )}
+        <Image
+          src={data.image}
+          priority
+          alt=""
+          width={600}
+          height={360}
+          className="w-full h-full object-cover rounded-lg transition-all"
+          sizes="300px"
+        ></Image>
+      </div>
+      <div className="flex-1 flex flex-col">
+        {!shouldHideInfo && (
+          <div className="flex gap-1 mb-2 justify-end h-4">
+            {Array(5)
+              .fill(0)
+              .map((_, index) => {
+                if (Math.floor(rating) < index + 1)
                   return (
-                    <Image
+                    <IconStarFilled
                       key={index}
-                      alt="rating"
-                      src="/star.png"
-                      width={16}
-                      height={16}
+                      className="size-4 fill-gray-300 dark:fill-white/50"
                     />
                   );
-                })}
-            </div>
-          )}
+                return (
+                  <Image
+                    key={index}
+                    alt="rating"
+                    src="/star.png"
+                    width={16}
+                    height={16}
+                  />
+                );
+              })}
+          </div>
+        )}
 
-          {url && (
-            <ProgressBar
-              progress={progress || 0}
-              current={current}
-              total={total}
-              className="mb-2"
-              shouldShowLabel
-            />
-          )}
-          <h3 className="text-base lg:text-lg font-bold mb-5 line-clamp-3 block">
-            {data.title}
-          </h3>
-          <div className="mt-auto">
-            <div className="flex items-center gap-3 mb-3 justify-between">
-              <div className="flex items-center gap-3 text-xs lg:text-sm font-medium text-gray-500 dark:text-white dark:text-opacity-60">
-                <div className="flex items-center gap-2">
-                  <IconViews className="size-4 stroke-current fill-transparent flex-shrink-0" />
-                  <span>{formatNumberToCompact(data.views)}</span>
-                </div>
+        {url && (
+          <ProgressBar
+            progress={progress || 0}
+            current={current}
+            total={total}
+            className="mb-2"
+            shouldShowLabel
+          />
+        )}
+        <h3 className="text-base lg:text-lg font-bold mb-5 line-clamp-3 block">
+          {data.title}
+        </h3>
+        <div className="mt-auto">
+          <div className="flex items-center gap-3 mb-3 justify-between">
+            <div className="flex items-center gap-3 text-xs lg:text-sm font-medium text-gray-500 dark:text-white dark:text-opacity-60">
+              <div className="flex items-center gap-2">
+                <IconViews className="size-4 stroke-current fill-transparent flex-shrink-0" />
+                <span>{formatNumberToCompact(data.views)}</span>
               </div>
-              {!shouldHideInfo && (
-                <div className="flex items-center">
-                  <div className="flex items-center gap-2">
-                    <div className="text-sm lg:text-lg font-bold text-secondary">
-                      {isFree ? <></> : `${formatThoundsand(data.price)}`}
-                    </div>
-                    <div className="text-sm lg:text-base font-semibold line-through text-gray-500">
-                      {isFree ? "" : `${formatThoundsand(data.salePrice)}`}
-                    </div>
+            </div>
+            {!shouldHideInfo && (
+              <div className="flex items-center">
+                <div className="flex items-center gap-2">
+                  <div className="text-sm lg:text-lg font-bold text-secondary">
+                    {isFree ? <></> : `${formatThoundsand(data.price)}`}
+                  </div>
+                  <div className="text-sm lg:text-base font-semibold line-through text-gray-500">
+                    {isFree ? "" : `${formatThoundsand(data.salePrice)}`}
                   </div>
                 </div>
-              )}
-            </div>
-            <div className="p-1 border border-[#f6f6f8] rounded-xl bg-[#f6f6f8]/30 backdrop-blur-xl dark:bg-grayDarkest dark:border-white/10">
-              <SimpleButton className="w-full">
-                {cta ? cta : "Xem chi tiết"}
-              </SimpleButton>
-            </div>
+              </div>
+            )}
+          </div>
+          <div className="p-1 border border-[#f6f6f8] rounded-xl bg-[#f6f6f8]/30 backdrop-blur-xl dark:bg-grayDarkest dark:border-white/10">
+            <SimpleButton className="w-full">
+              {cta ? cta : "Xem chi tiết"}
+            </SimpleButton>
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
