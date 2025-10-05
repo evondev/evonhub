@@ -98,27 +98,24 @@ export function CourseDetailsPageContainer(
             />
           )}
         </div>
-        <h1 className="font-extrabold text-xl lg:text-3xl mb-4 lg:mb-8 !leading-normal">
+        <h1 className="font-extrabold text-xl lg:text-3xl mb-4 !leading-normal">
           {title}
         </h1>
         {ratings && ratings.length > 0 && (
           <>
-            <div className="flex flex-wrap gap-3 mb-5">
+            <div className="flex flex-wrap mb-10 [&>*:not(:last-child)]:-mr-2">
               <TooltipProvider>
                 {ratings.map((el, index) => (
                   <Tooltip key={index}>
                     <TooltipTrigger>
-                      <div className="rounded-full p-1 text-sm font-medium flex items-center gap-2 border borderDarkMode bgDarkMode text-left">
+                      <div className="rounded-full text-sm font-medium flex items-center gap-2 border borderDarkMode bgDarkMode text-left">
                         <img
                           width={40}
                           height={40}
                           src={el.user.avatar}
                           alt=""
-                          className="border borderDarkMode size-8 p-0.5 object-cover rounded-full flex-shrink-0"
+                          className="size-8 p-0.5 object-cover rounded-full flex-shrink-0"
                         />
-                        <div className="flex-1">
-                          {el.content.slice(0, 120)}...
-                        </div>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="max-w-sm text-xs text-left">

@@ -11,6 +11,7 @@ import { LeaderboardItem } from "../common";
 import { CourseItemResume } from "../course";
 import { CourseList } from "../course-list";
 import { CourseResumeList } from "../course/course-resume-list";
+import { Heading } from "../heading";
 import { IconLongArrowRight } from "../icons";
 import { LeaderboardItemLoading } from "../loading";
 
@@ -48,13 +49,16 @@ export default function DashboardPage(_props: DashboardPageProps) {
   return (
     <div className="flex flex-col xl:grid grid-cols-[minmax(0,1fr),300px] gap-8">
       <div className="flex flex-col gap-8">
-        <section className="p-5 rounded-xl bg-primary text-white">
-          <h1 className="font-bold lg:text-2xl">
+        <section className="py-2">
+          <Heading className="text-lg lg:text-2xl">
             {userInfo?.name && (
-              <>Chào mừng đã quay trở lại, {userInfo?.name} 👋</>
+              <>
+                👋 Welcome back,{" "}
+                <strong className="text-primary">{userInfo?.name}</strong>
+              </>
             )}
-            {!userInfo?.name && <>Welcome to EvonHub 👋</>}
-          </h1>
+            {!userInfo?.name && <>👋 Welcome to EvonHub</>}
+          </Heading>
         </section>
         <section>
           <div className="flex items-center gap-3 justify-between mb-5">

@@ -1,5 +1,6 @@
 import { useUserContext } from "@/components/user-context";
 import { IconStarGradient } from "@/shared/components";
+import { Card } from "@/shared/components/common";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,7 +13,7 @@ export default function AlreadyEnroll({ course, lesson }: AlreadyEnrollProps) {
   const { userInfo } = useUserContext();
   if (!userInfo) return null;
   return (
-    <div className="bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest">
+    <Card className="p-3 flex flex-col relative rounded-xl">
       <div className="p-3 bg-white rounded-lg dark:bg-grayDarker">
         <div className="relative size-20 rounded-full border borderDarkMode mx-auto mb-5">
           <Image
@@ -39,6 +40,6 @@ export default function AlreadyEnroll({ course, lesson }: AlreadyEnrollProps) {
           Nhấn vào đây
         </Link>
       </div>
-    </div>
+    </Card>
   );
 }

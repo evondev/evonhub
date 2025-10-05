@@ -7,6 +7,7 @@ import { CouponItemData } from "@/modules/coupon/types";
 import { userMutationEnrollCourse } from "@/modules/course/services/data/mutation-enroll";
 import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-enroll-free.data";
 import { IconPlay, IconStudy, IconUsers } from "@/shared/components";
+import { Card } from "@/shared/components/common";
 import { MAXIUM_DISCOUNT } from "@/shared/constants/common.constants";
 import { CouponType } from "@/shared/constants/coupon.constants";
 import { cn } from "@/shared/utils";
@@ -125,7 +126,7 @@ export default function CourseWidget({
 
   return (
     <>
-      <div className="bg-white/30 backdrop-blur-xl border border-white dark:border-white/10 rounded-lg p-3 flex flex-col transition-all relative dark:bg-grayDarkest">
+      <Card className="p-3 flex flex-col rounded-xl">
         <div className="p-3 bg-white rounded-lg dark:bg-grayDarker flex flex-col gap-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -226,7 +227,7 @@ export default function CourseWidget({
             </>
           )}
         </div>
-      </div>
+      </Card>
     </>
   );
 }

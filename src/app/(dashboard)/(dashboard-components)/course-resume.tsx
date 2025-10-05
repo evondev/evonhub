@@ -21,7 +21,7 @@ export async function CourseResume(_props: CourseResumeProps) {
         <h2 className="font-bold text-lg lg:text-2xl">Khóa học</h2>
         <ViewAllLink href="/study" />
       </div>
-      <CourseResumeList>
+      <CourseResumeList className="flex flex-col gap-5">
         {userCourses?.map((course, index) => (
           <CourseItemResume
             key={course._id}

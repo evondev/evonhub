@@ -1,13 +1,16 @@
+import { cn } from "@/shared/utils";
 import { CourseItemResumeLoading } from "./course-item-resume-loading";
 
 export interface CourseResumeListProps {
   children?: React.ReactNode;
   isLoading?: boolean;
+  className?: string;
 }
 
 export function CourseResumeList({
   children,
   isLoading,
+  className,
 }: CourseResumeListProps) {
   const child = isLoading ? (
     <>
@@ -20,5 +23,7 @@ export function CourseResumeList({
   ) : (
     children
   );
-  return <div className="flex flex-col gap-5">{child}</div>;
+  return (
+    <div className={cn("grid lg:grid-cols-2 gap-8", className)}>{child}</div>
+  );
 }
