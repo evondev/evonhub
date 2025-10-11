@@ -16,10 +16,10 @@ export const Header = () => {
   return (
     <div
       className={cn(
-        "py-3 px-5 lg:borderDarkMode flex items-center justify-between gap-5 static xl:fixed top-[var(--sidebar-left)] right-[var(--header-right)] z-50 xl:h-16 rounded-xl dark:border-opacity-10 bg-white/50 dark:bg-grayDarker/50 backdrop-blur-md",
+        "py-3 px-5 xl:borderDarkMode flex items-center justify-between gap-5 fixed top-0 left-0 right-0 xl:top-[var(--sidebar-left)] xl:right-[var(--header-right)] z-50 h-16 xl:rounded-xl dark:border-opacity-10 bg-white/50 dark:bg-grayDarker/50 backdrop-blur-md",
         {
-          "left-[var(--main-padding)]": isLessonPage,
-          "left-[var(--header-left)]": !isLessonPage,
+          "xl:left-[var(--main-padding)]": isLessonPage,
+          "xl:left-[var(--header-left)]": !isLessonPage,
         }
       )}
       id="header"

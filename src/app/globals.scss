@@ -26,7 +26,7 @@
   }
   .wrapper {
     max-width: 2600px;
-    @apply mx-auto pb-16 lg:pb-10  xl:pt-[var(--wrapper-top)];
+    @apply mx-auto pb-16 lg:pb-10 pt-16 xl:pt-[var(--wrapper-top)];
   }
   textarea,
   input {

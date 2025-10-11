@@ -168,7 +168,7 @@ export function LessonContent({
         </div>
       )}
       {canAccessContent && (
-        <div className="flex lg:hidden items-center justify-end gap-2 px-2 py-6">
+        <div className="flex lg:hidden items-center justify-end gap-2 px-3 py-6">
           {prevLesson && (
             <PlayerNavigation
               action="prev"
