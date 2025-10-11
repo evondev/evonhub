@@ -13,7 +13,7 @@ const LabelStatus = ({
     <span
       className={cn(
         className,
-        "py-1 px-3 rounded-lg font-bold border border-current text-xs whitespace-nowrap bg-opacity-10"
+        "py-1 px-3 rounded-xl font-bold border border-current text-xs whitespace-nowrap bg-opacity-10"
       )}
     >
       {children}

@@ -81,7 +81,7 @@ const CommentField = ({
               {timeAgo(comment.createdAt)}
             </span>
           </div>
-          <div className="borderDarkMode bgDarkMode rounded-lg border p-5">
+          <div className="borderDarkMode bgDarkMode rounded-xl border p-5">
             <p className="mb-3 text-sm font-medium leading-relaxed text-gray-600 dark:text-white">
               {comment.content}
             </p>

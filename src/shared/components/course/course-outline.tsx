@@ -50,7 +50,7 @@ export function CourseOutline({
               <AccordionTrigger className="font-bold dark:text-text5 text-sm lg:text-base">
                 <div className="line-clamp-1 text-left">{item.title}</div>
               </AccordionTrigger>
-              <AccordionContent className="bg-white dark:bg-grayDarker rounded-lg mt-3 lg:mt-5">
+              <AccordionContent className="bg-white dark:bg-grayDarker rounded-xl mt-3 lg:mt-5">
                 {item.lessons.map((lesson) => {
                   return (
                     <LessonOutlineItem

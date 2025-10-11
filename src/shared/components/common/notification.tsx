@@ -26,7 +26,7 @@ const Notification = () => {
   return (
     <Popover>
       <PopoverTrigger
-        className="size-10 flex items-center justify-center bg-white rounded-lg dark:bg-grayDarker border border-gray-200 dark:border-opacity-10"
+        className="size-10 flex items-center justify-center bg-white rounded-xl dark:bg-grayDarker border border-gray-200 dark:border-opacity-10"
         onClick={handleRefetchNotifications}
       >
         <IconBell />

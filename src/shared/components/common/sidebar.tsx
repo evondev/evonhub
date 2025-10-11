@@ -59,7 +59,7 @@ export function Sidebar({ role }: SidebarProps) {
           );
         })}
       </ul>
-      <div className="mt-auto p-2 rounded-lg bg-secondary/10 relative">
+      <div className="mt-auto p-2 rounded-xl borderDarkMode relative">
         <div className="size-8 p-2 flex items-center justify-center rounded-full bg-primary/20 text-primary absolute right-2 top-2">
           <IconStarFilled />
         </div>
@@ -69,7 +69,7 @@ export function Sidebar({ role }: SidebarProps) {
         </div>
         <Link
           href="/membership"
-          className="mt-2 flex items-center justify-between gap-2 p-2 text-sm rounded-lg bg-primary text-white font-bold"
+          className="mt-2 flex items-center justify-between gap-2 p-2 text-sm rounded-xl bg-primary text-white font-bold"
         >
           <span>Khám phá ngay</span>
           <IconLongArrowRight />

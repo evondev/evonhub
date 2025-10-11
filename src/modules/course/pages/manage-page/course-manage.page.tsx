@@ -79,7 +79,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
     <div className="flex flex-col gap-2">
       <div className="flex flex-col gap-5">
         <Heading className="lg:min-h-10">Quản lý khóa học</Heading>
-        <div className="flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
+        <div className="flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-xl flex-wrap gap-3">
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-3 text-sm font-medium">
               <Switch
@@ -99,7 +99,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
                   key={index}
                   type="button"
                   className={cn(
-                    "text-xs font-semibold px-2 py-1 rounded-lg flex items-center gap-2 h-7",
+                    "text-xs font-semibold px-2 py-1 rounded-xl flex items-center gap-2 h-7",
                     item.className
                   )}
                   onClick={() => setFilters({ status: item.value })}
@@ -154,7 +154,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
       >
         <IconPlus />
       </Link>
-      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
+      <Table className="bg-white rounded-xl dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
             <TableHead>Thông tin</TableHead>

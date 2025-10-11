@@ -371,7 +371,7 @@ export default function UpdateCourseForm({
                               alt="Course Image"
                               width={800}
                               height={400}
-                              className="w-full aspect-video rounded-lg object-cover"
+                              className="w-full aspect-video rounded-xl object-cover"
                             />
                             <button
                               className={cn(
@@ -386,7 +386,7 @@ export default function UpdateCourseForm({
                         )}
                         {!image && (
                           <UploadDropzone
-                            className="justify-center items-center bg-white dark:bg-grayDarker rounded-lg h-[250px]"
+                            className="justify-center items-center bg-white dark:bg-grayDarker rounded-xl h-[250px]"
                             endpoint="imageUploader"
                             onClientUploadComplete={(res) => {
                               form.setValue("image", res[0].url);

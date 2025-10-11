@@ -46,7 +46,7 @@ const page = async ({
   return (
     <div className="relative w-full h-[calc(100vh-184px)]">
       <Fireworks />
-      <div className="bg-white rounded-lg bgDarkMode p-5 flex text-sm lg:text-base flex-col gap-3 font-medium">
+      <div className="bg-white rounded-xl bgDarkMode p-5 flex text-sm lg:text-base flex-col gap-3 font-medium">
         {orderDetails?.course && (
           <div>
             Cám ơn bạn đã đặt mua khóa học{" "}

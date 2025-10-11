@@ -24,6 +24,6 @@ export function CourseResumeList({
     children
   );
   return (
-    <div className={cn("grid lg:grid-cols-2 gap-8", className)}>{child}</div>
+    <div className={cn("grid lg:grid-cols-2 gap-6", className)}>{child}</div>
   );
 }

@@ -79,6 +79,9 @@
   .borderDarkMode {
     @apply border border-gray-200 dark:border-opacity-10;
   }
+  .borderDarkModeHover {
+    @apply border border-gray-200 dark:border-opacity-10 hover:border-gray-300 dark:hover:border-opacity-25 transition-all;
+  }
   .bgDarkestMode {
     @apply bg-gray-100 dark:bg-grayDarkest #{!important};
   }
@@ -138,7 +141,7 @@ div .tox .tox-edit-area::before {
   .swal2-popup .swal2-styled.swal2-confirm {
     all: unset;
     box-sizing: border-box;
-    @apply text-white bg-primary font-semibold rounded-lg px-4 py-2 h-10 w-28 flex items-center justify-center text-center text-sm cursor-pointer hover:bg-opacity-90;
+    @apply text-white bg-primary font-semibold rounded-xl px-4 py-2 h-10 w-28 flex items-center justify-center text-center text-sm cursor-pointer hover:bg-opacity-90;
   }
   .swal2-popup .swal2-styled.swal2-cancel {
     all: unset;
@@ -227,7 +230,7 @@ div[role="dialog"] {
     @apply text-sm font-medium;
   }
   pre[class^="language"] {
-    @apply rounded-lg;
+    @apply rounded-xl;
   }
 }
 // slider css

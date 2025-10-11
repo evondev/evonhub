@@ -28,12 +28,12 @@ export function CouponManagePage(_props: CouponManagePageProps) {
         <Heading>Coupons</Heading>
         <Link
           href="/admin/coupon/create"
-          className="flex items-center gap-3 px-3 w-[150px] justify-center h-12 text-sm rounded-lg bg-primary text-white font-semibold"
+          className="flex items-center gap-3 px-3 w-[150px] justify-center h-12 text-sm rounded-xl bg-primary text-white font-semibold"
         >
           <span>Tạo coupon</span>
         </Link>
       </div>
-      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
+      <Table className="bg-white rounded-xl dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
             <TableHead>Tiêu đề</TableHead>

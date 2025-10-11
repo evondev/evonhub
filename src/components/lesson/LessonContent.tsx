@@ -30,7 +30,7 @@ const LessonContent = ({
             <AccordionTrigger className="font-semibold dark:text-text5">
               {item.title}
             </AccordionTrigger>
-            <AccordionContent className="bg-white dark:bg-grayDarker rounded-lg mt-5">
+            <AccordionContent className="bg-white dark:bg-grayDarker rounded-xl mt-5">
               {item.lessons.map((lesson: any) => (
                 <LessonItem
                   key={lesson._id}

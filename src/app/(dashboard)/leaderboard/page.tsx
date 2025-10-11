@@ -46,7 +46,7 @@ export default function LeaderBoardPageRoot(_props: LeaderBoardPageRootProps) {
           <>
             {Array.from({ length: 8 }).map((_, index) => (
               <LeaderboardItemLoading
-                className="p-4 rounded-lg bgDarkMode shadow-sm"
+                className="p-4 rounded-xl bgDarkMode shadow-sm"
                 key={index}
               />
             ))}
@@ -54,13 +54,13 @@ export default function LeaderBoardPageRoot(_props: LeaderBoardPageRootProps) {
         )}
         {!isFetching &&
           leaderboardData?.map((board, index) => (
-            <Card key={board.user._id} className="rounded-lg">
+            <Card key={board.user._id} className="rounded-xl">
               <LeaderboardItem
                 user={board.user}
                 score={board.score}
                 index={index}
                 rank={index + 1}
-                className="p-4 bgDarkMode rounded-lg hover:shadow-sm"
+                className="p-4 bgDarkMode rounded-xl hover:shadow-sm"
               />
             </Card>
           ))}

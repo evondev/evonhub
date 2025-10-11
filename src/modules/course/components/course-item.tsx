@@ -41,9 +41,9 @@ export function CourseItem({
   const { progress, current, total } = userProgress || {};
 
   return (
-    <Card className="rounded-lg p-4 flex flex-col gap-5 transition-all relative">
+    <Card className="rounded-xl p-4 flex flex-col gap-5 transition-all relative">
       {/* <Link href={navigateURL} className="absolute inset-0 z-10"></Link> */}
-      <div className="relative h-[180px] block group rounded-lg">
+      <div className="relative h-[180px] block group rounded-xl">
         {isFree && (
           <div className="flex items-center gap-2 p-2 rounded-md absolute right-2 top-2 text-xs font-bold text-white bg-green-400">
             <span>Khóa học miễn phí</span>
@@ -55,13 +55,13 @@ export function CourseItem({
           alt=""
           width={600}
           height={360}
-          className="w-full h-full object-cover rounded-lg transition-all"
+          className="w-full h-full object-cover rounded-xl transition-all"
           sizes="300px"
         ></Image>
       </div>
       <div className="flex-1 flex flex-col">
         {!shouldHideInfo && (
-          <div className="flex gap-1 mb-2 justify-end h-4">
+          <div className="flex gap-1 mb-3 justify-end h-4">
             {Array(5)
               .fill(0)
               .map((_, index) => {
@@ -108,10 +108,10 @@ export function CourseItem({
             {!shouldHideInfo && (
               <div className="flex items-center">
                 <div className="flex items-center gap-2">
-                  <div className="text-sm lg:text-lg font-bold text-secondary">
+                  <div className="text-sm lg:text-base font-bold">
                     {isFree ? <></> : `${formatThoundsand(data.price)}`}
                   </div>
-                  <div className="text-sm lg:text-base font-semibold line-through text-gray-500">
+                  <div className="text-xs lg:text-sm font-semibold line-through text-gray-500">
                     {isFree ? "" : `${formatThoundsand(data.salePrice)}`}
                   </div>
                 </div>

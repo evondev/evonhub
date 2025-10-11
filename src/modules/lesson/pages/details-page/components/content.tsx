@@ -120,7 +120,7 @@ export function LessonContent({
           <FullScreen handle={handle}>
             <div className="relative group aspect-video lg:aspect-auto lg:pt-[65%] lg:overflow-hidden lg:static lg:mb-5">
               {videoId ? (
-                <div className="size-full lg:border borderDarkMode lg:rounded-lg bgDarkMode overflow-hidden lg:absolute lg:left-0 lg:top-0">
+                <div className="size-full lg:border borderDarkMode lg:rounded-xl bgDarkMode overflow-hidden lg:absolute lg:left-0 lg:top-0">
                   <div
                     className={cn(
                       "player-bar h-1 absolute top-0 left-0 z-10 w-0"
@@ -137,7 +137,7 @@ export function LessonContent({
                   />
                 </div>
               ) : iframeId ? (
-                <div className="size-full lg:border borderDarkMode lg:rounded-lg bgDarkMode overflow-hidden lg:absolute lg:left-0 lg:top-0">
+                <div className="size-full lg:border borderDarkMode lg:rounded-xl bgDarkMode overflow-hidden lg:absolute lg:left-0 lg:top-0">
                   <iframe
                     src={`https://drive.google.com/file/d/${iframeId}/preview`}
                     className="size-full object-fill"
@@ -145,7 +145,7 @@ export function LessonContent({
                   ></iframe>
                 </div>
               ) : (
-                <div className="w-full h-full lg:border borderDarkMode lg:rounded-lg bgDarkMode"></div>
+                <div className="w-full h-full lg:border borderDarkMode lg:rounded-xl bgDarkMode"></div>
               )}
               {canAccessContent && (
                 <div className="hidden lg:block">
@@ -197,7 +197,7 @@ export function LessonContent({
           <button
             onClick={handleExpandScreen}
             className={
-              "rounded-lg h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0 flex w-fit gap-2 bgDarkMode borderDarkMode"
+              "rounded-xl h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0 flex w-fit gap-2 bgDarkMode borderDarkMode"
             }
           >
             {isExpanded ? "Mặc định" : "Mở rộng"}
@@ -207,7 +207,7 @@ export function LessonContent({
               handle.enter();
             }}
             className={
-              "rounded-lg h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0 flex w-fit gap-2 bgDarkMode borderDarkMode"
+              "rounded-xl h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0 flex w-fit gap-2 bgDarkMode borderDarkMode"
             }
           >
             <IconFullScreen />
@@ -231,7 +231,7 @@ export function LessonContent({
       )}
 
       {lessonDetails.content && canAccessContent && (
-        <div className="lesson-content hidden lg:block overflow-hidden break-text  p-5 rounded-lg bgDarkMode borderDarkMode text-sm !leading-loose">
+        <div className="lesson-content hidden lg:block overflow-hidden break-text  p-5 rounded-xl bgDarkMode borderDarkMode text-sm !leading-loose">
           <div
             dangerouslySetInnerHTML={{ __html: lessonDetails.content }}
           ></div>

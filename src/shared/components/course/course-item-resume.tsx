@@ -39,7 +39,7 @@ export function CourseItemResume({
   return (
     <Link
       href={url}
-      className="p-2 rounded-xl flex-wrap lg:flex-nowrap bgDarkMode flex items-center gap-3 lg:gap-5 relative overflow-clip borderDarkMode group transition-all"
+      className="p-2 rounded-xl flex-wrap lg:flex-nowrap bgDarkMode flex items-center gap-3 lg:gap-5 relative overflow-clip borderDarkModeHover group"
     >
       <div className="relative w-[100px] shrink-0">
         <Image
@@ -48,10 +48,10 @@ export function CourseItemResume({
           alt={title}
           width={600}
           height={360}
-          className="w-full aspect-square object-cover rounded-lg transition-all"
+          className="w-full aspect-square object-cover rounded-xl transition-all"
           sizes="300px"
         ></Image>
-        <div className="absolute inset-0 bg-black bg-opacity-20 rounded-lg"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-20 rounded-xl"></div>
         <div className="size-8 flex items-center justify-center rounded-full bg-primary text-white absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:scale-125 transition-all shadow-lg">
           <IconPlay className="size-5" />
         </div>

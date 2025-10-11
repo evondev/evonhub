@@ -100,7 +100,7 @@ export function LessonOutline({ lessonId }: LessonOutlineProps) {
       <div className="flex-1 h-full lg:h-auto w-full static lg:sticky top-10 xl:top-[112px] right-0 p-3 lg:p-0 h-[calc(100%-56px)] w-full lg:p-0 lg:h-auto overflow-y-auto lg:overflow-y-visible">
         <ProgressBar progress={progress} className="mb-5 dark:bg-grayDarker" />
         <div
-          className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-lg"
+          className="lg:max-h-[calc(100vh-175px-56px)] xl:max-h-[calc(100vh-175px)] lg:overflow-y-auto scroll-hidden rounded-xl"
           ref={containerRef}
         >
           <CourseOutline

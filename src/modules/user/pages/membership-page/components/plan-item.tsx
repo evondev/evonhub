@@ -49,7 +49,7 @@ export default function PlanItem({
           Best choice
         </div>
       )}
-      <div className="border borderDarkMode bgDarkMode p-5 xl:p-3 rounded-lg">
+      <div className="border borderDarkMode bgDarkMode p-5 xl:p-3 rounded-xl">
         <div className="flex items-center justify-between mb-3">
           <Image src={img} width={40} height={40} alt={title} />
           {Number(save) > 0 && (

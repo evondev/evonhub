@@ -156,7 +156,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
         )}
       </div>
       {userInfo?.role === UserRole.Admin && (
-        <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
+        <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-xl flex-wrap gap-3">
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-3 text-sm font-medium">
               <Switch
@@ -176,7 +176,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                   key={index}
                   type="button"
                   className={cn(
-                    "text-xs font-semibold px-2 py-1 rounded-lg flex items-center gap-2 h-7",
+                    "text-xs font-semibold px-2 py-1 rounded-xl flex items-center gap-2 h-7",
                     item.className
                   )}
                   onClick={() => setFilters({ status: item.value })}
@@ -222,7 +222,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
           />
         </div>
       )}
-      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
+      <Table className="bg-white rounded-xl dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
             <TableHead>Mã đơn hàng</TableHead>

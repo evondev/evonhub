@@ -14,7 +14,7 @@ export default function AlreadyEnroll({ course, lesson }: AlreadyEnrollProps) {
   if (!userInfo) return null;
   return (
     <Card className="p-3 flex flex-col relative rounded-xl">
-      <div className="p-3 bg-white rounded-lg dark:bg-grayDarker">
+      <div className="p-3 bg-white rounded-xl dark:bg-grayDarker">
         <div className="relative size-20 rounded-full border borderDarkMode mx-auto mb-5">
           <Image
             src={userInfo.avatar}
@@ -35,7 +35,7 @@ export default function AlreadyEnroll({ course, lesson }: AlreadyEnrollProps) {
         </div>
         <Link
           href={`/${course}/lesson?id=${lesson}`}
-          className="rounded-lg h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0 bg-primary text-white bg-primary button-styles mt-5 w-full"
+          className="rounded-xl h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0 bg-primary text-white bg-primary button-styles mt-5 w-full"
         >
           Nhấn vào đây
         </Link>

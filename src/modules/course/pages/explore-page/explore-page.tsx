@@ -44,7 +44,7 @@ export function ExplorePage(_props: ExplorePageProps) {
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-5">
         <Heading>Khám phá</Heading>
-        <div className="flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
+        <div className="flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-xl flex-wrap gap-3">
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-3 text-sm font-medium">
               <Switch

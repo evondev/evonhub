@@ -325,7 +325,7 @@ const CourseContent = ({
             <div key={lecture.title}>
               {editLectureIndex === lecture._id ? (
                 <>
-                  <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
+                  <div className="p-5 rounded-xl border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
                     <div className="flex items-center gap-3 mb-5">
                       <h3 className="flex-shrink-0 font-bold">Tên chương:</h3>
                       <Input
@@ -387,7 +387,7 @@ const CourseContent = ({
                           {(provided, snapshot) => (
                             <div
                               className={cn(
-                                "flex flex-col mb-5 min-h-[100px] pb-20 rounded-lg p-5",
+                                "flex flex-col mb-5 min-h-[100px] pb-20 rounded-xl p-5",
                                 snapshot.isDraggingOver
                                   ? "border border-primary shadow-main"
                                   : ""
@@ -411,7 +411,7 @@ const CourseContent = ({
                                     >
                                       {editLessonIndex === lesson._id ? (
                                         <>
-                                          <div className="p-5 rounded-lg border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
+                                          <div className="p-5 rounded-xl border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
                                             <div className="flex items-baseline gap-3 mb-5">
                                               <h3 className="flex-shrink-0 font-bold">
                                                 Tên bài học:
@@ -525,7 +525,7 @@ const CourseContent = ({
                                                 </span>
                                               </div>
                                             </AccordionTrigger>
-                                            <AccordionContent className="bgDarkMode rounded-lg mt-5 p-5">
+                                            <AccordionContent className="bgDarkMode rounded-xl mt-5 p-5">
                                               <LessonItemUpdate
                                                 lessonId={lesson._id}
                                                 lesson={lesson}

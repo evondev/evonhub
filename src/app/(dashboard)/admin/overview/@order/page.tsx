@@ -28,7 +28,7 @@ const page = async () => {
       <div className="">
         <h2 className="font-bold text-lg l:text-xl mb-5">Đơn hàng gần đây</h2>
 
-        <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto whitespace-nowrap">
+        <Table className="bg-white rounded-xl dark:bg-grayDarker overflow-x-auto whitespace-nowrap">
           <TableHeader>
             <TableRow>
               <TableHead>Mã đơn hàng</TableHead>

@@ -13,7 +13,8 @@ export function SimpleButton({
   ...rest
 }: SimpleButtonProps) {
   const variantsClassNames: Record<SimpleButtonVariants, string> = {
-    primary: "bg-primary text-white bg-primary button-styles",
+    primary:
+      "from-primary to-secondary bg-gradient-to-r text-white hover:brightness-110",
   };
   return (
     <button

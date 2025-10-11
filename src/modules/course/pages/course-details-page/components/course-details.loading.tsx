@@ -7,7 +7,7 @@ export function CourseDetailsLoading(_props: CourseDetailsLoadingProps) {
     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr),400px] gap-8 items-start relative">
       <div>
         <div className="aspect-video relative mb-8">
-          <Skeleton className="w-full h-full rounded-lg" />
+          <Skeleton className="w-full h-full rounded-xl" />
         </div>
         <Skeleton className="h-5 mb-8" />
         <Skeleton className="h-3 mb-5" />
@@ -16,7 +16,7 @@ export function CourseDetailsLoading(_props: CourseDetailsLoadingProps) {
         <Skeleton className="h-2 mb-1" />
       </div>
       <div>
-        <Skeleton className="h-[300px] rounded-lg" />
+        <Skeleton className="h-[300px] rounded-xl" />
       </div>
     </div>
   );

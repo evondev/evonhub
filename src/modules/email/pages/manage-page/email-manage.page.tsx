@@ -37,7 +37,7 @@ export function EmailManagePage(_props: EmailManagePageProps) {
   return (
     <div>
       <Heading>Quản lý emails</Heading>
-      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
+      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-xl flex-wrap gap-3">
         <div className="flex items-center gap-5"></div>
         <div className="flex gap-3">
           <Input
@@ -72,7 +72,7 @@ export function EmailManagePage(_props: EmailManagePageProps) {
       >
         <IconPlus />
       </Link>
-      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
+      <Table className="bg-white rounded-xl dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
             <TableHead>Tiêu đề</TableHead>

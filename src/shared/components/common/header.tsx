@@ -68,7 +68,7 @@ export const Header = () => {
         ) : (
           <Link
             href={commonPath.LOGIN}
-            className="py-3 flex items-center justify-center gap-2 lg:px-5 size-10 lg:w-auto rounded-lg bg-primary text-white font-semibold"
+            className="py-3 flex items-center justify-center gap-2 lg:px-5 size-10 lg:w-auto rounded-xl bg-primary text-white font-semibold"
           >
             <span>
               <svg

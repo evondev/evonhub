@@ -84,7 +84,7 @@ export function CourseDetailsPageContainer(
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
-                className="w-full h-full object-cover rounded-lg aspect-video"
+                className="w-full h-full object-cover rounded-xl aspect-video"
               ></iframe>
             </>
           ) : (
@@ -93,7 +93,7 @@ export function CourseDetailsPageContainer(
               width={1200}
               height={720}
               src={image}
-              className="w-full h-full object-cover rounded-lg"
+              className="w-full h-full object-cover rounded-xl"
               priority
             />
           )}
@@ -165,7 +165,7 @@ export function CourseDetailsPageContainer(
                       <AccordionTrigger className="font-bold mb-2">
                         {item.question}
                       </AccordionTrigger>
-                      <AccordionContent className="font-medium bg-white rounded-lg dark:bg-grayDarker  dark:text-text5 text-sm">
+                      <AccordionContent className="font-medium bg-white rounded-xl dark:bg-grayDarker  dark:text-text5 text-sm">
                         {item.answer}
                       </AccordionContent>
                     </AccordionItem>

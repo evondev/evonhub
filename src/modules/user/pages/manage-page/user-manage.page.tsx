@@ -62,7 +62,7 @@ export function UserManagePage(_props: UserManagePageProps) {
           onChange={handleSearch}
         />
       </div>
-      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg">
+      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-xl">
         <div className="flex items-center gap-3 text-sm font-medium">
           <Switch
             checked={filters.isPaidUser}
@@ -95,7 +95,7 @@ export function UserManagePage(_props: UserManagePageProps) {
           </PaginationControl>
         </div>
       </div>
-      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
+      <Table className="bg-white rounded-xl dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
             <TableHead>Thông tin</TableHead>

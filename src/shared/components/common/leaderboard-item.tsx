@@ -46,7 +46,7 @@ export function LeaderboardItem({
         width={32}
         height={32}
         alt={user.username}
-        className="size-8 rounded-lg object-cover"
+        className="size-8 rounded-xl object-cover"
       />
       <span className="text-sm font-medium truncate max-w-[120px]">
         {user.username}

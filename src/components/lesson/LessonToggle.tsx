@@ -17,7 +17,7 @@ const LessonToggle = () => {
         >
           <ButtonGradient
             className={{
-              wrapper: "size-10 bg-white rounded-lg ",
+              wrapper: "size-10 bg-white rounded-xl ",
             }}
           >
             <IconLongArrowRight />

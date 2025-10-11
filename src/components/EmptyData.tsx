@@ -4,7 +4,7 @@ import Link from "next/link";
 const EmptyData = ({ text, url }: { text?: string; url?: string }) => {
   return (
     <div className="p-5">
-      <div className="bg-white dark:bg-grayDarker max-w-[500px] mx-auto p-5 rounded-lg my-5 text-center">
+      <div className="bg-white dark:bg-grayDarker max-w-[500px] mx-auto p-5 rounded-xl my-5 text-center">
         <Image
           alt=""
           src="/content.svg"

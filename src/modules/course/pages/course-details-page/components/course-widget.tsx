@@ -127,7 +127,7 @@ export default function CourseWidget({
   return (
     <>
       <Card className="p-3 flex flex-col rounded-xl">
-        <div className="p-3 bg-white rounded-lg dark:bg-grayDarker flex flex-col gap-5">
+        <div className="p-3 bg-white rounded-xl dark:bg-grayDarker flex flex-col gap-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {isFree ? (
@@ -172,7 +172,7 @@ export default function CourseWidget({
             <button
               type="button"
               onClick={handleEnrollFree}
-              className="h-12 rounded-lg px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
+              className="h-12 rounded-xl px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
             >
               Lụm liền
             </button>
@@ -182,7 +182,7 @@ export default function CourseWidget({
               <div className="flex flex-col gap-1">
                 <div
                   className={cn(
-                    "flex rounded-lg border borderDarkMode p-2 h-12 overflow-hidden",
+                    "flex rounded-xl border borderDarkMode p-2 h-12 overflow-hidden",
                     {
                       "!border-red-500": !!message.error?.length,
                       "!border-green-500": !!message.success?.length,
@@ -217,7 +217,7 @@ export default function CourseWidget({
                 )}
               </div>
               <Button
-                className="h-12 rounded-lg px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
+                className="h-12 rounded-xl px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
                 onClick={() => !isComingSoon && handleBuyCourse()}
                 disabled={isComingSoon || mutationEnrollCourse.isPending}
                 isLoading={mutationEnrollCourse.isPending}

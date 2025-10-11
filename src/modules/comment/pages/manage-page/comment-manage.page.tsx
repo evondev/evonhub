@@ -89,7 +89,7 @@ export function CommentManagePage(_props: CommentManagePageProps) {
   return (
     <>
       <Heading className="lg:min-h-10 mb-5">Quản lý bình luận</Heading>
-      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-lg flex-wrap gap-3">
+      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-xl flex-wrap gap-3">
         <div className="flex items-center gap-5">
           <div className="hidden lg:flex gap-3">
             {statusActions.map((item, index) => (
@@ -97,7 +97,7 @@ export function CommentManagePage(_props: CommentManagePageProps) {
                 key={index}
                 type="button"
                 className={cn(
-                  "text-xs font-semibold px-2 py-1 rounded-lg flex items-center gap-2 h-7",
+                  "text-xs font-semibold px-2 py-1 rounded-xl flex items-center gap-2 h-7",
                   item.className
                 )}
                 onClick={() => setFilters({ status: item.value })}
@@ -143,7 +143,7 @@ export function CommentManagePage(_props: CommentManagePageProps) {
           onChange={(e) => setFilters({ search: e.target.value })}
         />
       </div>
-      <Table className="bg-white rounded-lg dark:bg-grayDarker overflow-x-auto table-responsive">
+      <Table className="bg-white rounded-xl dark:bg-grayDarker overflow-x-auto table-responsive">
         <TableHeader>
           <TableRow>
             <TableHead>Member</TableHead>

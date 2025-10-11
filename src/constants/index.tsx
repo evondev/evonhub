@@ -7,7 +7,7 @@ import {
 } from "@/types/enums";
 
 export const baseButtonClassName =
-  "rounded-lg h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";
+  "rounded-xl h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0";
 
 export const primaryButtonClassName = `bg-primary text-white bg-primary button-styles ${baseButtonClassName}`;
 
@@ -15,9 +15,9 @@ export const actionClassName =
   "size-8 flex items-center justify-center bg-gray-100 dark:bg-grayDarkest rounded  p-2 transition-all  hover:text-gray-500 dark:hover:text-opacity-80";
 
 export const boxDetailClassName =
-  "rounded-lg p-5 bgDarkMode borderDarkMode flex flex-col items-start gap-1";
+  "rounded-xl p-5 bgDarkMode borderDarkMode flex flex-col items-start gap-1";
 
-export const widgetClassName = "p-5 rounded-lg bgDarkMode borderDarkMode";
+export const widgetClassName = "p-5 rounded-xl bgDarkMode borderDarkMode";
 
 export const courseStatusClassName =
   "text-xs font-semibold  inline-flex py-1 px-3 rounded-full whitespace-nowrap";
