@@ -8,12 +8,7 @@ export interface CardProps {
 
 export function Card({ children, className }: CardProps) {
   return (
-    <div
-      className={cn(
-        "border border-grayed shadow-[inset_0_0_0px_4px_#ededed6b] dark:border-opacity-10 dark:shadow-[inset_0_0_0px_4px_#12131A6b] p-1",
-        className
-      )}
-    >
+    <div className={cn("border borderDarkMode bgDarkMode", className)}>
       {children}
     </div>
   );

@@ -15,9 +15,9 @@ export async function CourseSuggestion(_props: CourseSuggestionProps) {
     shouldFilterEnrolled: true,
   });
   return (
-    <section>
+    <section className="bgDarkMode rounded-xl p-5 w-full">
       <div className="flex items-center gap-3 justify-between mb-5">
-        <h2 className="font-bold text-lg lg:text-2xl">Đề xuất</h2>
+        <h2 className="font-bold text-base lg:text-lg">Đề xuất</h2>
         <ViewAllLink href="/explore" />
       </div>
       <CourseList>

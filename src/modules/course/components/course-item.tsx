@@ -41,8 +41,8 @@ export function CourseItem({
   const { progress, current, total } = userProgress || {};
 
   return (
-    <Card className="rounded-lg p-5 flex flex-col gap-5 transition-all relative dark:bg-grayDarkest">
-      <Link href={navigateURL} className="absolute inset-0 z-10"></Link>
+    <Card className="rounded-lg p-4 flex flex-col gap-5 transition-all relative">
+      {/* <Link href={navigateURL} className="absolute inset-0 z-10"></Link> */}
       <div className="relative h-[180px] block group rounded-lg">
         {isFree && (
           <div className="flex items-center gap-2 p-2 rounded-md absolute right-2 top-2 text-xs font-bold text-white bg-green-400">
@@ -94,7 +94,7 @@ export function CourseItem({
             shouldShowLabel
           />
         )}
-        <h3 className="text-base lg:text-lg font-bold mb-5 line-clamp-3 block">
+        <h3 className="text-base font-bold mb-5 line-clamp-3 block">
           {data.title}
         </h3>
         <div className="mt-auto">
@@ -118,11 +118,11 @@ export function CourseItem({
               </div>
             )}
           </div>
-          <div className="p-1 border border-[#f6f6f8] rounded-xl bg-[#f6f6f8]/30 backdrop-blur-xl dark:bg-grayDarkest dark:border-white/10">
+          <Link href={navigateURL} className="block">
             <SimpleButton className="w-full">
               {cta ? cta : "Xem chi tiết"}
             </SimpleButton>
-          </div>
+          </Link>
         </div>
       </div>
     </Card>

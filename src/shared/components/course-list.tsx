@@ -27,7 +27,7 @@ export function CourseList({
   return (
     <div
       className={cn(
-        "grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-8",
+        "grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6",
         className
       )}
     >

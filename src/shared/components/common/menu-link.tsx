@@ -22,21 +22,21 @@ export function MenuLink({
       target={isExternal ? "_blank" : "_self"}
       href={link.url}
       className={twMerge(
-        "flex items-center gap-3 py-2.5 px-3 rounded-lg transition-all font-medium",
+        "flex items-center gap-3 py-2.5 pr-3 pl-6 transition-all font-medium border-l-2 border-l-transparent",
         isActiveLink(link.url)
-          ? "bg-primary bg-opacity-10 text-primary font-semibold svg-animate"
-          : "text-gray70 dark:text-slate-500 hover:bg-primary hover:bg-opacity-10 hover:text-primary dark:hover:text-primary"
+          ? " text-primary font-semibold svg-animate border-l-primary"
+          : "text-gray70 dark:text-slate-400 hover:text-primary dark:hover:text-primary"
       )}
     >
       <div className="size-5 flex items-center justify-center">{link.icon}</div>
       <span>{link.title}</span>
       {isNew && (
-        <span className="ml-auto inline-flex text-white px-2 py-0.5 font-bold text-xs rounded-full bg-green-500 w-11 justify-center">
+        <span className="ml-auto inline-flex text-green-500 px-2 py-0.5 font-bold text-xs rounded-full border border-green-500 w-11 justify-center">
           New
         </span>
       )}
       {isHot && (
-        <span className="ml-auto inline-flex text-white px-2 py-0.5 font-bold text-xs rounded-full bg-red-500 w-11 justify-center">
+        <span className="ml-auto inline-flex text-red-500 px-2 py-0.5 font-bold text-xs rounded-full border border-red-500 w-11 justify-center">
           Hot
         </span>
       )}

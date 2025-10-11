@@ -38,7 +38,7 @@ export function LeaderboardItem({
     <Link
       href={`/user-profile/${user.username}`}
       key={user._id}
-      className={cn("group flex items-center gap-2", className)}
+      className={cn("group flex items-center gap-3", className)}
     >
       <strong>{index + 1}</strong>
       <Image
@@ -46,11 +46,11 @@ export function LeaderboardItem({
         width={32}
         height={32}
         alt={user.username}
-        className="size-8 rounded-full object-cover"
+        className="size-8 rounded-lg object-cover"
       />
-      <strong className="text-sm truncate max-w-[120px]">
+      <span className="text-sm font-medium truncate max-w-[120px]">
         {user.username}
-      </strong>
+      </span>
       <span className="shrink-0 ml-auto font-bold text-xs px-2 py-1 rounded-full flex items-center gap-2 w-[70px] justify-center">
         <Image
           src={gemImage}

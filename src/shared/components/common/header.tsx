@@ -1,7 +1,6 @@
 "use client";
 import { useUserContext } from "@/components/user-context";
 import { commonPath } from "@/constants";
-import { getGreeting } from "@/shared/helpers/date.helper";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { cn } from "@/shared/utils";
 import { useAuth, UserButton } from "@clerk/nextjs";
@@ -17,10 +16,10 @@ export const Header = () => {
   return (
     <div
       className={cn(
-        "top py-3 px-5 bgDarkMode flex items-center justify-between gap-5 static xl:fixed top-0  right-0 z-50 xl:h-16 border-b border-b-grayed dark:border-opacity-10",
+        "py-3 px-5 lg:borderDarkMode flex items-center justify-between gap-5 static xl:fixed top-[var(--sidebar-left)] right-[var(--header-right)] z-50 xl:h-16 rounded-xl dark:border-opacity-10 bg-white/50 dark:bg-grayDarker/50 backdrop-blur-md",
         {
-          "left-0": isLessonPage,
-          "left-[300px]": !isLessonPage,
+          "left-[var(--main-padding)]": isLessonPage,
+          "left-[var(--header-left)]": !isLessonPage,
         }
       )}
       id="header"
@@ -44,8 +43,20 @@ export const Header = () => {
         </div>
         <span className="text-lg font-bold">evonHub</span>
       </Link>
-      <div className="hidden lg:block text-sm lg:text-base font-medium">
-        {!isLessonPage && getGreeting()}
+      <div className="hidden lg:flex items-center gap-2 text-sm lg:text-base font-medium">
+        {userInfo?.name && !isLessonPage && (
+          <>
+            <span>👋</span>
+            <div>
+              <h3 className="font-semibold text-sm">
+                Welcome back, {userInfo?.name}!
+              </h3>
+              <div className="text-gray-500 text-xs">
+                Glad to see you again.
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <div className="flex items-center gap-3">
         <ModeToggle />

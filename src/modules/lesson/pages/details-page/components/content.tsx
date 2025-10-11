@@ -186,7 +186,7 @@ export function LessonContent({
 
       {hasVideo && (
         <div className="hidden lg:flex items-center justify-end mb-5 gap-3">
-          <div className="mr-auto hidden xl:flex items-center gap-1 [&>*]:size-10 ">
+          <div className="mr-auto hidden items-center gap-1 [&>*]:size-10 ">
             <Image width={80} height={80} src="/reactions/like.png" alt="" />
             <Image width={80} height={80} src="/reactions/haha.png" alt="" />
             <Image width={80} height={80} src="/reactions/love.png" alt="" />

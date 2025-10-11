@@ -15,24 +15,29 @@ export async function CourseResume(_props: CourseResumeProps) {
 
   const userCourses = data?.courses || [];
   const userLessons = data?.lessons || [];
+  if (userCourses.length === 0) return null;
+
   return (
-    <section>
+    <section className="bgDarkMode rounded-xl p-5">
       <div className="flex items-center gap-3 justify-between mb-5">
-        <h2 className="font-bold text-lg lg:text-2xl">Khóa học</h2>
+        <h2 className="font-bold text-base lg:text-lg">Khóa học</h2>
         <ViewAllLink href="/study" />
       </div>
-      <CourseResumeList className="flex flex-col gap-5">
-        {userCourses?.map((course, index) => (
-          <CourseItemResume
-            key={course._id}
-            image={course.image}
-            title={course.title}
-            courseId={course._id}
-            slug={course.slug}
-            lesson={userLessons[index]}
-          />
-        ))}
-      </CourseResumeList>
+
+      {userCourses.length > 0 && (
+        <CourseResumeList className="flex flex-col gap-5">
+          {userCourses?.map((course, index) => (
+            <CourseItemResume
+              key={course._id}
+              image={course.image}
+              title={course.title}
+              courseId={course._id}
+              slug={course.slug}
+              lesson={userLessons[index]}
+            />
+          ))}
+        </CourseResumeList>
+      )}
     </section>
   );
 }

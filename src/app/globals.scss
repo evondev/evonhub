@@ -3,15 +3,30 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --sidebar-width: 300px;
+    --sidebar-left: 12px;
+    --header-height: 64px;
+    --header-top: var(--sidebar-left);
+    --main-padding: 24px;
+    --header-left: calc(
+      (var(--sidebar-width)) + (var(--sidebar-left)) + (var(--main-padding))
+    );
+    --header-right: var(--main-padding);
+    --main-width: calc(100% - var(--sidebar-width) - var(--sidebar-left));
+    --wrapper-top: calc(
+      var(--header-height) + var(--header-top) + var(--main-padding)
+    );
+  }
   ::selection {
     @apply text-white bg-primary;
   }
   body {
-    @apply bg-white text-grayPrimary dark:text-[#cbd5e1] dark:bg-grayDarkest antialiased overflow-x-hidden;
+    @apply bg-gray-100 text-grayPrimary dark:text-[#cbd5e1] dark:bg-grayDarkest antialiased overflow-x-hidden;
   }
   .wrapper {
     max-width: 2600px;
-    @apply mx-auto pb-16 lg:pb-10  xl:pt-[104px];
+    @apply mx-auto pb-16 lg:pb-10  xl:pt-[var(--wrapper-top)];
   }
   textarea,
   input {
