@@ -44,7 +44,13 @@ export const Header = () => {
         <span className="text-lg font-bold">evonHub</span>
       </Link>
       <div className="hidden lg:flex items-center gap-2 text-sm lg:text-base font-medium">
-        {userInfo?.name && !isLessonPage && (
+        <Link
+          href="/thanks"
+          className="font-bold text-lg underline text-blue-400"
+        >
+          ❤️ Tâm thư của tác giả
+        </Link>
+        {/* {userInfo?.name && !isLessonPage && (
           <>
             <span>👋</span>
             <div>
@@ -56,7 +62,7 @@ export const Header = () => {
               </div>
             </div>
           </>
-        )}
+        )} */}
       </div>
       <div className="flex items-center gap-3">
         <ModeToggle />
