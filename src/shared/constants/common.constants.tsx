@@ -3,7 +3,6 @@ import {
   IconCourseManage,
   IconGift,
   IconHome,
-  IconLike,
   IconOrder,
   IconStudy,
   IconUser,
@@ -40,12 +39,6 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/coupons",
     isHot: true,
     isHideForAdmin: true,
-  },
-  {
-    title: "Tâm tư tác giả",
-    icon: <IconLike />,
-    url: "/thanks",
-    isHideMobile: true,
   },
   // {
   //   title: "Cập nhật mới",
