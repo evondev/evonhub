@@ -1,11 +1,8 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/components/user-context";
 import { useMutationSyncLeaderboard } from "@/modules/score/services/data/mutate-sync-leaderboard.data";
 import { useQueryLeaderboard } from "@/modules/score/services/data/query-leaderboard.data";
 import { Heading } from "@/shared/components";
-import { Card, LeaderboardItem } from "@/shared/components/common";
-import { LeaderboardItemLoading } from "@/shared/components/loading";
 import { toast } from "react-toastify";
 
 export interface LeaderBoardPageRootProps {}
@@ -31,16 +28,16 @@ export default function LeaderBoardPageRoot(_props: LeaderBoardPageRootProps) {
   return (
     <>
       <div className="flex items-center gap-5 justify-between">
-        <Heading>LeaderBoard</Heading>
-        <Button
+        <Heading>Tính năng đang tạm ngưng</Heading>
+        {/* <Button
           isLoading={mutationSyncLeaderBoard.isPending}
           variant="primary"
           onClick={handleSyncLeaderBoard}
         >
           Đồng bộ điểm
-        </Button>
+        </Button> */}
       </div>
-      <div className="mb-10 text-sm">Top 100 leaderboard of all time.</div>
+      {/* <div className="mb-10 text-sm">Top 100 leaderboard of all time.</div>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-5">
         {isFetching && (
           <>
@@ -64,7 +61,7 @@ export default function LeaderBoardPageRoot(_props: LeaderBoardPageRootProps) {
               />
             </Card>
           ))}
-      </div>
+      </div> */}
     </>
   );
 }

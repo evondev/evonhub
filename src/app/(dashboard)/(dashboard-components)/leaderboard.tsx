@@ -1,5 +1,5 @@
 import { fetchLeaderBoard } from "@/modules/score/actions";
-import { LeaderboardItem, ViewAllLink } from "@/shared/components/common";
+import { ViewAllLink } from "@/shared/components/common";
 
 export interface LeaderboardProps {}
 
@@ -11,7 +11,7 @@ export async function Leaderboard(_props: LeaderboardProps) {
         <h3 className="font-bold text-base lg:text-lg">👑 Leaderboard</h3>
         <ViewAllLink href="/leaderboard" />
       </div>
-      <div className="flex flex-col gap-5">
+      {/* <div className="flex flex-col gap-5">
         {leaderboardData?.map((board, index) => (
           <LeaderboardItem
             key={board.user._id}
@@ -21,7 +21,7 @@ export async function Leaderboard(_props: LeaderboardProps) {
             rank={index + 1}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
