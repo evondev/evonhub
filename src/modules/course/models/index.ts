@@ -124,6 +124,10 @@ const courseSchema = new Schema<CourseModelProps>({
     type: Number,
     default: 0,
   },
+  isMicro: {
+    type: Boolean,
+    default: true,
+  },
 });
 const CourseModel = models.Course || mongoose.model("Course", courseSchema);
 export default CourseModel;

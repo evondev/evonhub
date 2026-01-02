@@ -189,6 +189,7 @@ export function CourseDetailsPageContainer(
             isFree={isFree}
             cta={cta}
             isComingSoon={isComingSoon}
+            isMicro={courseDetails.isMicro}
             slug={slug}
             courseId={courseDetails._id.toString()}
           />

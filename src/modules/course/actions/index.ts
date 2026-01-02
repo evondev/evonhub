@@ -1,6 +1,5 @@
 "use server";
 
-import { usersHTML, usersJS, usersJSAdvanced, usersReact } from "@/data";
 import { getUserById } from "@/lib/actions/user.action";
 import CouponModel from "@/modules/coupon/models";
 import OrderModel from "@/modules/order/models";
@@ -105,7 +104,7 @@ export async function fetchCourseBySlug(
       searchQuery.status = status;
     }
     const course = await CourseModel.findOne(searchQuery).select(
-      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author minPrice"
+      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author minPrice isMicro"
     );
     if (!course) return undefined;
 
@@ -157,6 +156,7 @@ export async function handleEnrollCourse({
   amount,
   couponCode,
   couponId,
+  isMicro,
 }: EnrollCourseProps): Promise<
   | {
       order?: OrderItemData;
@@ -207,6 +207,12 @@ export async function handleEnrollCourse({
       };
     }
 
+    if (!isMicro) {
+      return {
+        error: "Chức năng tạm thời không khả dụng",
+      };
+    }
+
     const userCourses = findUser.courses
       .filter(Boolean)
       .map((course: any) => course.toString());
@@ -217,47 +223,6 @@ export async function handleEnrollCourse({
       };
 
     let status: OrderStatus = OrderStatus.Pending;
-
-    if (
-      findCourse.slug === "khoa-hoc-html-css-master" &&
-      usersHTML.includes(findUser.email)
-    ) {
-      findUser.courses.push(findCourse._id);
-      await findUser.save();
-      status = OrderStatus.Approved;
-      total = 0;
-      amount = 0;
-    }
-    if (
-      ["khoa-hoc-reactjs-co-ban"].includes(findCourse.slug) &&
-      usersReact.includes(findUser.email)
-    ) {
-      findUser.courses.push(findCourse._id);
-      await findUser.save();
-      status = OrderStatus.Approved;
-      total = 0;
-      amount = 0;
-    }
-    if (
-      findCourse.slug === "khoa-hoc-javascript-co-ban-cho-nguoi-moi" &&
-      usersJS.includes(findUser.email)
-    ) {
-      findUser.courses.push(findCourse._id);
-      await findUser.save();
-      status = OrderStatus.Approved;
-      total = 0;
-      amount = 0;
-    }
-    if (
-      findCourse.slug === "khoa-hoc-javascript-chuyen-sau" &&
-      usersJSAdvanced.includes(findUser.email)
-    ) {
-      findUser.courses.push(findCourse._id);
-      await findUser.save();
-      status = OrderStatus.Approved;
-      total = 0;
-      amount = 0;
-    }
 
     const existOrder = await OrderModel.findOne({
       user: userId,

@@ -1,4 +1,5 @@
 import {
+  IconBlog,
   IconCoupon,
   IconCourseManage,
   IconGift,
@@ -40,14 +41,14 @@ export const menuLinks: MenuLinkItemProps[] = [
     isHot: true,
     isHideForAdmin: true,
   },
-  // {
-  //   title: "Cập nhật mới",
-  //   icon: <IconBlog />,
-  //   url: "/new-updates",
-  //   isNew: true,
-  //   isHideMobile: true,
-  //   isHideForAdmin: true,
-  // },
+  {
+    title: "Quan trọng cần đọc",
+    icon: <IconBlog />,
+    url: "/new-updates",
+    isNew: true,
+    isHideMobile: true,
+    isHideForAdmin: true,
+  },
   {
     title: "Profile",
     icon: <IconUser />,

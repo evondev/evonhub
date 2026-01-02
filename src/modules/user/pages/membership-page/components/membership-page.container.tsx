@@ -4,13 +4,9 @@ import { useUserContext } from "@/components/user-context";
 import { commonPath } from "@/constants";
 import { userMutationEnrollPackage } from "@/modules/course/services/data/mutation-enroll-package";
 import { Heading } from "@/shared/components";
-import {
-  MembershipPlan,
-  membershipPlans,
-} from "@/shared/constants/user.constants";
+import { MembershipPlan } from "@/shared/constants/user.constants";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import PlanItem from "./plan-item";
 
 export interface MembershipPageContainerProps {}
 
@@ -41,8 +37,8 @@ export function MembershipPageContainer(_props: MembershipPageContainerProps) {
 
   return (
     <div className="flex flex-col gap-5">
-      <Heading>Membership</Heading>
-      <div className="mb-5 leading-loose">
+      <Heading>Tính năng này đang tạm ngưng</Heading>
+      {/* <div className="mb-5 leading-loose">
         <div>
           Tính năng này cho phép các bạn đăng ký các gói từ{" "}
           <strong>1 tháng</strong>, <strong>3 tháng</strong>,{" "}
@@ -69,7 +65,7 @@ export function MembershipPageContainer(_props: MembershipPageContainerProps) {
             duration={item.duration}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

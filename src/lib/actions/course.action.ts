@@ -1,7 +1,8 @@
 "use server";
-import Course, { ICourse } from "@/database/course.model";
+import { ICourse } from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
+import CourseModel from "@/modules/course/models";
 import UserModel from "@/modules/user/models";
 import { CourseParams, CreateCourseParams, UpdateCourseParams } from "@/types";
 import { ECourseStatus, Role } from "@/types/enums";
@@ -21,7 +22,7 @@ export async function createCourse({
     const findUser = await UserModel.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
       return undefined;
-    const allCourse = await Course.find();
+    const allCourse = await CourseModel.find();
     const existSlug = allCourse.some((item) => item.slug === slug);
     if (existSlug) {
       return {
@@ -29,12 +30,13 @@ export async function createCourse({
         message: "Đường dẫn khóa học đã tồn tại!",
       };
     }
-    await Course.create({
+    await CourseModel.create({
       title,
       slug,
       path,
       _destroy: false,
       author: findUser?._id,
+      isMicro: true,
     });
     revalidatePath(path);
   } catch (error) {
@@ -53,7 +55,7 @@ export async function updateCourse({
     const findUser = await UserModel.findOne({ clerkId: userId });
     if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
       return undefined;
-    const allCourse = await Course.find();
+    const allCourse = await CourseModel.find();
     const existCourse = allCourse.some(
       (item) => item.slug === slug && item.slug !== courseSlug
     );
@@ -68,7 +70,7 @@ export async function updateCourse({
       delete updateData.status;
     }
 
-    await Course.findOneAndUpdate({ slug: courseSlug }, updateData, {
+    await CourseModel.findOneAndUpdate({ slug: courseSlug }, updateData, {
       new: true,
     });
 
@@ -89,7 +91,7 @@ export async function getCourseBySlugUser(
       return undefined;
     let searchQuery: any = {};
     searchQuery.slug = slug;
-    const course = await Course.findOne(searchQuery).populate({
+    const course = await CourseModel.findOne(searchQuery).populate({
       path: "lecture",
       populate: {
         path: "lessons",
@@ -114,8 +116,8 @@ export async function getCourseBySlug(
     connectToDatabase();
     let searchQuery: any = {};
     searchQuery.slug = slug;
-    const course = await Course.findOne(searchQuery).select(
-      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author"
+    const course = await CourseModel.findOne(searchQuery).select(
+      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author isMicro"
     );
 
     return course;
@@ -144,7 +146,7 @@ export async function getAllCoursesUser(
     if (findUser && findUser?.role !== Role.ADMIN) {
       searchQuery.author = findUser._id;
     }
-    const courses = await Course.find(searchQuery)
+    const courses = await CourseModel.find(searchQuery)
       .select("title slug image createdAt status price _id free rating views")
       .sort({ createdAt: -1 });
     return courses;
@@ -159,7 +161,7 @@ export async function getAllCourses(
     if (params.status) {
       searchQuery.status = params.status;
     }
-    const courses = await Course.find(searchQuery)
+    const courses = await CourseModel.find(searchQuery)
       .select("title slug image level rating price salePrice views free")
       .sort({ createdAt: -1 });
     return courses;
@@ -172,7 +174,7 @@ export async function deleteCourse(slug: string) {
     const { userId } = auth();
     const findUser = await UserModel.findOne({ clerkId: userId });
     if (![Role.ADMIN].includes(findUser?.role)) return undefined;
-    await Course.findOneAndUpdate(
+    await CourseModel.findOneAndUpdate(
       { slug },
       {
         status: ECourseStatus.PENDING,
@@ -188,7 +190,7 @@ export async function updateCourseWithLecture(params: {
 }) {
   try {
     connectToDatabase();
-    const course = await Course.findById(params.courseId);
+    const course = await CourseModel.findById(params.courseId);
 
     if (!course) {
       throw new Error("Không tìm thấy khóa học");
@@ -216,7 +218,7 @@ export async function getFreeCourse(slug: string) {
         type: "error",
         message: "Vui lòng đăng nhập để đăng ký khóa học",
       };
-    const findCourse = await Course.findOne({ slug, free: true });
+    const findCourse = await CourseModel.findOne({ slug, free: true });
     if (!findCourse)
       return {
         type: "error",

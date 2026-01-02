@@ -6,7 +6,6 @@ import { useLessonDetailsPath } from "@/shared/hooks";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IconLongArrowRight, IconStarFilled } from "../icons";
 import { MenuLink } from "./menu-link";
 
 export interface SidebarProps {
@@ -59,7 +58,7 @@ export function Sidebar({ role }: SidebarProps) {
           );
         })}
       </ul>
-      <div className="mt-auto p-2 rounded-xl borderDarkMode relative">
+      {/* <div className="mt-auto p-2 rounded-xl borderDarkMode relative">
         <div className="size-8 p-2 flex items-center justify-center rounded-full bg-primary/20 text-primary absolute right-2 top-2">
           <IconStarFilled />
         </div>
@@ -74,7 +73,7 @@ export function Sidebar({ role }: SidebarProps) {
           <span>Khám phá ngay</span>
           <IconLongArrowRight />
         </Link>
-      </div>
+      </div> */}
     </aside>
   );
 }

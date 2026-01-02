@@ -43,6 +43,7 @@ export interface CourseModelProps extends Document {
   free: boolean;
   isPackage: boolean;
   _destroy: boolean;
+  isMicro?: boolean;
 }
 
 export interface CourseItemData
@@ -70,4 +71,5 @@ export interface EnrollCourseProps {
   amount: number;
   couponId?: string;
   couponCode?: string;
+  isMicro?: boolean;
 }

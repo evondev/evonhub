@@ -24,6 +24,7 @@ export interface CourseWidgetProps {
   isComingSoon?: boolean;
   slug: string;
   courseId: string;
+  isMicro?: boolean;
 }
 
 export default function CourseWidget({
@@ -34,6 +35,7 @@ export default function CourseWidget({
   isComingSoon,
   slug,
   courseId,
+  isMicro,
 }: CourseWidgetProps) {
   const mutationEnrollFree = userMutationEnrollFree();
   const mutationEnrollCourse = userMutationEnrollCourse();
@@ -168,7 +170,7 @@ export default function CourseWidget({
             </div>
           </div>
 
-          {isFree && !isComingSoon && (
+          {isMicro && isFree && !isComingSoon && (
             <button
               type="button"
               onClick={handleEnrollFree}
@@ -177,7 +179,7 @@ export default function CourseWidget({
               Lụm liền
             </button>
           )}
-          {(!isFree || isComingSoon) && (
+          {isMicro && (!isFree || isComingSoon) && (
             <>
               <div className="flex flex-col gap-1">
                 <div
