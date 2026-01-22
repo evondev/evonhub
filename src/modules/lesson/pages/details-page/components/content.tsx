@@ -132,7 +132,6 @@ export function LessonContent({
                     className="w-full h-full inline-block align-bottom"
                     ref={videoRef}
                     autoPlay
-                    minResolution="1080p"
                     onTimeUpdate={handleVideoTimeUpdate}
                   />
                 </div>
