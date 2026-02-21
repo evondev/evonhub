@@ -176,7 +176,7 @@ export default function CourseWidget({
             </div>
           </div>
 
-          {isMicro && isFree && !isComingSoon && (
+          {isFree && !isComingSoon && (
             <button
               type="button"
               onClick={handleEnrollFree}
