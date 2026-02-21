@@ -14,9 +14,6 @@ export const primaryButtonClassName = `bg-primary text-white bg-primary button-s
 export const actionClassName =
   "size-8 flex items-center justify-center bg-gray-100 dark:bg-grayDarkest rounded  p-2 transition-all  hover:text-gray-500 dark:hover:text-opacity-80";
 
-export const boxDetailClassName =
-  "rounded-xl p-5 bgDarkMode borderDarkMode flex flex-col items-start gap-1";
-
 export const widgetClassName = "p-5 rounded-xl bgDarkMode borderDarkMode";
 
 export const courseStatusClassName =
@@ -111,7 +108,7 @@ export const userStatus: Record<
 export const editorOptions = (
   field: any,
   theme: any,
-  height: number = 300
+  height: number = 300,
 ) => ({
   initialValue: "",
   onBlur: field.onBlur,

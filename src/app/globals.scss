@@ -192,7 +192,7 @@ div[role="dialog"] {
   word-break: break-word;
 }
 .lesson-content {
-  @apply text-sm lg:text-[17px] font-medium;
+  @apply text-sm lg:text-[17px] font-medium leading-relaxed;
   p,
   ul,
   ol,
@@ -406,8 +406,12 @@ div[role="dialog"] {
   --duration: 5s;
 }
 .rounded-animation {
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   mask-composite: xor;
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -430,7 +434,8 @@ div[role="dialog"] {
   top: 50%;
   transform: translate(-50%, -50%);
   animation: spinner 4s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
-  background: conic-gradient(
+  background:
+    conic-gradient(
       from 0deg at 50% 51.35%,
       rgba(185, 215, 243, 0) 0deg,
       rgba(185, 215, 243, 0) 289.4deg,

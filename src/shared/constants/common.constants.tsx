@@ -81,6 +81,11 @@ export const menuLinks: MenuLinkItemProps[] = [
     isAdmin: true,
     isHideMobile: true,
   },
+  // {
+  //   title: "Sắp ra mắt",
+  //   icon: <IconClock />,
+  //   url: "/coming-soon",
+  // },
 ];
 export const adminRoutes = ["/admin/overview", "/admin/user/manage"];
 

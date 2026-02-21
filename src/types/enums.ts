@@ -3,11 +3,6 @@ export enum Role {
   EXPERT = "EXPERT",
   USER = "USER",
 }
-export enum TCourseInfoType {
-  REQUIREMENTS = "requirements",
-  QA = "qa",
-  GAINED = "gained",
-}
 export enum ECourseStatus {
   PENDING = "pending",
   APPROVED = "approved",

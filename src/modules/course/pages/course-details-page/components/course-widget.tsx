@@ -73,6 +73,12 @@ export default function CourseWidget({
       toast.error("Mã giảm giá không hợp lệ");
       return;
     }
+    if (slug.includes("rachelizmarvel")) {
+      window.open("https://www.facebook.com/rachel.nguyen.48", "_blank");
+    } else {
+      window.open("https://www.facebook.com/tuan.trananh.0509", "_blank");
+    }
+    return;
     const response = await mutationEnrollCourse.mutateAsync({
       userId,
       courseId,
@@ -179,16 +185,16 @@ export default function CourseWidget({
               Lụm liền
             </button>
           )}
-          {isMicro && (!isFree || isComingSoon) && (
+          {(!isFree || isComingSoon) && (
             <>
-              <div className="flex flex-col gap-1">
+              <div className="hidden flex-col gap-1">
                 <div
                   className={cn(
                     "flex rounded-xl border borderDarkMode p-2 h-12 overflow-hidden",
                     {
                       "!border-red-500": !!message.error?.length,
                       "!border-green-500": !!message.success?.length,
-                    }
+                    },
                   )}
                 >
                   <Input
@@ -201,7 +207,7 @@ export default function CourseWidget({
                   />
                   <Button
                     className="text-white bg-grayDarkest h-auto dark:bg-white dark:text-grayDarkest"
-                    onClick={() => handleApplyCoupon()}
+                    // onClick={() => handleApplyCoupon()}
                     disabled={!couponCode}
                   >
                     Áp dụng
@@ -219,12 +225,13 @@ export default function CourseWidget({
                 )}
               </div>
               <Button
-                className="h-12 rounded-xl px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
+                className="h-12 rounded-xl px-5 flex items-center justify-center bg-primary text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
                 onClick={() => !isComingSoon && handleBuyCourse()}
                 disabled={isComingSoon || mutationEnrollCourse.isPending}
                 isLoading={mutationEnrollCourse.isPending}
               >
-                {isComingSoon ? "Sắp ra mắt" : cta || "Đăng ký ngay"}
+                Liên hệ
+                {/* {isComingSoon ? "Sắp ra mắt" : cta || "Đăng ký ngay"} */}
               </Button>
             </>
           )}

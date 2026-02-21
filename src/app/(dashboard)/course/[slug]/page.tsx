@@ -3,14 +3,15 @@ import { CourseDetailsPage } from "@/modules/course/pages";
 import { Metadata, ResolvingMetadata } from "next";
 
 export interface CourseDetailsPageRootProps {}
-interface Props {
+
+interface MetadataParams {
   params: {
     slug: string;
   };
 }
 export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
+  { params }: MetadataParams,
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const slug = params.slug;
 
@@ -29,7 +30,7 @@ export async function generateMetadata(
 }
 
 export default function CourseDetailsPageRoot(
-  _props: CourseDetailsPageRootProps
+  _props: CourseDetailsPageRootProps,
 ) {
   return <CourseDetailsPage />;
 }

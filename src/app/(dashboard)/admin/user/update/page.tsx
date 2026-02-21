@@ -1,31 +1,37 @@
 import PageNotFound from "@/app/not-found";
 import UserUpdateCourse from "@/components/user/UserUpdateCourse";
-import { getAllCourses } from "@/lib/actions/course.action";
-import { getUserByUsername } from "@/lib/actions/user.action";
-import { ECourseStatus } from "@/types/enums";
+import { getAllCoursesUser } from "@/modules/course/actions";
+import { getUserByUsername } from "@/modules/user/actions";
+import { CourseStatus } from "@/shared/constants/course.constants";
+import { parseData } from "@/shared/helpers";
 
-const page = async ({
-  searchParams,
-}: {
+interface AddCourseForUserPageProps {
   searchParams: {
     username: string;
     email?: string;
   };
-}) => {
+}
+
+const AddCourseForUserPage = async ({
+  searchParams,
+}: AddCourseForUserPageProps) => {
   const user = await getUserByUsername({
     username: searchParams.username,
     email: searchParams.email,
   });
-  const allCoures = await getAllCourses({
-    status: ECourseStatus.APPROVED,
-  });
+
   if (!user) return <PageNotFound />;
+
+  const courses = await getAllCoursesUser({
+    status: CourseStatus.Approved,
+  });
+
   return (
     <UserUpdateCourse
-      user={JSON.parse(JSON.stringify(user)) || {}}
-      courses={JSON.parse(JSON.stringify(allCoures)) || []}
+      user={parseData(user) || {}}
+      courses={parseData(courses) || []}
     />
   );
 };
 
-export default page;
+export default AddCourseForUserPage;

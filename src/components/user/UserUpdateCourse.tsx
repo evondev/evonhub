@@ -3,6 +3,7 @@ import {
   addCourseToUser,
   removeCourseFromUser,
 } from "@/lib/actions/user.action";
+import { IconPlus } from "@/shared/components";
 import { membershipPlans } from "@/shared/constants/user.constants";
 import Image from "next/image";
 import { useState } from "react";
@@ -18,22 +19,6 @@ import {
   SelectValue,
 } from "../ui/select";
 
-const IconPlus = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="w-6 h-6"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 4.5v15m7.5-7.5h-15"
-    />
-  </svg>
-);
 const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleRemoveCourseFromUser = async (courseId: string) => {
@@ -95,7 +80,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
 
   const [selectCourse, setSelectCourse] = useState<any>(null);
   const planDetails = membershipPlans.find(
-    (membership) => membership.plan === user?.plan
+    (membership) => membership.plan === user?.plan,
   );
 
   return (
@@ -123,7 +108,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
           </div>
         </div>
       </div>
-      <h2 className="font-bold text-xl mb-5">Thêm khóa học</h2>
+      <h2 className="font-bold text-xl mb-5">Chọn khóa học</h2>
       <div className="flex flex-col gap-5 mb-8">
         <div className="flex items-center gap-5">
           <Select
@@ -150,7 +135,7 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
             disabled={!selectCourse}
             isLoading={isSubmitting}
           >
-            {IconPlus}
+            <IconPlus />
           </Button>
         </div>
         <div className="flex flex-wrap gap-3">

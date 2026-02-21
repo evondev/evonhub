@@ -7,12 +7,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useUserContext } from "@/components/user-context";
 import { useQueryCourseBySlug } from "@/modules/course/services";
 import { useQueryLessonDetailsOutline } from "@/modules/lesson/services";
@@ -30,27 +24,47 @@ import CourseWidget from "./course-widget";
 
 export interface CourseDetailsPageContainerProps {}
 
+const COLORS = [
+  "#FF6633",
+  "#FFB399",
+  "#FF33FF",
+  "#ff6bcb",
+  "#00B3E6",
+  "#20e3b2",
+  "#00aefd",
+  "#6a5af9",
+];
+const randomColor = () => COLORS[Math.floor(Math.random() * COLORS.length)];
+
 export function CourseDetailsPageContainer(
-  _props: CourseDetailsPageContainerProps
+  _props: CourseDetailsPageContainerProps,
 ) {
   const params = useParams();
+
   const { data: courseDetails, isFetching: isFetchingCourse } =
     useQueryCourseBySlug({
       courseSlug: params.slug.toString(),
     });
+
   const { data: ratings } = useQueryRatingsByCourse({
     courseId: courseDetails?._id.toString() || "",
   });
+
   const { data: lectures } = useQueryLessonDetailsOutline({
     slug: params.slug.toString(),
   });
+
   const { userInfo } = useUserContext();
+
   const isMembershipAlready = handleCheckMembership({
     isMembership: userInfo?.isMembership,
     endDate: userInfo?.planEndDate || new Date().toISOString(),
   });
+
   if (isFetchingCourse) return <CourseDetailsLoading />;
+
   if (!courseDetails?._id) return <PageNotFound />;
+
   const {
     intro,
     image,
@@ -72,12 +86,15 @@ export function CourseDetailsPageContainer(
   const isAlreadyEnroll = userInfo?.courses.includes(courseDetails._id);
   const isFree = price === 0 || free;
   const isComingSoon = status === CourseStatus.Pending;
+  const shouldShowIntro = !!intro;
+  const shouldShowImage = !!image && !shouldShowIntro;
+  const shouldShowDefaultImage = !shouldShowIntro && !shouldShowImage;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr),400px] gap-8 items-start relative">
       <div>
         <div className="aspect-video relative mb-4 lg:mb-8">
-          {intro ? (
+          {shouldShowIntro && (
             <>
               <iframe
                 src={`https://www.youtube.com/embed/${embed}`}
@@ -87,7 +104,8 @@ export function CourseDetailsPageContainer(
                 className="w-full h-full object-cover rounded-xl aspect-video"
               ></iframe>
             </>
-          ) : (
+          )}
+          {shouldShowImage && (
             <Image
               alt={title}
               width={1200}
@@ -97,39 +115,52 @@ export function CourseDetailsPageContainer(
               priority
             />
           )}
+          {shouldShowDefaultImage && (
+            <div
+              className="w-full h-full flex items-center justify-center object-cover rounded-xl bg-grayDarker text-white uppercase font-bold text-lg xl:text-5xl p-10 text-center leading-normal"
+              style={{
+                color: randomColor(),
+              }}
+            >
+              {title}
+            </div>
+          )}
         </div>
         <h1 className="font-extrabold text-xl lg:text-3xl mb-4 !leading-normal">
           {title}
         </h1>
         {ratings && ratings.length > 0 && (
           <>
-            <div className="flex flex-wrap mb-10 [&>*:not(:last-child)]:-mr-2">
-              <TooltipProvider>
-                {ratings.map((el, index) => (
-                  <Tooltip key={index}>
-                    <TooltipTrigger>
-                      <div className="rounded-full text-sm font-medium flex items-center gap-2 border borderDarkMode bgDarkMode text-left">
-                        <img
-                          width={40}
-                          height={40}
-                          src={el.user.avatar}
-                          alt=""
-                          className="size-8 p-0.5 object-cover rounded-full flex-shrink-0"
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-sm text-xs text-left">
-                      {el.content}
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
-              </TooltipProvider>
+            <div className="flex flex-wrap gap-3 mb-10">
+              {ratings.map((el, index) => (
+                <div
+                  key={index}
+                  className="flex p-2 bgDarkMode border borderDarkMode gap-2 text-sm font-medium rounded-lg max-w-screen-sm items-center justify-center"
+                  style={{
+                    border: `1px solid ${randomColor()}`,
+                  }}
+                >
+                  <div className="size-5 shrink-0">
+                    <img
+                      width={40}
+                      height={40}
+                      src={el.user.avatar}
+                      alt={el.user.name}
+                      className="size-full object-cover rounded-full"
+                    />
+                  </div>
+                  <div>{el.content}</div>
+                </div>
+              ))}
             </div>
           </>
         )}
         <div className="flex flex-col gap-8">
           <CourseSection title="Mô tả">
-            <div dangerouslySetInnerHTML={{ __html: desc }}></div>
+            <div
+              className="lesson-content leading-normal"
+              dangerouslySetInnerHTML={{ __html: desc }}
+            ></div>
           </CourseSection>
           <CourseSection title="Nội dung">
             <CourseOutline

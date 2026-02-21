@@ -7,8 +7,8 @@ export interface ComingSoonPageProps {}
 export async function ComingSoonPage(_props: ComingSoonPageProps) {
   const courses = await fetchCoursesIncoming();
   return (
-    <div className="flex flex-col gap-5">
-      <Heading>Dự định tương lai</Heading>
+    <div className="flex flex-col gap-10">
+      <Heading>Sắp ra mắt</Heading>
       <CourseList>
         {courses?.map((course) => (
           <CourseItem key={course.slug} data={course}></CourseItem>

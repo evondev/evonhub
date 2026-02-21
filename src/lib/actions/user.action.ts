@@ -89,27 +89,9 @@ export async function getUserById({ userId }: { userId: string }) {
     console.log(error);
   }
 }
-export async function getUserByUsername(params: {
-  username: string;
-  email?: string;
-}) {
-  try {
-    connectToDatabase();
-    const { username, email } = params;
-    let query: any = {};
-    if (username) query.username = username;
-    if (email) query.email = email;
-    const user = await UserModel.findOne(query).populate({
-      path: "courses",
-      model: Course,
-    });
-    return user;
-  } catch (error) {
-    console.log(error);
-  }
-}
+
 export async function getAllUsers(
-  params: GetUsersParams
+  params: GetUsersParams,
 ): Promise<{ users: IUser[]; isNext: boolean; total: number } | undefined> {
   try {
     connectToDatabase();
@@ -131,7 +113,7 @@ export async function getAllUsers(
     if (paidUser) {
       query.courses = {
         $in: await Course.find({ _destroy: false, free: false }).distinct(
-          "_id"
+          "_id",
         ),
       };
     }

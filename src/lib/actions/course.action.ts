@@ -57,7 +57,7 @@ export async function updateCourse({
       return undefined;
     const allCourse = await CourseModel.find();
     const existCourse = allCourse.some(
-      (item) => item.slug === slug && item.slug !== courseSlug
+      (item) => item.slug === slug && item.slug !== courseSlug,
     );
     if (existCourse) {
       return {
@@ -80,7 +80,7 @@ export async function updateCourse({
   }
 }
 export async function getCourseBySlugUser(
-  slug: string
+  slug: string,
 ): Promise<ICourse | undefined> {
   try {
     connectToDatabase();
@@ -110,14 +110,14 @@ export async function getCourseBySlugUser(
   }
 }
 export async function getCourseBySlug(
-  slug: string
+  slug: string,
 ): Promise<CourseParams | undefined> {
   try {
     connectToDatabase();
     let searchQuery: any = {};
     searchQuery.slug = slug;
     const course = await CourseModel.findOne(searchQuery).select(
-      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author isMicro"
+      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author isMicro",
     );
 
     return course;
@@ -126,34 +126,8 @@ export async function getCourseBySlug(
   }
 }
 
-export async function getAllCoursesUser(
-  params: any
-): Promise<ICourse[] | undefined> {
-  try {
-    connectToDatabase();
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
-    if (
-      findUser &&
-      findUser?.role &&
-      ![Role.ADMIN, Role.EXPERT].includes(findUser?.role)
-    )
-      return undefined;
-    let searchQuery: any = {};
-    if (params.status) {
-      searchQuery.status = params.status;
-    }
-    if (findUser && findUser?.role !== Role.ADMIN) {
-      searchQuery.author = findUser._id;
-    }
-    const courses = await CourseModel.find(searchQuery)
-      .select("title slug image createdAt status price _id free rating views")
-      .sort({ createdAt: -1 });
-    return courses;
-  } catch (error) {}
-}
 export async function getAllCourses(
-  params: any
+  params: any,
 ): Promise<ICourse[] | undefined> {
   try {
     connectToDatabase();
@@ -178,7 +152,7 @@ export async function deleteCourse(slug: string) {
       { slug },
       {
         status: ECourseStatus.PENDING,
-      }
+      },
     );
     revalidatePath("/admin/course/manage");
   } catch (error) {}

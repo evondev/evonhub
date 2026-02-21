@@ -65,10 +65,10 @@ export async function fetchCourses({
         userId: userId || "",
       })) as UserItemData;
       const userCoursesIds = mongoUser?.courses.map((course: CourseItemData) =>
-        course?._id ? course._id.toString() : ""
+        course?._id ? course._id.toString() : "",
       );
       return allCourses.filter(
-        (course) => !userCoursesIds?.includes(course._id.toString())
+        (course) => !userCoursesIds?.includes(course._id.toString()),
       );
     }
 
@@ -93,7 +93,7 @@ export async function fetchCoursesIncoming(): Promise<
 
 export async function fetchCourseBySlug(
   slug: string,
-  status?: CourseStatus
+  status?: CourseStatus,
 ): Promise<CourseItemData | undefined> {
   try {
     connectToDatabase();
@@ -104,7 +104,7 @@ export async function fetchCourseBySlug(
       searchQuery.status = status;
     }
     const course = await CourseModel.findOne(searchQuery).select(
-      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author minPrice isMicro"
+      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author minPrice isMicro",
     );
     if (!course) return undefined;
 
@@ -188,9 +188,8 @@ export async function handleEnrollCourse({
       code: couponCode,
     });
 
-    const findCourse: CourseItemData | null = await CourseModel.findById(
-      courseId
-    );
+    const findCourse: CourseItemData | null =
+      await CourseModel.findById(courseId);
 
     if (!findCourse)
       return {
@@ -381,5 +380,41 @@ export async function fetchCoursesManage({
       .select("title slug image createdAt status price _id free rating views");
 
     return parseData(courses);
+  } catch (error) {}
+}
+
+export async function getAllCoursesUser(
+  params: FetchCoursesParams,
+): Promise<CourseItemData[] | undefined> {
+  try {
+    connectToDatabase();
+    const { userId } = auth();
+    const findUser: UserItemData | null = await UserModel.findOne({
+      clerkId: userId,
+    });
+
+    if (!findUser) return undefined;
+
+    const hasPermission = [UserRole.Admin, UserRole.Expert].includes(
+      findUser.role,
+    );
+
+    if (!hasPermission) return undefined;
+
+    const query: FilterQuery<typeof CourseModel> = {};
+
+    if (params.status) {
+      query.status = params.status;
+    }
+
+    if (findUser.role !== UserRole.Admin) {
+      query.author = findUser._id;
+    }
+
+    const courses = await CourseModel.find(query)
+      .select("title slug image createdAt status price _id free rating views")
+      .sort({ createdAt: -1 });
+
+    return courses;
   } catch (error) {}
 }

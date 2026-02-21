@@ -75,9 +75,9 @@ export async function fetchUserCourses({
     const allPromise = Promise.all(
       courses.map(async (item) => {
         return LessonModel.find({ courseId: item._id, _destroy: false }).select(
-          "slug"
+          "slug",
         );
-      })
+      }),
     );
 
     const lessons = await allPromise;
@@ -175,7 +175,7 @@ export async function fetchUsers({
     if (isPaid) {
       query.courses = {
         $in: await CourseModel.find({ _destroy: false, free: false }).distinct(
-          "_id"
+          "_id",
         ),
       };
     }
@@ -274,7 +274,7 @@ export async function fetchUserCoursesContinue({
           courseId: item._id,
           _destroy: false,
         }).select("_id slug");
-      })
+      }),
     );
 
     const lessons = await allLessonsPromises;
@@ -295,12 +295,36 @@ export async function fetchUserByUsername({
     connectToDatabase();
 
     const user = await UserModel.findOne({ username }).select(
-      "isMembership planEndDate username bio avatar clerkId _id createdAt"
+      "isMembership planEndDate username bio avatar clerkId _id createdAt",
     );
 
     if (!user) return null;
 
     return parseData(user);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getUserByUsername(params: {
+  username: string;
+  email?: string;
+}) {
+  try {
+    connectToDatabase();
+    const { username, email } = params;
+    const query: FilterQuery<typeof UserModel> = {};
+
+    if (username) query.username = username;
+
+    if (email) query.email = email;
+
+    const user = await UserModel.findOne(query).populate({
+      path: "courses",
+      model: CourseModel,
+    });
+
+    return user;
   } catch (error) {
     console.log(error);
   }

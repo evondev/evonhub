@@ -11,8 +11,8 @@ const IconFacebook = (props: React.ComponentProps<"svg">) => (
   >
     <defs>
       <linearGradient x1="50%" x2="50%" y1="97.078%" y2="0%" id="facebook__a">
-        <stop offset="0%" stop-color="#0062E0" />
-        <stop offset="100%" stop-color="#19AFFF" />
+        <stop offset="0%" stopColor="#0062E0" />
+        <stop offset="100%" stopColor="#19AFFF" />
       </linearGradient>
     </defs>
     <path d="M15 35.8C6.5 34.3 0 26.9 0 18 0 8.1 8.1 0 18 0s18 8.1 18 18c0 8.9-6.5 16.3-15 17.8l-1-.8h-4l-1 .8z" />
