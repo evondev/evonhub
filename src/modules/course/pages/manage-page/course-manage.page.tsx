@@ -22,6 +22,7 @@ import {
   IconEye,
   IconPlus,
   IconStudy,
+  IconUsers,
 } from "@/shared/components";
 import { LabelStatus, PaginationControl } from "@/shared/components/common";
 import {
@@ -100,7 +101,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
                   type="button"
                   className={cn(
                     "text-xs font-semibold px-2 py-1 rounded-xl flex items-center gap-2 h-7",
-                    item.className
+                    item.className,
                   )}
                   onClick={() => setFilters({ status: item.value })}
                 >
@@ -123,7 +124,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
               <PaginationControl
                 onClick={debounce(
                   () => setFilters({ page: filters.page - 1 }),
-                  300
+                  300,
                 )}
                 disabled={filters.page <= 1}
               >
@@ -132,7 +133,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
               <PaginationControl
                 onClick={debounce(
                   () => setFilters({ page: filters.page + 1 }),
-                  300
+                  300,
                 )}
                 disabled={Number(courses?.length) <= 0}
               >
@@ -180,11 +181,15 @@ export function CourseManagePage(_props: CourseManagePageProps) {
                         className="size-12 object-cover rounded-md flex-shrink-0 border borderDarkMode"
                         priority
                       />
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-2">
                         <div className="flex items-start gap-2">
                           <div className="font-bold line-clamp-2 w-[400px] block text-sm text-balance">
                             {course.title}
                           </div>
+                        </div>
+                        <div className="font-medium text-xs flex items-center gap-2 text-gray-600">
+                          <IconUsers className="size-4 shrink-0" />
+                          <span>{course.studentCount} học viên</span>
                         </div>
                       </div>
                     </div>

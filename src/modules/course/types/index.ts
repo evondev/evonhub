@@ -46,10 +46,13 @@ export interface CourseModelProps extends Document {
   isMicro?: boolean;
 }
 
-export interface CourseItemData
-  extends Omit<CourseModelProps, "id" | "lecture"> {
+export interface CourseItemData extends Omit<
+  CourseModelProps,
+  "id" | "lecture"
+> {
   _id: string;
   lecture: LectureItemData[];
+  studentCount?: number;
 }
 
 export interface FetchCoursesManageProps {

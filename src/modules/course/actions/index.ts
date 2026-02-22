@@ -378,8 +378,20 @@ export async function fetchCoursesManage({
       .skip(skip)
       .sort({ createdAt: -1 })
       .select("title slug image createdAt status price _id free rating views");
+    // count total students for each course
+    const coursesWithStudentCount = await Promise.all(
+      courses.map(async (course) => {
+        const studentCount = await UserModel.countDocuments({
+          courses: course._id,
+        });
+        return {
+          ...course.toObject(),
+          studentCount,
+        };
+      }),
+    );
 
-    return parseData(courses);
+    return parseData(coursesWithStudentCount);
   } catch (error) {}
 }
 

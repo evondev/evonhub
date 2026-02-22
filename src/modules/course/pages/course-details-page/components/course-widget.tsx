@@ -230,8 +230,7 @@ export default function CourseWidget({
                 disabled={isComingSoon || mutationEnrollCourse.isPending}
                 isLoading={mutationEnrollCourse.isPending}
               >
-                Liên hệ
-                {/* {isComingSoon ? "Sắp ra mắt" : cta || "Đăng ký ngay"} */}
+                {isComingSoon ? "Sắp ra mắt" : cta || "Liên hệ"}
               </Button>
             </>
           )}
