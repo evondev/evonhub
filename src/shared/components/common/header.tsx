@@ -20,7 +20,7 @@ export const Header = () => {
         {
           "xl:left-[var(--main-padding)]": isLessonPage,
           "xl:left-[var(--header-left)]": !isLessonPage,
-        }
+        },
       )}
       id="header"
     >
@@ -44,25 +44,14 @@ export const Header = () => {
         <span className="text-lg font-bold">evonHub</span>
       </Link>
       <div className="hidden lg:flex items-center gap-2 text-sm lg:text-base font-medium">
-        <div>
-          Thông báo quan trọng 👉{" "}
-          <Link className="font-bold text-primary" href="/new-updates">
-            Đọc tại đây
-          </Link>
-        </div>
-        {/* {userInfo?.name && !isLessonPage && (
-          <>
-            <span>👋</span>
-            <div>
-              <h3 className="font-semibold text-sm">
-                Welcome back, {userInfo?.name}!
-              </h3>
-              <div className="text-gray-500 text-xs">
-                Glad to see you again.
-              </div>
-            </div>
-          </>
-        )} */}
+        {!isLessonPage && (
+          <div>
+            Thông báo quan trọng 👉{" "}
+            <Link className="font-bold text-primary" href="/new-updates">
+              Đọc tại đây
+            </Link>
+          </div>
+        )}
       </div>
       <div className="flex items-center gap-3">
         <ModeToggle />

@@ -95,3 +95,34 @@ export async function handleRatingStatus({
     });
   } catch (error) {}
 }
+
+export async function fetchRatingsPublic({
+  limit,
+  page,
+}: FetchRatingManageProps): Promise<RatingItemData[] | undefined> {
+  try {
+    connectToDatabase();
+
+    const query: FilterQuery<typeof RatingModel> = {};
+    const skip = (page - 1) * limit;
+
+    query.status = RatingStatus.Active;
+    query.$expr = {
+      $gt: [{ $strLenCP: "$content" }, 20],
+    };
+
+    const ratings = await RatingModel.find(query)
+      .limit(limit)
+      .skip(skip)
+      .sort({ createdAt: -1 })
+      .populate({
+        model: UserModel,
+        path: "user",
+        select: "name username email avatar",
+      });
+
+    return parseData(ratings);
+  } catch (error) {
+    console.log(error);
+  }
+}
