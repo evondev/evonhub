@@ -1,17 +1,17 @@
 import Link from "next/link";
-import { IconLongArrowRight } from "../icons";
 
 export interface ViewAllLinkProps {
   href: string;
+  text?: string;
 }
 
-export function ViewAllLink({ href }: ViewAllLinkProps) {
+export function ViewAllLink({ href, text }: ViewAllLinkProps) {
   return (
     <Link
       href={href}
-      className="font-bold hover:border-primary transition-all hover:text-primary inline-flex items-center gap-2 text-sm size-8 rounded-xl borderDarkMode justify-center bgDarkMode"
+      className="font-bold hover:border-primary transition-all hover:text-primary inline-flex items-center gap-2 text-sm rounded-xl justify-center underline"
     >
-      <IconLongArrowRight className="size-5" />
+      <span>{text}</span>
     </Link>
   );
 }

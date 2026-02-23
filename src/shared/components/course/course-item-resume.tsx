@@ -39,7 +39,7 @@ export function CourseItemResume({
   return (
     <Link
       href={url}
-      className="p-2 rounded-xl flex-wrap lg:flex-nowrap bgDarkMode flex items-center gap-3 lg:gap-5 relative overflow-clip borderDarkModeHover group"
+      className="p-2 rounded-xl flex-wrap lg:flex-nowrap bgDarkMode flex items-center gap-3 lg:gap-5 relative overflow-clip borderDarkModeHover group hover:border-primary transition-all"
     >
       <div className="relative w-[100px] shrink-0">
         <Image
@@ -56,8 +56,8 @@ export function CourseItemResume({
           <IconPlay className="size-5" />
         </div>
       </div>
-      <div className="flex flex-col gap-2 flex-1">
-        <h3 className="font-bold text-xs leading-loose lg:text-sm pr-5">
+      <div className="flex flex-col gap-3 flex-1">
+        <h3 className="font-bold text-sm leading-loose lg:text-base pr-5">
           {title}
         </h3>
         <BadgeProgress progress={progress || 0} />

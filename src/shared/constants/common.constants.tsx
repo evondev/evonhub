@@ -1,5 +1,4 @@
 import {
-  IconBlog,
   IconClock,
   IconCoupon,
   IconCourseManage,
@@ -40,14 +39,6 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <IconGift />,
     url: "/coupons",
     isHot: true,
-    isHideForAdmin: true,
-  },
-  {
-    title: "Quan trọng cần đọc",
-    icon: <IconBlog />,
-    url: "/new-updates",
-    isNew: true,
-    isHideMobile: true,
     isHideForAdmin: true,
   },
   {

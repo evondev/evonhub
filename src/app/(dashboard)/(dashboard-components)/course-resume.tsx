@@ -18,10 +18,10 @@ export async function CourseResume(_props: CourseResumeProps) {
   if (userCourses.length === 0) return null;
 
   return (
-    <section className="bgDarkMode rounded-xl p-5 flex flex-col gap-5">
+    <section className="flex flex-col gap-5">
       <div className="flex items-center gap-3 justify-between">
-        <h2 className="font-bold text-base lg:text-lg">Khóa học</h2>
-        <ViewAllLink href="/study" />
+        <h2 className="font-bold text-base lg:text-xl">Tiếp tục học</h2>
+        <ViewAllLink text="Khóa học của tôi" href="/study" />
       </div>
       {userCourses.length > 0 && (
         <CourseResumeList className="flex flex-col gap-5">
