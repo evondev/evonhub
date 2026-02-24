@@ -11,7 +11,7 @@ export async function Welcome(_props: WelcomeProps) {
     userId: userId || "",
   })) as UserItemData;
   return (
-    <section className="py-2">
+    <section>
       <Heading className="text-lg lg:text-2xl">
         {userInfo?.name && (
           <>
