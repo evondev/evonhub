@@ -1,5 +1,6 @@
 import { fetchCourseBySlug } from "@/modules/course/actions";
 import { CourseDetailsPage } from "@/modules/course/pages";
+import parse from "html-react-parser";
 import { Metadata, ResolvingMetadata } from "next";
 
 export interface CourseDetailsPageRootProps {}
@@ -19,11 +20,11 @@ export async function generateMetadata(
 
   return {
     title: courseDetails?.title,
-    description: courseDetails?.desc,
+    description: parse(courseDetails?.desc || "").toString(),
     keywords: courseDetails?.seoKeywords,
     openGraph: {
       title: courseDetails?.title,
-      description: courseDetails?.desc,
+      description: parse(courseDetails?.desc || "").toString(),
       images: [courseDetails?.image || "/cover.jpg"],
     },
   };
