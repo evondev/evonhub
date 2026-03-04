@@ -74,7 +74,7 @@ export default function CourseWidget({
       return;
     }
     if (slug.includes("rachelizmarvel")) {
-      window.open("https://www.facebook.com/rachel.nguyen.48", "_blank");
+      window.open("https://www.facebook.com/rachelizmarvel/", "_blank");
     } else {
       window.open("https://www.facebook.com/tuan.trananh.0509", "_blank");
     }
