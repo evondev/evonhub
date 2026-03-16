@@ -44,14 +44,14 @@ export const Header = () => {
         <span className="text-lg font-bold">evonHub</span>
       </Link>
       <div className="hidden lg:flex items-center gap-2 text-sm lg:text-base font-medium">
-        {!isLessonPage && (
+        {/* {!isLessonPage && (
           <div>
             Thông báo quan trọng 👉{" "}
             <Link className="font-bold text-primary" href="/new-updates">
               Đọc tại đây
             </Link>
           </div>
-        )}
+        )} */}
       </div>
       <div className="flex items-center gap-3">
         <ModeToggle />

@@ -22,7 +22,7 @@ export function CourseItem({
   cta,
   url,
   userId,
-  shouldHideInfo = true,
+  shouldHideInfo = false,
 }: CourseItemProps) {
   const navigateURL = url ? `/${data.slug}${url}` : `/course/${data.slug}`;
   const hasRating = data.rating?.length > 1;

@@ -206,12 +206,6 @@ export async function handleEnrollCourse({
       };
     }
 
-    if (!isMicro) {
-      return {
-        error: "Chức năng tạm thời không khả dụng",
-      };
-    }
-
     const userCourses = findUser.courses
       .filter(Boolean)
       .map((course: any) => course.toString());

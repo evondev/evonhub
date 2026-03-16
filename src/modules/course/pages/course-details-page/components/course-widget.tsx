@@ -73,12 +73,6 @@ export default function CourseWidget({
       toast.error("Mã giảm giá không hợp lệ");
       return;
     }
-    if (slug.includes("rachelizmarvel")) {
-      window.open("https://www.facebook.com/rachelizmarvel/", "_blank");
-    } else {
-      window.open("https://www.facebook.com/tuan.trananh.0509", "_blank");
-    }
-    return;
     const response = await mutationEnrollCourse.mutateAsync({
       userId,
       courseId,
@@ -136,7 +130,7 @@ export default function CourseWidget({
     <>
       <Card className="p-3 flex flex-col rounded-xl">
         <div className="p-3 bg-white rounded-xl dark:bg-grayDarker flex flex-col gap-5">
-          {/* <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {isFree ? (
                 <strong className="text-xl text-primary">Miễn phí</strong>
@@ -160,7 +154,7 @@ export default function CourseWidget({
                 ? "-100%"
                 : `-${100 - Math.floor((price / salePrice) * 100)} %`}
             </span>
-          </div> */}
+          </div>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <IconPlay className="size-4 flex-shrink-0" />
