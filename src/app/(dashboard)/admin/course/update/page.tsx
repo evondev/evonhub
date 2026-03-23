@@ -14,20 +14,18 @@ const page = async ({
 }) => {
   const { userId } = auth();
   const mongoUser = await getUserById({ userId: userId || "" });
-  const course = await getCourseBySlug(searchParams.slug);
+  const findCourse = await getCourseBySlug(searchParams.slug);
   if (
-    course?.author?.toString() !== mongoUser._id.toString() &&
+    findCourse?.author?.toString() !== mongoUser._id.toString() &&
     ![Role.ADMIN].includes(mongoUser?.role)
   )
     return <PageNotFound></PageNotFound>;
-  const slug = searchParams.slug;
-  const findCourse = await getCourseBySlug(slug);
   if (!findCourse?.title) return <PageNotFound></PageNotFound>;
   return (
     <>
       <UpdateCourseForm
         data={JSON.parse(JSON.stringify(findCourse))}
-        slug={slug}
+        slug={searchParams.slug}
       ></UpdateCourseForm>
     </>
   );
