@@ -1,10 +1,12 @@
 "use server";
 
 import UserModel from "@/modules/user/models";
+import { MicroStatus } from "@/shared/constants/micro.constant";
 import { UserRole } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { auth } from "@clerk/nextjs/server";
+import { FilterQuery } from "mongoose";
 import MicroModel from "../models";
 import { MicroItemData } from "../types";
 
@@ -110,14 +112,26 @@ export async function fetchVideosManage() {
   }
 }
 
-export async function fetchVideos(): Promise<MicroItemData[] | undefined> {
+interface FetchVideosProps {
+  status?: MicroStatus;
+}
+
+export async function fetchVideos({ status }: FetchVideosProps = {}): Promise<
+  MicroItemData[] | undefined
+> {
   try {
     connectToDatabase();
 
-    const videos = await MicroModel.find({ _destroy: false }).populate(
-      "author",
-      "name email",
-    );
+    let query: FilterQuery<typeof MicroModel> = {};
+
+    if (status) {
+      query.status = status;
+    }
+
+    const videos = await MicroModel.find({
+      _destroy: false,
+      ...query,
+    }).populate("author", "name email");
     return parseData(videos);
   } catch (error) {
     console.log(error);

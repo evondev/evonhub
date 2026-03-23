@@ -1,9 +1,11 @@
+import { MicroStatus } from "@/shared/constants/micro.constant";
 import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchVideos } from "../../actions";
 
 interface GetVideosManageProps {
   enabled?: boolean;
+  status?: MicroStatus;
 }
 
 export function useQueryVideos({
@@ -14,7 +16,9 @@ export function useQueryVideos({
     enabled,
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      const response = await fetchVideos();
+      const response = await fetchVideos({
+        status: props.status,
+      });
 
       return response;
     },
