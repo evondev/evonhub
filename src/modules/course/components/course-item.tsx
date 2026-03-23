@@ -1,28 +1,31 @@
 "use client";
+import { useUserContext } from "@/components/user-context";
 import { formatNumberToCompact } from "@/lib/utils";
 import { useQueryUserCourseProgress } from "@/modules/user/services";
-import { IconStarFilled, IconViews } from "@/shared/components";
+import { IconEye, IconStarFilled, IconViews } from "@/shared/components";
 import { SimpleButton } from "@/shared/components/button";
 import { Card, ProgressBar } from "@/shared/components/common";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { userMutationEnrollFree } from "../services/data/mutation-enroll-free.data";
 import { CourseItemData } from "../types";
 
 interface CourseItemProps {
   data: CourseItemData;
   cta?: string;
   url?: string;
-  userId?: string;
   shouldHideInfo?: boolean;
+  isIncoming?: boolean;
 }
 
 export function CourseItem({
   data,
   cta,
   url,
-  userId,
   shouldHideInfo = false,
+  isIncoming = false,
 }: CourseItemProps) {
   const navigateURL = url ? `/${data.slug}${url}` : `/course/${data.slug}`;
   const hasRating = data.rating?.length > 1;
@@ -31,12 +34,31 @@ export function CourseItem({
     : data?.rating?.reduce((accumulator, current) => accumulator + current, 0) /
         data?.rating?.length || 0;
   const courseId = data._id || "";
-  const isFree = !!data.free;
+  const { userInfo } = useUserContext();
+  const userId = userInfo?._id || "";
+  const isFree = !!data.free && !!userId;
+  const userCourseIds = userInfo?.courses;
+  const isAlreadyEnrolled = userCourseIds?.some(
+    (course) => course === courseId,
+  );
 
   const { data: userProgress } = useQueryUserCourseProgress({
     userId: userId || "",
     courseId,
   });
+  const mutationEnrollFree = userMutationEnrollFree();
+
+  const handleEnrollFree = async () => {
+    const response = await mutationEnrollFree.mutateAsync({
+      slug: data.slug,
+      userId,
+    });
+    if (response?.type === "success") {
+      toast.success(response?.message);
+      return;
+    }
+    toast.error(response?.message);
+  };
 
   const { progress, current, total } = userProgress || {};
 
@@ -118,11 +140,35 @@ export function CourseItem({
               </div>
             )}
           </div>
-          <Link href={navigateURL} className="block">
-            <SimpleButton className="w-full">
-              {cta ? cta : "Xem chi tiết"}
-            </SimpleButton>
-          </Link>
+          {isFree && !isIncoming && !isAlreadyEnrolled && (
+            <div className="flex gap-5">
+              <SimpleButton
+                onClick={handleEnrollFree}
+                className="flex-1 w-full from-textPrimary to-textPrimary"
+              >
+                Lụm luôn
+              </SimpleButton>
+              <Link href={navigateURL} className="block shrink-0">
+                <SimpleButton className="size-12 p-2 min-w-12">
+                  <IconEye />
+                </SimpleButton>
+              </Link>
+            </div>
+          )}
+          {(!isFree || isIncoming) && !isAlreadyEnrolled && (
+            <Link href={navigateURL} className="block self-stretch flex-1">
+              <SimpleButton className="w-full">
+                {cta || "Xem chi tiết"}
+              </SimpleButton>
+            </Link>
+          )}
+          {isAlreadyEnrolled && (
+            <Link href="/study" className="block self-stretch flex-1">
+              <SimpleButton className="w-full  from-third to-third">
+                Khu vực học tập
+              </SimpleButton>
+            </Link>
+          )}
         </div>
       </div>
     </Card>

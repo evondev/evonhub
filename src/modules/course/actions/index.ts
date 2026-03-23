@@ -131,11 +131,23 @@ export async function handleEnrollFree({
         message: "Khóa học không tồn tại",
       };
     const findUser = await UserModel.findById(userId);
-    if (!findUser)
+    if (!findUser) {
       return {
         type: "error",
         message: "Tài khoản không tồn tại",
       };
+    }
+
+    const userCourseIds = findUser.courses.map((course: any) =>
+      course?._id?.toString(),
+    );
+
+    if (userCourseIds.includes(findCourse._id.toString())) {
+      return {
+        type: "error",
+        message: "Bạn đã sở hữu khóa học này rồi",
+      };
+    }
 
     findUser.courses.push(findCourse._id);
     await findUser.save();
