@@ -8,6 +8,7 @@ import {
   IconStudy,
   IconUser,
   IconUsers,
+  IconVideo,
 } from "../components";
 import IconDiscover from "../components/icons/IconDiscover";
 import { MenuLinkItemProps, StatusBadgeVariant } from "../types";
@@ -28,6 +29,12 @@ export const menuLinks: MenuLinkItemProps[] = [
     title: "Khóa học",
     icon: <IconDiscover />,
     url: "/explore",
+  },
+  {
+    title: "Videos",
+    icon: <IconVideo />,
+    url: "/explore-videos",
+    isHot: true,
   },
   {
     title: "Khu vực học tập",
@@ -52,6 +59,12 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <IconCourseManage />,
     url: "/admin/course/manage",
     isExpert: true,
+    isHideMobile: true,
+  },
+  {
+    title: "Quản lý video",
+    icon: <IconVideo />,
+    url: "/admin/micro/manage",
     isHideMobile: true,
   },
   {
