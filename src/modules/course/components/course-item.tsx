@@ -163,11 +163,18 @@ export function CourseItem({
             </Link>
           )}
           {isAlreadyEnrolled && (
-            <Link href="/study" className="block self-stretch flex-1">
-              <SimpleButton className="w-full  from-third to-third">
-                Khu vực học tập
-              </SimpleButton>
-            </Link>
+            <div className="flex gap-5">
+              <Link href="/study" className="block self-stretch flex-1">
+                <SimpleButton className="w-full  from-third to-third">
+                  Khu vực học tập
+                </SimpleButton>
+              </Link>
+              <Link href={navigateURL} className="block shrink-0">
+                <SimpleButton className="size-12 p-2 min-w-12 from-third to-third">
+                  <IconEye />
+                </SimpleButton>
+              </Link>
+            </div>
           )}
         </div>
       </div>
