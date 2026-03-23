@@ -36,7 +36,7 @@ export function CourseItem({
   const courseId = data._id || "";
   const { userInfo } = useUserContext();
   const userId = userInfo?._id || "";
-  const isFree = !!data.free && !!userId;
+  const isFree = !!data.free;
   const userCourseIds = userInfo?.courses;
   const isAlreadyEnrolled = userCourseIds?.some(
     (course) => course === courseId,
@@ -140,7 +140,7 @@ export function CourseItem({
               </div>
             )}
           </div>
-          {isFree && !isIncoming && !isAlreadyEnrolled && (
+          {isFree && !!userId && !isIncoming && !isAlreadyEnrolled && (
             <div className="flex gap-5">
               <SimpleButton
                 onClick={handleEnrollFree}
