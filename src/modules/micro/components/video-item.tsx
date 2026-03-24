@@ -6,9 +6,10 @@ import { MicroItemData } from "../types";
 
 export interface VideoItemProps {
   data: MicroItemData;
+  isEdit?: boolean;
 }
 
-export default function VideoItem({ data }: VideoItemProps) {
+export default function VideoItem({ data, isEdit = false }: VideoItemProps) {
   return (
     <>
       <div className="border borderDarkMode bgDarkMode p-3 rounded-md flex flex-col">
@@ -27,15 +28,26 @@ export default function VideoItem({ data }: VideoItemProps) {
             <IconVideo className="size-5" />
             <span>{data.duration || 5} phút</span>
           </div>
-          {data.status === MicroStatus.Approved && (
-            <Link href={`/micro/${data.slug}`}>
-              <SimpleButton>Học ngay</SimpleButton>
+          {isEdit && (
+            <Link href={`/admin/micro/update?slug=${data.slug}`}>
+              <SimpleButton className="from-textPrimary to-textPrimary">
+                Edit
+              </SimpleButton>
             </Link>
           )}
-          {data.status === MicroStatus.Pending && (
-            <SimpleButton className="from-textPrimary to-textPrimary">
-              Coming soon
-            </SimpleButton>
+          {!isEdit && (
+            <>
+              {data.status === MicroStatus.Approved && (
+                <Link href={`/micro/${data.slug}`}>
+                  <SimpleButton>Học ngay</SimpleButton>
+                </Link>
+              )}
+              {data.status === MicroStatus.Pending && (
+                <SimpleButton className="from-textPrimary to-textPrimary">
+                  Coming soon
+                </SimpleButton>
+              )}
+            </>
           )}
         </div>
       </div>

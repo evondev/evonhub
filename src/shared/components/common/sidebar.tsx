@@ -53,6 +53,7 @@ export function Sidebar({ role }: SidebarProps) {
                 isActiveLink={isActiveLink}
                 isNew={link.isNew}
                 isHot={link.isHot}
+                isFree={link.isFree}
               ></MenuLink>
             </li>
           );

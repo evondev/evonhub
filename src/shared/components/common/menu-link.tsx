@@ -8,6 +8,7 @@ interface MenuLinkProps {
   isExternal?: boolean;
   isNew?: boolean;
   isHot?: boolean;
+  isFree?: boolean;
 }
 
 export function MenuLink({
@@ -16,6 +17,7 @@ export function MenuLink({
   isExternal,
   isNew = false,
   isHot = false,
+  isFree = false,
 }: MenuLinkProps) {
   return (
     <Link
@@ -25,14 +27,14 @@ export function MenuLink({
         "flex items-center gap-3 py-2.5 pr-3 pl-6 transition-all font-medium border-l-2 border-l-transparent",
         isActiveLink(link.url)
           ? " text-primary font-semibold svg-animate border-l-primary"
-          : "text-gray70 dark:text-slate-400 hover:text-primary dark:hover:text-primary"
+          : "text-gray70 dark:text-slate-400 hover:text-primary dark:hover:text-primary",
       )}
     >
       <div className="size-5 flex items-center justify-center">{link.icon}</div>
       <span>{link.title}</span>
-      {isNew && (
+      {(isNew || isFree) && (
         <span className="ml-auto inline-flex text-green-500 px-2 py-0.5 font-bold text-xs rounded-full border border-green-500 w-11 justify-center">
-          New
+          {isNew ? "New" : "Free"}
         </span>
       )}
       {isHot && (

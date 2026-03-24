@@ -34,7 +34,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     title: "Videos",
     icon: <IconVideo />,
     url: "/explore-videos",
-    isHot: true,
+    isFree: true,
   },
   {
     title: "Khu vực học tập",
@@ -93,7 +93,11 @@ export const menuLinks: MenuLinkItemProps[] = [
     isHideMobile: true,
   },
 ];
-export const adminRoutes = ["/admin/overview", "/admin/user/manage"];
+export const adminRoutes = [
+  "/admin/overview",
+  "/admin/user/manage",
+  "/admin/video/manage",
+];
 
 export const statusActions = [
   {

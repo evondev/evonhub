@@ -10,6 +10,7 @@ export type MenuLinkItemProps = {
   isNew?: boolean;
   isHot?: boolean;
   isHideForAdmin?: boolean;
+  isFree?: boolean;
 };
 export type StatusBadgeVariant =
   | "success"

@@ -1,8 +1,9 @@
 "use client";
 
+import VideoItem from "@/modules/micro/components/video-item";
 import { useQueryVideosManage } from "@/modules/micro/services";
 import { MicroItemData } from "@/modules/micro/types";
-import { IconEdit, IconPlus } from "@/shared/components";
+import { Heading, IconPlus } from "@/shared/components";
 import Link from "next/link";
 
 export interface VideoManagePageRootProps {}
@@ -14,15 +15,11 @@ export default function VideoManagePageRoot(_props: VideoManagePageRootProps) {
     data: MicroItemData[] | undefined;
   } = useQueryVideosManage({ enabled: true });
   return (
-    <>
-      <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-10">
+      <Heading>Quản lý videos</Heading>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5">
         {data?.map((video, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <h3>{video.title}</h3>
-            <Link href={`/admin/micro/update?slug=${video.slug}`}>
-              <IconEdit />
-            </Link>
-          </div>
+          <VideoItem isEdit key={index} data={video}></VideoItem>
         ))}
       </div>
       <Link
@@ -32,6 +29,6 @@ export default function VideoManagePageRoot(_props: VideoManagePageRootProps) {
       >
         <IconPlus />
       </Link>
-    </>
+    </div>
   );
 }
