@@ -1,13 +1,10 @@
 import {
-  IconClock,
-  IconCoupon,
   IconCourseManage,
   IconGift,
   IconHome,
   IconOrder,
   IconStudy,
   IconUser,
-  IconUsers,
   IconVideo,
 } from "../components";
 import IconDiscover from "../components/icons/IconDiscover";
@@ -73,25 +70,25 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/order/manage",
     isExpert: true,
   },
-  {
-    title: "Quản lý thành viên",
-    icon: <IconUsers />,
-    url: "/admin/user/manage",
-    isAdmin: true,
-  },
-  {
-    title: "Quản lý coupon",
-    icon: <IconCoupon />,
-    url: "/admin/coupon/manage",
-    isAdmin: true,
-    isHideMobile: true,
-  },
-  {
-    title: "Sắp ra mắt",
-    icon: <IconClock />,
-    url: "/coming-soon",
-    isHideMobile: true,
-  },
+  // {
+  //   title: "Quản lý thành viên",
+  //   icon: <IconUsers />,
+  //   url: "/admin/user/manage",
+  //   isAdmin: true,
+  // },
+  // {
+  //   title: "Quản lý coupon",
+  //   icon: <IconCoupon />,
+  //   url: "/admin/coupon/manage",
+  //   isAdmin: true,
+  //   isHideMobile: true,
+  // },
+  // {
+  //   title: "Sắp ra mắt",
+  //   icon: <IconClock />,
+  //   url: "/coming-soon",
+  //   isHideMobile: true,
+  // },
 ];
 export const adminRoutes = [
   "/admin/overview",
