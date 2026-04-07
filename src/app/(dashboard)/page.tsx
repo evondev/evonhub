@@ -1,7 +1,6 @@
 import { Banner } from "./(dashboard-components)/banner";
 import { CourseResume } from "./(dashboard-components)/course-resume";
 import { CourseSuggestion } from "./(dashboard-components)/course-suggestion";
-import { FAQ } from "./(dashboard-components)/faq";
 import { Partner } from "./(dashboard-components)/partner";
 import { Rating } from "./(dashboard-components)/rating";
 import { Welcome } from "./(dashboard-components)/welcome";
@@ -17,7 +16,6 @@ export default function DashboardPageRoot(_props: DashboardPageRootProps) {
         <CourseResume />
         <CourseSuggestion />
         <Rating />
-        <FAQ />
       </div>
       <Partner />
     </div>

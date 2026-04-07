@@ -27,16 +27,12 @@ const PageNotFound = () => {
           404
         </FuzzyText>
       </div>
-      <p className="text-center text-base lg:text-lg max-w-[600px] mx-auto mb-5">
-        Look like you&apos;re lost. The page you are looking for is not
-        available!
-      </p>
       <button
         onClick={handleRedirect}
-        className="mx-auto flex items-center justify-center gap-3 h-12 px-5 rounded-xl borderDarkModeHover bgDarkMode font-bold min-w-[200px] "
+        className="mx-auto flex items-center justify-center gap-3 h-12 px-5 rounded-xl borderDarkModeHover bgDarkMode font-bold min-w-[200px] mt-5"
       >
         <IconHome />
-        <span>Go back</span>
+        <span>Quay về</span>
       </button>
     </div>
   );

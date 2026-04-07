@@ -1,7 +1,7 @@
 "use client";
 
-import { Heading } from "@/shared/components";
-import { MicroStatus } from "@/shared/constants/micro.constant";
+import ButtonGradient from "@/components/button/ButtonGradient";
+import { Heading, IconStar } from "@/shared/components";
 import MuxPlayer from "@mux/mux-player-react";
 import { useQueryVideoBySlug } from "../services";
 
@@ -14,18 +14,18 @@ export function StudyVideoPage({ slug }: StudyVideoPageProps) {
   const video = data?.video || "";
   const iframeId = video.includes("youtube") ? video.split("watch?v=")[1] : "";
 
-  if (data?.status !== MicroStatus.Approved) {
-    return (
-      <>
-        <div className="flex flex-col gap-10 max-w-7xl mx-auto lg:py-10">
-          <Heading>{data?.title}</Heading>
-          <div className="bgDarkMode p-5 rounded-md">
-            Nội dung đang được tác giả cập nhật, vui lòng quay lại sau nhé!
-          </div>
-        </div>
-      </>
-    );
-  }
+  // if (data?.status !== MicroStatus.Approved) {
+  //   return (
+  //     <>
+  //       <div className="flex flex-col gap-10 max-w-7xl mx-auto lg:py-10">
+  //         <Heading>{data?.title}</Heading>
+  //         <div className="bgDarkMode p-5 rounded-md">
+  //           Nội dung đang được tác giả cập nhật, vui lòng quay lại sau nhé!
+  //         </div>
+  //       </div>
+  //     </>
+  //   );
+  // }
 
   return (
     <div className="flex flex-col gap-10 max-w-7xl mx-auto lg:py-10">
@@ -52,6 +52,15 @@ export function StudyVideoPage({ slug }: StudyVideoPageProps) {
           />
         </div>
       )}
+      <ButtonGradient
+        className={{
+          wrapper: "rounded-full",
+          main: "flex items-center gap-2 px-3 text-sm",
+        }}
+      >
+        <IconStar className="size-4 group-hover:animate-spin fill-[#ff979a]" />
+        Đánh giá khóa học
+      </ButtonGradient>
       <div
         className="bgDarkMode p-5 rounded-md lesson-content"
         dangerouslySetInnerHTML={{ __html: data?.content || "" }}

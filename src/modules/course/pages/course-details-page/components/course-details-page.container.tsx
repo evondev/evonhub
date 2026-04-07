@@ -63,7 +63,8 @@ export function CourseDetailsPageContainer(
 
   if (isFetchingCourse) return <CourseDetailsLoading />;
 
-  if (!courseDetails?._id) return <PageNotFound />;
+  if (!courseDetails?._id || courseDetails.status === CourseStatus.Rejected)
+    return <PageNotFound />;
 
   const {
     intro,

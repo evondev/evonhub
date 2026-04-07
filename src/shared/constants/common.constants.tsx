@@ -1,6 +1,5 @@
 import {
   IconCourseManage,
-  IconGift,
   IconHome,
   IconOrder,
   IconStudy,
@@ -23,28 +22,29 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/",
   },
   {
-    title: "Khóa học",
-    icon: <IconDiscover />,
-    url: "/explore",
-  },
-  {
-    title: "Videos",
-    icon: <IconVideo />,
-    url: "/explore-videos",
-    isFree: true,
-  },
-  {
     title: "Khu vực học tập",
     icon: <IconStudy></IconStudy>,
     url: "/study",
   },
   {
-    title: "Săn mã giảm giá",
-    icon: <IconGift />,
-    url: "/coupons",
-    isHot: true,
-    isHideForAdmin: true,
+    title: "Danh sách khóa học",
+    icon: <IconDiscover />,
+    url: "/explore",
   },
+  {
+    title: "Học qua Videos",
+    icon: <IconVideo />,
+    url: "/explore-videos",
+    isHot: true,
+  },
+
+  // {
+  //   title: "Săn mã giảm giá",
+  //   icon: <IconGift />,
+  //   url: "/coupons",
+  //   isHot: true,
+  //   isHideForAdmin: true,
+  // },
   {
     title: "Profile",
     icon: <IconUser />,
@@ -63,6 +63,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <IconVideo />,
     url: "/admin/micro/manage",
     isHideMobile: true,
+    isAdmin: true,
   },
   {
     title: "Quản lý đơn hàng",
