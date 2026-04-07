@@ -1,7 +1,6 @@
 "use client";
 
-import ButtonGradient from "@/components/button/ButtonGradient";
-import { Heading, IconStar } from "@/shared/components";
+import { Heading } from "@/shared/components";
 import MuxPlayer from "@mux/mux-player-react";
 import { useQueryVideoBySlug } from "../services";
 
@@ -52,15 +51,15 @@ export function StudyVideoPage({ slug }: StudyVideoPageProps) {
           />
         </div>
       )}
-      <ButtonGradient
+      {/* <ButtonGradient
         className={{
           wrapper: "rounded-full",
           main: "flex items-center gap-2 px-3 text-sm",
         }}
       >
         <IconStar className="size-4 group-hover:animate-spin fill-[#ff979a]" />
-        Đánh giá khóa học
-      </ButtonGradient>
+        Đánh giá bài học
+      </ButtonGradient> */}
       <div
         className="bgDarkMode p-5 rounded-md lesson-content"
         dangerouslySetInnerHTML={{ __html: data?.content || "" }}
