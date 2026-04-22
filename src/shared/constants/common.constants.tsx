@@ -31,12 +31,12 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <IconDiscover />,
     url: "/explore",
   },
-  {
-    title: "Học qua Videos",
-    icon: <IconVideo />,
-    url: "/explore-videos",
-    isHot: true,
-  },
+  // {
+  //   title: "Học qua Videos",
+  //   icon: <IconVideo />,
+  //   url: "/explore-videos",
+  //   isHot: true,
+  // },
 
   // {
   //   title: "Săn mã giảm giá",
