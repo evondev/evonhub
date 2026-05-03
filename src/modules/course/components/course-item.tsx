@@ -8,8 +8,6 @@ import { Card, ProgressBar } from "@/shared/components/common";
 import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { toast } from "react-toastify";
-import { userMutationEnrollFree } from "../services/data/mutation-enroll-free.data";
 import { CourseItemData } from "../types";
 
 interface CourseItemProps {
@@ -24,8 +22,7 @@ export function CourseItem({
   data,
   cta,
   url,
-  shouldHideInfo = false,
-  isIncoming = false,
+  shouldHideInfo = true,
 }: CourseItemProps) {
   const navigateURL = url ? `/${data.slug}${url}` : `/course/${data.slug}`;
   const hasRating = data.rating?.length > 1;
@@ -46,19 +43,6 @@ export function CourseItem({
     userId: userId || "",
     courseId,
   });
-  const mutationEnrollFree = userMutationEnrollFree();
-
-  const handleEnrollFree = async () => {
-    const response = await mutationEnrollFree.mutateAsync({
-      slug: data.slug,
-      userId,
-    });
-    if (response?.type === "success") {
-      toast.success(response?.message);
-      return;
-    }
-    toast.error(response?.message);
-  };
 
   const { progress, current, total } = userProgress || {};
 
@@ -140,12 +124,10 @@ export function CourseItem({
               </div>
             )}
           </div>
-          {isFree && !!userId && !isIncoming && !isAlreadyEnrolled ? (
-            <div className="flex gap-5">
-              <SimpleButton
-                onClick={handleEnrollFree}
-                className="flex-1 gap-3 w-full"
-              >
+          {!isAlreadyEnrolled && (
+            <Link href={navigateURL} className="block self-stretch flex-1">
+              <SimpleButton className="w-full gap-3 from-textPrimary to-textPrimary">
+                <span>{cta || "Xem chi tiết"}</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -157,53 +139,11 @@ export function CourseItem({
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                    d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
                   />
                 </svg>
-
-                <span>Lụm luôn</span>
               </SimpleButton>
-              <Link href={navigateURL} className="block shrink-0">
-                <SimpleButton className="size-12 p-2 min-w-12 from-textPrimary to-textPrimary">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                    />
-                  </svg>
-                </SimpleButton>
-              </Link>
-            </div>
-          ) : (
-            !isAlreadyEnrolled && (
-              <Link href={navigateURL} className="block self-stretch flex-1">
-                <SimpleButton className="w-full gap-3 from-textPrimary to-textPrimary">
-                  <span>{cta || "Xem chi tiết"}</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                    />
-                  </svg>
-                </SimpleButton>
-              </Link>
-            )
+            </Link>
           )}
           {isAlreadyEnrolled && (
             <div className="flex gap-5">
