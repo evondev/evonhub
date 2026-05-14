@@ -1,4 +1,5 @@
 import {
+  IconClock,
   IconCourseManage,
   IconHome,
   IconOrder,
@@ -84,12 +85,12 @@ export const menuLinks: MenuLinkItemProps[] = [
   //   isAdmin: true,
   //   isHideMobile: true,
   // },
-  // {
-  //   title: "Sắp ra mắt",
-  //   icon: <IconClock />,
-  //   url: "/coming-soon",
-  //   isHideMobile: true,
-  // },
+  {
+    title: "Sắp ra mắt",
+    icon: <IconClock />,
+    url: "/coming-soon",
+    isHideMobile: true,
+  },
 ];
 export const adminRoutes = [
   "/admin/overview",
