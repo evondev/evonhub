@@ -175,11 +175,10 @@ export default function CourseWidget({
           {isFree && !isComingSoon && (
             <button
               type="button"
-              // onClick={handleEnrollFree}
-              disabled
+              onClick={handleEnrollFree}
               className="h-12 rounded-xl px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
             >
-              Ngưng đăng ký
+              Hốt ngay
             </button>
           )}
           {(!isFree || isComingSoon) && (
