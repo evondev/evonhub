@@ -11,7 +11,7 @@
   "dependencies": {
     "@aws-sdk/client-ses": "^3.772.0",
     "@clerk/clerk-sdk-node": "^5.1.6",
-    "@clerk/nextjs": "^5.7.5",
+    "@clerk/nextjs": "^5.7.6",
     "@hookform/resolvers": "^3.3.4",
     "@mux/mux-node": "^8.5.4",
     "@mux/mux-player-react": "^3.10.2",
