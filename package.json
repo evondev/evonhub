@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.772.0",
+    "@aws-sdk/client-ses": "^3.1048.0",
     "@clerk/clerk-sdk-node": "^5.1.6",
     "@clerk/nextjs": "^5.7.5",
     "@hookform/resolvers": "^3.3.4",
