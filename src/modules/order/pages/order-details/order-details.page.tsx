@@ -8,30 +8,24 @@ import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { getPaymentQrUrl } from "../../utils";
+import { OrderApprovedSuccess } from "./components/order-approved-success";
 import { OrderPaymentWatcher } from "./components/order-payment-watcher";
 
 export interface OrderDetailsPageProps {
   orderCode: string;
+  isJustPaid?: boolean;
 }
 
-export async function OrderDetailsPage({ orderCode }: OrderDetailsPageProps) {
+export async function OrderDetailsPage({
+  orderCode,
+  isJustPaid,
+}: OrderDetailsPageProps) {
   const orderDetails = await getOrderDetails(orderCode);
 
   if (!orderDetails) return <PageNotFound />;
 
   if (orderDetails.status === OrderStatus.Approved)
-    return (
-      <div className="flex items-center justify-center flex-col gap-3">
-        <Image alt="" src="/check.png" width={100} height={100} />
-        <h1 className="font-bold text-xl mb-5">Đơn hàng này đã được duyệt</h1>
-        <Link
-          href="/study"
-          className="rounded-full flex items-center justify-center py-2 px-5 bg-secondary font-semibold text-white h-12"
-        >
-          Khu vực học tập
-        </Link>
-      </div>
-    );
+    return <OrderApprovedSuccess isJustPaid={isJustPaid} />;
 
   const qrUrl = getPaymentQrUrl(orderDetails.code, orderDetails.total);
 

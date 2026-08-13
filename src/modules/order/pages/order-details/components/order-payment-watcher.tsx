@@ -18,10 +18,13 @@ export function OrderPaymentWatcher({ code }: OrderPaymentWatcherProps) {
   const { data: status } = useQueryOrderStatus({ code });
 
   useEffect(() => {
-    if (status === OrderStatus.Approved) {
-      router.refresh();
-    }
-  }, [status, router]);
+    if (status !== OrderStatus.Approved) return;
+
+    // Gắn cờ paid để màn hình thành công biết là khách vừa trả tiền xong,
+    // từ đó mới đếm ngược chuyển sang khu vực học tập
+    router.replace(`/order/${code}?paid=1`);
+    router.refresh();
+  }, [status, router, code]);
 
   return (
     <div className="flex items-center gap-2 text-sm text-slate-500">

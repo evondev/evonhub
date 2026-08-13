@@ -52,8 +52,10 @@ export function buildOrderReminderEmail(data: OrderReminderEmailData) {
         <p><img src="${data.qrUrl}" alt="QR thanh toán" width="240" height="240" /></p>
         <p>
           Hệ thống tự động xác nhận trong vài phút sau khi nhận được tiền.
-          Xem chi tiết đơn tại
-          <a href="https://evonhub.dev/order/${data.code}">evonhub.dev/order/${data.code}</a>.
+          Bạn cũng có thể mở lại đơn bất cứ lúc nào ở mục
+          <a href="https://evonhub.dev/my-orders">Đơn hàng của tôi</a>,
+          hoặc thanh toán trực tiếp
+          <a href="https://evonhub.dev/order/${data.code}">tại đây</a>.
         </p>
       </div>
     `,

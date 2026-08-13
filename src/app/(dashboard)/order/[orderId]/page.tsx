@@ -5,12 +5,21 @@ export interface OrderDetailsPageRootProps {
   params: {
     orderId: string;
   };
+  searchParams: {
+    paid?: string;
+  };
 }
 
 export default function OrderDetailsPageRoot({
   params,
+  searchParams,
 }: OrderDetailsPageRootProps) {
   if (!params.orderId) return <PageNotFound />;
 
-  return <OrderDetailsPage orderCode={params.orderId} />;
+  return (
+    <OrderDetailsPage
+      orderCode={params.orderId}
+      isJustPaid={searchParams?.paid === "1"}
+    />
+  );
 }
