@@ -3,18 +3,23 @@
 import CouponModel from "@/modules/coupon/models";
 import CourseModel from "@/modules/course/models";
 import UserModel from "@/modules/user/models";
-import {
-  getClearedMembershipFields,
-  getMembershipFields,
-} from "@/modules/user/utils";
 import { OrderStatus } from "@/shared/constants/order.constants";
-import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
+import { UserRole } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { getCurrentUser } from "@/shared/libs/auth";
 import { FilterQuery } from "mongoose";
 import OrderModel from "../models";
-import { FetchOrdersProps, OrderItemData, UpdateOrderProps } from "../types";
+import {
+  grantOrderToUser,
+  revokeOrderFromUser,
+} from "../services/grant-order.service";
+import {
+  FetchOrdersProps,
+  FetchOrderStatusProps,
+  OrderItemData,
+  UpdateOrderProps,
+} from "../types";
 
 export async function fetchCountOrdersByCourse(
   courseId: string
@@ -104,6 +109,31 @@ export async function fetchOrders({
   }
 }
 
+/**
+ * Trạng thái đơn hàng của chính user đang đăng nhập, dùng để trang thanh toán
+ * tự cập nhật khi webhook SePay duyệt đơn.
+ */
+export async function fetchOrderStatus({
+  code,
+}: FetchOrderStatusProps): Promise<OrderStatus | undefined> {
+  try {
+    await connectToDatabase();
+
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) return;
+
+    const findOrder = await OrderModel.findOne({
+      code,
+      user: currentUser._id,
+    }).select("status");
+
+    return findOrder?.status;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function handleUpdateOrder({
   code,
   status,
@@ -137,40 +167,13 @@ export async function handleUpdateOrder({
       if (!isCourseAuthor) return;
     }
 
-    const isMembershipOrder =
-      !!findOrder.plan && findOrder.plan !== MembershipPlan.None;
-
     findOrder.status = status;
     await findOrder.save();
 
     if (status === OrderStatus.Approved) {
-      if (isMembershipOrder) {
-        await UserModel.updateOne(
-          { _id: findUser._id },
-          getMembershipFields(findOrder.plan)
-        );
-      } else if (findOrder.course) {
-        await UserModel.updateOne(
-          { _id: findUser._id },
-          { $addToSet: { courses: findOrder.course } }
-        );
-      }
-
-      return true;
-    }
-
-    if (isMembershipOrder) {
-      if (findUser.isMembership && findUser.plan === findOrder.plan) {
-        await UserModel.updateOne(
-          { _id: findUser._id },
-          getClearedMembershipFields()
-        );
-      }
-    } else if (findOrder.course) {
-      await UserModel.updateOne(
-        { _id: findUser._id },
-        { $pull: { courses: findOrder.course } }
-      );
+      await grantOrderToUser(findOrder);
+    } else {
+      await revokeOrderFromUser(findOrder);
     }
 
     return true;

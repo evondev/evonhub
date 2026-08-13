@@ -274,11 +274,30 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                     </Link>
                   </TableCell>
                   <TableCell>
-                    <LabelStatus
-                      className={orderStatuses[order.status]?.className}
-                    >
-                      {orderStatuses[order.status]?.text}
-                    </LabelStatus>
+                    <div className="flex flex-col gap-1">
+                      <LabelStatus
+                        className={orderStatuses[order.status]?.className}
+                      >
+                        {orderStatuses[order.status]?.text}
+                      </LabelStatus>
+                      {!!order.paidAmount && (
+                        <div
+                          className={cn(
+                            "text-xs",
+                            order.paidAmount === order.total
+                              ? "text-green-500"
+                              : "text-orange-500"
+                          )}
+                        >
+                          Đã nhận {formatThoundsand(order.paidAmount)} VNĐ
+                        </div>
+                      )}
+                      {order.paymentNote && (
+                        <div className="text-xs text-slate-400 max-w-[180px]">
+                          {order.paymentNote}
+                        </div>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
                     {orderStatus.isRejected && (

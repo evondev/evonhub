@@ -62,6 +62,7 @@ export enum EOrderStatus {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
+  EXPIRED = "EXPIRED",
 }
 export enum ECouponStatus {
   ACTIVE = "ACTIVE",

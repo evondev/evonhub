@@ -6,6 +6,10 @@ import CourseModel from "@/modules/course/models";
 import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
 import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
+import {
+  formatRemainingPendingTime,
+  getPendingOrderExpiryDate,
+} from "@/modules/order/utils";
 import { EOrderStatus, EUserStatus, Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import dayjs from "dayjs";
@@ -205,14 +209,27 @@ export async function userBuyCourse(params: Partial<CreateOrderParams>) {
       }
     }
 
+    // Đơn PENDING quá hạn thì cho hết hạn để khách tạo đơn mới được
+    await OrderModel.updateMany(
+      {
+        user: params.user,
+        course: params.course,
+        status: EOrderStatus.PENDING,
+        createdAt: { $lte: getPendingOrderExpiryDate() },
+      },
+      { status: EOrderStatus.EXPIRED }
+    );
+
     const existOrder = await OrderModel.findOne({
       user: params.user,
       course: params.course,
       status: EOrderStatus.PENDING,
     });
     if (existOrder) {
+      const remainingTime = formatRemainingPendingTime(existOrder.createdAt);
+
       return {
-        error: `Bạn đang có một đơn hàng đang chờ xử lý. Truy cập vào https://evonhub.dev/order/${existOrder.code} để xem`,
+        error: `Bạn có đơn hàng chưa thanh toán, còn hiệu lực ${remainingTime} nữa. Truy cập vào https://evonhub.dev/order/${existOrder.code} để thanh toán.`,
       };
     }
     const newOrder = new OrderModel({
@@ -259,19 +276,24 @@ export async function deleteUnpaidOrders(params: { userId: string }) {
     const orders = await OrderModel.find({
       status: EOrderStatus.PENDING,
       createdAt: {
-        // 24 hours ago
-        $gte: new Date(new Date().getTime() - 1000 * 60 * 60 * 24),
+        // Đơn tạo TRƯỚC mốc 24h, tức đã quá hạn thanh toán
+        $lte: getPendingOrderExpiryDate(),
       },
       ...query,
     });
 
     if (!orders.length)
       return {
-        error: "Không có đơn hàng trùng lặp",
+        error: "Không có đơn hàng quá hạn",
       };
-    await OrderModel.deleteMany({
-      _id: { $in: orders.map((order) => order._id) },
-    });
+
+    // Không xóa cứng, chỉ chuyển trạng thái để giữ lại dữ liệu lịch sử
+    await OrderModel.updateMany(
+      {
+        _id: { $in: orders.map((order) => order._id) },
+      },
+      { status: EOrderStatus.EXPIRED }
+    );
     revalidatePath("/admin/order/manage");
   } catch (error) {
     console.log(error);

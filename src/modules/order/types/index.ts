@@ -19,6 +19,25 @@ export interface OrderModelProps extends Document {
   couponCode: string;
   plan: MembershipPlan;
   _destroy: boolean;
+  paidAmount?: number;
+  paidAt?: Date;
+  paymentReferences?: string[];
+  paymentNote?: string;
+}
+
+export interface SepayWebhookPayload {
+  id: number;
+  gateway: string;
+  transactionDate: string;
+  accountNumber: string;
+  code: string | null;
+  content: string;
+  transferType: "in" | "out";
+  transferAmount: number;
+  accumulated: number;
+  subAccount: string | null;
+  referenceCode: string;
+  description: string;
 }
 export interface OrderItemData
   extends Omit<OrderModelProps, "user" | "course" | "coupon"> {
@@ -33,6 +52,25 @@ export interface FetchOrdersProps {
   page: number;
   isFree?: boolean;
   status?: OrderStatus;
+}
+
+export interface CreatePendingOrderInput {
+  userId: string;
+  courseId: string;
+  amount: number;
+  discount: number;
+  total: number;
+  couponCode?: string;
+  couponId?: string;
+}
+
+export interface CreatePendingOrderResult {
+  order?: OrderModelProps;
+  existingOrder?: OrderModelProps;
+}
+
+export interface FetchOrderStatusProps {
+  code: string;
 }
 
 export interface UpdateOrderProps {

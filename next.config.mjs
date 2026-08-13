@@ -32,6 +32,12 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "qr.sepay.vn",
+        port: "",
+        pathname: "/img**",
+      },
     ],
   },
   async headers() {

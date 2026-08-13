@@ -87,6 +87,10 @@ export const orderStatus: Record<
     text: "Bị từ chối",
     className: "bg-red-500 text-red-500",
   },
+  EXPIRED: {
+    text: "Hết hạn",
+    className: "bg-gray-500 text-gray-500",
+  },
 };
 export const userStatus: Record<
   EUserStatus,

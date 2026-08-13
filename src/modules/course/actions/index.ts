@@ -4,6 +4,8 @@ import { getUserById } from "@/lib/actions/user.action";
 import { handleCheckCoupon } from "@/modules/coupon/actions";
 import { calculateCouponDiscount } from "@/modules/coupon/utils";
 import OrderModel from "@/modules/order/models";
+import { createPendingOrder } from "@/modules/order/services/create-pending-order.service";
+import { formatRemainingPendingTime } from "@/modules/order/utils";
 import UserModel from "@/modules/user/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { OrderStatus } from "@/shared/constants/order.constants";
@@ -216,38 +218,26 @@ export async function handleEnrollCourse({
     const discount = calculateCouponDiscount(appliedCoupon, amount);
     const total = Math.max(amount - discount, 0);
 
-    const orderResult = await OrderModel.findOneAndUpdate(
-      {
-        user: currentUser._id,
-        course: courseId,
-        status: OrderStatus.Pending,
-      },
-      {
-        // user / course / status lấy từ filter khi insert, không set lại ở đây
-        $setOnInsert: {
-          amount,
-          discount,
-          total,
-          code: `DH${new Date().getTime().toString().slice(-8)}`,
-          couponCode: appliedCoupon?.code,
-          coupon: appliedCoupon?._id,
-        },
-      },
-      {
-        upsert: true,
-        new: true,
-        includeResultMetadata: true,
-      },
-    );
+    const { order, existingOrder } = await createPendingOrder({
+      userId: currentUser._id.toString(),
+      courseId,
+      amount,
+      discount,
+      total,
+      couponCode: appliedCoupon?.code,
+      couponId: appliedCoupon?._id,
+    });
 
-    if (orderResult.lastErrorObject?.updatedExisting) {
+    if (existingOrder) {
+      const remainingTime = formatRemainingPendingTime(existingOrder.createdAt);
+
       return {
-        error: `Bạn đang có một đơn hàng đang chờ xử lý. Truy cập vào https://evonhub.dev/order/${orderResult.value?.code} để xem`,
+        error: `Bạn có đơn hàng chưa thanh toán, còn hiệu lực ${remainingTime} nữa. Truy cập vào https://evonhub.dev/order/${existingOrder.code} để thanh toán.`,
       };
     }
 
     return {
-      order: { code: orderResult.value?.code },
+      order: { code: order?.code || "" },
     };
   } catch (error) {
     console.log(error);

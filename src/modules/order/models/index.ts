@@ -16,7 +16,12 @@ const orderSchema = new Schema<OrderModelProps>({
   },
   status: {
     type: String,
-    enum: [OrderStatus.Pending, OrderStatus.Approved, OrderStatus.Rejected],
+    enum: [
+      OrderStatus.Pending,
+      OrderStatus.Approved,
+      OrderStatus.Rejected,
+      OrderStatus.Expired,
+    ],
     default: OrderStatus.Pending,
   },
   amount: {
@@ -47,6 +52,22 @@ const orderSchema = new Schema<OrderModelProps>({
   _destroy: {
     type: Boolean,
     default: false,
+  },
+  // Tổng số tiền đã nhận được qua SePay, cộng dồn nếu khách chuyển nhiều lần
+  paidAmount: {
+    type: Number,
+    default: 0,
+  },
+  paidAt: {
+    type: Date,
+  },
+  // Id giao dịch SePay đã xử lý, dùng để chặn cộng trùng khi webhook gọi lại
+  paymentReferences: {
+    type: [String],
+    default: [],
+  },
+  paymentNote: {
+    type: String,
   },
   plan: {
     type: String,
