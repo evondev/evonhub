@@ -55,7 +55,7 @@ export default function CourseWidget({
   });
 
   const handleEnrollFree = async () => {
-    if (!ensureSignedIn("Vui lòng đăng nhập để nhận khóa học")) return;
+    if (!ensureSignedIn("Bạn cần đăng nhập trước khi nhận khóa học")) return;
 
     const response = await mutationEnrollFree.mutateAsync({ slug });
 
@@ -67,7 +67,7 @@ export default function CourseWidget({
   };
 
   const handleBuyCourse = async () => {
-    if (!ensureSignedIn("Vui lòng đăng nhập để mua khóa học")) return;
+    if (!ensureSignedIn("Bạn cần đăng nhập trước khi mua khóa học")) return;
 
     const response = await mutationEnrollCourse.mutateAsync({
       courseId,
