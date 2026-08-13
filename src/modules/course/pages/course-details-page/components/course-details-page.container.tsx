@@ -14,6 +14,7 @@ import { useQueryRatingsByCourse } from "@/modules/rating/services";
 import { CourseOutline } from "@/shared/components/course";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { handleCheckMembership } from "@/shared/utils";
+import { isCourseFree } from "@/modules/course/utils";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import AlreadyEnroll from "./already-enroll";
@@ -85,7 +86,7 @@ export function CourseDetailsPageContainer(
     : intro?.split("/").at(-1);
 
   const isAlreadyEnroll = userInfo?.courses.includes(courseDetails._id);
-  const isFree = price === 0 || free;
+  const isFree = isCourseFree({ price, free });
   const isComingSoon = status === CourseStatus.Pending;
   const shouldShowIntro = !!intro;
   const shouldShowImage = !!image && !shouldShowIntro;

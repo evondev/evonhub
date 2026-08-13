@@ -135,9 +135,12 @@ export async function handleEnrollFree({
         message: "Tài khoản của bạn đã bị khóa",
       };
 
+    // Khóa miễn phí phải vừa bật cờ free vừa có giá 0: cờ free bật nhầm trên
+    // khóa có giá thì không được phép cho lấy miễn phí
     const findCourse = await CourseModel.findOne({
       slug,
       free: true,
+      price: { $lte: 0 },
       status: CourseStatus.Approved,
     });
 

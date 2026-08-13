@@ -9,6 +9,7 @@ import { formatThoundsand } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { CourseItemData } from "../types";
+import { isCourseFree } from "../utils";
 
 interface CourseItemProps {
   data: CourseItemData;
@@ -33,7 +34,7 @@ export function CourseItem({
   const courseId = data._id || "";
   const { userInfo } = useUserContext();
   const userId = userInfo?._id || "";
-  const isFree = !!data.free;
+  const isFree = isCourseFree(data);
   const userCourseIds = userInfo?.courses;
   const isAlreadyEnrolled = userCourseIds?.some(
     (course) => course === courseId,
