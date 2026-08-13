@@ -2,6 +2,9 @@
 import million from "million/compiler";
 
 const nextConfig = {
+  // Cho phép build ra thư mục khác để không đè .next của dev server đang chạy:
+  // NEXT_DIST_DIR=.next-verify npm run build
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   env: {
     MUX_TOKEN_ID: process.env.MUX_TOKEN_ID,
     MUX_TOKEN_SECRET: process.env.MUX_TOKEN_SECRET,
