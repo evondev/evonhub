@@ -109,6 +109,29 @@ export async function fetchOrders({
   }
 }
 
+/** Toàn bộ đơn hàng của chính user đang đăng nhập, mới nhất trước. */
+export async function fetchMyOrders(): Promise<OrderItemData[] | undefined> {
+  try {
+    await connectToDatabase();
+
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) return;
+
+    const orders = await OrderModel.find({ user: currentUser._id })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "course",
+        model: CourseModel,
+        select: "_id title slug image",
+      });
+
+    return parseData(orders);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 /**
  * Trạng thái đơn hàng của chính user đang đăng nhập, dùng để trang thanh toán
  * tự cập nhật khi webhook SePay duyệt đơn.

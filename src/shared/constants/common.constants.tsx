@@ -1,7 +1,5 @@
 import {
-  IconClock,
   IconCourseManage,
-  IconEmail,
   IconHome,
   IconOrder,
   IconStudy,
@@ -73,13 +71,6 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/order/manage",
     isExpert: true,
   },
-  {
-    title: "Gửi email",
-    icon: <IconEmail />,
-    url: "/admin/email/create",
-    isAdmin: true,
-    isHideMobile: true,
-  },
   // {
   //   title: "Quản lý thành viên",
   //   icon: <IconUsers />,
@@ -94,10 +85,10 @@ export const menuLinks: MenuLinkItemProps[] = [
   //   isHideMobile: true,
   // },
   {
-    title: "Sắp ra mắt",
-    icon: <IconClock />,
-    url: "/coming-soon",
-    isHideMobile: true,
+    title: "Đơn hàng của tôi",
+    icon: <IconOrder />,
+    url: "/my-orders",
+    isAuth: true,
   },
 ];
 export const adminRoutes = [
