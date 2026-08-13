@@ -7,6 +7,7 @@ import {
   connectMemoryDatabase,
   disconnectMemoryDatabase,
 } from "@/test/setup-memory-db";
+import { createHmac } from "crypto";
 import mongoose from "mongoose";
 import { NextRequest } from "next/server";
 import { POST } from "./route";
@@ -33,6 +34,7 @@ vi.mock("@/modules/email/services/order-email.service", () => ({
 }));
 
 const API_KEY = process.env.SEPAY_WEBHOOK_TOKEN as string;
+const WEBHOOK_SECRET = "sepay-test-secret";
 const ORDER_CODE = "DH12345678";
 const ORDER_TOTAL = 999_000;
 
@@ -51,6 +53,32 @@ function buildRequest(
     method: "POST",
     headers,
     body: JSON.stringify(payload),
+  });
+}
+
+interface SignedRequestOptions {
+  secret?: string;
+  timestamp?: number;
+}
+
+function buildSignedRequest(
+  payload: Record<string, unknown>,
+  { secret = WEBHOOK_SECRET, timestamp }: SignedRequestOptions = {}
+) {
+  const rawBody = JSON.stringify(payload);
+  const signedAt = timestamp ?? Math.floor(Date.now() / 1000);
+  const signature = `sha256=${createHmac("sha256", secret)
+    .update(`${signedAt}.${rawBody}`)
+    .digest("hex")}`;
+
+  return new NextRequest("https://evonhub.dev/api/webhook/sepay", {
+    method: "POST",
+    headers: new Headers({
+      "content-type": "application/json",
+      "x-sepay-signature": signature,
+      "x-sepay-timestamp": String(signedAt),
+    }),
+    body: rawBody,
   });
 }
 
@@ -235,5 +263,78 @@ describe("POST /api/webhook/sepay", () => {
 
     expect(order?.status).toBe(OrderStatus.Pending);
     expect(order?.paidAmount).toBe(0);
+  });
+});
+
+describe("POST /api/webhook/sepay - xác thực HMAC-SHA256", () => {
+  beforeEach(() => {
+    process.env.SEPAY_WEBHOOK_SECRET = WEBHOOK_SECRET;
+  });
+
+  afterEach(() => {
+    delete process.env.SEPAY_WEBHOOK_SECRET;
+  });
+
+  it("chấp nhận chữ ký hợp lệ và duyệt đơn", async () => {
+    const response = await POST(buildSignedRequest(buildPayload()));
+
+    expect(response.status).toBe(200);
+
+    const order = await OrderModel.findOne({ code: ORDER_CODE });
+
+    expect(order?.status).toBe(OrderStatus.Approved);
+  });
+
+  it("từ chối chữ ký ký bằng secret khác", async () => {
+    const response = await POST(
+      buildSignedRequest(buildPayload(), { secret: "secret-gia-mao" })
+    );
+
+    expect(response.status).toBe(401);
+
+    const order = await OrderModel.findOne({ code: ORDER_CODE });
+
+    expect(order?.status).toBe(OrderStatus.Pending);
+  });
+
+  it("từ chối chữ ký quá hạn 5 phút (chống replay)", async () => {
+    const response = await POST(
+      buildSignedRequest(buildPayload(), {
+        timestamp: Math.floor(Date.now() / 1000) - 600,
+      })
+    );
+
+    expect(response.status).toBe(401);
+  });
+
+  it("từ chối khi body bị sửa sau khi ký", async () => {
+    const rawBody = JSON.stringify(buildPayload());
+    const signedAt = Math.floor(Date.now() / 1000);
+    const signature = `sha256=${createHmac("sha256", WEBHOOK_SECRET)
+      .update(`${signedAt}.${rawBody}`)
+      .digest("hex")}`;
+    const tamperedBody = JSON.stringify(
+      buildPayload({ transferAmount: 1_000_000_000 })
+    );
+
+    const response = await POST(
+      new NextRequest("https://evonhub.dev/api/webhook/sepay", {
+        method: "POST",
+        headers: new Headers({
+          "content-type": "application/json",
+          "x-sepay-signature": signature,
+          "x-sepay-timestamp": String(signedAt),
+        }),
+        body: tamperedBody,
+      })
+    );
+
+    expect(response.status).toBe(401);
+  });
+
+  it("từ chối khi thiếu header chữ ký dù có API key đúng", async () => {
+    const response = await POST(buildRequest(buildPayload()));
+
+    expect(response.status).toBe(401);
   });
 });
