@@ -6,9 +6,12 @@ export interface BankAccountInfo {
   bankCode: string;
 }
 
+// Fallback là tài khoản đang dùng sẵn: thiếu env trên môi trường deploy thì
+// trang thanh toán vẫn hiện đúng thông tin thay vì để trống cho khách.
 export const bankAccountInfo: BankAccountInfo = {
-  accountNumber: process.env.NEXT_PUBLIC_SEPAY_BANK_ACCOUNT || "",
-  accountName: process.env.NEXT_PUBLIC_SEPAY_BANK_ACCOUNT_NAME || "TRAN ANH TUAN",
+  accountNumber: process.env.NEXT_PUBLIC_SEPAY_BANK_ACCOUNT || "33366668888",
+  accountName:
+    process.env.NEXT_PUBLIC_SEPAY_BANK_ACCOUNT_NAME || "TRAN ANH TUAN",
   bankCode: process.env.NEXT_PUBLIC_SEPAY_BANK_NAME || "ACB",
 };
 
