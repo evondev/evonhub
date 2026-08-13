@@ -5,7 +5,11 @@ import { handleCheckCoupon } from "@/modules/coupon/actions";
 import { calculateCouponDiscount } from "@/modules/coupon/utils";
 import OrderModel from "@/modules/order/models";
 import { createPendingOrder } from "@/modules/order/services/create-pending-order.service";
-import { formatRemainingPendingTime } from "@/modules/order/utils";
+import {
+  formatRemainingPendingTime,
+  getPaymentQrUrl,
+} from "@/modules/order/utils";
+import { sendOrderCreatedEmail } from "@/modules/email/services/order-email.service";
 import UserModel from "@/modules/user/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { OrderStatus } from "@/shared/constants/order.constants";
@@ -231,6 +235,22 @@ export async function handleEnrollCourse({
       return {
         error: `Bạn có đơn hàng chưa thanh toán, còn hiệu lực ${remainingTime} nữa. Truy cập vào https://evonhub.dev/order/${existingOrder.code} để thanh toán.`,
       };
+    }
+
+    // Email hướng dẫn thanh toán gửi ngay, không để khách phải chờ email nhắc.
+    // Gửi hỏng cũng không được làm hỏng đơn vừa tạo.
+    if (order?.code) {
+      try {
+        await sendOrderCreatedEmail(currentUser.email, {
+          code: order.code,
+          username: currentUser.username || "bạn",
+          total: order.total,
+          qrUrl: getPaymentQrUrl(order.code, order.total),
+          courseTitle: findCourse.title,
+        });
+      } catch (error) {
+        console.log("[order] Gửi email hướng dẫn thanh toán lỗi:", error);
+      }
     }
 
     return {

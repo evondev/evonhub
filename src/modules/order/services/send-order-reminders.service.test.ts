@@ -73,8 +73,8 @@ afterAll(async () => {
 });
 
 describe("sendOrderReminders", () => {
-  it("nhắc đơn PENDING quá 1 giờ chưa thanh toán", async () => {
-    const order = await createPendingOrder(2);
+  it("nhắc đơn PENDING quá 3 giờ chưa thanh toán", async () => {
+    const order = await createPendingOrder(4);
 
     const result = await sendOrderReminders();
 
@@ -90,7 +90,7 @@ describe("sendOrderReminders", () => {
   });
 
   it("không nhắc lại đơn đã gửi nhắc", async () => {
-    await createPendingOrder(2);
+    await createPendingOrder(4);
 
     await sendOrderReminders();
     const secondRun = await sendOrderReminders();
@@ -99,8 +99,8 @@ describe("sendOrderReminders", () => {
     expect(sendOrderReminderEmail).toHaveBeenCalledTimes(1);
   });
 
-  it("bỏ qua đơn mới tạo dưới 1 giờ", async () => {
-    await createPendingOrder(0.5);
+  it("bỏ qua đơn mới tạo, chưa tới mốc 3 giờ", async () => {
+    await createPendingOrder(2);
 
     const result = await sendOrderReminders();
 
@@ -117,7 +117,7 @@ describe("sendOrderReminders", () => {
   });
 
   it("bỏ qua đơn đã nhận được tiền", async () => {
-    await createPendingOrder(2, { paidAmount: 500_000 });
+    await createPendingOrder(4, { paidAmount: 500_000 });
 
     const result = await sendOrderReminders();
 
@@ -125,7 +125,7 @@ describe("sendOrderReminders", () => {
   });
 
   it("trả lại cờ để nhắc lần sau khi gửi email thất bại", async () => {
-    const order = await createPendingOrder(2);
+    const order = await createPendingOrder(4);
 
     sendOrderReminderEmail.mockResolvedValueOnce(false);
 

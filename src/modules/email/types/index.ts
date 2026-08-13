@@ -23,6 +23,14 @@ export interface OrderApprovedEmailData {
   plan?: string;
 }
 
+export interface OrderCreatedEmailData {
+  code: string;
+  username: string;
+  total: number;
+  qrUrl: string;
+  courseTitle?: string;
+}
+
 export interface OrderReminderEmailData {
   code: string;
   username: string;

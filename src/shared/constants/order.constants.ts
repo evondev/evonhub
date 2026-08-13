@@ -1,8 +1,11 @@
 /** Đơn PENDING chỉ giữ chỗ trong 24 giờ, sau đó hết hạn để khách mua lại được. */
 export const PENDING_ORDER_TTL_MS = 24 * 60 * 60 * 1000;
 
-/** Đơn PENDING quá 1 giờ chưa thấy tiền thì gửi email nhắc (một lần duy nhất). */
-export const ORDER_REMINDER_DELAY_MS = 60 * 60 * 1000;
+/**
+ * Đơn PENDING quá 3 giờ chưa thấy tiền thì gửi email nhắc (một lần duy nhất).
+ * Khách đã nhận email hướng dẫn ngay lúc tạo đơn nên không cần nhắc quá sớm.
+ */
+export const ORDER_REMINDER_DELAY_MS = 3 * 60 * 60 * 1000;
 
 export enum OrderStatus {
   Pending = "PENDING",

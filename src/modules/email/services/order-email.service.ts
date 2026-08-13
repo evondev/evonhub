@@ -1,11 +1,13 @@
 import { resendClient } from "@/shared/libs/resend";
 import {
   OrderApprovedEmailData,
+  OrderCreatedEmailData,
   OrderReminderEmailData,
   SendTransactionalEmailProps,
 } from "../types";
 import {
   buildOrderApprovedEmail,
+  buildOrderCreatedEmail,
   buildOrderReminderEmail,
 } from "../utils/order-email-template";
 
@@ -41,6 +43,15 @@ async function sendTransactionalEmail({
   }
 
   return true;
+}
+
+export async function sendOrderCreatedEmail(
+  to: string,
+  data: OrderCreatedEmailData
+): Promise<boolean> {
+  const { subject, html } = buildOrderCreatedEmail(data);
+
+  return sendTransactionalEmail({ to, subject, html });
 }
 
 export async function sendOrderApprovedEmail(

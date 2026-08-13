@@ -1,63 +1,127 @@
 import { bankAccountInfo } from "@/shared/constants/payment.constants";
-import { OrderApprovedEmailData, OrderReminderEmailData } from "../types";
+import {
+  OrderApprovedEmailData,
+  OrderCreatedEmailData,
+  OrderReminderEmailData,
+} from "../types";
+import { EMAIL_BRAND, renderEmailLayout, renderInfoRows } from "./email-layout";
 
 function formatMoney(amount: number): string {
   return new Intl.NumberFormat("vi-VN").format(amount);
+}
+
+function renderPaymentBlock(code: string, total: number, qrUrl: string): string {
+  return `
+    ${renderInfoRows([
+      { label: "Ngân hàng", value: bankAccountInfo.bankCode },
+      { label: "Số tài khoản", value: bankAccountInfo.accountNumber },
+      { label: "Chủ tài khoản", value: bankAccountInfo.accountName },
+      { label: "Số tiền", value: `${formatMoney(total)} VNĐ` },
+      { label: "Nội dung", value: code },
+    ])}
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center" style="padding-bottom: 6px;">
+          <img src="${qrUrl}" width="220" height="220" alt="Mã QR thanh toán đơn ${code}" style="border: 1px solid ${EMAIL_BRAND.border}; border-radius: 12px;" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center" style="color: ${EMAIL_BRAND.muted}; font-size: 13px; padding-bottom: 16px;">
+          Quét mã bằng app ngân hàng, số tiền và nội dung đã điền sẵn
+        </td>
+      </tr>
+    </table>`;
+}
+
+export function buildOrderCreatedEmail(data: OrderCreatedEmailData) {
+  const productName = data.courseTitle || "khóa học";
+
+  return {
+    subject: `Còn một bước nữa thôi — đơn ${data.code}`,
+    html: renderEmailLayout({
+      preview: `Chuyển khoản ${formatMoney(data.total)} VNĐ với nội dung ${data.code} là xong.`,
+      heading: `Chào ${data.username}, chỉ còn một bước nữa thôi!`,
+      body: `
+        <p style="margin: 0 0 14px;">
+          Bạn vừa đặt <strong>${productName}</strong>. Chuyển khoản xong là khóa học
+          mở ngay, thường trong vòng một phút — không cần chờ ai duyệt tay.
+        </p>
+        <p style="margin: 0 0 14px;">
+          Nhớ giữ nguyên nội dung chuyển khoản <strong>${data.code}</strong>, đó là
+          thứ giúp hệ thống nhận ra đơn của bạn.
+        </p>
+        ${renderPaymentBlock(data.code, data.total, data.qrUrl)}
+        <p style="margin: 0 0 14px; color: ${EMAIL_BRAND.muted}; font-size: 14px;">
+          Đơn giữ chỗ trong <strong>24 giờ</strong>. Quá hạn thì bạn vẫn đặt lại được
+          bất cứ lúc nào, chỉ là phải tạo đơn mới.
+        </p>`,
+      button: {
+        label: "Mở trang thanh toán",
+        url: `${EMAIL_BRAND.siteUrl}/order/${data.code}`,
+      },
+      footerNote: `Xem lại mọi đơn của bạn tại <a href="${EMAIL_BRAND.siteUrl}/my-orders" style="color: ${EMAIL_BRAND.muted};">Đơn hàng của tôi</a>.`,
+    }),
+  };
+}
+
+export function buildOrderReminderEmail(data: OrderReminderEmailData) {
+  const productName = data.courseTitle || "khóa học";
+
+  return {
+    subject: `Đơn ${data.code} vẫn đang chờ bạn`,
+    html: renderEmailLayout({
+      preview: `Còn ${data.remainingTime} để hoàn tất đơn ${data.code}.`,
+      heading: "Đơn của bạn vẫn còn đó",
+      body: `
+        <p style="margin: 0 0 14px;">
+          Chào ${data.username}, hệ thống chưa nhận được thanh toán cho
+          <strong>${productName}</strong>. Có thể bạn đang bận, hoặc đơn giản là
+          quên mất — chuyện thường thôi.
+        </p>
+        <p style="margin: 0 0 14px;">
+          Đơn còn hiệu lực <strong>${data.remainingTime}</strong> nữa. Quét mã dưới
+          đây là xong trong một phút:
+        </p>
+        ${renderPaymentBlock(data.code, data.total, data.qrUrl)}
+        <p style="margin: 0 0 14px; color: ${EMAIL_BRAND.muted}; font-size: 14px;">
+          Nếu bạn đổi ý thì cứ bỏ qua email này, chúng tôi sẽ không nhắc thêm lần nào nữa.
+        </p>`,
+      button: {
+        label: "Thanh toán ngay",
+        url: `${EMAIL_BRAND.siteUrl}/order/${data.code}`,
+      },
+      footerNote: `Xem lại mọi đơn của bạn tại <a href="${EMAIL_BRAND.siteUrl}/my-orders" style="color: ${EMAIL_BRAND.muted};">Đơn hàng của tôi</a>.`,
+    }),
+  };
 }
 
 export function buildOrderApprovedEmail(data: OrderApprovedEmailData) {
   const productName = data.courseTitle || `gói ${data.plan}`;
 
   return {
-    subject: `Đơn hàng ${data.code} đã được thanh toán thành công 🎉`,
-    html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #171725;">
-        <p>Chào ${data.username},</p>
-        <p>
-          EvonHub đã nhận được thanh toán cho đơn hàng
-          <strong>${data.code}</strong> — <strong>${productName}</strong>.
+    subject: `Xong rồi! ${productName} đã mở cho bạn 🎉`,
+    html: renderEmailLayout({
+      preview: `Đã nhận ${formatMoney(data.total)} VNĐ cho đơn ${data.code}. Vào học thôi!`,
+      heading: "Thanh toán thành công, vào học thôi!",
+      body: `
+        <p style="margin: 0 0 14px;">
+          Chào ${data.username}, EvonHub đã nhận được
+          <strong>${formatMoney(data.total)} VNĐ</strong> cho đơn
+          <strong>${data.code}</strong>. <strong>${productName}</strong> đã mở khóa
+          trong tài khoản của bạn.
         </p>
-        <p>Số tiền: <strong>${formatMoney(data.total)} VNĐ</strong></p>
-        <p>
-          Bạn có thể vào
-          <a href="https://evonhub.dev/study">khu vực học tập</a>
-          để bắt đầu học ngay bây giờ.
+        <p style="margin: 0 0 14px;">
+          Một lời khuyên nhỏ: đừng cố học hết trong một buổi. Mỗi ngày một bài, làm
+          bài tập tới nơi tới chốn, ba tuần nữa nhìn lại bạn sẽ thấy khác hẳn.
         </p>
-        <p>Cảm ơn bạn đã tin tưởng EvonHub!</p>
-      </div>
-    `,
-  };
-}
-
-export function buildOrderReminderEmail(data: OrderReminderEmailData) {
-  return {
-    subject: `Đơn hàng ${data.code} của bạn chưa được thanh toán`,
-    html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #171725;">
-        <p>Chào ${data.username},</p>
-        <p>
-          Đơn hàng <strong>${data.code}</strong>
-          ${data.courseTitle ? `cho khóa <strong>${data.courseTitle}</strong>` : ""}
-          vẫn đang chờ thanh toán. Đơn còn hiệu lực
-          <strong>${data.remainingTime}</strong> nữa.
-        </p>
-        <p>Bạn quét mã QR bên dưới, hoặc chuyển khoản theo thông tin sau:</p>
-        <ul>
-          <li>Ngân hàng: <strong>${bankAccountInfo.bankCode}</strong></li>
-          <li>Số tài khoản: <strong>${bankAccountInfo.accountNumber}</strong></li>
-          <li>Chủ tài khoản: <strong>${bankAccountInfo.accountName}</strong></li>
-          <li>Số tiền: <strong>${formatMoney(data.total)} VNĐ</strong></li>
-          <li>Nội dung: <strong>${data.code}</strong></li>
-        </ul>
-        <p><img src="${data.qrUrl}" alt="QR thanh toán" width="240" height="240" /></p>
-        <p>
-          Hệ thống tự động xác nhận trong vài phút sau khi nhận được tiền.
-          Bạn cũng có thể mở lại đơn bất cứ lúc nào ở mục
-          <a href="https://evonhub.dev/my-orders">Đơn hàng của tôi</a>,
-          hoặc thanh toán trực tiếp
-          <a href="https://evonhub.dev/order/${data.code}">tại đây</a>.
-        </p>
-      </div>
-    `,
+        <p style="margin: 0 0 14px;">
+          Học tới đâu vướng chỗ nào cứ nhắn, mình hỗ trợ tới khi bạn làm được.
+        </p>`,
+      button: {
+        label: "Bắt đầu học ngay",
+        url: `${EMAIL_BRAND.siteUrl}/study`,
+      },
+      footerNote: `Hóa đơn của bạn được lưu tại <a href="${EMAIL_BRAND.siteUrl}/my-orders" style="color: ${EMAIL_BRAND.muted};">Đơn hàng của tôi</a>.`,
+    }),
   };
 }
