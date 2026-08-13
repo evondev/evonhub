@@ -1,10 +1,9 @@
 "use client";
 
-import { useUserContext } from "@/components/user-context";
-import { commonPath } from "@/constants";
 import { userMutationEnrollPackage } from "@/modules/course/services/data/mutation-enroll-package";
 import { Heading } from "@/shared/components";
 import { MembershipPlan } from "@/shared/constants/user.constants";
+import { useAuthGuard } from "@/shared/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -12,15 +11,11 @@ export interface MembershipPageContainerProps {}
 
 export function MembershipPageContainer(_props: MembershipPageContainerProps) {
   const mutationEnrollPackage = userMutationEnrollPackage();
-  const { userInfo } = useUserContext();
+  const { ensureSignedIn } = useAuthGuard();
   const router = useRouter();
 
   const handleMembership = async (plan: MembershipPlan) => {
-    if (!userInfo?._id) {
-      toast.error("Vui lòng đăng nhập để thực hiện chức năng này");
-      router.push(commonPath.LOGIN);
-      return;
-    }
+    if (!ensureSignedIn("Vui lòng đăng nhập để đăng ký gói")) return;
 
     try {
       const response = await mutationEnrollPackage.mutateAsync({ plan });

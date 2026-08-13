@@ -7,6 +7,7 @@ import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-
 import { IconPlay, IconStudy, IconUsers } from "@/shared/components";
 import { Card } from "@/shared/components/common";
 import { MAXIUM_DISCOUNT } from "@/shared/constants/common.constants";
+import { useAuthGuard } from "@/shared/hooks";
 import { CouponType } from "@/shared/constants/coupon.constants";
 import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
@@ -40,6 +41,7 @@ export default function CourseWidget({
 }: CourseWidgetProps) {
   const mutationEnrollFree = userMutationEnrollFree();
   const mutationEnrollCourse = userMutationEnrollCourse();
+  const { ensureSignedIn } = useAuthGuard();
   const searchParams = useSearchParams();
   const appliedCoupon = searchParams.get("appliedCoupon") || "";
 
@@ -52,6 +54,8 @@ export default function CourseWidget({
   });
 
   const handleEnrollFree = async () => {
+    if (!ensureSignedIn("Vui lòng đăng nhập để nhận khóa học")) return;
+
     const response = await mutationEnrollFree.mutateAsync({ slug });
 
     if (response?.type === "success") {
@@ -62,6 +66,8 @@ export default function CourseWidget({
   };
 
   const handleBuyCourse = async () => {
+    if (!ensureSignedIn("Vui lòng đăng nhập để mua khóa học")) return;
+
     const response = await mutationEnrollCourse.mutateAsync({
       courseId,
       couponCode,
