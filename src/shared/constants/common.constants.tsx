@@ -1,6 +1,7 @@
 import {
   IconClock,
   IconCourseManage,
+  IconEmail,
   IconHome,
   IconOrder,
   IconStudy,
@@ -71,6 +72,13 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <IconOrder />,
     url: "/admin/order/manage",
     isExpert: true,
+  },
+  {
+    title: "Gửi email",
+    icon: <IconEmail />,
+    url: "/admin/email/create",
+    isAdmin: true,
+    isHideMobile: true,
   },
   // {
   //   title: "Quản lý thành viên",
@@ -157,5 +165,5 @@ export const commonStatuses: Record<
 
 export const ITEMS_PER_PAGE = 10;
 export const MAXIUM_DISCOUNT = 500_000;
-export const MAX_RECIPIENTS = 20; // Giới hạn SES
-export const RATE_LIMIT = 10; //
+export const MAX_RECIPIENTS = 100; // Giới hạn 100 email / request của Resend batch API
+export const SEND_EMAIL_DELAY_MS = 1000; // Resend giới hạn 2 request / giây

@@ -9,19 +9,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { editorOptions } from "@/constants";
-import { useQueryCourses } from "@/modules/course/services";
-import { useQueryUsersByCourse } from "@/modules/user/services/data/query-users-by-course.data";
 import { Heading } from "@/shared/components";
-import { CourseStatus } from "@/shared/constants/course.constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "next-themes";
@@ -44,20 +34,7 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
   });
   const editorRef = useRef<any>(null);
   const { theme } = useTheme();
-  const [selectedCourseId, setSelectedCourseId] = useState("");
-  const [sendOptions, setSendOptions] = useState({
-    test: false,
-    all: false,
-  });
-
-  const { data: courses } = useQueryCourses({
-    status: CourseStatus.Approved,
-    isUpdateViews: false,
-  });
-  const { data: users } = useQueryUsersByCourse({
-    courseId: selectedCourseId,
-    isGetAll: sendOptions.all,
-  });
+  const [isTestMode, setIsTestMode] = useState(false);
 
   const mutationSendEmails = userMutationSendEmails();
 
@@ -83,19 +60,15 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
 
   async function onSubmit(values: SendEmailFormValues) {
     try {
-      if (sendOptions.test) {
-        await handleSendEmails({
-          to: [`${process.env.NEXT_PUBLIC_TEST_EMAIL}`],
-          values,
-        });
+      if (!isTestMode) {
+        toast.error("Hiện tại chỉ hỗ trợ gửi test");
         return;
       }
-      if (users?.length === 0) return;
+
       await handleSendEmails({
-        to: users?.map((user) => user.email) || [],
+        to: [`${process.env.NEXT_PUBLIC_TEST_EMAIL}`],
         values,
       });
-      return;
     } catch (error) {
       console.error(error);
     }
@@ -150,49 +123,32 @@ export function EmailCreatePage(_props: EmailCreatePageProps) {
               <FormLabel>Gửi test</FormLabel>
               <Switch
                 className="!mt-0"
-                checked={sendOptions.test}
-                onCheckedChange={(checked) =>
-                  setSendOptions({ ...sendOptions, test: checked })
-                }
+                checked={isTestMode}
+                onCheckedChange={(checked) => setIsTestMode(checked)}
               />
             </FormItem>
-            {!sendOptions.test && (
-              <>
-                <FormItem className="flex items-center gap-2">
-                  <FormLabel>Gửi tất cả</FormLabel>
-                  <Switch
-                    className="!mt-0"
-                    checked={sendOptions.all}
-                    onCheckedChange={(checked) =>
-                      setSendOptions({ ...sendOptions, all: checked })
-                    }
-                  />
-                </FormItem>
-                <FormItem className="flex flex-col gap-2">
-                  <FormLabel>Gửi cho học viên mua khóa</FormLabel>
-                  <Select onValueChange={(value) => setSelectedCourseId(value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn khóa học" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {courses &&
-                        courses.length > 0 &&
-                        courses.map((course) => (
-                          <SelectItem
-                            key={course._id}
-                            value={course._id?.toString()}
-                          >
-                            {course.title}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-                <FormItem className="flex flex-col gap-2">
-                  <FormLabel>Gửi cho danh sách cũ</FormLabel>
-                </FormItem>
-              </>
-            )}
+            {/* Tạm ẩn: gửi cho học viên mua khóa + gửi cho danh sách cũ
+            <FormItem className="flex flex-col gap-2">
+              <FormLabel>Gửi cho học viên mua khóa</FormLabel>
+              <Select onValueChange={(value) => setSelectedCourseId(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn khóa học" />
+                </SelectTrigger>
+                <SelectContent>
+                  {courses &&
+                    courses.length > 0 &&
+                    courses.map((course) => (
+                      <SelectItem key={course._id} value={course._id?.toString()}>
+                        {course.title}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </FormItem>
+            <FormItem className="flex flex-col gap-2">
+              <FormLabel>Gửi cho danh sách cũ</FormLabel>
+            </FormItem>
+            */}
             <Button
               type="submit"
               variant="primary"

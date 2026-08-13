@@ -3,11 +3,11 @@
 import {
   ITEMS_PER_PAGE,
   MAX_RECIPIENTS,
-  RATE_LIMIT,
+  SEND_EMAIL_DELAY_MS,
 } from "@/shared/constants/common.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
-import { SendEmailCommand, sesClient } from "@/shared/libs/aws-ses";
+import { resendClient } from "@/shared/libs/resend";
 import { EmailStatus } from "@/shared/types/email.types";
 import { FilterQuery } from "mongoose";
 import EmailModel from "../models";
@@ -22,27 +22,16 @@ async function sendEmailBatch(
   title: string,
   content: string
 ) {
-  const params = {
-    Source: process.env.EMAIL_FROM,
-    Destination: {
-      ToAddresses: emails,
-    },
-    Message: {
-      Subject: {
-        Data: title,
-        Charset: "UTF-8",
-      },
-      Body: {
-        Html: {
-          Data: content,
-          Charset: "UTF-8",
-        },
-      },
-    },
-  };
+  const { error } = await resendClient.batch.send(
+    emails.map((email) => ({
+      from: `${process.env.EMAIL_FROM}`,
+      to: [email],
+      subject: title,
+      html: content,
+    }))
+  );
 
-  const command = new SendEmailCommand(params);
-  return sesClient.send(command);
+  if (error) throw error;
 }
 
 export async function handleSendEmails({
@@ -50,20 +39,19 @@ export async function handleSendEmails({
   title,
   content,
 }: HandleSendEmailsProps): Promise<boolean | undefined> {
-  try {
-    connectToDatabase();
-    const emailCreated = await EmailModel.create({
-      title,
-      content,
-      recipients: to,
-      status: EmailStatus.Success,
-    });
+  await connectToDatabase();
+  const emailCreated = await EmailModel.create({
+    title,
+    content,
+    recipients: to,
+    status: EmailStatus.Success,
+  });
 
+  try {
     for (let i = 0; i < to.length; i += MAX_RECIPIENTS) {
       const batch = to.slice(i, i + MAX_RECIPIENTS);
       await sendEmailBatch(batch, title, content);
 
-      const delayMs = Math.ceil(batch.length / RATE_LIMIT) * 1000;
       await EmailModel.findOneAndUpdate(
         {
           _id: emailCreated._id,
@@ -75,12 +63,20 @@ export async function handleSendEmails({
           new: true,
         }
       );
-      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      await new Promise((resolve) => setTimeout(resolve, SEND_EMAIL_DELAY_MS));
     }
 
     return true;
   } catch (error) {
     console.error(error);
+    await EmailModel.findOneAndUpdate(
+      {
+        _id: emailCreated._id,
+      },
+      {
+        status: EmailStatus.Failed,
+      }
+    );
   }
 }
 
@@ -90,7 +86,7 @@ export async function fetchEmails({
   limit = ITEMS_PER_PAGE,
 }: FetchEmailsProps): Promise<EmailItemData[] | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const query: FilterQuery<typeof EmailModel> = {};
     const skip = (page - 1) * limit;
 
