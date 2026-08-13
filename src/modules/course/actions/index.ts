@@ -1,20 +1,20 @@
 "use server";
 
 import { getUserById } from "@/lib/actions/user.action";
-import CouponModel from "@/modules/coupon/models";
+import { handleCheckCoupon } from "@/modules/coupon/actions";
+import { calculateCouponDiscount } from "@/modules/coupon/utils";
 import OrderModel from "@/modules/order/models";
-import { OrderItemData } from "@/modules/order/types";
 import UserModel from "@/modules/user/models";
-import { CouponType } from "@/shared/constants/coupon.constants";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { OrderStatus } from "@/shared/constants/order.constants";
 import {
-  MembershipPlan,
+  membershipPlans,
   UserRole,
   UserStatus,
 } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
+import { getCurrentUser } from "@/shared/libs/auth";
 import { UserItemData } from "@/shared/types/user.types";
 import { handleCheckMembership } from "@/shared/utils";
 import { auth } from "@clerk/nextjs/server";
@@ -23,9 +23,14 @@ import CourseModel from "../models";
 import {
   CourseItemData,
   EnrollCourseProps,
+  EnrollFreeProps,
+  EnrollFreeResponse,
+  EnrollPackageProps,
+  EnrollResponse,
   FetchCoursesManageProps,
   FetchCoursesParams,
 } from "../types";
+import { isCourseOwned } from "../utils";
 
 export async function fetchCourses({
   status,
@@ -116,41 +121,46 @@ export async function fetchCourseBySlug(
 
 export async function handleEnrollFree({
   slug,
-  userId,
-}: {
-  slug: string;
-  userId: string;
-}) {
+}: EnrollFreeProps): Promise<EnrollFreeResponse | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
-    const findCourse = await CourseModel.findOne({ slug, free: true });
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser)
+      return {
+        type: "error",
+        message: "Vui lòng đăng nhập để đăng ký khóa học",
+      };
+
+    if (currentUser.status === UserStatus.Inactive)
+      return {
+        type: "error",
+        message: "Tài khoản của bạn đã bị khóa",
+      };
+
+    const findCourse = await CourseModel.findOne({
+      slug,
+      free: true,
+      status: CourseStatus.Approved,
+    });
+
     if (!findCourse)
       return {
         type: "error",
         message: "Khóa học không tồn tại",
       };
-    const findUser = await UserModel.findById(userId);
-    if (!findUser) {
-      return {
-        type: "error",
-        message: "Tài khoản không tồn tại",
-      };
-    }
 
-    const userCourseIds = findUser.courses.map((course: any) =>
-      course?._id?.toString(),
-    );
-
-    if (userCourseIds.includes(findCourse._id.toString())) {
+    if (isCourseOwned(currentUser.courses, findCourse._id.toString()))
       return {
         type: "error",
         message: "Bạn đã sở hữu khóa học này rồi",
       };
-    }
 
-    findUser.courses.push(findCourse._id);
-    await findUser.save();
+    await UserModel.updateOne(
+      { _id: currentUser._id },
+      { $addToSet: { courses: findCourse._id } },
+    );
 
     return {
       type: "success",
@@ -162,43 +172,23 @@ export async function handleEnrollFree({
 }
 
 export async function handleEnrollCourse({
-  userId,
   courseId,
-  total,
-  amount,
   couponCode,
-  couponId,
-  isMicro,
-}: EnrollCourseProps): Promise<
-  | {
-      order?: OrderItemData;
-      error?: string;
-    }
-  | undefined
-> {
+}: EnrollCourseProps): Promise<EnrollResponse | undefined> {
   try {
-    connectToDatabase();
-    if (!userId) {
-      return {
-        error: "Không tìm thấy tài khoản!",
-      };
-    }
+    await connectToDatabase();
 
-    const findUser = await UserModel.findById(userId);
+    const currentUser = await getCurrentUser();
 
-    if (!findUser)
+    if (!currentUser)
       return {
         error: "Vui lòng đăng nhập để mua khóa học",
       };
 
-    if (findUser.status === UserStatus.Inactive)
+    if (currentUser.status === UserStatus.Inactive)
       return {
         error: "Tài khoản của bạn đã bị khóa",
       };
-
-    const findCoupon = await CouponModel.findOne({
-      code: couponCode,
-    });
 
     const findCourse: CourseItemData | null =
       await CourseModel.findById(courseId);
@@ -208,62 +198,56 @@ export async function handleEnrollCourse({
         error: "Khóa học không tồn tại",
       };
 
-    if (
-      findCoupon?.amount &&
-      findCourse.price - total !== findCoupon?.amount &&
-      findCoupon?.type !== CouponType.Percentage
-    ) {
+    if (findCourse.status !== CourseStatus.Approved)
       return {
-        error: "Mã giảm giá không hợp lệ",
+        error: "Khóa học chưa được mở bán",
       };
-    }
 
-    const userCourses = findUser.courses
-      .filter(Boolean)
-      .map((course: any) => course.toString());
-
-    if (userCourses.includes(courseId))
+    if (isCourseOwned(currentUser.courses, courseId))
       return {
         error: "Bạn đã sở hữu khóa học này rồi",
       };
 
-    let status: OrderStatus = OrderStatus.Pending;
+    // Giá luôn tính lại từ DB, không tin số tiền client gửi lên
+    const amount = findCourse.price;
+    const appliedCoupon = couponCode
+      ? await handleCheckCoupon({ code: couponCode, courseId })
+      : undefined;
+    const discount = calculateCouponDiscount(appliedCoupon, amount);
+    const total = Math.max(amount - discount, 0);
 
-    const existOrder = await OrderModel.findOne({
-      user: userId,
-      course: courseId,
-      status: OrderStatus.Pending,
-    });
-    if (existOrder) {
+    const orderResult = await OrderModel.findOneAndUpdate(
+      {
+        user: currentUser._id,
+        course: courseId,
+        status: OrderStatus.Pending,
+      },
+      {
+        // user / course / status lấy từ filter khi insert, không set lại ở đây
+        $setOnInsert: {
+          amount,
+          discount,
+          total,
+          code: `DH${new Date().getTime().toString().slice(-8)}`,
+          couponCode: appliedCoupon?.code,
+          coupon: appliedCoupon?._id,
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+        includeResultMetadata: true,
+      },
+    );
+
+    if (orderResult.lastErrorObject?.updatedExisting) {
       return {
-        error: `Bạn đang có một đơn hàng đang chờ xử lý. Truy cập vào https://evonhub.dev/order/${existOrder.code} để xem`,
+        error: `Bạn đang có một đơn hàng đang chờ xử lý. Truy cập vào https://evonhub.dev/order/${orderResult.value?.code} để xem`,
       };
     }
-    const orderObject: {
-      user: string;
-      course: string;
-      total: number;
-      amount: number;
-      code: string;
-      status: OrderStatus;
-      couponCode?: string;
-      coupon?: string;
-    } = {
-      user: userId,
-      course: courseId,
-      total,
-      amount,
-      code: `DH${new Date().getTime().toString().slice(-8)}`,
-      status,
-    };
-    if (couponCode && couponId) {
-      orderObject.couponCode = couponCode;
-      orderObject.coupon = couponId;
-    }
-    const newOrder = new OrderModel(orderObject);
-    await newOrder.save();
+
     return {
-      order: newOrder,
+      order: { code: orderResult.value?.code },
     };
   } catch (error) {
     console.log(error);
@@ -271,33 +255,36 @@ export async function handleEnrollCourse({
 }
 
 export async function handleEnrollPackage({
-  userId,
-  amount,
   plan,
-}: {
-  userId: string;
-  amount: number;
-  plan: MembershipPlan;
-}) {
+}: EnrollPackageProps): Promise<EnrollResponse | undefined> {
   try {
-    connectToDatabase();
-    const findUser: UserItemData | null = await UserModel.findById(userId);
-    if (!findUser)
+    await connectToDatabase();
+
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser)
       return {
         error: "Vui lòng đăng nhập để thanh toán",
       };
-    const allPlans = Object.values(MembershipPlan);
-    if (!allPlans.includes(plan)) {
+
+    if (currentUser.status === UserStatus.Inactive)
+      return {
+        error: "Tài khoản của bạn đã bị khóa",
+      };
+
+    // Giá gói lấy từ constant ở server, không tin số tiền client gửi lên
+    const selectedPlan = membershipPlans.find((item) => item.plan === plan);
+
+    if (!selectedPlan)
       return {
         error: "Gói không tồn tại",
       };
-    }
 
     const isPlanActive =
       handleCheckMembership({
-        isMembership: findUser.isMembership,
-        endDate: findUser.planEndDate,
-      }) && plan === findUser.plan;
+        isMembership: currentUser.isMembership,
+        endDate: currentUser.planEndDate,
+      }) && plan === currentUser.plan;
 
     if (isPlanActive) {
       return {
@@ -305,26 +292,35 @@ export async function handleEnrollPackage({
       };
     }
 
-    const existOrder = await OrderModel.findOne({
-      user: userId,
-      plan,
-      status: OrderStatus.Pending,
-    });
-    if (existOrder) {
+    const orderResult = await OrderModel.findOneAndUpdate(
+      {
+        user: currentUser._id,
+        plan,
+        status: OrderStatus.Pending,
+      },
+      {
+        // user / plan / status lấy từ filter khi insert, không set lại ở đây
+        $setOnInsert: {
+          amount: selectedPlan.price,
+          total: selectedPlan.price,
+          code: `DH${new Date().getTime().toString().slice(-8)}`,
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+        includeResultMetadata: true,
+      },
+    );
+
+    if (orderResult.lastErrorObject?.updatedExisting) {
       return {
-        error: `Bạn đang có một đơn hàng đang chờ xử lý. Truy cập vào https://evonhub.dev/order/${existOrder.code} để xem`,
+        error: `Bạn đang có một đơn hàng đang chờ xử lý. Truy cập vào https://evonhub.dev/order/${orderResult.value?.code} để xem`,
       };
     }
-    const newOrder = new OrderModel({
-      user: userId,
-      plan,
-      amount,
-      total: amount,
-      code: `DH${new Date().getTime().toString().slice(-8)}`,
-    });
-    await newOrder.save();
+
     return {
-      order: newOrder,
+      order: { code: orderResult.value?.code },
     };
   } catch (error) {
     console.log(error);

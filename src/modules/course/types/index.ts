@@ -3,6 +3,7 @@ import {
   CourseLevel,
   CourseStatus,
 } from "@/shared/constants/course.constants";
+import { MembershipPlan } from "@/shared/constants/user.constants";
 import { LectureItemData } from "@/shared/types";
 import mongoose, { Document, Schema } from "mongoose";
 
@@ -68,11 +69,28 @@ export interface FetchCoursesManageProps {
 export interface FetchCoursesParams extends Partial<FetchCoursesManageProps> {}
 
 export interface EnrollCourseProps {
-  userId: string;
   courseId: string;
-  total: number;
-  amount: number;
-  couponId?: string;
   couponCode?: string;
-  isMicro?: boolean;
+}
+
+export interface EnrollFreeProps {
+  slug: string;
+}
+
+export interface EnrollPackageProps {
+  plan: MembershipPlan;
+}
+
+export interface EnrollOrderResult {
+  code: string;
+}
+
+export interface EnrollResponse {
+  order?: EnrollOrderResult;
+  error?: string;
+}
+
+export interface EnrollFreeResponse {
+  type: "success" | "error";
+  message: string;
 }

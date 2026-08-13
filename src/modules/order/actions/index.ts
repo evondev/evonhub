@@ -3,19 +3,18 @@
 import CouponModel from "@/modules/coupon/models";
 import CourseModel from "@/modules/course/models";
 import UserModel from "@/modules/user/models";
+import {
+  getClearedMembershipFields,
+  getMembershipFields,
+} from "@/modules/user/utils";
 import { OrderStatus } from "@/shared/constants/order.constants";
 import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
-import dayjs from "dayjs";
+import { getCurrentUser } from "@/shared/libs/auth";
 import { FilterQuery } from "mongoose";
 import OrderModel from "../models";
-import {
-  FetchOrdersProps,
-  OrderItemData,
-  UpdateFreeOrderProps,
-  UpdateOrderProps,
-} from "../types";
+import { FetchOrdersProps, OrderItemData, UpdateOrderProps } from "../types";
 
 export async function fetchCountOrdersByCourse(
   courseId: string
@@ -34,22 +33,28 @@ export async function fetchOrders({
   filter,
   page,
   isFree,
-  userRole,
-  userId,
   status,
 }: FetchOrdersProps): Promise<OrderItemData[] | undefined> {
   try {
-    connectToDatabase();
-    if (userRole === UserRole.User) return;
+    await connectToDatabase();
+
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) return;
+    if (![UserRole.Admin, UserRole.Expert].includes(currentUser.role)) return;
 
     const skip = (page - 1) * limit;
     const query: FilterQuery<typeof OrderModel> = {};
-    const findCourses = await CourseModel.find({
-      author: userId,
-    }).select("_id");
 
     if (filter) {
-      query.$or = [{ code: { $regex: filter, $options: "i" } }];
+      const matchedUsers = await UserModel.find({
+        email: { $regex: filter, $options: "i" },
+      }).select("_id");
+
+      query.$or = [
+        { code: { $regex: filter, $options: "i" } },
+        { user: { $in: matchedUsers.map((user) => user._id) } },
+      ];
     }
 
     if (isFree) {
@@ -57,12 +62,17 @@ export async function fetchOrders({
     }
 
     if (status) {
-      query.$or = [{ status: { $regex: status, $options: "i" } }];
+      query.status = status;
     }
 
-    if (userRole === UserRole.Expert) {
+    // Expert chỉ thấy đơn hàng của khóa học do chính mình tạo
+    if (currentUser.role === UserRole.Expert) {
+      const authoredCourses = await CourseModel.find({
+        author: currentUser._id,
+      }).select("_id");
+
       query.course = {
-        $in: findCourses.map((course) => course._id),
+        $in: authoredCourses.map((course) => course._id),
       };
     }
 
@@ -95,119 +105,106 @@ export async function fetchOrders({
 }
 
 export async function handleUpdateOrder({
-  userRole,
-  orderUser,
   code,
   status,
-  plan,
-  course,
-  amount,
-}: UpdateOrderProps): Promise<Boolean | undefined> {
+}: UpdateOrderProps): Promise<boolean | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
-    if (![UserRole.Admin, UserRole.Expert].includes(userRole)) return;
+    const currentUser = await getCurrentUser();
 
-    const findUser = await UserModel.findById(orderUser);
+    if (!currentUser) return;
+    if (![UserRole.Admin, UserRole.Expert].includes(currentUser.role)) return;
+
+    // Toàn bộ thông tin đơn hàng lấy từ DB, client chỉ gửi lên mã đơn
+    const findOrder = await OrderModel.findOne({ code });
+
+    if (!findOrder || findOrder.status === OrderStatus.Rejected) return;
+
+    const findUser = await UserModel.findById(findOrder.user);
 
     if (!findUser) return;
 
-    const findOrder = await OrderModel.findOne({
-      code,
-    });
+    // Expert chỉ được xử lý đơn của khóa học do chính mình tạo
+    if (currentUser.role === UserRole.Expert) {
+      const isCourseAuthor =
+        !!findOrder.course &&
+        !!(await CourseModel.exists({
+          _id: findOrder.course,
+          author: currentUser._id,
+        }));
 
-    if (findOrder?.status === OrderStatus.Rejected) return;
+      if (!isCourseAuthor) return;
+    }
 
-    await OrderModel.updateOne({ code }, { status });
+    const isMembershipOrder =
+      !!findOrder.plan && findOrder.plan !== MembershipPlan.None;
+
+    findOrder.status = status;
+    await findOrder.save();
 
     if (status === OrderStatus.Approved) {
-      if (plan && plan !== MembershipPlan.None) {
-        findUser.plan = plan;
-        findUser.isMembership = true;
-        findUser.planStartDate = dayjs().toDate();
-        switch (plan) {
-          case MembershipPlan.Personal:
-            findUser.planEndDate = dayjs().add(1, "month").toDate();
-            break;
-          case MembershipPlan.Starter:
-            findUser.planEndDate = dayjs().add(3, "month").toDate();
-            break;
-          case MembershipPlan.Master:
-            findUser.planEndDate = dayjs().add(6, "month").toDate();
-            break;
-          case MembershipPlan.Premium:
-            findUser.planEndDate = dayjs().add(1, "year").toDate();
-            break;
-        }
-
-        await findUser.save();
-      } else if (!findUser.courses.includes(course)) {
-        findUser.courses.push(course);
-        await findUser.save();
-      }
-      // if (Number(amount) > 0) {
-      //   await resend.emails.send({
-      //     from: "Evonhub@evonhub.dev",
-      //     to: findUser.email,
-      //     subject: "Thông báo - Đơn hàng của bạn đã được duyệt 🔥",
-      //     html: `<p>Cảm ơn bạn đã mua khóa học tại <strong>evonhub</strong>. Bây giờ bạn có thể truy cập vào <a href="https://evonhub.dev/study" target="_blank">khu vực học tập</a> để bắt đầu học nha.</p>`,
-      //   });
-      // }
-    } else {
-      if (
-        plan &&
-        plan !== MembershipPlan.None &&
-        plan !== findUser.plan &&
-        findUser.isMembership
-      ) {
-        findUser.plan = MembershipPlan.None;
-        findUser.isMembership = false;
-        findUser.planEndDate = undefined;
-        findUser.planStartDate = undefined;
-        await findUser.save();
-      } else if (!plan || plan === MembershipPlan.None) {
-        findUser.courses = findUser.courses.filter(
-          (course: any) => course.toString() !== course
+      if (isMembershipOrder) {
+        await UserModel.updateOne(
+          { _id: findUser._id },
+          getMembershipFields(findOrder.plan)
         );
-        await findUser.save();
+      } else if (findOrder.course) {
+        await UserModel.updateOne(
+          { _id: findUser._id },
+          { $addToSet: { courses: findOrder.course } }
+        );
       }
+
+      return true;
     }
+
+    if (isMembershipOrder) {
+      if (findUser.isMembership && findUser.plan === findOrder.plan) {
+        await UserModel.updateOne(
+          { _id: findUser._id },
+          getClearedMembershipFields()
+        );
+      }
+    } else if (findOrder.course) {
+      await UserModel.updateOne(
+        { _id: findUser._id },
+        { $pull: { courses: findOrder.course } }
+      );
+    }
+
     return true;
   } catch (error) {
     console.log(error);
   }
 }
-export async function handleUpdateFreeOrder({
-  userRole,
-}: UpdateFreeOrderProps): Promise<Boolean | undefined> {
+
+export async function handleUpdateFreeOrder(): Promise<boolean | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
-    if (![UserRole.Admin].includes(userRole)) return;
+    const currentUser = await getCurrentUser();
 
-    const orders: OrderItemData[] = await OrderModel.find({
-      total: {
-        $lte: 0,
-      },
+    if (!currentUser || currentUser.role !== UserRole.Admin) return;
+
+    const freeOrders = await OrderModel.find({
+      total: { $lte: 0 },
       status: OrderStatus.Pending,
+      course: { $ne: null },
     });
 
-    orders.forEach(async (order) => {
-      const findOrder = await OrderModel.findOne({
-        code: order.code,
-        total: {
-          $lte: 0,
-        },
-      });
-      const findUser = await UserModel.findById(order.user._id);
+    for (const order of freeOrders) {
+      await OrderModel.updateOne(
+        { _id: order._id },
+        { status: OrderStatus.Approved }
+      );
+      await UserModel.updateOne(
+        { _id: order.user },
+        { $addToSet: { courses: order.course } }
+      );
+    }
 
-      if (findOrder && findUser) {
-        findOrder.status = OrderStatus.Approved;
-        await findOrder.save();
-        findUser.courses.push(order.course?._id);
-        await findUser.save();
-      }
-    });
+    return true;
   } catch (error) {
     console.log(error);
   }

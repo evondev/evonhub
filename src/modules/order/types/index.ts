@@ -32,21 +32,10 @@ export interface FetchOrdersProps {
   filter?: string;
   page: number;
   isFree?: boolean;
-  userRole?: UserRole;
-  userId?: string;
   status?: OrderStatus;
 }
 
 export interface UpdateOrderProps {
   code: string;
-  orderUser: string;
-  course?: string;
   status: OrderStatus;
-  plan?: MembershipPlan;
-  userRole: UserRole;
-  amount?: number;
-}
-
-export interface UpdateFreeOrderProps {
-  userRole: UserRole;
 }

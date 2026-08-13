@@ -13,26 +13,29 @@ export interface MembershipPageContainerProps {}
 export function MembershipPageContainer(_props: MembershipPageContainerProps) {
   const mutationEnrollPackage = userMutationEnrollPackage();
   const { userInfo } = useUserContext();
-  const userId = userInfo?._id.toString() || "";
   const router = useRouter();
-  const handleMembership = async (amount: number, plan: MembershipPlan) => {
+
+  const handleMembership = async (plan: MembershipPlan) => {
     if (!userInfo?._id) {
       toast.error("Vui lòng đăng nhập để thực hiện chức năng này");
       router.push(commonPath.LOGIN);
       return;
     }
+
     try {
-      const response = await mutationEnrollPackage.mutateAsync({
-        amount,
-        userId,
-        plan,
-      });
+      const response = await mutationEnrollPackage.mutateAsync({ plan });
+
       if (response?.error) {
         toast.error(response?.error);
         return;
       }
-      router.push(`/order/${response?.order.code}`);
-    } catch (error) {}
+
+      if (response?.order?.code) {
+        router.push(`/order/${response.order.code}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -59,7 +62,7 @@ export function MembershipPageContainer(_props: MembershipPageContainerProps) {
             key={index}
             price={item.price}
             title={item.plan}
-            onButtonClick={() => handleMembership(item.price, item.plan)}
+            onButtonClick={() => handleMembership(item.plan)}
             img={item.icon}
             save={item.save}
             duration={item.duration}

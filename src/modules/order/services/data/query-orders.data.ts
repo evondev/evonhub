@@ -27,8 +27,6 @@ export function getOrdersOptions({ enabled, ...props }: GetOrdersProps) {
       props.page,
       props.limit,
       props.status,
-      props.userId,
-      props.userRole,
     ],
   });
 }

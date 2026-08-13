@@ -1,9 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useUserContext } from "@/components/user-context";
 import { handleCheckCoupon } from "@/modules/coupon/actions";
-import { CouponItemData } from "@/modules/coupon/types";
 import { userMutationEnrollCourse } from "@/modules/course/services/data/mutation-enroll";
 import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-enroll-free.data";
 import { IconPlay, IconStudy, IconUsers } from "@/shared/components";
@@ -24,7 +22,11 @@ export interface CourseWidgetProps {
   isComingSoon?: boolean;
   slug: string;
   courseId: string;
-  isMicro?: boolean;
+}
+
+interface CouponMessage {
+  error?: string;
+  success?: string;
 }
 
 export default function CourseWidget({
@@ -35,32 +37,23 @@ export default function CourseWidget({
   isComingSoon,
   slug,
   courseId,
-  isMicro,
 }: CourseWidgetProps) {
   const mutationEnrollFree = userMutationEnrollFree();
   const mutationEnrollCourse = userMutationEnrollCourse();
-  const { userInfo } = useUserContext();
-  const userId = userInfo?._id || "";
   const searchParams = useSearchParams();
   const appliedCoupon = searchParams.get("appliedCoupon") || "";
 
   const router = useRouter();
   const [discount, setDiscount] = useState(0);
   const [couponCode, setCouponCode] = useState("");
-  const [findCoupon, setFindCoupon] = useState<CouponItemData | null>(null);
-  const [message, setMessage] = useState<{
-    error?: string;
-    success?: string;
-  }>({
+  const [message, setMessage] = useState<CouponMessage>({
     error: "",
     success: "",
   });
 
   const handleEnrollFree = async () => {
-    const response = await mutationEnrollFree.mutateAsync({
-      slug,
-      userId,
-    });
+    const response = await mutationEnrollFree.mutateAsync({ slug });
+
     if (response?.type === "success") {
       toast.success(response?.message);
       return;
@@ -69,16 +62,8 @@ export default function CourseWidget({
   };
 
   const handleBuyCourse = async () => {
-    if (discount > MAXIUM_DISCOUNT) {
-      toast.error("Mã giảm giá không hợp lệ");
-      return;
-    }
     const response = await mutationEnrollCourse.mutateAsync({
-      userId,
       courseId,
-      amount: price,
-      total: price - discount,
-      couponId: findCoupon?._id || "",
       couponCode,
     });
 
@@ -110,7 +95,6 @@ export default function CourseWidget({
         success: `Bạn đã được giảm: ${response.amount}%`,
       });
     }
-    setFindCoupon(response);
     if (response?.type === CouponType.Percentage) {
       setDiscount((price * response.amount) / 100);
     } else {

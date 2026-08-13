@@ -66,10 +66,8 @@ export function OrderManagePage(_props: OrderManagePageProps) {
     enabled: !!canAccess,
     limit: ITEMS_PER_PAGE,
     page: filters.page,
-    userRole: userInfo?.role,
     filter: filters.search,
     isFree: filters.isFree,
-    userId: userInfo?._id.toString(),
     status: filters.status as OrderStatus,
   });
 
@@ -79,62 +77,47 @@ export function OrderManagePage(_props: OrderManagePageProps) {
   if (!canAccess || !userInfo) return null;
 
   const handleUpdateFreeOrder = async () => {
-    await mutationUpdateFreeOrder.mutateAsync({
-      userRole: userInfo?.role,
-    });
+    await mutationUpdateFreeOrder.mutateAsync();
   };
 
-  const handleApproveOrder = async (order: OrderItemData) => {
-    Swal.fire({
-      title: `Bạn muốn duyệt đơn hàng ${order.code}?`,
+  const handleChangeOrderStatus = async (
+    order: OrderItemData,
+    status: OrderStatus
+  ) => {
+    const isApprove = status === OrderStatus.Approved;
+    const confirmResult = await Swal.fire({
+      title: isApprove
+        ? `Bạn muốn duyệt đơn hàng ${order.code}?`
+        : `Bạn muốn hủy bỏ đơn hàng ${order.code}?`,
       text: "Vui lòng kiểm tra kỹ trước khi thực hiện",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Đồng ý",
       cancelButtonText: "Hủy",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const response = await mutationUpdateOrder.mutateAsync({
-          orderUser: order.user?._id.toString(),
-          course: order?.course?._id.toString(),
-          status: OrderStatus.Approved,
-          code: order.code,
-          plan: order.plan,
-          userRole: userInfo?.role,
-          amount: order.total,
-        });
-        if (response) {
-          toast.success("Duyệt đơn hàng thành công");
-        }
-      }
     });
+
+    if (!confirmResult.isConfirmed) return;
+
+    const response = await mutationUpdateOrder.mutateAsync({
+      code: order.code,
+      status,
+    });
+
+    if (!response) {
+      toast.error("Thao tác thất bại");
+      return;
+    }
+
+    toast.success(
+      isApprove ? "Duyệt đơn hàng thành công" : "Hủy đơn hàng thành công"
+    );
   };
 
-  const handleRejectOrder = (order: OrderItemData) => {
-    Swal.fire({
-      title: `Bạn muốn hủy bỏ đơn hàng ${order.code}?`,
-      text: "Vui lòng kiểm tra kỹ trước khi thực hiện",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Đồng ý",
-      cancelButtonText: "Hủy",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const response = await mutationUpdateOrder.mutateAsync({
-          orderUser: order.user?._id,
-          course: order?.course?._id,
-          status: OrderStatus.Rejected,
-          code: order.code,
-          plan: order.plan,
-          userRole: userInfo?.role,
-          amount: order.total,
-        });
-        if (response) {
-          toast.success("Hủy đơn hàng thành công");
-        }
-      }
-    });
-  };
+  const handleApproveOrder = (order: OrderItemData) =>
+    handleChangeOrderStatus(order, OrderStatus.Approved);
+
+  const handleRejectOrder = (order: OrderItemData) =>
+    handleChangeOrderStatus(order, OrderStatus.Rejected);
 
   const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -191,7 +174,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
           </div>
           <div className="flex gap-3 items-center">
             <Input
-              placeholder="DH1234567"
+              placeholder="Mã đơn hàng hoặc email"
               className="w-full lg:w-[300px] h-10 hidden lg:block"
               onChange={handleSearch}
             />
@@ -216,7 +199,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
             </div>
           </div>
           <Input
-            placeholder="DH1234567"
+            placeholder="Mã đơn hàng hoặc email"
             className="w-full lg:w-[300px] h-10 block lg:hidden"
             onChange={handleSearch}
           />
