@@ -3,16 +3,16 @@ import { SepayWebhookPayload } from "@/modules/order/types";
 import { connectToDatabase } from "@/shared/libs";
 import { NextRequest, NextResponse } from "next/server";
 
-function isValidApiKey(request: NextRequest): boolean {
-  const apiKey = process.env.SEPAY_API_KEY;
+function isValidWebhookToken(request: NextRequest): boolean {
+  const webhookToken = process.env.SEPAY_WEBHOOK_TOKEN;
 
-  if (!apiKey) return false;
+  if (!webhookToken) return false;
 
-  return request.headers.get("authorization") === `Apikey ${apiKey}`;
+  return request.headers.get("authorization") === `Apikey ${webhookToken}`;
 }
 
 export async function POST(request: NextRequest) {
-  if (!isValidApiKey(request)) {
+  if (!isValidWebhookToken(request)) {
     return NextResponse.json({ success: false }, { status: 401 });
   }
 

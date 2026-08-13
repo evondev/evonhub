@@ -75,7 +75,7 @@ export async function OrderDetailsPage({ orderCode }: OrderDetailsPageProps) {
                 <TableRow>
                   <TableCell>Ngân hàng</TableCell>
                   <TableCell>
-                    <strong>{bankAccountInfo.bankName}</strong>
+                    <strong>{bankAccountInfo.bankCode}</strong>
                   </TableCell>
                 </TableRow>
                 <TableRow>

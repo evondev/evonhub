@@ -32,7 +32,7 @@ vi.mock("@/modules/email/services/order-email.service", () => ({
     sendOrderApprovedEmail(...args),
 }));
 
-const API_KEY = "sepay-test-key";
+const API_KEY = process.env.SEPAY_WEBHOOK_TOKEN as string;
 const ORDER_CODE = "DH12345678";
 const ORDER_TOTAL = 999_000;
 
@@ -73,7 +73,6 @@ function buildPayload(overrides: Record<string, unknown> = {}) {
 }
 
 beforeAll(async () => {
-  process.env.SEPAY_API_KEY = API_KEY;
   await connectMemoryDatabase();
 });
 

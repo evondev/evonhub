@@ -43,7 +43,7 @@ export function buildOrderReminderEmail(data: OrderReminderEmailData) {
         </p>
         <p>Bạn quét mã QR bên dưới, hoặc chuyển khoản theo thông tin sau:</p>
         <ul>
-          <li>Ngân hàng: <strong>${bankAccountInfo.bankName}</strong></li>
+          <li>Ngân hàng: <strong>${bankAccountInfo.bankCode}</strong></li>
           <li>Số tài khoản: <strong>${bankAccountInfo.accountNumber}</strong></li>
           <li>Chủ tài khoản: <strong>${bankAccountInfo.accountName}</strong></li>
           <li>Số tiền: <strong>${formatMoney(data.total)} VNĐ</strong></li>

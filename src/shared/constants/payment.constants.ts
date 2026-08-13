@@ -1,16 +1,15 @@
 export interface BankAccountInfo {
+  /** Số tài khoản nhận tiền, cũng là tài khoản kết nối với SePay */
   accountNumber: string;
   accountName: string;
-  bankName: string;
   /** Mã ngân hàng dùng cho ảnh QR của SePay, ví dụ: ACB, VCB, MB */
   bankCode: string;
 }
 
 export const bankAccountInfo: BankAccountInfo = {
-  accountNumber: process.env.SEPAY_BANK_NUMBER || "33366668888",
-  accountName: process.env.SEPAY_BANK_ACCOUNT || "TRAN ANH TUAN",
-  bankName: process.env.SEPAY_BANK_NAME || "ACB",
-  bankCode: process.env.SEPAY_BANK_CODE || "ACB",
+  accountNumber: process.env.NEXT_PUBLIC_SEPAY_BANK_ACCOUNT || "",
+  accountName: process.env.NEXT_PUBLIC_SEPAY_BANK_ACCOUNT_NAME || "TRAN ANH TUAN",
+  bankCode: process.env.NEXT_PUBLIC_SEPAY_BANK_NAME || "ACB",
 };
 
 /** Tiền tố mã đơn hàng, cũng là nội dung chuyển khoản để SePay đối soát. */
