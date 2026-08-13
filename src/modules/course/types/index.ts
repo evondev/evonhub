@@ -3,7 +3,6 @@ import {
   CourseLevel,
   CourseStatus,
 } from "@/shared/constants/course.constants";
-import { MembershipPlan } from "@/shared/constants/user.constants";
 import { LectureItemData } from "@/shared/types";
 import mongoose, { Document, Schema } from "mongoose";
 
@@ -75,10 +74,6 @@ export interface EnrollCourseProps {
 
 export interface EnrollFreeProps {
   slug: string;
-}
-
-export interface EnrollPackageProps {
-  plan: MembershipPlan;
 }
 
 export interface EnrollOrderResult {

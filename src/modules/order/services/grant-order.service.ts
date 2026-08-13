@@ -1,8 +1,5 @@
 import UserModel from "@/modules/user/models";
-import {
-  getClearedMembershipFields,
-  getMembershipFields,
-} from "@/modules/user/utils";
+import { getClearedMembershipFields } from "@/modules/user/utils";
 import { MembershipPlan } from "@/shared/constants/user.constants";
 import { OrderModelProps } from "../types";
 
@@ -11,14 +8,14 @@ export function isMembershipOrder(order: OrderModelProps): boolean {
 }
 
 /**
- * Cấp quyền cho user sau khi đơn hàng được duyệt: gói membership hoặc khóa học.
+ * Cấp quyền cho user sau khi đơn hàng được duyệt.
  * Dùng chung cho admin duyệt tay và webhook SePay duyệt tự động.
  */
 export async function grantOrderToUser(order: OrderModelProps): Promise<void> {
+  // Tính năng membership đã ngưng, không cấp gói mới nữa
   if (isMembershipOrder(order)) {
-    await UserModel.updateOne(
-      { _id: order.user },
-      getMembershipFields(order.plan)
+    console.log(
+      `[order] Bỏ qua đơn membership ${order.code}, tính năng đã ngưng`
     );
 
     return;

@@ -59,22 +59,6 @@ export function Sidebar({ role }: SidebarProps) {
           );
         })}
       </ul>
-      {/* <div className="mt-auto p-2 rounded-xl borderDarkMode relative">
-        <div className="size-8 p-2 flex items-center justify-center rounded-full bg-primary/20 text-primary absolute right-2 top-2">
-          <IconStarFilled />
-        </div>
-        <h3 className="font-bold text-base lg:text-lg">Membership!</h3>
-        <div className="text-sm">
-          Sở hữu toàn bộ khóa học 1 cách nhanh nhất.
-        </div>
-        <Link
-          href="/membership"
-          className="mt-2 flex items-center justify-between gap-2 p-2 text-sm rounded-xl bg-primary text-white font-bold"
-        >
-          <span>Khám phá ngay</span>
-          <IconLongArrowRight />
-        </Link>
-      </div> */}
     </aside>
   );
 }

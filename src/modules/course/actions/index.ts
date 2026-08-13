@@ -9,16 +9,11 @@ import { formatRemainingPendingTime } from "@/modules/order/utils";
 import UserModel from "@/modules/user/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { OrderStatus } from "@/shared/constants/order.constants";
-import {
-  membershipPlans,
-  UserRole,
-  UserStatus,
-} from "@/shared/constants/user.constants";
+import { UserRole, UserStatus } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { getCurrentUser } from "@/shared/libs/auth";
 import { UserItemData } from "@/shared/types/user.types";
-import { handleCheckMembership } from "@/shared/utils";
 import { auth } from "@clerk/nextjs/server";
 import { FilterQuery } from "mongoose";
 import CourseModel from "../models";
@@ -27,7 +22,6 @@ import {
   EnrollCourseProps,
   EnrollFreeProps,
   EnrollFreeResponse,
-  EnrollPackageProps,
   EnrollResponse,
   FetchCoursesManageProps,
   FetchCoursesParams,
@@ -238,79 +232,6 @@ export async function handleEnrollCourse({
 
     return {
       order: { code: order?.code || "" },
-    };
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function handleEnrollPackage({
-  plan,
-}: EnrollPackageProps): Promise<EnrollResponse | undefined> {
-  try {
-    await connectToDatabase();
-
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser)
-      return {
-        error: "Vui lòng đăng nhập để thanh toán",
-      };
-
-    if (currentUser.status === UserStatus.Inactive)
-      return {
-        error: "Tài khoản của bạn đã bị khóa",
-      };
-
-    // Giá gói lấy từ constant ở server, không tin số tiền client gửi lên
-    const selectedPlan = membershipPlans.find((item) => item.plan === plan);
-
-    if (!selectedPlan)
-      return {
-        error: "Gói không tồn tại",
-      };
-
-    const isPlanActive =
-      handleCheckMembership({
-        isMembership: currentUser.isMembership,
-        endDate: currentUser.planEndDate,
-      }) && plan === currentUser.plan;
-
-    if (isPlanActive) {
-      return {
-        error: "Bạn đã đăng ký gói này rồi",
-      };
-    }
-
-    const orderResult = await OrderModel.findOneAndUpdate(
-      {
-        user: currentUser._id,
-        plan,
-        status: OrderStatus.Pending,
-      },
-      {
-        // user / plan / status lấy từ filter khi insert, không set lại ở đây
-        $setOnInsert: {
-          amount: selectedPlan.price,
-          total: selectedPlan.price,
-          code: `DH${new Date().getTime().toString().slice(-8)}`,
-        },
-      },
-      {
-        upsert: true,
-        new: true,
-        includeResultMetadata: true,
-      },
-    );
-
-    if (orderResult.lastErrorObject?.updatedExisting) {
-      return {
-        error: `Bạn đang có một đơn hàng đang chờ xử lý. Truy cập vào https://evonhub.dev/order/${orderResult.value?.code} để xem`,
-      };
-    }
-
-    return {
-      order: { code: orderResult.value?.code },
     };
   } catch (error) {
     console.log(error);
