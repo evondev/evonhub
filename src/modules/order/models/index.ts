@@ -69,6 +69,10 @@ const orderSchema = new Schema<OrderModelProps>({
   paymentNote: {
     type: String,
   },
+  // Chỉ gửi email nhắc thanh toán đúng một lần cho mỗi đơn
+  reminderSentAt: {
+    type: Date,
+  },
   plan: {
     type: String,
     enum: Object.values(MembershipPlan),

@@ -14,3 +14,26 @@ export interface FetchEmailsProps {
   page: number;
 }
 export interface EmailItemData extends EmailModelProps {}
+
+export interface OrderApprovedEmailData {
+  code: string;
+  username: string;
+  total: number;
+  courseTitle?: string;
+  plan?: string;
+}
+
+export interface OrderReminderEmailData {
+  code: string;
+  username: string;
+  total: number;
+  remainingTime: string;
+  qrUrl: string;
+  courseTitle?: string;
+}
+
+export interface SendTransactionalEmailProps {
+  to: string;
+  subject: string;
+  html: string;
+}

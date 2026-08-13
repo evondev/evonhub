@@ -23,6 +23,18 @@ export interface OrderModelProps extends Document {
   paidAt?: Date;
   paymentReferences?: string[];
   paymentNote?: string;
+  reminderSentAt?: Date;
+}
+
+export interface SendOrderRemindersResult {
+  candidates: number;
+  sent: number;
+}
+
+export interface SettlePaymentResult {
+  handled: boolean;
+  message: string;
+  isApproved?: boolean;
 }
 
 export interface SepayWebhookPayload {
