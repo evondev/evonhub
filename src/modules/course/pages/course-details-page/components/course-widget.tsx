@@ -6,9 +6,10 @@ import { userMutationEnrollCourse } from "@/modules/course/services/data/mutatio
 import { userMutationEnrollFree } from "@/modules/course/services/data/mutation-enroll-free.data";
 import { IconPlay, IconStudy, IconUsers } from "@/shared/components";
 import { Card } from "@/shared/components/common";
+import { getDiscountLabel } from "@/modules/course/utils";
 import { MAXIUM_DISCOUNT } from "@/shared/constants/common.constants";
-import { useAuthGuard } from "@/shared/hooks";
 import { CouponType } from "@/shared/constants/coupon.constants";
+import { useAuthGuard } from "@/shared/hooks";
 import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -108,6 +109,15 @@ export default function CourseWidget({
     }
   };
 
+  const hasSalePrice = salePrice > 0;
+  // Khóa miễn phí vẫn nên khoe giá gốc gạch ngang, chỉ ẩn khi không có giá nào
+  const shouldShowPriceRow = !isFree || hasSalePrice;
+  const discountLabel = getDiscountLabel({
+    isFree: !!isFree,
+    price,
+    salePrice,
+  });
+
   useEffect(() => {
     if (appliedCoupon) {
       setCouponCode(appliedCoupon);
@@ -120,31 +130,33 @@ export default function CourseWidget({
     <>
       <Card className="p-3 flex flex-col rounded-xl">
         <div className="p-3 bg-white rounded-xl dark:bg-grayDarker flex flex-col gap-5">
-          {!isFree && (
+          {shouldShowPriceRow && (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {isFree ? (
-                  <strong className="text-xl text-primary">Miễn phí</strong>
+                  <strong className="text-lg lg:text-xl text-primary">
+                    Miễn phí
+                  </strong>
                 ) : (
-                  <>
-                    <strong
-                      className={cn("text-lg lg:text-xl", {
-                        "text-primary": discount > 0,
-                      })}
-                    >
-                      {formatThoundsand(price - discount)} VNĐ
-                    </strong>
-                    <span className="text-sm line-through text-slate-400">
-                      {formatThoundsand(salePrice)} VNĐ
-                    </span>
-                  </>
+                  <strong
+                    className={cn("text-lg lg:text-xl", {
+                      "text-primary": discount > 0,
+                    })}
+                  >
+                    {formatThoundsand(price - discount)} VNĐ
+                  </strong>
+                )}
+                {hasSalePrice && (
+                  <span className="text-sm line-through text-slate-400">
+                    {formatThoundsand(salePrice)} VNĐ
+                  </span>
                 )}
               </div>
-              <span className="inline-block py-1 px-3 rounded-full bg-primary bg-opacity-20 text-primary font-bold">
-                {isFree
-                  ? "-100%"
-                  : `-${100 - Math.floor((price / salePrice) * 100)} %`}
-              </span>
+              {!!discountLabel && (
+                <span className="inline-block py-1 px-3 rounded-full bg-primary bg-opacity-20 text-primary font-bold">
+                  {discountLabel}
+                </span>
+              )}
             </div>
           )}
           <div className="flex flex-col gap-2">

@@ -31,3 +31,25 @@ interface CourseFreeCheck {
 export function isCourseFree({ price, free }: CourseFreeCheck): boolean {
   return !!free && (price ?? 0) <= 0;
 }
+
+interface DiscountLabelProps {
+  isFree: boolean;
+  price: number;
+  salePrice: number;
+}
+
+/**
+ * Nhãn phần trăm giảm giá. Trả về chuỗi rỗng khi không có giá gốc để so sánh,
+ * tránh chia cho 0 ra `-Infinity %`.
+ */
+export function getDiscountLabel({
+  isFree,
+  price,
+  salePrice,
+}: DiscountLabelProps): string {
+  if (salePrice <= 0) return "";
+
+  if (isFree) return "-100%";
+
+  return `-${100 - Math.floor((price / salePrice) * 100)} %`;
+}
