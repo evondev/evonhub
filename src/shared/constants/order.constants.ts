@@ -34,6 +34,6 @@ export const orderStatuses: Record<
   },
   [OrderStatus.Expired]: {
     text: "Hết hạn",
-    className: "bg-gray-500 text-gray-500",
+    className: "bg-slate-400 text-slate-500 dark:text-slate-300",
   },
 };
