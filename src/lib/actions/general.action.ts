@@ -23,7 +23,8 @@ export async function getUserStudyCourse(
     const user = await User.findOne({ clerkId: userId }).populate({
       path: "courses",
       select: "title slug image rating level price salePrice views free",
-      match: { status: ECourseStatus.APPROVED },
+      // Khóa ngừng bán vẫn thuộc về người đã mua
+      match: { status: { $in: [ECourseStatus.APPROVED, ECourseStatus.REJECTED] } },
     });
 
     const courses = user.courses;

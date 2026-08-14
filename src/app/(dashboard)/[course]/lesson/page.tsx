@@ -3,7 +3,6 @@ import { getUserById } from "@/lib/actions/user.action";
 import { fetchCourseBySlug } from "@/modules/course/actions";
 import { getLessonById, getLessonPreview } from "@/modules/lesson/actions";
 import { DetailsPageLayout, LessonDetailsPage } from "@/modules/lesson/pages";
-import { CourseStatus } from "@/shared/constants/course.constants";
 import { LessonItemCutomizeData } from "@/shared/types";
 import { CourseItemData } from "@/shared/types/course.types";
 import { UserItemData } from "@/shared/types/user.types";
@@ -29,7 +28,9 @@ export default async function LessonNewPage({
   const { userId } = auth();
   const [mongoUser, courseDetails, lessonPreview] = (await Promise.all([
     getUserById({ userId: userId || "" }),
-    fetchCourseBySlug(courseSlug, CourseStatus.Approved),
+    // Không lọc theo trạng thái: khóa ngừng bán vẫn học được, quyền vào học do
+    // việc đã sở hữu khóa quyết định chứ không phải trạng thái bán
+    fetchCourseBySlug(courseSlug),
     getLessonPreview(lessonId),
   ])) as [UserItemData, CourseItemData, LessonItemCutomizeData];
 

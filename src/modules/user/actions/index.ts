@@ -3,7 +3,10 @@
 import CourseModel from "@/modules/course/models";
 import { CourseItemData } from "@/modules/course/types";
 import LessonModel from "@/modules/lesson/models";
-import { CourseStatus } from "@/shared/constants/course.constants";
+import {
+  CourseStatus,
+  LEARNABLE_COURSE_STATUSES,
+} from "@/shared/constants/course.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
@@ -60,7 +63,8 @@ export async function fetchUserCourses({
       }).populate({
         path: "courses",
         select: "title slug image rating level price salePrice views free",
-        match: { status: CourseStatus.Approved },
+        // Khóa đã ngừng bán vẫn phải hiện ở khu vực học tập của người đã mua
+        match: { status: { $in: LEARNABLE_COURSE_STATUSES } },
       });
       courses = user?.courses || [];
     }
@@ -262,7 +266,8 @@ export async function fetchUserCoursesContinue({
       }).populate({
         path: "courses",
         select: "title slug image rating level price salePrice views free",
-        match: { status: CourseStatus.Approved },
+        // Khóa đã ngừng bán vẫn phải hiện ở mục học tiếp
+        match: { status: { $in: LEARNABLE_COURSE_STATUSES } },
         options: { limit },
       });
       courses = user?.courses;
