@@ -1,5 +1,4 @@
 import { getUserById } from "@/lib/actions/user.action";
-import { Heading } from "@/shared/components";
 import { UserItemData } from "@/shared/types/user.types";
 import { auth } from "@clerk/nextjs/server";
 
@@ -12,15 +11,16 @@ export async function Welcome(_props: WelcomeProps) {
   })) as UserItemData;
   return (
     <section>
-      <Heading className="text-lg lg:text-2xl">
-        {userInfo?.name && (
-          <>
-            👋 Welcome back,{" "}
-            <strong className="text-primary">{userInfo?.name}</strong>
-          </>
-        )}
-        {!userInfo?.name && <>👋 Welcome to EvonHub</>}
-      </Heading>
+      <div>
+        <div className="font-bold text-2xl mb-2">
+          <strong className="text-primary">AI</strong> viết code giúp bạn. Nhưng{" "}
+          <strong className="text-primary">hậu quả</strong> thì bạn chịu
+        </div>
+        <p className="text-sm font-medium text-gray-600">
+          Học cách đưa sản phẩm của chính mình production — và biết nó sẽ lủng ở
+          đâu, trước khi người dùng tìm ra.
+        </p>
+      </div>
     </section>
   );
 }
