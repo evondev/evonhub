@@ -351,7 +351,9 @@ export async function getAllCoursesUser(
 
     const query: FilterQuery<typeof CourseModel> = {};
 
-    if (params.status) {
+    if (params.statuses?.length) {
+      query.status = { $in: params.statuses };
+    } else if (params.status) {
       query.status = params.status;
     }
 

@@ -4,6 +4,7 @@ import {
   removeCourseFromUser,
 } from "@/lib/actions/user.action";
 import { IconPlus } from "@/shared/components";
+import { CourseStatus } from "@/shared/constants/course.constants";
 import { membershipPlans } from "@/shared/constants/user.constants";
 import Image from "next/image";
 import { useState } from "react";
@@ -122,6 +123,11 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
               {courses.map((course) => (
                 <SelectItem key={course._id} value={course}>
                   {course.title}
+                  {course.status === CourseStatus.Rejected && (
+                    <span className="ml-2 text-xs text-orange-500 font-semibold">
+                      (đã ngừng bán)
+                    </span>
+                  )}
                 </SelectItem>
               ))}
             </SelectContent>

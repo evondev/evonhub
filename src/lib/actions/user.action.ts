@@ -5,6 +5,8 @@ import CourseModel from "@/modules/course/models";
 import { sendNotification } from "@/modules/notifications/actions";
 import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
+import { UserRole } from "@/shared/constants/user.constants";
+import { getCurrentUser } from "@/shared/libs/auth";
 import {
   CreateUserParams,
   DeleteUserParams,
@@ -157,6 +159,17 @@ export async function addCourseToUser({
 }: AddCourseToUserParams) {
   try {
     connectToDatabase();
+
+    // Cấp khóa thủ công là quyền của admin, không phải của người gọi bất kỳ
+    const currentUser = await getCurrentUser();
+
+    if (currentUser?.role !== UserRole.Admin) {
+      return {
+        type: "error",
+        message: "Bạn không có quyền thực hiện thao tác này",
+      };
+    }
+
     const user = await UserModel.findOne({ clerkId: userId });
     if (!user) {
       throw new Error("User not found");
@@ -201,6 +214,11 @@ export async function removeCourseFromUser({
 }) {
   try {
     connectToDatabase();
+
+    const currentUser = await getCurrentUser();
+
+    if (currentUser?.role !== UserRole.Admin) return;
+
     const user = await UserModel.findOne({ clerkId: userId });
     if (!user) {
       throw new Error("User not found");

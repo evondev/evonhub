@@ -61,6 +61,8 @@ export interface FetchCoursesManageProps {
   page: number;
   isFree?: boolean;
   status?: CourseStatus;
+  /** Lọc theo nhiều trạng thái cùng lúc, ưu tiên hơn `status` */
+  statuses?: CourseStatus[];
   isAll?: boolean;
   shouldFilterEnrolled?: boolean;
 }
