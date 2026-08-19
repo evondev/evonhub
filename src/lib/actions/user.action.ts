@@ -5,7 +5,7 @@ import CourseModel from "@/modules/course/models";
 import { sendNotification } from "@/modules/notifications/actions";
 import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
-import { UserRole } from "@/shared/constants/user.constants";
+import { canManageCourse } from "@/modules/course/services/course-permission.service";
 import { getCurrentUser } from "@/shared/libs/auth";
 import {
   CreateUserParams,
@@ -160,10 +160,16 @@ export async function addCourseToUser({
   try {
     connectToDatabase();
 
-    // Cấp khóa thủ công là quyền của admin, không phải của người gọi bất kỳ
+    // Cấp khóa thủ công: admin làm được với mọi khóa, expert chỉ với khóa của
+    // chính mình. Không được tin quyền do client gửi lên.
     const currentUser = await getCurrentUser();
+    const hasPermission = await canManageCourse({
+      role: currentUser?.role,
+      userId: currentUser?._id,
+      courseId,
+    });
 
-    if (currentUser?.role !== UserRole.Admin) {
+    if (!hasPermission) {
       return {
         type: "error",
         message: "Bạn không có quyền thực hiện thao tác này",
@@ -216,8 +222,13 @@ export async function removeCourseFromUser({
     connectToDatabase();
 
     const currentUser = await getCurrentUser();
+    const hasPermission = await canManageCourse({
+      role: currentUser?.role,
+      userId: currentUser?._id,
+      courseId,
+    });
 
-    if (currentUser?.role !== UserRole.Admin) return;
+    if (!hasPermission) return;
 
     const user = await UserModel.findOne({ clerkId: userId });
     if (!user) {
