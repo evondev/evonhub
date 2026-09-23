@@ -35,3 +35,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Snapshot trạng thái cũ do script scripts/*.mjs ghi ra, chứa Mux asset id
+scripts/*.backup.json
