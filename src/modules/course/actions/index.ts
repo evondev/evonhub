@@ -43,7 +43,8 @@ export async function fetchCourses({
 }: FetchCoursesParams): Promise<CourseItemData[] | undefined> {
   try {
     connectToDatabase();
-    let query: FilterQuery<typeof CourseModel> = {};
+    // Khóa đã soft-delete thì không được lọt vào bất kỳ danh sách nào
+    let query: FilterQuery<typeof CourseModel> = { _destroy: false };
 
     const skip = (page - 1) * limit;
     if (search) {
@@ -105,6 +106,7 @@ export async function fetchCourseBySlug(
     await updateCourseViews(slug);
     let searchQuery: any = {};
     searchQuery.slug = slug;
+    searchQuery._destroy = false;
     if (status) {
       searchQuery.status = status;
     }

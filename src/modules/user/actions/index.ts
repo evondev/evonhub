@@ -56,6 +56,7 @@ export async function fetchUserCourses({
     if (isMembership) {
       courses = await CourseModel.find({
         status: CourseStatus.Approved,
+        _destroy: false,
       }).select("title slug image rating level price salePrice views free");
     } else {
       const user = await UserModel.findOne({
@@ -63,8 +64,9 @@ export async function fetchUserCourses({
       }).populate({
         path: "courses",
         select: "title slug image rating level price salePrice views free",
-        // Khóa đã ngừng bán vẫn phải hiện ở khu vực học tập của người đã mua
-        match: { status: { $in: LEARNABLE_COURSE_STATUSES } },
+        // Khóa đã ngừng bán vẫn phải hiện ở khu vực học tập của người đã mua,
+        // nhưng khóa đã soft-delete thì không
+        match: { status: { $in: LEARNABLE_COURSE_STATUSES }, _destroy: false },
       });
       courses = user?.courses || [];
     }
@@ -257,6 +259,7 @@ export async function fetchUserCoursesContinue({
     if (isMembership) {
       courses = await CourseModel.find({
         status: CourseStatus.Approved,
+        _destroy: false,
       })
         .select("title slug image rating level price salePrice views free")
         .limit(limit);
@@ -266,8 +269,9 @@ export async function fetchUserCoursesContinue({
       }).populate({
         path: "courses",
         select: "title slug image rating level price salePrice views free",
-        // Khóa đã ngừng bán vẫn phải hiện ở mục học tiếp
-        match: { status: { $in: LEARNABLE_COURSE_STATUSES } },
+        // Khóa đã ngừng bán vẫn phải hiện ở mục học tiếp, nhưng khóa đã
+        // soft-delete thì không
+        match: { status: { $in: LEARNABLE_COURSE_STATUSES }, _destroy: false },
         options: { limit },
       });
       courses = user?.courses;
