@@ -11,7 +11,7 @@ interface ExplorePaginationProps {
 }
 
 const pageStepClassName =
-  "grid size-9 place-items-center rounded-lg outline-none transition-colors focus-visible:ring-4 focus-visible:ring-primary/15";
+  "grid size-9 place-items-center rounded-lg outline-none transition-colors";
 
 export function ExplorePagination({
   filters,

@@ -525,21 +525,12 @@ div[role="dialog"] {
   }
 }
 
-// Vòng focus chung cho bàn phím: nhiều control đặt outline-none nên Tab tới
-// không thấy gì. Đặt ngoài @layer để thắng class outline-none; chỉ hiện với
-// :focus-visible nên bấm chuột không vẽ.
+// Không vẽ vòng focus ở nút, link, tab, chip (chủ dự án chốt). Ô nhập vẫn có
+// viền màu nhấn + ring mờ khi focus, đặt ngay trên ô. Cần trả vòng focus cho
+// accessibility thì sửa đúng chỗ này.
 a:focus-visible,
 button:focus-visible,
 [role="button"]:focus-visible,
 summary:focus-visible {
-  outline: 2px solid rgb(var(--primary));
-  outline-offset: 2px;
-}
-
-// Mục trong menu Radix được focus cả khi rê chuột; mục đang trỏ đã có nền riêng
-// (data-highlighted) nên bỏ vòng focus chung, kẻo hiện viền vuông khi hover.
-[role="menuitem"]:focus-visible,
-[role="menuitemradio"]:focus-visible,
-[role="menuitemcheckbox"]:focus-visible {
   outline: none;
 }
