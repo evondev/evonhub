@@ -43,6 +43,9 @@ export const HERO_CODE_WARNING_TEXT =
 
 export const IN_PROGRESS_COURSE_LIMIT = 4;
 
+// Khung chờ khối "Khóa đang học": đoán học viên có thêm ngần này khóa đang học
+export const IN_PROGRESS_SKELETON_ROW_COUNT = 2;
+
 // Lấy đủ khóa của học viên để đếm đúng số khóa đang học và đã xong
 export const LEARNER_COURSE_FETCH_LIMIT = 50;
 
