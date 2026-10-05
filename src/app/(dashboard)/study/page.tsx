@@ -1,26 +1,20 @@
-import { getUserById } from "@/lib/actions/user.action";
-import { StudyPageContainer } from "@/modules/course/pages/study-page/study-page-container";
-import { fetchUserCoursesContinue } from "@/modules/user/actions";
-import { UserItemData } from "@/shared/types/user.types";
+import { StudySkeleton } from "@/modules/study/components";
+import { StudyAreaPage } from "@/modules/study/pages/study-area-page";
 import { auth } from "@clerk/nextjs/server";
+import { Suspense } from "react";
 
-export interface StudyPageRootProps {}
+interface StudyPageRootProps {
+  searchParams: { khoa?: string };
+}
 
-export default async function StudyPageRoot(_props: StudyPageRootProps) {
+export default function StudyPageRoot({ searchParams }: StudyPageRootProps) {
   const { userId } = auth();
-  const mongoUser = (await getUserById({
-    userId: userId || "",
-  })) as UserItemData;
 
-  if (!mongoUser) return null;
+  if (!userId) return null;
 
-  const data = await fetchUserCoursesContinue({
-    userId: mongoUser?.clerkId,
-    limit: 20,
-  });
-  const courses = data?.courses || [];
-  const lessons = data?.lessons || [];
   return (
-    <StudyPageContainer isLoading={!data} courses={courses} lessons={lessons} />
+    <Suspense key={searchParams.khoa} fallback={<StudySkeleton />}>
+      <StudyAreaPage clerkUserId={userId} selectedSlug={searchParams.khoa} />
+    </Suspense>
   );
 }
