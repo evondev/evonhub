@@ -27,7 +27,8 @@ export function DashboardPreviewPage({ state }: DashboardPreviewPageProps) {
   return (
     <div className="flex flex-col gap-4">
       <PreviewStateSwitcher links={PREVIEW_STATE_LINKS} currentState={state} />
-      {state === "dang-tai" && <DashboardSkeleton />}
+      {state === "dang-tai" && <DashboardSkeleton isSignedIn />}
+      {state === "dang-tai-khach" && <DashboardSkeleton isSignedIn={false} />}
       {state === "loi" && <LearnerErrorDashboard />}
       {state === "khach" && (
         <OutsiderDashboard

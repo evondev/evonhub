@@ -76,7 +76,13 @@ export interface PreviewCourseProgress {
 }
 
 export type DashboardPreviewState =
-  "hoc-vien" | "nguoi-moi" | "khach" | "chua-co-khoa" | "dang-tai" | "loi";
+  | "hoc-vien"
+  | "nguoi-moi"
+  | "khach"
+  | "chua-co-khoa"
+  | "dang-tai"
+  | "dang-tai-khach"
+  | "loi";
 
 export interface PreviewStateLink {
   state: DashboardPreviewState;

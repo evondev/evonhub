@@ -57,7 +57,8 @@ export const TESTIMONIAL_FETCH_LIMIT = 8;
 
 export const TESTIMONIAL_SHOW_COUNT = 3;
 
-export const SKELETON_ROADMAP_STEP_COUNT = 3;
+// Số ô trong hàng số liệu ở khối đầu trang của khách (lưới 3 cột)
+export const HERO_STAT_SKELETON_COUNT = 3;
 
 export const STAR_POSITIONS: number[] = [1, 2, 3, 4, 5];
 
@@ -137,5 +138,6 @@ export const PREVIEW_STATE_LINKS: PreviewStateLink[] = [
   { state: "khach", label: "Khách" },
   { state: "chua-co-khoa", label: "Chưa mở khóa nào" },
   { state: "dang-tai", label: "Đang tải" },
+  { state: "dang-tai-khach", label: "Đang tải (khách)" },
   { state: "loi", label: "Lỗi" },
 ];

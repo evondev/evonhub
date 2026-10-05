@@ -10,7 +10,7 @@ export function DashboardPage() {
   const { userId } = auth();
 
   return (
-    <Suspense fallback={<DashboardSkeleton />}>
+    <Suspense fallback={<DashboardSkeleton isSignedIn={!!userId} />}>
       {userId ? <LearnerOverview clerkUserId={userId} /> : <OutsiderOverview />}
     </Suspense>
   );

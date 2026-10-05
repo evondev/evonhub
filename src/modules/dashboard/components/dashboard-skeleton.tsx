@@ -1,26 +1,28 @@
-import Skeleton from "@/shared/components/skeleton";
-import { SKELETON_ROADMAP_STEP_COUNT } from "../constants";
-import { SkeletonBar } from "./skeleton-bar";
+import { ROADMAP_MIN_STEP_COUNT, ROADMAP_STEPS } from "../constants";
+import { BrandHeroSkeleton } from "./brand-hero-skeleton";
+import { CourseCatalogSkeleton } from "./course-catalog-skeleton";
+import { LearnerHeroSkeleton } from "./learner-hero-skeleton";
+import { RoadmapSkeleton } from "./roadmap-skeleton";
 
-export function DashboardSkeleton() {
+interface DashboardSkeletonProps {
+  /** Đã đăng nhập thì khối đầu trang là "Học tiếp", khách thì là khối giới thiệu */
+  isSignedIn: boolean;
+}
+
+/**
+ * Khung chờ theo đúng thứ tự khối của dashboard. Cảm nhận học viên có Suspense
+ * riêng (không khung chờ) nên không vẽ ở đây.
+ */
+export function DashboardSkeleton({ isSignedIn }: DashboardSkeletonProps) {
+  // Lộ trình chưa đủ bước thì trang thật ẩn khối này, khung chờ cũng vậy
+  const hasRoadmap = ROADMAP_STEPS.length >= ROADMAP_MIN_STEP_COUNT;
+
   return (
     <div aria-busy="true" className="flex flex-col gap-8 sm:gap-10">
-      <Skeleton className="h-72 rounded-2xl" />
-      <section className="flex flex-col gap-4">
-        <SkeletonBar className="h-6 w-44" />
-        <div className="grid gap-6 md:grid-cols-3">
-          {Array.from({ length: SKELETON_ROADMAP_STEP_COUNT }, (_, index) => (
-            <div key={index} className="flex gap-4 md:flex-col">
-              <Skeleton className="size-10 shrink-0 rounded-full" />
-              <div className="flex-1 space-y-3 rounded-2xl border border-border bg-surface p-5">
-                <Skeleton className="size-10 rounded-xl" />
-                <SkeletonBar className="h-4 w-2/3" />
-                <SkeletonBar className="w-1/2" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {isSignedIn && <LearnerHeroSkeleton />}
+      {!isSignedIn && <BrandHeroSkeleton />}
+      {hasRoadmap && <RoadmapSkeleton stepCount={ROADMAP_STEPS.length} />}
+      <CourseCatalogSkeleton />
       <span className="sr-only" role="status">
         Đang tải
       </span>

@@ -24,6 +24,21 @@ export const STUDY_STATUS_META: Record<StudyCourseStatus, StudyStatusMeta> = {
 
 export const STUDY_SKELETON_ROW_COUNT = 5;
 
+// Bề rộng vệt chờ của tên chương và tên bài: dài ngắn lệch nhau cho giống chữ
+export const STUDY_SKELETON_CHAPTER_WIDTHS: string[] = [
+  "w-2/5",
+  "w-1/3",
+  "w-1/2",
+  "w-1/4",
+];
+
+export const STUDY_SKELETON_LESSON_WIDTHS: string[] = [
+  "w-1/3",
+  "w-2/5",
+  "w-1/4",
+  "w-1/2",
+];
+
 // ----- Chỉ dùng cho trang xem trước ở dev (/study-preview) -----
 // 7 khóa thật trong khu vực học tập; tiến độ và đề cương là GIẢ
 export const PREVIEW_STUDY_COURSES: PreviewStudyCourseSeed[] = [

@@ -232,6 +232,10 @@ div .tox .tox-edit-area::before {
     );
     animation: shimmer 5s infinite;
     content: "";
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
   }
 
   @keyframes shimmer {
