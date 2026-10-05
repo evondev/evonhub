@@ -63,7 +63,7 @@ export function StudySkeleton() {
               <Skeleton className="ml-auto h-3 w-8 rounded-full" />
             </div>
             {chapterIndex === 0 && (
-              <div className="pb-2">
+              <div className="flex flex-col gap-1 pb-2">
                 {STUDY_SKELETON_LESSON_WIDTHS.map((lessonWidth) => (
                   <div
                     key={lessonWidth}

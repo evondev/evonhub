@@ -39,7 +39,7 @@ export function StudyOutlineList({
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down motion-reduce:animate-none">
-            <ul className="pb-2">
+            <ul className="flex flex-col gap-1 pb-2">
               {chapter.lessons.map((lesson) => (
                 <StudyOutlineLesson
                   key={lesson.id}
