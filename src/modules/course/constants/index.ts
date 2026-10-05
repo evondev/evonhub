@@ -1,7 +1,15 @@
-import { CourseLevel } from "@/shared/constants/course.constants";
+import {
+  COURSE_LEVEL_LABELS,
+  CourseLevel,
+  CourseStatus,
+} from "@/shared/constants/course.constants";
+import { ECourseLevel, ECourseStatus } from "@/types/enums";
 import { FileText, MessageCircle } from "lucide-react";
 import type {
   CourseIncludeItem,
+  CourseSelectOption,
+  CourseUpdateData,
+  CourseUpdatePreviewState,
   ExploreFilters,
   ExploreLevelOption,
   ExplorePreviewStateLink,
@@ -180,3 +188,71 @@ export const COURSE_EXTRA_INCLUDES: CourseIncludeItem[] = [
   { icon: FileText, label: "Có tài liệu kèm theo" },
   { icon: MessageCircle, label: "Hỗ trợ trong quá trình học" },
 ];
+
+// ----- Trang cập nhật khóa học -----
+export const COURSE_LEVEL_OPTIONS: CourseSelectOption[] = Object.values(
+  CourseLevel,
+).map((level) => ({ value: level, label: COURSE_LEVEL_LABELS[level] }));
+
+export const COURSE_STATUS_OPTIONS: CourseSelectOption[] = [
+  { value: CourseStatus.Approved, label: "Đã duyệt" },
+  { value: CourseStatus.Pending, label: "Chờ duyệt" },
+  { value: CourseStatus.Rejected, label: "Bị từ chối" },
+];
+
+// Viền đỏ khi FormControl gắn aria-invalid (Input, Select chưa tự có trạng thái lỗi)
+export const COURSE_FORM_CONTROL_CLASS_NAME =
+  "aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus:ring-red-500/10";
+
+export const COURSE_IMAGE_HINT = "Ảnh 16:9, hiện ở thẻ khóa học và đầu trang bán";
+
+// ----- Chỉ dùng cho trang xem trước ở dev (/course-update-preview) -----
+// Dữ liệu giả: tiêu đề dài nhất đang có, đủ yêu cầu, kết quả, Q/A
+const PREVIEW_COURSE_UPDATE_FILLED: CourseUpdateData = {
+  title:
+    "Vibe Coding Thực Chiến: Xây Dựng Ứng Dụng AI Hoàn Chỉnh Từ Ý Tưởng Đến Thanh Toán",
+  slug: "vibe-coding-ai",
+  price: 99000,
+  salePrice: 299000,
+  intro: "",
+  desc: "<p>Học cách biến một ý tưởng thành ứng dụng AI hoàn chỉnh với landing page, payment, email, Telegram ops, AI agent, branding, testing và security, thông qua một case study thật.</p>",
+  level: ECourseLevel.EASY,
+  image:
+    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&q=80&auto=format&fit=crop",
+  status: ECourseStatus.REJECTED,
+  cta: "Mua ngay",
+  seoKeywords: "",
+  free: false,
+  info: {
+    requirements: ["Biết HTML, CSS cơ bản", "Có máy tính cài được Node.js 20 trở lên"],
+    gained: [
+      "Tự dựng được landing page có thanh toán và email tự động",
+      "Biết nối AI agent vào sản phẩm thật",
+    ],
+    qa: [
+      {
+        question: "Chưa biết code có học được không?",
+        answer: "Được. Khóa đi từ con số 0, mỗi bước có prompt mẫu để chép.",
+      },
+    ],
+  },
+};
+
+export const PREVIEW_COURSE_UPDATE_DATA: Record<
+  CourseUpdatePreviewState,
+  CourseUpdateData
+> = {
+  "du-lieu": PREVIEW_COURSE_UPDATE_FILLED,
+  rong: {
+    ...PREVIEW_COURSE_UPDATE_FILLED,
+    title: "Khóa học mới",
+    slug: "khoa-hoc-moi",
+    price: 0,
+    salePrice: 0,
+    desc: "",
+    image: "",
+    status: ECourseStatus.PENDING,
+    free: true,
+    info: { requirements: [], gained: [], qa: [] },
+  },
+};

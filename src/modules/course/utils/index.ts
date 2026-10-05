@@ -326,3 +326,13 @@ export function getTrialChapterValues(
 export function formatShortDate(date: Date | string): string {
   return dayjs(date).format("DD/MM/YYYY");
 }
+
+/** % giảm của giá bán so với giá gốc, null khi không có giá gốc cao hơn */
+export function getCourseDiscountPercent(
+  price: number,
+  salePrice: number,
+): number | null {
+  if (!salePrice || price >= salePrice) return null;
+
+  return Math.round(((salePrice - price) / salePrice) * 100);
+}

@@ -6,7 +6,7 @@ import {
 } from "@/types/enums";
 
 export const baseButtonClassName =
-  "rounded-xl h-12 inline-flex items-center justify-center text-center px-5 font-semibold min-w-[120px] transition-all text-sm flex-shrink-0";
+  "rounded-xl h-11 md:h-10 inline-flex items-center justify-center text-center px-5 font-semibold min-w-[120px] transition-all text-sm flex-shrink-0";
 
 export const primaryButtonClassName = `bg-primary text-white bg-primary button-styles ${baseButtonClassName}`;
 
@@ -121,6 +121,7 @@ export const editorOptions = (
     skin: theme === "dark" ? "oxide-dark" : "oxide",
     height,
     menubar: false,
+    elementpath: false,
     plugins: [
       "advlist",
       "autolink",
@@ -137,7 +138,6 @@ export const editorOptions = (
       "insertdatetime",
       "media",
       "table",
-      "heading",
     ],
     toolbar:
       "undo redo | " +
