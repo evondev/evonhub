@@ -29,18 +29,22 @@ export async function addLesson(params: CreateLessonParams) {
         : params.slug,
     });
     await newLesson.save();
+    // Trả id để trang nội dung chọn ngay bài vừa thêm
+    const newLessonId = newLesson._id.toString();
     findLecture.lessons.push(newLesson._id);
     await findLecture.save();
     revalidatePath(`/admin/course/content?slug=${params.slug}`);
     const course = await Course.findById(params.courseId).select(
-      "title status"
+      "title status",
     );
-    if (!course || course.status !== ECourseStatus.APPROVED) return;
+    if (!course || course.status !== ECourseStatus.APPROVED) return newLessonId;
     await sendNotification({
       title: "Thông báo",
       content: `Khóa học <strong>${course.title}</strong> vừa có bài học mới.`,
       isSendAll: true,
     });
+
+    return newLessonId;
   } catch (error) {
     console.log(error);
   }
@@ -98,7 +102,7 @@ export async function getLessonBySlug(slug: string, course?: string) {
   }
 }
 export async function getLessonByCourseId(
-  courseId: string
+  courseId: string,
 ): Promise<ILesson[] | undefined> {
   try {
     connectToDatabase();
@@ -109,7 +113,7 @@ export async function getLessonByCourseId(
   }
 }
 export async function getLessonCount(
-  courseId: string
+  courseId: string,
 ): Promise<number | undefined> {
   try {
     connectToDatabase();
