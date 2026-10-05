@@ -1,13 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { commonPath } from "@/constants";
+import { ProductLogo } from "@/shared/components/product-logo";
 import { menuLinks } from "@/shared/constants/common.constants";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { cn } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import { useAuth, UserButton } from "@clerk/nextjs";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ModeToggle } from "../../../components/ModeToggle";
@@ -70,13 +70,7 @@ export const Header = () => {
               !isLessonPage && "lg:hidden",
             )}
           >
-            <Image
-              width={32}
-              height={32}
-              src="/logo-main.png"
-              alt=""
-              className="size-8 object-contain"
-            />
+            <ProductLogo />
             <span className="text-base font-semibold text-foreground">
               EvonHub
             </span>

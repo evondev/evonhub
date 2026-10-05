@@ -4,10 +4,10 @@ import { useUserContext } from "@/components/user-context";
 import { adminRoutes, menuLinks } from "@/shared/constants/common.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { useLessonDetailsPath } from "@/shared/hooks";
+import { ProductLogo } from "@/shared/components/product-logo";
 import { MenuLinkItemProps } from "@/shared/types";
 import { cn } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MenuLink } from "./menu-link";
@@ -67,13 +67,7 @@ export function Sidebar({ role }: SidebarProps) {
           href="/"
           className="flex items-center gap-2.5 whitespace-nowrap outline-none"
         >
-          <Image
-            width={32}
-            height={32}
-            src="/logo-main.png"
-            alt=""
-            className="size-8 shrink-0 object-contain"
-          />
+          <ProductLogo />
           <span
             className={cn(
               "text-base font-semibold text-foreground transition-opacity duration-150 motion-reduce:transition-none",
