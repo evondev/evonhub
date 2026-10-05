@@ -54,13 +54,15 @@ export function Sidebar({ role }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-50 hidden flex-col overflow-hidden bg-surface transition-[width] duration-200 ease-out motion-reduce:transition-none lg:flex",
+        "fixed inset-y-4 left-4 z-50 hidden flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-[width] duration-200 ease-out motion-reduce:transition-none lg:flex",
         isSidebarCollapsed && "w-16",
         !isSidebarCollapsed && "w-64",
       )}
     >
-      {/* Cùng h-16 và cùng màu kẻ với header: hai đoạn thành một đường liền */}
-      <div className="flex h-16 shrink-0 items-center border-b border-border px-4">
+      {/* Cùng top-4 và h-16 với thanh header: logo và nút thu gọn nằm cùng một hàng.
+          Lúc thu, ruột sidebar còn 62px (w-16 trừ viền 2px): logo 32px cách
+          mép 15px là đúng tâm, cùng tâm với icon menu bên dưới. */}
+      <div className="flex h-16 shrink-0 items-center px-[15px]">
         <Link
           href="/"
           className="flex items-center gap-2.5 whitespace-nowrap outline-none"
@@ -87,7 +89,7 @@ export function Sidebar({ role }: SidebarProps) {
         <nav
           aria-label="Điều hướng chính"
           className={cn(
-            "flex flex-1 flex-col overflow-y-auto overflow-x-hidden p-3",
+            "flex flex-1 flex-col overflow-y-auto overflow-x-hidden px-[11px] py-3",
             isSidebarCollapsed && "[scrollbar-width:none]",
           )}
         >
@@ -107,7 +109,7 @@ export function Sidebar({ role }: SidebarProps) {
             <div className="mt-4">
               {/* Nhãn mờ đi tại chỗ, giữ chiều cao hàng để icon bên dưới
                   không nhảy; lúc thu thì gạch ngắn thẳng tâm icon thay chữ. */}
-              <div className="relative flex h-10 items-center px-3">
+              <div className="relative flex h-10 items-center px-[11px]">
                 <span
                   className={cn(
                     "whitespace-nowrap text-xs font-medium uppercase tracking-wide text-muted transition-opacity duration-150 motion-reduce:transition-none",

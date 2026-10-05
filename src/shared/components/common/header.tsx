@@ -29,68 +29,87 @@ export const Header = () => {
   const isSignedInUser = Boolean(userId && isSignedIn);
 
   return (
+    // Lớp ngoài là dải nền trang phủ khe phía trên thanh, để nội dung cuộn lên
+    // không lộ ra giữa mép màn hình và thanh header nổi.
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between gap-3 border-b border-border bg-surface px-4 transition-[left] duration-200 ease-out motion-reduce:transition-none sm:px-6",
-        !isLessonPage && isSidebarCollapsed && "lg:left-16",
-        !isLessonPage && !isSidebarCollapsed && "lg:left-64",
+        "fixed inset-x-0 top-0 z-40 transition-[left] duration-200 ease-out motion-reduce:transition-none",
+        !isLessonPage && "bg-background lg:px-4 lg:pt-4",
+        !isLessonPage && isSidebarCollapsed && "lg:left-20",
+        !isLessonPage && !isSidebarCollapsed && "lg:left-[272px]",
       )}
       id="header"
     >
-      <div className="flex min-w-0 items-center gap-2">
-        {!isLessonPage && (
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label={isSidebarCollapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
-            aria-expanded={!isSidebarCollapsed}
-            onClick={toggleSidebarCollapsed}
-            className="-ml-2 hidden shrink-0 lg:inline-flex"
-          >
-            {isSidebarCollapsed && <PanelLeftOpen className="size-4" />}
-            {!isSidebarCollapsed && <PanelLeftClose className="size-4" />}
-          </Button>
+      <div
+        className={cn(
+          "flex h-16 items-center justify-between gap-3 border-b border-border bg-surface px-4 sm:px-6",
+          !isLessonPage && "lg:rounded-2xl lg:border lg:px-4",
         )}
-        <Link
-          href="/"
-          scroll={false}
-          className={cn(
-            "flex items-center gap-2.5",
-            !isLessonPage && "lg:hidden",
+      >
+        <div className="flex min-w-0 items-center gap-2">
+          {!isLessonPage && (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={
+                isSidebarCollapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"
+              }
+              aria-expanded={!isSidebarCollapsed}
+              onClick={toggleSidebarCollapsed}
+              className="-ml-2 hidden shrink-0 lg:inline-flex"
+            >
+              {isSidebarCollapsed && <PanelLeftOpen className="size-4" />}
+              {!isSidebarCollapsed && <PanelLeftClose className="size-4" />}
+            </Button>
           )}
-        >
-          <Image
-            width={32}
-            height={32}
-            src="/logo-main.png"
-            alt=""
-            className="size-8 object-contain"
-          />
-          <span className="text-base font-semibold text-foreground">
-            EvonHub
-          </span>
-        </Link>
-        {headerTitle && !isLessonPage && (
-          <h1 className="hidden truncate text-base font-semibold text-foreground lg:block">
-            {headerTitle}
-          </h1>
-        )}
-      </div>
-      <div className="flex items-center gap-2">
-        <ModeToggle />
-        {isSignedInUser && (
-          <>
-            <Notification />
-            <div className="grid size-9 place-items-center">
-              <UserButton appearance={{ elements: { avatarBox: "size-8" } }} />
-            </div>
-          </>
-        )}
-        {!isSignedInUser && (
-          <Button asChild variant="ghost" size="sm" className="text-foreground">
-            <Link href={commonPath.LOGIN}>Đăng nhập</Link>
-          </Button>
-        )}
+          <Link
+            href="/"
+            scroll={false}
+            className={cn(
+              "flex items-center gap-2.5",
+              !isLessonPage && "lg:hidden",
+            )}
+          >
+            <Image
+              width={32}
+              height={32}
+              src="/logo-main.png"
+              alt=""
+              className="size-8 object-contain"
+            />
+            <span className="text-base font-semibold text-foreground">
+              EvonHub
+            </span>
+          </Link>
+          {headerTitle && !isLessonPage && (
+            <h1 className="hidden truncate text-base font-semibold text-foreground lg:block">
+              {headerTitle}
+            </h1>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <ModeToggle />
+          {isSignedInUser && (
+            <>
+              <Notification />
+              <div className="grid size-9 place-items-center">
+                <UserButton
+                  appearance={{ elements: { avatarBox: "size-8" } }}
+                />
+              </div>
+            </>
+          )}
+          {!isSignedInUser && (
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="text-foreground"
+            >
+              <Link href={commonPath.LOGIN}>Đăng nhập</Link>
+            </Button>
+          )}
+        </div>
       </div>
     </header>
   );

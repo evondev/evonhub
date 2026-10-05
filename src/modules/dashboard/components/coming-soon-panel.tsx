@@ -10,7 +10,7 @@ export function ComingSoonPanel() {
   return (
     <section
       id="khoa-hoc"
-      className="flex scroll-mt-20 flex-col items-center gap-3 rounded-2xl border border-dashed border-border-strong bg-surface px-4 py-10 text-center"
+      className="flex scroll-mt-20 lg:scroll-mt-24 flex-col items-center gap-3 rounded-2xl border border-dashed border-border-strong bg-surface px-4 py-10 text-center"
     >
       <span className="grid size-12 place-items-center rounded-xl bg-primary/10 text-primary-strong">
         <Clapperboard className="size-6" />

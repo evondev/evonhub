@@ -14,8 +14,10 @@ export function Main({ children }: MainProps) {
     <main
       className={cn(
         "relative grid min-h-[calc(100vh-64px)] grid-cols-1 items-start transition-[padding] duration-200 ease-out motion-reduce:transition-none",
-        !isLessonPage && isSidebarCollapsed && "lg:pl-16",
-        !isLessonPage && !isSidebarCollapsed && "lg:pl-64",
+        // Sidebar nổi cách mép 16px: chừa mép trái + bề rộng sidebar
+        !isLessonPage && "lg:min-h-[calc(100vh-80px)]",
+        !isLessonPage && isSidebarCollapsed && "lg:pl-20",
+        !isLessonPage && !isSidebarCollapsed && "lg:pl-[272px]",
       )}
     >
       {children}

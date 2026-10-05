@@ -29,14 +29,15 @@ export function MenuLink({ link, isActive, isCollapsed }: MenuLinkProps) {
     <Tooltip open={isCollapsed ? undefined : false}>
       <TooltipTrigger asChild>
         {/* Icon đứng yên ở cả hai trạng thái: không justify-center, không đổi
-            padding. Thu gọn thì mép sidebar cắt dần phần chữ. */}
+            padding. Thu gọn thì mép sidebar cắt dần phần chữ. Link thu gọn rộng
+            40px, icon 18px cách mép 11px là nằm đúng tâm ô nền. */}
         <Link
           target={link.isExternal ? "_blank" : "_self"}
           href={link.url}
           aria-current={isActive ? "page" : undefined}
           aria-label={isCollapsed ? link.title : undefined}
           className={cn(
-            "flex h-11 w-full items-center gap-3 whitespace-nowrap rounded-xl px-3 text-base font-medium text-foreground/80 outline-none transition-colors",
+            "flex h-11 w-full items-center gap-3 whitespace-nowrap rounded-xl px-[11px] text-base font-medium text-foreground/80 outline-none transition-colors",
             !isActive && "hover:bg-item-hover hover:text-foreground",
             isActive && "bg-item-active font-semibold text-foreground",
           )}

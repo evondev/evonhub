@@ -14,7 +14,7 @@ export function RoadmapSection({ steps }: RoadmapSectionProps) {
   const highlightedStep = findNextRoadmapStep(steps);
 
   return (
-    <section id="lo-trinh" className="flex scroll-mt-20 flex-col gap-4">
+    <section id="lo-trinh" className="flex scroll-mt-20 lg:scroll-mt-24 flex-col gap-4">
       <SectionHeading
         title={`Lộ trình ${steps.length} bước`}
         subtitle={ROADMAP_SUBTITLE}

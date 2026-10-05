@@ -17,7 +17,7 @@ export function CourseCatalogSection({ courses }: CourseCatalogSectionProps) {
   const listedCourses = otherCourses.slice(0, CATALOG_LIST_LIMIT);
 
   return (
-    <section id="khoa-hoc" className="flex scroll-mt-20 flex-col gap-4">
+    <section id="khoa-hoc" className="flex scroll-mt-20 lg:scroll-mt-24 flex-col gap-4">
       <SectionHeading
         title="Khóa học"
         linkText="Xem tất cả"

@@ -25,7 +25,9 @@ export default function DashboardLayout({
           className={cn(
             "w-full",
             isLessonPage && "mx-auto max-w-screen-2xl px-5 pb-10 pt-6 lg:px-6",
-            !isLessonPage && "max-w-[1600px] p-4 sm:p-6",
+            // Từ lg: lề 16px, khớp khe giữa sidebar, header và mép màn hình. Wrapper
+            // đã chừa 64px, header nổi thì đáy ở 80px nên thêm 16 + 16
+            !isLessonPage && "max-w-[1600px] p-4 sm:p-6 lg:p-4 lg:pt-8",
           )}
         >
           {children}
