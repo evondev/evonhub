@@ -20,3 +20,9 @@ export type StatusBadgeVariant =
   | "warning"
   | "info"
   | "default";
+
+/** Một trạng thái trên thanh chuyển trạng thái của các trang xem trước ở dev */
+export interface PreviewStateLink {
+  state: string;
+  label: string;
+}

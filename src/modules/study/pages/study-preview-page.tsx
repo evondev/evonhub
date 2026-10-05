@@ -1,9 +1,6 @@
-import {
-  StudyArea,
-  StudyLoadError,
-  StudyPreviewStateSwitcher,
-  StudySkeleton,
-} from "../components";
+import { PreviewStateSwitcher } from "@/shared/components/common";
+import { PREVIEW_STUDY_STATE_LINKS } from "../constants";
+import { StudyArea, StudyLoadError, StudySkeleton } from "../components";
 import { StudyPreviewState } from "../types";
 import {
   buildPreviewStudyCourses,
@@ -32,7 +29,10 @@ export function StudyPreviewPage({
 
   return (
     <div className="flex flex-col gap-4">
-      <StudyPreviewStateSwitcher currentState={state} />
+      <PreviewStateSwitcher
+        links={PREVIEW_STUDY_STATE_LINKS}
+        currentState={state}
+      />
       {state === "dang-tai" && <StudySkeleton />}
       {state === "loi" && <StudyLoadError />}
       {!["dang-tai", "loi"].includes(state) && (

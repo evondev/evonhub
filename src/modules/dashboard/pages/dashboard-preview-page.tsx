@@ -1,11 +1,15 @@
+import { PreviewStateSwitcher } from "@/shared/components/common";
 import {
   DashboardSkeleton,
   LearnerDashboard,
   LearnerErrorDashboard,
   OutsiderDashboard,
-  PreviewStateSwitcher,
 } from "../components";
-import { PREVIEW_FIRST_NAME, PREVIEW_ROADMAP_STEPS } from "../constants";
+import {
+  PREVIEW_FIRST_NAME,
+  PREVIEW_ROADMAP_STEPS,
+  PREVIEW_STATE_LINKS,
+} from "../constants";
 import { DashboardPreviewState } from "../types";
 import { buildPreviewCourses, buildPreviewCoursesProgress } from "../utils";
 
@@ -22,7 +26,7 @@ export function DashboardPreviewPage({ state }: DashboardPreviewPageProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <PreviewStateSwitcher currentState={state} />
+      <PreviewStateSwitcher links={PREVIEW_STATE_LINKS} currentState={state} />
       {state === "dang-tai" && <DashboardSkeleton />}
       {state === "loi" && <LearnerErrorDashboard />}
       {state === "khach" && (

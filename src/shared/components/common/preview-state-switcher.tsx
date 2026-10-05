@@ -1,13 +1,15 @@
+import { PreviewStateLink } from "@/shared/types";
 import { cn } from "@/shared/utils";
 import Link from "next/link";
-import { PREVIEW_STATE_LINKS } from "../constants";
-import { DashboardPreviewState } from "../types";
 
 interface PreviewStateSwitcherProps {
-  currentState: DashboardPreviewState;
+  links: PreviewStateLink[];
+  currentState: string;
 }
 
+/** Thanh chuyển trạng thái (?tt=) của các trang xem trước, chỉ mở ở dev */
 export function PreviewStateSwitcher({
+  links,
   currentState,
 }: PreviewStateSwitcherProps) {
   return (
@@ -18,7 +20,7 @@ export function PreviewStateSwitcher({
       <span className="mr-1 shrink-0 text-xs font-medium text-muted">
         Xem trước (chỉ ở dev):
       </span>
-      {PREVIEW_STATE_LINKS.map((stateLink) => {
+      {links.map((stateLink) => {
         const isActive = stateLink.state === currentState;
 
         return (
