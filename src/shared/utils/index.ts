@@ -46,15 +46,6 @@ export const extractDriveId = (input: string) => {
   return null;
 };
 
-export const handleCheckMembership = ({
-  isMembership = false,
-  endDate = new Date().toISOString(),
-}: {
-  isMembership?: boolean;
-  endDate: string | Date;
-}) => {
-  return !!isMembership && dayjs().isBefore(dayjs(endDate));
-};
 
 export const formatDate = (date: Date): string => {
   return new Date(date).toLocaleDateString("vi-VN");

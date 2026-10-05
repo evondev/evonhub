@@ -1,5 +1,4 @@
 import UserModel from "@/modules/user/models";
-import { getClearedMembershipFields } from "@/modules/user/utils";
 import { MembershipPlan } from "@/shared/constants/user.constants";
 import { OrderModelProps } from "../types";
 
@@ -33,25 +32,11 @@ export async function grantOrderToUser(order: OrderModelProps): Promise<void> {
 export async function revokeOrderFromUser(
   order: OrderModelProps
 ): Promise<void> {
-  const findUser = await UserModel.findById(order.user);
-
-  if (!findUser) return;
-
-  if (isMembershipOrder(order)) {
-    if (findUser.isMembership && findUser.plan === order.plan) {
-      await UserModel.updateOne(
-        { _id: findUser._id },
-        getClearedMembershipFields()
-      );
-    }
-
-    return;
-  }
-
-  if (!order.course) return;
+  // Đơn gói hội viên cũ không cấp quyền gì nên cũng không có gì để gỡ
+  if (isMembershipOrder(order) || !order.course) return;
 
   await UserModel.updateOne(
-    { _id: findUser._id },
+    { _id: order.user },
     { $pull: { courses: order.course } }
   );
 }

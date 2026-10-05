@@ -6,7 +6,6 @@ import { DetailsPageLayout, LessonDetailsPage } from "@/modules/lesson/pages";
 import { LessonItemCutomizeData } from "@/shared/types";
 import { CourseItemData } from "@/shared/types/course.types";
 import { UserItemData } from "@/shared/types/user.types";
-import { handleCheckMembership } from "@/shared/utils";
 import { auth } from "@clerk/nextjs/server";
 
 export interface LessonNewPageProps {
@@ -40,13 +39,7 @@ export default async function LessonNewPage({
   const courseId = courseDetails?._id?.toString() || "";
   const isPreviewLesson = lessonPreview?.trial === true;
 
-  const isMembershipActive = handleCheckMembership({
-    isMembership: mongoUser?.isMembership,
-    endDate: mongoUser?.planEndDate || new Date().toISOString(),
-  });
-
-  const isOwnedCourse =
-    (userCourseIds.includes(courseId) || isMembershipActive) && !!lessonPreview;
+  const isOwnedCourse = userCourseIds.includes(courseId) && !!lessonPreview;
 
   if (!isOwnedCourse) return <PageNotFound />;
 

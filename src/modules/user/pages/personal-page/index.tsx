@@ -1,11 +1,10 @@
 "use client";
 import { CourseItem } from "@/modules/course/components";
-import { CourseList, IconStarFilled } from "@/shared/components";
+import { CourseList } from "@/shared/components";
 import { Spinner } from "@/shared/components/common";
 import IconFacebook from "@/shared/components/icons/IconFacebook";
 import IconLinkedin from "@/shared/components/icons/IconLinkedin";
 import IconYoutube from "@/shared/components/icons/IconYoutube";
-import { handleCheckMembership } from "@/shared/utils";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useQueryUserByUsername, useQueryUserCourses } from "../../services";
@@ -22,11 +21,6 @@ export function UserPersonalPageContainer({
     useQueryUserByUsername({
       username: params?.username as string,
     });
-  const isMembershipUserActive = handleCheckMembership({
-    isMembership: userProfile?.isMembership,
-    endDate: userProfile?.planEndDate || new Date().toISOString(),
-  });
-
   const { data, isFetching } = useQueryUserCourses({
     userId: userProfile?.clerkId as string,
     courseOnly: true,
@@ -67,14 +61,6 @@ export function UserPersonalPageContainer({
                   {new Date(userProfile.createdAt).toLocaleDateString("vi-VI")}
                 </span>
               </div>
-            )}
-            {isMembershipUserActive && (
-              <>
-                <IconStarFilled className="absolute top-2 right-2 size-6 text-yellow-400" />
-                <div className="text-primary font-semibold text-sm">
-                  Membership
-                </div>
-              </>
             )}
           </div>
           <div className="ml-auto flex items-center gap-5">

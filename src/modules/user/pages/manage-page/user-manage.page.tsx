@@ -16,9 +16,7 @@ import { cn } from "@/lib/utils";
 import { Heading, IconArrowLeft, IconArrowRight } from "@/shared/components";
 import { LabelStatus, PaginationControl } from "@/shared/components/common";
 import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
-import { membershipPlans } from "@/shared/constants/user.constants";
 import { debounce } from "lodash";
-import Image from "next/image";
 import Link from "next/link";
 import {
   parseAsBoolean,
@@ -104,9 +102,6 @@ export function UserManagePage(_props: UserManagePageProps) {
         </TableHeader>
         <TableBody>
           {users.map((item) => {
-            const planDetails = membershipPlans.find(
-              (membership) => membership.plan === item?.plan
-            );
             return (
               <TableRow key={item.username}>
                 <TableCell>
@@ -114,14 +109,6 @@ export function UserManagePage(_props: UserManagePageProps) {
                     href={`/admin/user/update?email=${item.email}`}
                     className="flex items-center gap-3"
                   >
-                    {planDetails && (
-                      <Image
-                        src={planDetails.icon}
-                        width={40}
-                        height={40}
-                        alt={planDetails.plan}
-                      />
-                    )}
                     <img
                       src={item.avatar}
                       alt={item.username}

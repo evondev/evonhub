@@ -5,14 +5,13 @@ import User from "@/database/user.model";
 import CourseModel from "@/modules/course/models";
 import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
-import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
+import { UserRole } from "@/shared/constants/user.constants";
 import {
   formatRemainingPendingTime,
   getPendingOrderExpiryDate,
 } from "@/modules/order/utils";
-import { EOrderStatus, EUserStatus, Role } from "@/types/enums";
+import { EOrderStatus, EUserStatus } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
-import dayjs from "dayjs";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -37,83 +36,6 @@ export async function createOrder(params: CreateOrderParams) {
     });
     await newOrder.save();
   } catch (error) {}
-}
-interface UpdateOrderParams {
-  code: string;
-  user: string;
-  course?: string;
-  status: EOrderStatus;
-  plan?: MembershipPlan;
-}
-export async function updateOrder(params: UpdateOrderParams) {
-  try {
-    connectToDatabase();
-    const { userId } = auth();
-    const user = await UserModel.findOne({ clerkId: userId });
-    if (!user) return;
-    if (![Role.ADMIN, Role.EXPERT].includes(user?.role)) return;
-    const findUser = await UserModel.findById(params.user);
-    if (!findUser) return;
-    const findOrder = await OrderModel.findOne({
-      code: params.code,
-    });
-    if (findOrder?.status === EOrderStatus.REJECTED) return;
-    await OrderModel.updateOne(
-      { code: params.code },
-      { status: params.status }
-    );
-    if (params.status === EOrderStatus.APPROVED) {
-      if (params.plan && params.plan !== MembershipPlan.None) {
-        findUser.plan = params.plan;
-        findUser.isMembership = true;
-        switch (params.plan) {
-          case MembershipPlan.Personal:
-            findUser.planEndDate = dayjs().add(1, "month").toDate();
-            break;
-          case MembershipPlan.Starter:
-            findUser.planEndDate = dayjs().add(3, "month").toDate();
-            break;
-          case MembershipPlan.Master:
-            findUser.planEndDate = dayjs().add(6, "month").toDate();
-            break;
-          case MembershipPlan.Premium:
-            findUser.planEndDate = dayjs().add(1, "year").toDate();
-            break;
-        }
-        await findUser.save();
-      } else if (!findUser.courses.includes(params.course)) {
-        findUser.courses.push(params.course);
-        await findUser.save();
-      }
-      // Send email
-      // await resend.emails.send({
-      //   from: "Evonhub@evonhub.dev",
-      //   to: findUser.email,
-      //   subject: "Thông báo - Đơn hàng của bạn đã được duyệt 🔥",
-      //   html: `<p>Cảm ơn bạn đã mua khóa học tại <strong>evonhub</strong>. Bây giờ bạn có thể truy cập vào <a href="https://evonhub.dev/study" target="_blank">khu vực học tập</a> để bắt đầu học nha.</p>`,
-      // });
-    } else {
-      if (
-        params.plan &&
-        params.plan !== MembershipPlan.None &&
-        params.plan !== findUser.plan &&
-        findUser.isMembership
-      ) {
-        findUser.plan = MembershipPlan.None;
-        findUser.isMembership = false;
-        findUser.planEndDate = undefined;
-        await findUser.save();
-      } else if (!params.plan || params.plan === MembershipPlan.None) {
-        findUser.courses = findUser.courses.filter(
-          (course: any) => course.toString() !== params.course
-        );
-        await findUser.save();
-      }
-    }
-    revalidatePath("/admin/order/manage");
-  } catch (error) {
-    console.log(error);
-  }
 }
 export async function getAllOrders(params: {
   limit?: number;

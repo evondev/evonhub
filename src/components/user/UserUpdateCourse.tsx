@@ -5,8 +5,6 @@ import {
 } from "@/lib/actions/user.action";
 import { IconPlus } from "@/shared/components";
 import { CourseStatus } from "@/shared/constants/course.constants";
-import { membershipPlans } from "@/shared/constants/user.constants";
-import Image from "next/image";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
@@ -80,9 +78,6 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
   };
 
   const [selectCourse, setSelectCourse] = useState<any>(null);
-  const planDetails = membershipPlans.find(
-    (membership) => membership.plan === user?.plan,
-  );
 
   return (
     <div className="l-container">
@@ -95,14 +90,6 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
           className="rounded-full"
         />
         <div className="flex items-center gap-2">
-          {planDetails && (
-            <Image
-              src={planDetails.icon}
-              width={60}
-              height={60}
-              alt={planDetails.plan}
-            />
-          )}
           <div className="flex flex-col gap-1">
             <h1 className="font-bold text-xl">{user.username}</h1>
             <p>{user.email}</p>
