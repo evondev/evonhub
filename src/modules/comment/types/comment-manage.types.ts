@@ -1,5 +1,5 @@
 import { CommentStatus } from "@/shared/constants/comment.constants";
-import { BadgeTone } from "@/shared/types";
+import { BadgeTone, ModerationScope } from "@/shared/types";
 
 /** Tab trên trang Quản lý bình luận: ba trạng thái và "Tất cả" */
 export type CommentManageTab = CommentStatus | "all";
@@ -44,11 +44,6 @@ export interface CommentManageResult {
   tabCounts: CommentManageTabCounts;
 }
 
-export interface CommentCourseOption {
-  id: string;
-  title: string;
-}
-
 export interface FetchCommentsManageParams {
   status?: CommentStatus;
   courseId?: string;
@@ -83,11 +78,6 @@ export interface UpdateCommentsStatusParams {
   status: CommentStatus;
 }
 
-export interface UpdateCommentsStatusResult {
-  isSuccess: boolean;
-  message?: string;
-}
-
 export type CommentManagePreviewState =
   "du-lieu" | "het-cho" | "rong" | "dang-tai" | "loi";
 
@@ -96,9 +86,12 @@ export interface CommentManagePreviewStateLink {
   label: string;
 }
 
-/** Một thao tác đang chạy: dòng nào đang đổi sang trạng thái nào */
-export interface CommentPendingChange {
-  commentIds: string[];
+/** Đổi trạng thái mọi bình luận khớp bộ lọc đang xem, trừ các bình luận bỏ tick */
+export interface UpdateMatchingCommentsStatusParams {
+  scope: ModerationScope;
+  /** Trạng thái của tab đang xem; tab "Tất cả" thì để trống */
+  currentStatus?: CommentStatus;
+  excludedIds: string[];
   status: CommentStatus;
 }
 

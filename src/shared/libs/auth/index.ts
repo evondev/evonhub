@@ -1,8 +1,10 @@
+import CourseModel from "@/modules/course/models";
 import { canManageCourse } from "@/modules/course/services/course-permission.service";
 import UserModel from "@/modules/user/models";
 import { UserRole } from "@/shared/constants/user.constants";
 import { connectToDatabase } from "@/shared/libs";
 import { auth } from "@clerk/nextjs/server";
+import { isValidObjectId } from "mongoose";
 
 /**
  * Lấy user đang đăng nhập từ Clerk session.
@@ -73,4 +75,35 @@ export async function canAccessCourseContent(courseId: string) {
     userId: currentUser._id,
     courseId: courseId.toString(),
   });
+}
+
+interface ManageableCourseStaff {
+  _id: unknown;
+  role: string;
+}
+
+/**
+ * Khoá mà người quản lý được xem (bình luận, đánh giá…), đã áp bộ lọc khoá học:
+ * admin mọi khoá, expert khoá mình đứng tên. `undefined` là không giới hạn
+ * (admin, không lọc khoá).
+ */
+export async function findManageableCourseIds(
+  currentStaff: ManageableCourseStaff,
+  courseId?: string,
+): Promise<unknown[] | undefined> {
+  const hasCourseFilter = typeof courseId === "string" && courseId !== "";
+
+  if (hasCourseFilter && !isValidObjectId(courseId)) return [];
+
+  if (currentStaff.role === UserRole.Admin) {
+    return hasCourseFilter ? [courseId] : undefined;
+  }
+
+  const ownCourseIds: unknown[] = await CourseModel.find({
+    author: currentStaff._id,
+  }).distinct("_id");
+
+  if (!hasCourseFilter) return ownCourseIds;
+
+  return ownCourseIds.filter((ownCourseId) => String(ownCourseId) === courseId);
 }

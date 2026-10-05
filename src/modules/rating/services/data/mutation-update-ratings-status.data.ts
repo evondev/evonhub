@@ -1,14 +1,14 @@
 import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
 import { invalidateQueriesByKeys } from "@/shared/helpers/query-helper";
 import { useMutation } from "@tanstack/react-query";
-import { handleRatingStatus } from "../../actions";
+import { updateRatingsStatus } from "../../actions";
 
-export function userMutationRatingStatus() {
+export function useMutationUpdateRatingsStatus() {
   return useMutation({
-    mutationFn: handleRatingStatus,
+    mutationFn: updateRatingsStatus,
     mutationKey: [QUERY_KEYS.HANDLE_RATING_STATUS],
-    onSuccess: () => {
-      invalidateQueriesByKeys(QUERY_KEYS.GET_RATINGS);
+    onSuccess: (result) => {
+      if (result.isSuccess) invalidateQueriesByKeys(QUERY_KEYS.GET_RATINGS);
     },
   });
 }

@@ -1,7 +1,6 @@
 import { CommentStatus } from "@/shared/constants/comment.constants";
-import { FilterTabItem } from "@/shared/types";
+import { CourseFilterOption, FilterTabItem } from "@/shared/types";
 import {
-  CommentCourseOption,
   CommentManageFilters,
   CommentManagePreviewStateLink,
   CommentManageRow,
@@ -40,18 +39,6 @@ export const COMMENT_STATUS_BADGES: Record<CommentStatus, CommentStatusBadge> =
     [CommentStatus.Rejected]: { tone: "neutral", label: "Từ chối" },
   };
 
-/** Bình luận chờ lâu hơn chừng này thì thời gian tô hổ phách */
-export const COMMENT_STALE_PENDING_HOURS = 48;
-
-/** Nội dung dài hơn chừng này dòng thì gập lại, có nút "Xem thêm" */
-export const COMMENT_CONTENT_CLAMP_LINES = 3;
-
-/** Nội dung ngắn hơn chừng này ký tự thì không cần nút "Xem thêm" */
-export const COMMENT_CONTENT_CLAMP_MIN_LENGTH = 220;
-
-/** Khung chờ vẽ chừng này dòng, gần bằng một trang thật */
-export const COMMENT_MANAGE_SKELETON_ROW_COUNT = 6;
-
 /** Server nhận tối đa chừng này bình luận mỗi lần đổi trạng thái */
 export const MAX_COMMENTS_PER_UPDATE = 50;
 
@@ -60,9 +47,6 @@ export const COMMENT_STATUS_FORBIDDEN_MESSAGE =
 
 export const COMMENT_STATUS_NOT_FOUND_MESSAGE =
   "Không tìm thấy bình luận, có thể đã bị xoá";
-
-export const COMMENT_STATUS_SAVE_ERROR_MESSAGE =
-  "Chưa đổi được trạng thái, thử lại sau ít phút";
 
 /** Thời gian giả lập lưu ở trang xem trước */
 export const COMMENT_MANAGE_PREVIEW_SAVE_DELAY_MS = 700;
@@ -76,16 +60,19 @@ export const COMMENT_MANAGE_PREVIEW_STATE_LINKS: CommentManagePreviewStateLink[]
     { state: "loi", label: "Lỗi" },
   ];
 
-/** Trang xem trước giả như đang xem trang đầu của cả danh sách thật */
+/**
+ * Trang xem trước giả như đang xem trang đầu của cả danh sách thật. Hàng chờ
+ * dài hơn một trang để thấy dòng "Chọn cả 24 bình luận chờ duyệt"
+ */
 export const COMMENT_MANAGE_PREVIEW_TAB_COUNTS: CommentManageTabCounts = {
-  [CommentStatus.Pending]: 8,
+  [CommentStatus.Pending]: 24,
   [CommentStatus.Approved]: 1284,
   [CommentStatus.Rejected]: 37,
-  all: 1329,
+  all: 1345,
 };
 
 /** Đủ nhiều và đủ dài để menu "Khoá học" phải cuộn, tên xuống hai ba dòng */
-export const PREVIEW_COMMENT_COURSES: CommentCourseOption[] = [
+export const PREVIEW_COMMENT_COURSES: CourseFilterOption[] = [
   { id: "c01", title: "Khoá học ReactJS từ cơ bản tới nâng cao" },
   { id: "c02", title: "NextJS 14 App Router" },
   { id: "c03", title: "JavaScript cơ bản cho người mới bắt đầu" },
@@ -246,6 +233,14 @@ export const PREVIEW_MANAGED_COMMENTS: CommentManageRow[] = [
   },
 ];
 
+/** Tên tab trong câu "Chọn cả 24 bình luận chờ duyệt"; tab "Tất cả" thì không ghi */
+export const COMMENT_TAB_SCOPE_LABELS: Record<CommentManageTab, string> = {
+  [CommentStatus.Pending]: "chờ duyệt",
+  [CommentStatus.Approved]: "đã duyệt",
+  [CommentStatus.Rejected]: "đã từ chối",
+  all: "",
+};
+
 /** Câu báo rỗng của từng tab khi không tìm, không lọc khoá */
 export const COMMENT_EMPTY_MESSAGES: Record<CommentManageTab, string> = {
   [CommentStatus.Pending]: "Không còn bình luận nào chờ duyệt.",
@@ -256,7 +251,3 @@ export const COMMENT_EMPTY_MESSAGES: Record<CommentManageTab, string> = {
 
 /** Từ khoá trang xem trước dùng cho trạng thái rỗng do tìm */
 export const COMMENT_MANAGE_PREVIEW_EMPTY_KEYWORD = "hoàn tiền khoá học";
-
-/** Ô chọn 16px trong dòng: thêm vùng bấm vô hình 40px quanh ô */
-export const CHECKBOX_HIT_AREA_CLASS_NAME =
-  "relative before:absolute before:-inset-3 before:content-['']";

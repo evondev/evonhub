@@ -1,12 +1,7 @@
 import { CommentStatus } from "@/shared/constants/comment.constants";
-import { FilterTabItem } from "@/shared/types";
-import { timeAgo } from "@/shared/utils";
-import dayjs from "dayjs";
-import {
-  COMMENT_CONTENT_CLAMP_MIN_LENGTH,
-  COMMENT_MANAGE_TABS,
-  COMMENT_STALE_PENDING_HOURS,
-} from "../constants/comment-manage.constants";
+import { FilterTabItem, ModerationAction } from "@/shared/types";
+import { formatThoundsand } from "@/shared/utils";
+import { COMMENT_MANAGE_TABS } from "../constants/comment-manage.constants";
 import {
   CommentManageFilters,
   CommentManageItemData,
@@ -51,32 +46,54 @@ export function buildCommentLessonHref(comment: CommentManageRow): string {
   return `/${comment.course.slug}/lesson?id=${comment.lesson.id}#${comment.id}`;
 }
 
-/** Bình luận chờ quá lâu thì cần chú ý: người hỏi đang đợi trả lời */
-export function isStalePendingComment(comment: CommentManageRow): boolean {
-  if (comment.status !== CommentStatus.Pending) return false;
-
-  return (
-    dayjs().diff(dayjs(comment.createdAt), "hour") >=
-    COMMENT_STALE_PENDING_HOURS
-  );
+/** Duyệt là "Đã duyệt", từ chối là "Từ chối" */
+export function getCommentStatusForAction(
+  action: ModerationAction,
+): CommentStatus {
+  return action === "approve" ? CommentStatus.Approved : CommentStatus.Rejected;
 }
 
-/** "2 giờ trước"; chờ quá lâu thì nói thẳng "Chờ 3 ngày" */
-export function formatCommentAge(comment: CommentManageRow): string {
-  if (!isStalePendingComment(comment)) return timeAgo(comment.createdAt);
-
-  return `Chờ ${dayjs().diff(dayjs(comment.createdAt), "day")} ngày`;
+export function canApproveComment(comment: CommentManageRow): boolean {
+  return comment.status !== CommentStatus.Approved;
 }
 
-export function formatCommentFullDate(date: Date | string): string {
-  return dayjs(date).format("HH:mm, DD/MM/YYYY");
+export function canRejectComment(comment: CommentManageRow): boolean {
+  return comment.status !== CommentStatus.Rejected;
 }
 
-/** Nội dung ngắn thì hiện hết, không cần nút "Xem thêm" */
-export function isLongCommentContent(content: string): boolean {
-  return (
-    content.length > COMMENT_CONTENT_CLAMP_MIN_LENGTH || content.includes("\n")
-  );
+export function buildCommentSuccessMessage(
+  comments: CommentManageRow[],
+  action: ModerationAction,
+): string {
+  const verb = action === "approve" ? "duyệt" : "từ chối";
+
+  if (comments.length === 1) {
+    return `Đã ${verb} bình luận của ${comments[0].author.name}`;
+  }
+
+  return `Đã ${verb} ${comments.length} bình luận`;
+}
+
+export function buildCommentCountSuccessMessage(
+  count: number,
+  action: ModerationAction,
+): string {
+  const verb = action === "approve" ? "duyệt" : "từ chối";
+
+  return `Đã ${verb} ${formatThoundsand(count)} bình luận`;
+}
+
+export function buildCommentPurgeSuccessMessage(count: number): string {
+  return `Đã xoá vĩnh viễn ${formatThoundsand(count)} bình luận`;
+}
+
+/** Duyệt được khi tab không phải "Đã duyệt" (chọn cả bộ lọc thì không có từng dòng để xét) */
+export function canApproveCommentTab(tab: CommentManageTab): boolean {
+  return tab !== CommentStatus.Approved;
+}
+
+export function canRejectCommentTab(tab: CommentManageTab): boolean {
+  return tab !== CommentStatus.Rejected;
 }
 
 /** Gắn số đếm vào tab; chưa có số (lần tải đầu) thì tab chỉ ghi chữ */

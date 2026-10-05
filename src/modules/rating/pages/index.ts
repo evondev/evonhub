@@ -1,1 +1,1 @@
-export * from "./manage-page/rating-manage.page";
+export { RatingManagePage, RatingManagePreviewPage } from "./manage-page";

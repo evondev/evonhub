@@ -1,6 +1,10 @@
 import { type ClassValue, clsx } from "clsx";
 import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
+import {
+  EXPANDABLE_TEXT_MIN_LENGTH,
+  MODERATION_STALE_PENDING_HOURS,
+} from "../constants/moderation.constants";
 import type { MenuLinkItemProps, PaginationItem } from "../types";
 
 export function cn(...inputs: ClassValue[]) {
@@ -110,6 +114,33 @@ export function truncateKeyword(keyword: string, maxLength: number): string {
   if (keyword.length <= maxLength) return keyword;
 
   return `${keyword.slice(0, maxLength).trimEnd()}…`;
+}
+
+/** Nội dung dài hoặc nhiều đoạn thì gập lại, có "Xem thêm" */
+export function isLongText(text: string): boolean {
+  return text.length > EXPANDABLE_TEXT_MIN_LENGTH || text.includes("\n");
+}
+
+/** Mục chờ duyệt quá lâu thì cần chú ý: người viết đang đợi */
+export function isStalePending(createdAt: Date | string): boolean {
+  return (
+    dayjs().diff(dayjs(createdAt), "hour") >= MODERATION_STALE_PENDING_HOURS
+  );
+}
+
+/** "2 giờ trước"; chờ duyệt quá lâu thì nói thẳng "Chờ 3 ngày" */
+export function formatModerationAge(
+  createdAt: Date | string,
+  isStale: boolean,
+): string {
+  if (!isStale) return timeAgo(createdAt);
+
+  return `Chờ ${dayjs().diff(dayjs(createdAt), "day")} ngày`;
+}
+
+/** "14:05, 05/10/2026" cho title của mốc thời gian */
+export function formatFullDateTime(date: Date | string): string {
+  return dayjs(date).format("HH:mm, DD/MM/YYYY");
 }
 
 export function isMenuLinkActive(link: MenuLinkItemProps, pathname: string) {

@@ -63,7 +63,7 @@ export default async function createRating({
     }
 
     // Chưa cộng vào `course.rating`: đánh giá mới ở trạng thái chờ duyệt, mảng
-    // sao chỉ được tính lại khi admin hoặc expert của khóa duyệt (handleRatingStatus).
+    // sao chỉ được tính lại khi admin hoặc expert của khóa duyệt (updateRatingsStatus).
     await RatingModel.create({
       user: currentUser._id,
       course: courseId,

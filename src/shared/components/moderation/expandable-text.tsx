@@ -1,21 +1,21 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/shared/utils";
+import { cn, isLongText } from "@/shared/utils";
 import { useState } from "react";
-import { isLongCommentContent } from "../../../utils/comment-manage.utils";
 
-interface CommentContentProps {
-  content: string;
+interface ExpandableTextProps {
+  text: string;
+  className?: string;
 }
 
 /** Nội dung đầy đủ để đọc rồi quyết; dài quá ba dòng thì gập, có "Xem thêm" */
-export function CommentContent({ content }: CommentContentProps) {
+export function ExpandableText({ text, className }: ExpandableTextProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const isLong = isLongCommentContent(content);
+  const isLong = isLongText(text);
 
   return (
-    <div className="mt-1">
+    <div className={className}>
       <p
         className={cn(
           // anywhere: link dài không dấu cách vẫn xuống dòng, không đẩy dòng rộng ra
@@ -26,7 +26,7 @@ export function CommentContent({ content }: CommentContentProps) {
           (!isLong || isExpanded) && "whitespace-pre-line",
         )}
       >
-        {content}
+        {text}
       </p>
       {isLong && (
         <Button

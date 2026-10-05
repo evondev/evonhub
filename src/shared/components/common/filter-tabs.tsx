@@ -117,7 +117,7 @@ export function FilterTabs<TValue extends string>({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="start"
-            className="flex w-52 flex-col gap-0.5 rounded-xl border-border bg-surface p-1 text-foreground shadow-lg dark:border-border dark:bg-surface dark:text-foreground"
+            className="flex w-52 flex-col gap-1 rounded-xl border-border bg-surface p-1 text-foreground shadow-lg dark:border-border dark:bg-surface dark:text-foreground"
           >
             {tabs.map((tab, index) => {
               const isSelected = index === activeIndex;

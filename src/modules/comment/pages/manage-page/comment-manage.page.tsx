@@ -12,13 +12,23 @@ import {
   COMMENT_MANAGE_DEFAULT_FILTERS,
   COMMENT_MANAGE_TAB_VALUES,
 } from "../../constants/comment-manage.constants";
-import { useCommentModeration } from "../../hooks/use-comment-moderation";
 import {
+  useModeration,
+  usePurgeRejected,
+  useQueryManagedCourses,
+} from "@/shared/hooks";
+import {
+  useMutationDeleteRejectedComments,
   useMutationUpdateCommentsStatus,
-  useQueryCommentManageCourses,
+  useMutationUpdateMatchingComments,
   useQueryCommentsManage,
 } from "../../services";
+import { CommentManageRow } from "../../types/comment-manage.types";
 import {
+  buildCommentCountSuccessMessage,
+  buildCommentPurgeSuccessMessage,
+  buildCommentSuccessMessage,
+  getCommentStatusForAction,
   getCommentStatusForTab,
   toCommentManageRow,
 } from "../../utils/comment-manage.utils";
@@ -49,9 +59,15 @@ export function CommentManagePage(_props: CommentManagePageProps) {
       page: filters.page,
       limit: ITEMS_PER_PAGE,
     });
-  const { data: courses } = useQueryCommentManageCourses(userId);
+  const { data: courses } = useQueryManagedCourses(userId);
   const { mutateAsync: updateCommentsStatusAsync } =
     useMutationUpdateCommentsStatus();
+  const { mutateAsync: updateMatchingCommentsAsync } =
+    useMutationUpdateMatchingComments();
+  const { mutateAsync: deleteRejectedCommentsAsync } =
+    useMutationDeleteRejectedComments();
+  // Thao tác "tất cả" áp đúng phạm vi đang xem: từ khoá và khoá học
+  const scope = { search: filters.search, courseId: filters.courseId };
 
   // fetchCommentsManage trả undefined khi lỗi hoặc không phải admin, expert
   const result = data && {
@@ -60,9 +76,25 @@ export function CommentManagePage(_props: CommentManagePageProps) {
     tabCounts: data.tabCounts,
   };
 
-  const moderation = useCommentModeration({
-    changeStatus: (commentIds, status) =>
-      updateCommentsStatusAsync({ commentIds, status }),
+  const moderation = useModeration<CommentManageRow>({
+    changeStatus: (commentIds, action) =>
+      updateCommentsStatusAsync({
+        commentIds,
+        status: getCommentStatusForAction(action),
+      }),
+    changeMatchingStatus: (excludedIds, action) =>
+      updateMatchingCommentsAsync({
+        scope,
+        currentStatus: getCommentStatusForTab(filters.tab),
+        excludedIds,
+        status: getCommentStatusForAction(action),
+      }),
+    buildSuccessMessage: buildCommentSuccessMessage,
+    buildCountSuccessMessage: buildCommentCountSuccessMessage,
+  });
+  const purge = usePurgeRejected({
+    purge: () => deleteRejectedCommentsAsync(scope),
+    buildSuccessMessage: buildCommentPurgeSuccessMessage,
   });
 
   return (
@@ -76,12 +108,8 @@ export function CommentManagePage(_props: CommentManagePageProps) {
       isError={!isPending && !data}
       isRefreshing={isPlaceholderData && isFetching}
       onRetry={refetch}
-      selectedIds={moderation.selectedIds}
-      pendingChange={moderation.pendingChange}
-      onToggleSelect={moderation.handleToggleSelect}
-      onToggleSelectAll={moderation.handleToggleSelectAll}
-      onClearSelection={moderation.handleClearSelection}
-      onChangeStatus={moderation.handleChangeStatus}
+      moderation={moderation}
+      purge={purge}
     />
   );
 }

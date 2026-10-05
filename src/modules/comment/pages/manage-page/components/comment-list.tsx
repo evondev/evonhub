@@ -1,15 +1,30 @@
-import { TablePagination } from "@/shared/components/common";
+import { TablePagination, ToneBadge } from "@/shared/components/common";
+import {
+  ModerationList,
+  ModerationListEmpty,
+  ModerationListHeader,
+  ModerationListItem,
+  PurgeRejectedButton,
+} from "@/shared/components/moderation";
 import { CommentStatus } from "@/shared/constants/comment.constants";
-import { cn } from "@/shared/utils";
+import { ModerationState } from "@/shared/hooks";
+import {
+  COMMENT_EMPTY_MESSAGES,
+  COMMENT_STATUS_BADGES,
+  COMMENT_TAB_SCOPE_LABELS,
+} from "../../../constants/comment-manage.constants";
 import {
   CommentManageFilters,
   CommentManageResult,
   CommentManageRow,
-  CommentPendingChange,
 } from "../../../types/comment-manage.types";
-import { CommentListEmpty } from "./comment-list-empty";
-import { CommentListHeader } from "./comment-list-header";
-import { CommentListItem } from "./comment-list-item";
+import {
+  canApproveComment,
+  canApproveCommentTab,
+  canRejectComment,
+  canRejectCommentTab,
+} from "../../../utils/comment-manage.utils";
+import { CommentContext } from "./comment-context";
 
 interface CommentListProps {
   id: string;
@@ -18,74 +33,91 @@ interface CommentListProps {
   pageSize: number;
   /** Đang tải trang hoặc bộ lọc mới, vẫn giữ dòng cũ trên màn */
   isRefreshing: boolean;
-  selectedIds: string[];
-  pendingChange: CommentPendingChange | null;
-  onToggleSelect: (commentId: string) => void;
-  onToggleSelectAll: (pageCommentIds: string[]) => void;
-  onClearSelection: () => void;
-  onChangeStatus: (comments: CommentManageRow[], status: CommentStatus) => void;
+  moderation: ModerationState<CommentManageRow>;
   onPageChange: (page: number) => void;
   onClearFilters: () => void;
+  /** Mở hộp xác nhận xoá vĩnh viễn mọi bình luận đã từ chối */
+  onPurgeRejected: () => void;
 }
 
-/** Một khối chia đường kẻ: hàng chọn tất cả, các bình luận, phân trang */
+/** Hàng chọn tất cả, các bình luận, phân trang */
 export function CommentList({
   id,
   result,
   filters,
   pageSize,
   isRefreshing,
-  selectedIds,
-  pendingChange,
-  onToggleSelect,
-  onToggleSelectAll,
-  onClearSelection,
-  onChangeStatus,
+  moderation,
   onPageChange,
   onClearFilters,
+  onPurgeRejected,
 }: CommentListProps) {
-  const hasComments = result.comments.length > 0;
   const selectedComments = result.comments.filter((comment) =>
-    selectedIds.includes(comment.id),
+    moderation.isSelected(comment.id),
   );
   const pageCommentIds = result.comments.map((comment) => comment.id);
+  const isAllMatchingSelected = moderation.isAllMatchingSelected;
+  const hasComments = result.comments.length > 0;
+  // Tab "Tất cả" trộn ba trạng thái nên mỗi dòng có badge
+  const isStatusShown = filters.tab === "all";
 
   return (
-    <section
+    <ModerationList
       id={id}
-      aria-label="Danh sách bình luận"
-      aria-busy={isRefreshing}
-      // overflow-clip, không overflow-hidden: hidden biến khung thành vùng cuộn,
-      // hàng "Đã chọn" bên trong không dính được theo trang
-      className="overflow-clip rounded-2xl border border-border bg-surface"
-    >
-      <CommentListHeader
-        pageComments={result.comments}
-        selectedComments={selectedComments}
-        pendingChange={pendingChange}
-        onToggleSelectAll={() => onToggleSelectAll(pageCommentIds)}
-        onClearSelection={onClearSelection}
-        onChangeStatus={onChangeStatus}
-      />
-      {hasComments && (
-        <ul className={cn("transition-opacity", isRefreshing && "opacity-60")}>
-          {result.comments.map((comment) => (
-            <CommentListItem
-              key={comment.id}
-              comment={comment}
-              isSelected={selectedIds.includes(comment.id)}
-              isStatusShown={filters.tab === "all"}
-              pendingChange={pendingChange}
-              onToggleSelect={onToggleSelect}
-              onChangeStatus={onChangeStatus}
-            />
-          ))}
-        </ul>
-      )}
-      {!hasComments && (
-        <CommentListEmpty filters={filters} onClearFilters={onClearFilters} />
-      )}
-      {hasComments && (
+      label="Danh sách bình luận"
+      isRefreshing={isRefreshing}
+      hasItems={hasComments}
+      header={
+        <ModerationListHeader
+          label="Bình luận"
+          itemLabel="bình luận"
+          scopeLabel={COMMENT_TAB_SCOPE_LABELS[filters.tab]}
+          itemCount={result.comments.length}
+          totalCount={result.total}
+          selectedCount={moderation.getSelectedCount(result.total)}
+          isPageFullySelected={
+            hasComments && selectedComments.length === result.comments.length
+          }
+          isAllMatchingSelected={isAllMatchingSelected}
+          canApprove={
+            isAllMatchingSelected
+              ? canApproveCommentTab(filters.tab)
+              : selectedComments.some(canApproveComment)
+          }
+          canReject={
+            isAllMatchingSelected
+              ? canRejectCommentTab(filters.tab)
+              : selectedComments.some(canRejectComment)
+          }
+          runningAction={moderation.getBulkRunningAction()}
+          isDisabled={moderation.isChanging}
+          trailing={
+            filters.tab === CommentStatus.Rejected &&
+            hasComments && <PurgeRejectedButton onClick={onPurgeRejected} />
+          }
+          onToggleSelectAll={() =>
+            moderation.handleToggleSelectAll(pageCommentIds)
+          }
+          onSelectAllMatching={moderation.handleSelectAllMatching}
+          onClearSelection={moderation.handleClearSelection}
+          onApprove={() =>
+            moderation.handleChangeSelection(result.comments, "approve")
+          }
+          onReject={() =>
+            moderation.handleChangeSelection(result.comments, "reject")
+          }
+        />
+      }
+      empty={
+        <ModerationListEmpty
+          search={filters.search}
+          hasCourseFilter={Boolean(filters.courseId)}
+          itemLabel="bình luận"
+          defaultMessage={COMMENT_EMPTY_MESSAGES[filters.tab]}
+          onClearFilters={onClearFilters}
+        />
+      }
+      footer={
         <TablePagination
           page={filters.page}
           pageSize={pageSize}
@@ -93,7 +125,42 @@ export function CommentList({
           itemLabel="bình luận"
           onPageChange={onPageChange}
         />
-      )}
-    </section>
+      }
+    >
+      {result.comments.map((comment) => {
+        const statusBadge = COMMENT_STATUS_BADGES[comment.status];
+
+        return (
+          <ModerationListItem
+            key={comment.id}
+            authorName={comment.author.name}
+            authorAvatar={comment.author.avatar}
+            createdAt={comment.createdAt}
+            isPending={comment.status === CommentStatus.Pending}
+            content={comment.content}
+            meta={
+              isStatusShown && (
+                <ToneBadge
+                  tone={statusBadge.tone}
+                  label={statusBadge.label}
+                  className="shrink-0 py-0.5"
+                />
+              )
+            }
+            context={<CommentContext comment={comment} />}
+            isSelected={moderation.isSelected(comment.id)}
+            canApprove={canApproveComment(comment)}
+            canReject={canRejectComment(comment)}
+            runningAction={moderation.getRunningAction(comment.id)}
+            isDisabled={moderation.isChanging}
+            onToggleSelect={() => moderation.handleToggleSelect(comment.id)}
+            onApprove={() =>
+              moderation.handleChangeStatus([comment], "approve")
+            }
+            onReject={() => moderation.handleChangeStatus([comment], "reject")}
+          />
+        );
+      })}
+    </ModerationList>
   );
 }

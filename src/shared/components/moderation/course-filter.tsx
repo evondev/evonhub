@@ -9,27 +9,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/shared/utils";
 import { Check, ChevronDown } from "lucide-react";
-import { CommentCourseOption } from "../../../types/comment-manage.types";
+import { CourseFilterOption } from "@/shared/types";
 
-interface CommentCourseFilterProps {
-  courses: CommentCourseOption[];
+interface CourseFilterProps {
+  courses: CourseFilterOption[];
   /** Rỗng là mọi khoá */
   value: string;
   onChange: (courseId: string) => void;
   className?: string;
 }
 
-const allCoursesOption: CommentCourseOption = {
+const allCoursesOption: CourseFilterOption = {
   id: "",
   title: "Tất cả khoá học",
 };
 
-export function CommentCourseFilter({
+export function CourseFilter({
   courses,
   value,
   onChange,
   className,
-}: CommentCourseFilterProps) {
+}: CourseFilterProps) {
   const options = [allCoursesOption, ...courses];
   const currentCourse = courses.find((course) => course.id === value);
 
@@ -60,7 +60,7 @@ export function CommentCourseFilter({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="scrollbar-auto-hide flex max-h-80 w-80 flex-col gap-0.5 overflow-y-auto rounded-xl border-border bg-surface p-1 text-foreground shadow-lg dark:border-border dark:bg-surface dark:text-foreground"
+        className="scrollbar-auto-hide flex max-h-80 w-80 flex-col gap-1 overflow-y-auto rounded-xl border-border bg-surface p-1 text-foreground shadow-lg dark:border-border dark:bg-surface dark:text-foreground"
       >
         {options.map((option) => {
           const isCurrent = option.id === (currentCourse?.id || "");

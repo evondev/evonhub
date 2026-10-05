@@ -6,24 +6,24 @@ import {
   ModerationToolbar,
   PurgeRejectedDialog,
 } from "@/shared/components/moderation";
-import { CommentStatus } from "@/shared/constants/comment.constants";
+import { RatingStatus } from "@/shared/constants/rating.constants";
 import { ModerationState, PurgeRejectedState } from "@/shared/hooks";
 import { CourseFilterOption } from "@/shared/types";
 import { useRef } from "react";
-import { COMMENT_MANAGE_DEFAULT_FILTERS } from "../../../constants/comment-manage.constants";
+import { RATING_MANAGE_DEFAULT_FILTERS } from "../../../constants/rating-manage.constants";
 import {
-  CommentManageFilters,
-  CommentManageResult,
-  CommentManageRow,
-  CommentManageTab,
-} from "../../../types/comment-manage.types";
-import { buildCommentManageTabs } from "../../../utils/comment-manage.utils";
-import { CommentList } from "./comment-list";
+  RatingManageFilters,
+  RatingManageResult,
+  RatingManageRow,
+  RatingManageTab,
+} from "../../../types/rating-manage.types";
+import { buildRatingManageTabs } from "../../../utils/rating-manage.utils";
+import { RatingList } from "./rating-list";
 
-export interface CommentManageViewProps {
-  filters: CommentManageFilters;
-  onFiltersChange: (changes: Partial<CommentManageFilters>) => void;
-  result?: CommentManageResult;
+export interface RatingManageViewProps {
+  filters: RatingManageFilters;
+  onFiltersChange: (changes: Partial<RatingManageFilters>) => void;
+  result?: RatingManageResult;
   courses: CourseFilterOption[];
   pageSize: number;
   isLoading: boolean;
@@ -31,13 +31,13 @@ export interface CommentManageViewProps {
   /** Đã có dòng trên màn, đang tải trang/bộ lọc mới */
   isRefreshing: boolean;
   onRetry: () => void;
-  moderation: ModerationState<CommentManageRow>;
+  moderation: ModerationState<RatingManageRow>;
   purge: PurgeRejectedState;
 }
 
-const commentListId = "comment-manage-list";
+const ratingListId = "rating-manage-list";
 
-export function CommentManageView({
+export function RatingManageView({
   filters,
   onFiltersChange,
   result,
@@ -49,16 +49,16 @@ export function CommentManageView({
   onRetry,
   moderation,
   purge,
-}: CommentManageViewProps) {
+}: RatingManageViewProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Đổi bộ lọc hay trang là danh sách khác: bỏ chọn, kẻo duyệt nhầm dòng đã khuất
-  function changeFilters(changes: Partial<CommentManageFilters>) {
+  function changeFilters(changes: Partial<RatingManageFilters>) {
     moderation.handleClearSelection();
     onFiltersChange(changes);
   }
 
-  function handleTabChange(tab: CommentManageTab) {
+  function handleTabChange(tab: RatingManageTab) {
     changeFilters({ tab, page: 1 });
   }
 
@@ -80,8 +80,8 @@ export function CommentManageView({
   // Gỡ từ khoá và khoá học, giữ tab đang xem
   function handleClearFilters() {
     changeFilters({
-      search: COMMENT_MANAGE_DEFAULT_FILTERS.search,
-      courseId: COMMENT_MANAGE_DEFAULT_FILTERS.courseId,
+      search: RATING_MANAGE_DEFAULT_FILTERS.search,
+      courseId: RATING_MANAGE_DEFAULT_FILTERS.courseId,
       page: 1,
     });
     searchInputRef.current?.focus();
@@ -90,29 +90,29 @@ export function CommentManageView({
   return (
     <div className="flex flex-col gap-4">
       <ModerationToolbar
-        tabs={buildCommentManageTabs(result?.tabCounts)}
+        tabs={buildRatingManageTabs(result?.tabCounts)}
         activeTab={filters.tab}
         search={filters.search}
         courses={courses}
         courseId={filters.courseId}
-        searchPlaceholder="Tìm trong nội dung bình luận"
-        searchLabel="Tìm bình luận"
+        searchPlaceholder="Tìm trong nội dung nhận xét"
+        searchLabel="Tìm đánh giá"
         onTabChange={handleTabChange}
         onCourseChange={handleCourseChange}
         onSearch={handleSearch}
         searchInputRef={searchInputRef}
-        controlsId={commentListId}
+        controlsId={ratingListId}
       />
-      {isLoading && <ModerationListSkeleton label="Bình luận" />}
+      {isLoading && <ModerationListSkeleton label="Đánh giá" />}
       {!isLoading && isError && (
         <LoadErrorState
-          title="Chưa tải được danh sách bình luận"
+          title="Chưa tải được danh sách đánh giá"
           onRetry={onRetry}
         />
       )}
       {!isLoading && !isError && result && (
-        <CommentList
-          id={commentListId}
+        <RatingList
+          id={ratingListId}
           result={result}
           filters={filters}
           pageSize={pageSize}
@@ -125,9 +125,9 @@ export function CommentManageView({
       )}
       <PurgeRejectedDialog
         isOpen={purge.isConfirmOpen}
-        count={result?.tabCounts[CommentStatus.Rejected] || 0}
-        itemLabel="bình luận"
-        consequence="Các câu trả lời bên dưới chúng cũng bị xoá theo."
+        count={result?.tabCounts[RatingStatus.Rejected] || 0}
+        itemLabel="đánh giá"
+        consequence="Người viết sẽ đánh giá lại được khoá đó."
         isPurging={purge.isPurging}
         onConfirm={purge.handleConfirm}
         onCancel={purge.handleCancel}

@@ -3,6 +3,8 @@
 import { PreviewStateSwitcher } from "@/shared/components/common";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
+import { useModeration, usePurgeRejected } from "@/shared/hooks";
+import { ModerationAction, ModerationResult } from "@/shared/types";
 import { useState } from "react";
 import {
   COMMENT_MANAGE_DEFAULT_FILTERS,
@@ -13,15 +15,18 @@ import {
   PREVIEW_COMMENT_COURSES,
   PREVIEW_MANAGED_COMMENTS,
 } from "../../constants/comment-manage.constants";
-import { useCommentModeration } from "../../hooks/use-comment-moderation";
 import {
   CommentManageFilters,
   CommentManagePreviewState,
-  UpdateCommentsStatusResult,
+  CommentManageRow,
 } from "../../types/comment-manage.types";
 import {
+  buildCommentCountSuccessMessage,
+  buildCommentPurgeSuccessMessage,
+  buildCommentSuccessMessage,
   countPreviewCommentTabs,
   filterPreviewComments,
+  getCommentStatusForAction,
 } from "../../utils/comment-manage.utils";
 import { CommentManageView } from "./components";
 
@@ -73,8 +78,10 @@ export function CommentManagePreviewPage({
   // Giả lập server: chờ một nhịp rồi đổi trạng thái trên danh sách giả
   async function changePreviewStatus(
     commentIds: string[],
-    status: CommentStatus,
-  ): Promise<UpdateCommentsStatusResult> {
+    action: ModerationAction,
+  ): Promise<ModerationResult> {
+    const status = getCommentStatusForAction(action);
+
     await new Promise((resolve) =>
       setTimeout(resolve, COMMENT_MANAGE_PREVIEW_SAVE_DELAY_MS),
     );
@@ -88,8 +95,48 @@ export function CommentManagePreviewPage({
     return { isSuccess: true };
   }
 
-  const moderation = useCommentModeration({
+  // Giả lập "chọn cả bộ lọc": đổi mọi bình luận giả khớp bộ lọc, trừ mục bỏ tick
+  async function changePreviewMatchingStatus(
+    excludedIds: string[],
+    action: ModerationAction,
+  ): Promise<ModerationResult> {
+    const matchedIds = matchedComments
+      .map((comment) => comment.id)
+      .filter((commentId) => !excludedIds.includes(commentId));
+
+    await changePreviewStatus(matchedIds, action);
+
+    return { isSuccess: true, count: matchedIds.length };
+  }
+
+  // Giả lập xoá vĩnh viễn: bỏ các bình luận giả đã từ chối khớp bộ lọc
+  async function purgePreviewRejected(): Promise<ModerationResult> {
+    const rejectedIds = filterPreviewComments(
+      previewComments,
+      { ...filters, tab: CommentStatus.Rejected },
+      previewCourseTitleById,
+    ).map((comment) => comment.id);
+
+    await new Promise((resolve) =>
+      setTimeout(resolve, COMMENT_MANAGE_PREVIEW_SAVE_DELAY_MS),
+    );
+
+    setPreviewComments((currentComments) =>
+      currentComments.filter((comment) => !rejectedIds.includes(comment.id)),
+    );
+
+    return { isSuccess: true, count: rejectedIds.length };
+  }
+
+  const moderation = useModeration<CommentManageRow>({
     changeStatus: changePreviewStatus,
+    changeMatchingStatus: changePreviewMatchingStatus,
+    buildSuccessMessage: buildCommentSuccessMessage,
+    buildCountSuccessMessage: buildCommentCountSuccessMessage,
+  });
+  const purge = usePurgeRejected({
+    purge: purgePreviewRejected,
+    buildSuccessMessage: buildCommentPurgeSuccessMessage,
   });
 
   function handleRetry() {}
@@ -114,12 +161,8 @@ export function CommentManagePreviewPage({
         isError={state === "loi"}
         isRefreshing={false}
         onRetry={handleRetry}
-        selectedIds={moderation.selectedIds}
-        pendingChange={moderation.pendingChange}
-        onToggleSelect={moderation.handleToggleSelect}
-        onToggleSelectAll={moderation.handleToggleSelectAll}
-        onClearSelection={moderation.handleClearSelection}
-        onChangeStatus={moderation.handleChangeStatus}
+        moderation={moderation}
+        purge={purge}
       />
     </div>
   );

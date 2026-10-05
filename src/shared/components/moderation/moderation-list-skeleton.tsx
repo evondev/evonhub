@@ -1,13 +1,20 @@
 import Skeleton from "@/shared/components/skeleton";
-import { COMMENT_MANAGE_SKELETON_ROW_COUNT } from "../../../constants/comment-manage.constants";
+
+/** Gần bằng một trang thật */
+const skeletonRowCount = 6;
 
 const skeletonRows = Array.from(
-  { length: COMMENT_MANAGE_SKELETON_ROW_COUNT },
+  { length: skeletonRowCount },
   (_, index) => index,
 );
 
-/** Khung chờ đúng hình danh sách: hàng chọn tất cả, dòng avatar + tên + hai dòng nội dung + bài học */
-export function CommentListSkeleton() {
+interface ModerationListSkeletonProps {
+  /** Chữ của hàng đầu, như danh sách thật */
+  label: string;
+}
+
+/** Khung chờ đúng hình danh sách: hàng chọn tất cả, dòng avatar + tên + hai dòng nội dung + ngữ cảnh */
+export function ModerationListSkeleton({ label }: ModerationListSkeletonProps) {
   return (
     <div
       aria-busy="true"
@@ -15,7 +22,7 @@ export function CommentListSkeleton() {
     >
       <div className="flex h-14 items-center gap-3 border-b border-border px-4 sm:h-12 sm:px-5">
         <div className="size-4" />
-        <span className="text-xs font-medium text-muted">Bình luận</span>
+        <span className="text-xs font-medium text-muted">{label}</span>
       </div>
       <ul>
         {skeletonRows.map((rowIndex) => (
