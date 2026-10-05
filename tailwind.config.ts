@@ -40,6 +40,9 @@ const config: Config = {
         textPrimary: "#262626",
         grayed: "#ededed",
       },
+      boxShadow: {
+        popover: "var(--elevation-popover)",
+      },
       fontFamily: {
         display: ["var(--font-display)", "sans-serif"],
       },
