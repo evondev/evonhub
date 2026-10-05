@@ -2,17 +2,14 @@
 
 import CourseModel from "@/modules/course/models";
 import { CourseItemData } from "@/modules/course/types";
+import LectureModel from "@/modules/lecture/models";
 import LessonModel from "@/modules/lesson/models";
-import {
-  CourseStatus,
-  LEARNABLE_COURSE_STATUSES,
-} from "@/shared/constants/course.constants";
+import { LEARNABLE_COURSE_STATUSES } from "@/shared/constants/course.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import HistoryModel from "@/shared/models/history.model";
 import { UserInfoData, UserItemData } from "@/shared/types/user.types";
-import { handleCheckMembership } from "@/shared/utils";
 import { auth } from "@clerk/nextjs/server";
 import { FilterQuery } from "mongoose";
 import UserModel from "../models";
@@ -46,30 +43,17 @@ export async function fetchUserCourses({
 
     if (!findUser) return;
 
-    const isMembership = handleCheckMembership({
-      isMembership: findUser?.isMembership,
-      endDate: findUser?.planEndDate || new Date().toISOString(),
+    // Tính năng hội viên đã bỏ: ai cũng chỉ thấy khóa mình đã mua
+    const user = await UserModel.findOne({
+      clerkId: userId,
+    }).populate({
+      path: "courses",
+      select: "title slug image rating level price salePrice views free",
+      // Khóa đã ngừng bán vẫn phải hiện ở khu vực học tập của người đã mua,
+      // nhưng khóa đã soft-delete thì không
+      match: { status: { $in: LEARNABLE_COURSE_STATUSES }, _destroy: false },
     });
-
-    let courses: CourseItemData[] = [];
-
-    if (isMembership) {
-      courses = await CourseModel.find({
-        status: CourseStatus.Approved,
-        _destroy: false,
-      }).select("title slug image rating level price salePrice views free");
-    } else {
-      const user = await UserModel.findOne({
-        clerkId: userId,
-      }).populate({
-        path: "courses",
-        select: "title slug image rating level price salePrice views free",
-        // Khóa đã ngừng bán vẫn phải hiện ở khu vực học tập của người đã mua,
-        // nhưng khóa đã soft-delete thì không
-        match: { status: { $in: LEARNABLE_COURSE_STATUSES }, _destroy: false },
-      });
-      courses = user?.courses || [];
-    }
+    const courses: CourseItemData[] = user?.courses || [];
 
     if (courseOnly) {
       return {
@@ -131,16 +115,17 @@ export async function fetchUserCourseProgress({
   try {
     connectToDatabase();
 
-    const historyCount = await HistoryModel.countDocuments({
-      user: userId,
-      course: courseId,
-    });
-
-    const lessonCount = await LessonModel.countDocuments({ courseId });
+    const [historyCount, lessonCount] = await Promise.all([
+      HistoryModel.countDocuments({ user: userId, course: courseId }),
+      // Không đếm bài đã xoá, để tổng khớp với đề cương
+      LessonModel.countDocuments({ courseId, _destroy: false }),
+    ]);
+    // Lịch sử có thể còn bài đã xoá: không để vượt tổng số bài
+    const current = Math.min(historyCount, lessonCount);
 
     return {
-      progress: Math.ceil((historyCount / lessonCount) * 100),
-      current: historyCount,
+      progress: lessonCount ? Math.ceil((current / lessonCount) * 100) : 0,
+      current,
       total: lessonCount,
     };
   } catch (error) {}
@@ -225,6 +210,22 @@ export async function fetchUsersByCourseId({
   }
 }
 
+/** Bài đầu tiên theo thứ tự đề cương: chương nhỏ nhất có bài, rồi bài nhỏ nhất */
+async function findFirstLesson(courseId: string) {
+  const lectures = await LectureModel.find({ courseId, _destroy: false })
+    .sort({ order: 1 })
+    .select("lessons")
+    .populate({
+      path: "lessons",
+      select: "_id slug",
+      match: { _destroy: false },
+      options: { sort: { order: 1 }, perDocumentLimit: 1 },
+    });
+  const firstLecture = lectures.find((lecture) => lecture.lessons.length > 0);
+
+  return firstLecture?.lessons[0] || null;
+}
+
 export async function fetchUserCoursesContinue({
   userId,
   limit = 3,
@@ -249,44 +250,21 @@ export async function fetchUserCoursesContinue({
 
     if (!findUser) return;
 
-    const isMembership = handleCheckMembership({
-      isMembership: findUser?.isMembership,
-      endDate: findUser?.planEndDate || new Date().toISOString(),
+    // Tính năng hội viên đã bỏ: ai cũng chỉ thấy khóa mình đã mua
+    const user = await UserModel.findOne({
+      clerkId: userId,
+    }).populate({
+      path: "courses",
+      select: "title slug image rating level price salePrice views free",
+      // Khóa đã ngừng bán vẫn phải hiện ở mục học tiếp, nhưng khóa đã
+      // soft-delete thì không
+      match: { status: { $in: LEARNABLE_COURSE_STATUSES }, _destroy: false },
+      options: { limit },
     });
-
-    let courses: CourseItemData[] = [];
-
-    if (isMembership) {
-      courses = await CourseModel.find({
-        status: CourseStatus.Approved,
-        _destroy: false,
-      })
-        .select("title slug image rating level price salePrice views free")
-        .limit(limit);
-    } else {
-      const user = await UserModel.findOne({
-        clerkId: userId,
-      }).populate({
-        path: "courses",
-        select: "title slug image rating level price salePrice views free",
-        // Khóa đã ngừng bán vẫn phải hiện ở mục học tiếp, nhưng khóa đã
-        // soft-delete thì không
-        match: { status: { $in: LEARNABLE_COURSE_STATUSES }, _destroy: false },
-        options: { limit },
-      });
-      courses = user?.courses;
-    }
-
-    const allLessonsPromises = Promise.all(
-      courses.map(async (item) => {
-        return LessonModel.findOne({
-          courseId: item._id,
-          _destroy: false,
-        }).select("_id slug");
-      }),
+    const courses: CourseItemData[] = user?.courses || [];
+    const lessons = await Promise.all(
+      courses.map((course) => findFirstLesson(course._id)),
     );
-
-    const lessons = await allLessonsPromises;
 
     return {
       courses: parseData(courses),
@@ -304,7 +282,7 @@ export async function fetchUserByUsername({
     connectToDatabase();
 
     const user = await UserModel.findOne({ username }).select(
-      "isMembership planEndDate username bio avatar clerkId _id createdAt",
+      "username bio avatar clerkId _id createdAt",
     );
 
     if (!user) return null;
