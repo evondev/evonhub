@@ -1,17 +1,21 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { buildPaginationItems, cn, formatThoundsand } from "@/shared/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
-  formatUserRange,
-  getUserManageTotalPages,
-} from "../../../utils/user-manage.utils";
+  buildPaginationItems,
+  cn,
+  formatPageRange,
+  formatThoundsand,
+  getTotalPages,
+} from "@/shared/utils";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface UserTablePaginationProps {
+interface TablePaginationProps {
   page: number;
   pageSize: number;
   total: number;
+  /** Đơn vị trong câu đếm, ví dụ "thành viên", "bình luận" */
+  itemLabel: string;
   onPageChange: (page: number) => void;
 }
 
@@ -19,13 +23,14 @@ const pageButtonClassName =
   "h-9 min-w-9 rounded-lg border border-transparent px-2 text-sm font-medium tabular-nums";
 
 /** Đếm bên trái, ‹ trang › bên phải. Dưới sm chỉ còn tổng và "‹ 3 / 435 ›" */
-export function UserTablePagination({
+export function TablePagination({
   page,
   pageSize,
   total,
+  itemLabel,
   onPageChange,
-}: UserTablePaginationProps) {
-  const totalPages = getUserManageTotalPages(total, pageSize);
+}: TablePaginationProps) {
+  const totalPages = getTotalPages(total, pageSize);
   const hasManyPages = totalPages > 1;
 
   return (
@@ -33,10 +38,10 @@ export function UserTablePagination({
       <p className="text-sm tabular-nums text-muted">
         {hasManyPages && (
           <span className="hidden sm:inline">
-            {formatUserRange(page, pageSize, total)} trong{" "}
+            {formatPageRange(page, pageSize, total)} trong{" "}
           </span>
         )}
-        {formatThoundsand(total)} thành viên
+        {formatThoundsand(total)} {itemLabel}
       </p>
       {hasManyPages && (
         <nav aria-label="Phân trang" className="flex items-center gap-1">

@@ -35,14 +35,8 @@ export const USER_MANAGE_DEFAULT_FILTERS: UserManageFilters = {
   page: 1,
 };
 
-/** Gõ dừng chừng này thì tìm */
-export const USER_MANAGE_SEARCH_DEBOUNCE_MS = 400;
-
 /** Khung chờ vẽ chừng này dòng, gần bằng một trang thật */
 export const USER_MANAGE_SKELETON_ROW_COUNT = 8;
-
-/** Từ khoá dài hơn thì cắt trong câu báo rỗng */
-export const USER_MANAGE_KEYWORD_MAX_LENGTH = 24;
 
 export const USER_STATUS_FORBIDDEN_MESSAGE =
   "Chỉ quản trị viên mới đổi được trạng thái thành viên";

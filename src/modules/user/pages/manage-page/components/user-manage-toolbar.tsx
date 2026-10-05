@@ -1,4 +1,4 @@
-import { FilterTabs } from "@/shared/components/common";
+import { FilterTabs, SearchInput } from "@/shared/components/common";
 import { FilterTabItem } from "@/shared/types";
 import { RefObject } from "react";
 import {
@@ -7,7 +7,6 @@ import {
   UserRoleFilter as UserRoleFilterValue,
 } from "../../../types/user-manage.types";
 import { UserRoleFilter } from "./user-role-filter";
-import { UserSearchInput } from "./user-search-input";
 
 interface UserManageToolbarProps {
   filters: UserManageFilters;
@@ -51,10 +50,12 @@ export function UserManageToolbar({
         />
       </div>
       <div className="order-first flex items-center gap-2 sm:order-none">
-        <UserSearchInput
+        <SearchInput
           ref={searchInputRef}
           value={filters.search}
           onSearch={onSearch}
+          placeholder="Tìm tên, username, email"
+          label="Tìm thành viên"
           className="flex-1 xl:w-72 xl:flex-none"
         />
         <UserRoleFilter

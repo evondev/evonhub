@@ -35,7 +35,9 @@ export function AdminNav({ role }: AdminNavProps) {
       aria-label="Điều hướng quản lý"
       className="-mx-4 mb-6 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:px-0"
     >
-      <ul className="flex w-max min-w-full items-center gap-1 border-b border-border">
+      <ul // Nằm trên nền trang xám: --border gần trùng nền, kẻ bằng foreground/10
+        className="flex w-max min-w-full items-center gap-1 border-b border-foreground/10"
+      >
         {visibleLinks.map((link) => {
           const isActive = link.url === pathname;
 

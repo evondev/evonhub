@@ -81,7 +81,8 @@ export function FilterTabs<TValue extends string>({
               className={cn(
                 "h-9 gap-1.5 rounded-lg border px-3 font-medium",
                 isSelected &&
-                  "border-transparent bg-item-active text-foreground hover:bg-item-active hover:text-foreground",
+                  // Tab nằm trên nền trang xám: --item-active gần trùng nền, nên tô đậm hơn
+                  "border-transparent bg-foreground/[0.08] text-foreground hover:bg-foreground/[0.08] hover:text-foreground",
                 !isSelected &&
                   "border-transparent text-foreground/70 hover:bg-foreground/5 hover:text-foreground",
               )}

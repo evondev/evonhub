@@ -1,10 +1,8 @@
 import { UserRole, UserStatus } from "@/shared/constants/user.constants";
 import { UserItemData } from "@/shared/types/user.types";
 import { FilterTabItem } from "@/shared/types";
-import { formatThoundsand } from "@/shared/utils";
 import dayjs from "dayjs";
 import {
-  USER_MANAGE_KEYWORD_MAX_LENGTH,
   USER_MANAGE_TABS,
   USER_MANAGE_UPDATE_PATH,
 } from "../constants/user-manage.constants";
@@ -62,29 +60,6 @@ export function isLockedUser(user: UserManageRow): boolean {
 /** Vai trò thường gặp nhất thì chữ nhạt, để quản trị viên, chuyên gia nổi lên */
 export function isDefaultRole(role: UserRole): boolean {
   return role === UserRole.User;
-}
-
-/** Cắt từ khoá dài bằng số ký tự, để dấu ngoặc kép dính liền từ khoá */
-export function truncateKeyword(keyword: string): string {
-  if (keyword.length <= USER_MANAGE_KEYWORD_MAX_LENGTH) return keyword;
-
-  return `${keyword.slice(0, USER_MANAGE_KEYWORD_MAX_LENGTH).trimEnd()}…`;
-}
-
-/** "11 tới 20" của câu đếm dưới bảng */
-export function formatUserRange(
-  page: number,
-  pageSize: number,
-  total: number,
-): string {
-  const start = (page - 1) * pageSize + 1;
-  const end = Math.min(page * pageSize, total);
-
-  return `${formatThoundsand(start)} tới ${formatThoundsand(end)}`;
-}
-
-export function getUserManageTotalPages(total: number, pageSize: number) {
-  return Math.max(Math.ceil(total / pageSize), 1);
 }
 
 /** Gắn số đếm vào tab; chưa có số (lần tải đầu) thì tab chỉ ghi chữ */

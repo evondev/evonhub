@@ -89,6 +89,29 @@ export function buildPaginationItems(
   ];
 }
 
+/** "11 tới 20" của câu đếm dưới bảng */
+export function formatPageRange(
+  page: number,
+  pageSize: number,
+  total: number,
+): string {
+  const start = (page - 1) * pageSize + 1;
+  const end = Math.min(page * pageSize, total);
+
+  return `${formatThoundsand(start)} tới ${formatThoundsand(end)}`;
+}
+
+export function getTotalPages(total: number, pageSize: number): number {
+  return Math.max(Math.ceil(total / pageSize), 1);
+}
+
+/** Cắt từ khoá dài bằng số ký tự, để dấu ngoặc kép dính liền từ khoá */
+export function truncateKeyword(keyword: string, maxLength: number): string {
+  if (keyword.length <= maxLength) return keyword;
+
+  return `${keyword.slice(0, maxLength).trimEnd()}…`;
+}
+
 export function isMenuLinkActive(link: MenuLinkItemProps, pathname: string) {
   if (pathname === link.url) return true;
 

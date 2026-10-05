@@ -13,8 +13,10 @@ export interface CommentModelProps extends Document {
   level: number;
   createdAt: Date;
 }
-export interface CommentItemData
-  extends Omit<CommentModelProps, "user" | "lesson" | "parentId" | "_id"> {
+export interface CommentItemData extends Omit<
+  CommentModelProps,
+  "user" | "lesson" | "parentId" | "_id"
+> {
   _id: string;
   parentId?: string;
   user: UserItemData;
@@ -24,20 +26,4 @@ export interface CommentItemData
       title: string;
     };
   };
-}
-
-export interface FetchCommentsProps {
-  /** Chỉ để tách cache theo người dùng, server lấy user từ session */
-  userId?: string;
-  status?: CommentStatus;
-  page: number;
-  limit: number;
-  search?: string;
-}
-
-export interface UpdateCommentProps {
-  commentId: string;
-  status: CommentStatus;
-  /** Bỏ qua ở server: người nhận thông báo lấy từ bình luận đã lưu */
-  userId?: string;
 }

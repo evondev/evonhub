@@ -1,3 +1,4 @@
+import { TablePagination } from "@/shared/components/common";
 import { cn } from "@/shared/utils";
 import {
   UserManageFilters,
@@ -7,7 +8,6 @@ import {
 import { UserListItem } from "./user-list-item";
 import { UserTableEmpty } from "./user-table-empty";
 import { UserTableHead } from "./user-table-head";
-import { UserTablePagination } from "./user-table-pagination";
 import { UserTableRow } from "./user-table-row";
 
 interface UserTableProps {
@@ -82,10 +82,11 @@ export function UserTable({
         )}
       </div>
       {hasUsers && (
-        <UserTablePagination
+        <TablePagination
           page={filters.page}
           pageSize={pageSize}
           total={result.total}
+          itemLabel="thành viên"
           onPageChange={onPageChange}
         />
       )}

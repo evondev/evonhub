@@ -5,40 +5,35 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { fetchCommentsManage } from "../../actions";
-import { FetchCommentsProps } from "../../types";
+import { FetchCommentsManageParams } from "../../types/comment-manage.types";
 
-interface GetCommentsProps extends FetchCommentsProps {
+interface GetCommentsOptionsProps extends FetchCommentsManageParams {
+  /** Chỉ để tách cache theo người dùng, server lấy user từ session */
+  userId?: string;
   enabled?: boolean;
 }
 
 export function getCommentsOptions({
   enabled = true,
-  ...props
-}: GetCommentsProps) {
+  userId,
+  ...params
+}: GetCommentsOptionsProps) {
   return queryOptions({
     enabled,
     placeholderData: keepPreviousData,
-    queryFn: async () => {
-      const response = await fetchCommentsManage({ ...props });
-
-      return response;
-    },
+    queryFn: () => fetchCommentsManage(params),
     queryKey: [
       QUERY_KEYS.GET_COMMENTS,
-      props.limit,
-      props.page,
-      props.search,
-      props.status,
-      props.userId,
+      params.limit,
+      params.page,
+      params.search,
+      params.status,
+      params.courseId,
+      userId,
     ],
   });
 }
 
-export function useQueryCommentsManage({
-  enabled = true,
-  ...props
-}: GetCommentsProps) {
-  const options = getCommentsOptions({ enabled, ...props });
-
-  return useQuery(options);
+export function useQueryCommentsManage(props: GetCommentsOptionsProps) {
+  return useQuery(getCommentsOptions(props));
 }
