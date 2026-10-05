@@ -55,10 +55,21 @@ export const CATALOG_COURSE_LIMIT = 20;
 // Khối Khóa học: một khóa lớn và tối đa ngần này khóa trong danh sách bên cạnh
 export const CATALOG_LIST_LIMIT = 4;
 
-// Lấy dư cảm nhận để chọn cái dài nhất làm cảm nhận lớn, rồi hiện ngần này cái
-export const TESTIMONIAL_FETCH_LIMIT = 8;
+// Khối "Học viên nói gì": chỉ đánh giá 5 sao, lấy ngần này cái mới nhất
+export const TESTIMONIAL_FETCH_LIMIT = 12;
 
-export const TESTIMONIAL_SHOW_COUNT = 3;
+export const TESTIMONIAL_RATING = 5;
+
+// Khoá luôn có cảm nhận trong khối dù đánh giá đã cũ, đứng đầu hàng
+export const TESTIMONIAL_PINNED_COURSE_SLUGS: string[] = [
+  "minh-hoa-vector-bang-adobe-illustrator-cung-rachelizmarvel",
+];
+
+// Ít hơn ngần này thì một dải không đủ phủ bề ngang, đứng yên cho cuộn tay
+export const TESTIMONIAL_MARQUEE_MIN_COUNT = 6;
+
+// Từ ngần này trở lên thì chia hai dải chạy ngược chiều
+export const TESTIMONIAL_TWO_ROW_MIN_COUNT = 12;
 
 // Số ô trong hàng số liệu ở khối đầu trang của khách (lưới 3 cột)
 export const HERO_STAT_SKELETON_COUNT = 3;

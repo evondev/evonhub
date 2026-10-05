@@ -24,6 +24,10 @@ export interface FetchRatingManageProps {
   limit: number;
   page: number;
   status?: RatingStatus;
+  /** Chỉ lấy đánh giá đúng số sao này */
+  rating?: number;
+  /** Chỉ lấy đánh giá của các khoá có slug này */
+  courseSlugs?: string[];
 }
 
 export interface HandleRatingStatusProps {

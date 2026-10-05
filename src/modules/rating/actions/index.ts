@@ -159,6 +159,8 @@ async function syncApprovedRatings({ courseId }: SyncApprovedRatingsProps) {
 export async function fetchRatingsPublic({
   limit,
   page,
+  rating,
+  courseSlugs,
 }: FetchRatingManageProps): Promise<RatingItemData[] | undefined> {
   try {
     connectToDatabase();
@@ -171,6 +173,16 @@ export async function fetchRatingsPublic({
       $gt: [{ $strLenCP: "$content" }, 20],
     };
 
+    if (rating) query.rating = rating;
+
+    if (courseSlugs?.length) {
+      const courseIds = await CourseModel.find({
+        slug: { $in: courseSlugs },
+      }).distinct("_id");
+
+      query.course = { $in: courseIds };
+    }
+
     const ratings = await RatingModel.find(query)
       .limit(limit)
       .skip(skip)
@@ -179,7 +191,8 @@ export async function fetchRatingsPublic({
         model: UserModel,
         path: "user",
         select: "name username avatar",
-      });
+      })
+      .populate({ model: CourseModel, path: "course", select: "title" });
 
     return parseData(ratings);
   } catch (error) {

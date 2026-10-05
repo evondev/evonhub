@@ -8,22 +8,24 @@ interface TestimonialCardProps {
 
 export function TestimonialCard({ rating }: TestimonialCardProps) {
   const authorName = rating.user?.name || rating.user?.username || "Học viên";
+  const courseTitle = rating.course?.title;
 
   return (
-    <figure className="flex min-w-0 flex-col gap-3 rounded-2xl border border-border bg-surface p-4 sm:p-5">
-      {rating.rating > 0 && <RatingStars rating={rating.rating} />}
-      <blockquote className="line-clamp-3 text-pretty text-sm text-foreground">
+    <figure className="flex w-72 shrink-0 flex-col gap-3 rounded-2xl border border-border bg-surface p-4 sm:w-80 sm:p-5">
+      <RatingStars rating={rating.rating} />
+      <blockquote className="line-clamp-3 text-pretty text-sm leading-relaxed text-foreground">
         {rating.content}
       </blockquote>
-      <figcaption className="flex items-center gap-2.5">
-        <TestimonialAvatar
-          name={authorName}
-          avatar={rating.user?.avatar}
-          size={32}
-        />
-        <span className="min-w-0 truncate text-sm font-semibold text-foreground">
-          {authorName}
-        </span>
+      <figcaption className="mt-auto flex min-w-0 items-center gap-2.5">
+        <TestimonialAvatar name={authorName} avatar={rating.user?.avatar} />
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-foreground">
+            {authorName}
+          </p>
+          {courseTitle && (
+            <p className="truncate text-xs text-muted">{courseTitle}</p>
+          )}
+        </div>
       </figcaption>
     </figure>
   );
