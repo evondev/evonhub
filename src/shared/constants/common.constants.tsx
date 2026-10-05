@@ -6,6 +6,7 @@ import {
   Home,
   LibraryBig,
   Receipt,
+  Users,
 } from "lucide-react";
 import { MenuLinkItemProps, StatusBadgeVariant } from "../types";
 
@@ -63,12 +64,13 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/order/manage",
     isExpert: true,
   },
-  // {
-  //   title: "Quản lý thành viên",
-  //   icon: <IconUsers />,
-  //   url: "/admin/user/manage",
-  //   isAdmin: true,
-  // },
+  {
+    title: "Quản lý thành viên",
+    icon: <Users />,
+    url: "/admin/user/manage",
+    isAdmin: true,
+    isHideMobile: true,
+  },
   // {
   //   title: "Quản lý coupon",
   //   icon: <IconCoupon />,
