@@ -11,7 +11,7 @@ export const baseButtonClassName =
 export const primaryButtonClassName = `bg-primary text-white bg-primary button-styles ${baseButtonClassName}`;
 
 export const actionClassName =
-  "size-8 flex items-center justify-center bg-gray-100 dark:bg-grayDarkest rounded  p-2 transition-all  hover:text-gray-500 dark:hover:text-opacity-80";
+  "size-8 flex items-center justify-center bg-gray-100 dark:bg-grayDarkest rounded-xl  p-2 transition-all  hover:text-gray-500 dark:hover:text-opacity-80";
 
 export const widgetClassName = "p-5 rounded-xl bgDarkMode borderDarkMode";
 
@@ -20,7 +20,7 @@ export const courseStatusClassName =
 export const baseStatusClassName =
   "text-xs font-semibold  inline-flex py-1 px-3 rounded-full whitespace-nowrap";
 export const pagiBtn =
-  "size-10 rounded bg-gray-900 dark:bg-white dark:text-gray-900 flex items-center justify-center text-white hover:opacity-90 p-2";
+  "size-10 rounded-xl bg-gray-900 dark:bg-white dark:text-gray-900 flex items-center justify-center text-white hover:opacity-90 p-2";
 export const ArrowRight = (
   <svg
     xmlns="http://www.w3.org/2000/svg"

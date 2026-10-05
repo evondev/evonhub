@@ -19,7 +19,7 @@ export function ModeToggle() {
       variant="ghost"
       size="icon"
       aria-label="Đổi giao diện sáng tối"
-      className="size-9 rounded-lg"
+      className="size-9 rounded-xl"
       onClick={handleToggleTheme}
     >
       <Moon className="size-4 dark:hidden" />

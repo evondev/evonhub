@@ -130,7 +130,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
         <Heading>Quản lý đơn hàng</Heading>
         {userInfo?.role === UserRole.Admin && (
           <Button
-            className="flex font-semibold px-4 h-10 text-sm rounded-md bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white"
+            className="flex font-semibold px-4 h-10 text-sm rounded-xl bg-grayDarkest dark:bg-white dark:text-grayDarkest text-white"
             onClick={handleUpdateFreeOrder}
             disabled={mutationUpdateFreeOrder.isPending}
           >

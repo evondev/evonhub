@@ -107,7 +107,6 @@ export function CommentForm({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  {/* !rounded-xl: .form-styles của Textarea nằm ở layer utilities, bo rounded-md đè class truyền vào. Bo 12px cho giống ô nhập mới */}
                   <Textarea
                     aria-label={isReply ? "Trả lời bình luận" : "Bình luận"}
                     placeholder={
@@ -117,7 +116,7 @@ export function CommentForm({
                     }
                     rows={3}
                     autoFocus={isReply}
-                    className="block min-h-24 resize-y !rounded-xl border-border-strong bg-surface px-3 py-2.5 text-base font-normal !leading-6 text-foreground placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/15 md:text-sm"
+                    className="block min-h-24 resize-y border-border-strong bg-surface px-3 py-2.5 text-base font-normal !leading-6 text-foreground placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/15 md:text-sm"
                     {...field}
                   />
                 </FormControl>

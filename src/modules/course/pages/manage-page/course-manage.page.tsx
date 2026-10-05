@@ -216,14 +216,14 @@ export function CourseManagePage(_props: CourseManagePageProps) {
                       <Link
                         href={`/admin/course/content?slug=${course.slug}`}
                         target="_blank"
-                        className="size-8 flex items-center justify-center border borderDarkMode rounded p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
+                        className="size-8 flex items-center justify-center border borderDarkMode rounded-xl p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
                       >
                         <IconStudy></IconStudy>
                       </Link>
                       <Link
                         href={`/course/${course.slug}`}
                         target="_blank"
-                        className="size-8 flex items-center justify-center border borderDarkMode rounded p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
+                        className="size-8 flex items-center justify-center border borderDarkMode rounded-xl p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
                       >
                         <IconEye></IconEye>
                       </Link>
@@ -231,7 +231,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
                         <>
                           <Link
                             href={`/admin/course/update?slug=${course.slug}`}
-                            className="size-8 flex items-center justify-center border borderDarkMode rounded p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
+                            className="size-8 flex items-center justify-center border borderDarkMode rounded-xl p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
                             target="_blank"
                           >
                             <IconEdit></IconEdit>

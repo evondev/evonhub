@@ -72,7 +72,7 @@ export function LessonOutline({ lessonId, variant }: LessonOutlineProps) {
             size="icon"
             aria-label="Ẩn mục lục"
             title="Ẩn mục lục"
-            className="size-9 rounded-lg"
+            className="size-9 rounded-xl"
             onClick={() => toggleExpanded?.(true)}
           >
             <PanelRightClose className="size-4" />

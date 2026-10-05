@@ -27,7 +27,7 @@ const Notification = () => {
     <Popover>
       <PopoverTrigger
         aria-label="Thông báo"
-        className="relative inline-flex size-9 items-center justify-center rounded-lg text-muted outline-none transition-colors hover:bg-foreground/5 hover:text-foreground data-[state=open]:bg-foreground/5"
+        className="relative inline-flex size-9 items-center justify-center rounded-xl text-muted outline-none transition-colors hover:bg-foreground/5 hover:text-foreground data-[state=open]:bg-foreground/5"
         onClick={handleRefetchNotifications}
       >
         <Bell className="size-4" />

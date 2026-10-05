@@ -94,7 +94,7 @@ export function RatingForm({ courseId, courseTitle }: RatingFormProps) {
         <Button
           variant="outline"
           title="Đánh giá khóa học"
-          className="h-9 rounded-lg px-3 max-md:w-9 max-md:px-0"
+          className="h-9 rounded-xl px-3 max-md:w-9 max-md:px-0"
         >
           <Star className="size-4 shrink-0" />
           <span className="max-md:sr-only">Đánh giá khóa học</span>
@@ -166,12 +166,11 @@ export function RatingForm({ courseId, courseTitle }: RatingFormProps) {
                     Cảm nhận của bạn
                   </FormLabel>
                   <FormControl>
-                    {/* !rounded-xl: .form-styles của Textarea nằm ở layer utilities, bo rounded-md đè class truyền vào. Bo 12px cho giống ô nhập mới */}
                     <Textarea
                       {...field}
                       rows={4}
                       placeholder="Điều bạn thích, điều nên làm tốt hơn…"
-                      className="mt-2 block min-h-28 resize-y !rounded-xl border-border-strong bg-surface px-3 py-2.5 text-base font-normal !leading-6 text-foreground placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/15 md:text-sm"
+                      className="mt-2 block min-h-28 resize-y border-border-strong bg-surface px-3 py-2.5 text-base font-normal !leading-6 text-foreground placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/15 md:text-sm"
                     />
                   </FormControl>
                   <FormMessage />
