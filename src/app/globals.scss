@@ -29,6 +29,11 @@
     --border-strong: #e5e7eb;
     --item-hover: #f3f4f6;
     --button-hover: #f1f1f3;
+    /* Dải màu đầu trang dashboard: màu nhấn, chuyển sang một bậc đậm hơn */
+    --brand-band: 108 95 230;
+    --brand-band-end: 95 84 202;
+    /* Chữ màu nhấn trên nền nhấn nhạt (bg-primary/10): đậm hơn một bậc cho đủ 4.5:1 */
+    --primary-strong: 95 84 202;
   }
   .dark {
     --primary: 151 141 248; /* #978df8 */
@@ -41,6 +46,10 @@
     --border-strong: rgb(255 255 255 / 0.1);
     --item-hover: rgb(255 255 255 / 0.05);
     --button-hover: rgb(255 255 255 / 0.08);
+    /* Tím đậm: chữ trắng trên #978df8 chỉ 2.8:1 */
+    --brand-band: 76 65 189;
+    --brand-band-end: 62 52 158;
+    --primary-strong: 151 141 248;
   }
   ::selection {
     @apply text-white bg-primary;

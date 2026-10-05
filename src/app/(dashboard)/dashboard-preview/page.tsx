@@ -15,7 +15,7 @@ export default function DashboardPreviewRoute({
   const matchedState = PREVIEW_STATE_LINKS.find(
     (stateLink) => stateLink.state === searchParams.tt,
   );
-  const state: DashboardPreviewState = matchedState?.state || "hoc-vien";
+  const state: DashboardPreviewState = matchedState?.state || "nguoi-moi";
 
   return <DashboardPreviewPage state={state} />;
 }

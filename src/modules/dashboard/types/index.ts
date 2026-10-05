@@ -35,6 +35,8 @@ export interface LearningStatTile {
   value: string;
   note: string;
   icon: LucideIcon;
+  /** Sắc nhạt riêng cho ô icon, mỗi ô một sắc phân loại */
+  iconClassName: string;
 }
 
 export interface PartnerLink {
@@ -42,7 +44,29 @@ export interface PartnerLink {
   url: string;
 }
 
+/** Một bước của lộ trình: khóa nào, gọi ngắn là gì, học xong làm được gì */
+export interface RoadmapStepConfig {
+  slug: string;
+  shortTitle: string;
+  outcome: string;
+}
+
+export interface RoadmapStep extends RoadmapStepConfig {
+  stepNumber: number;
+  course: CourseItemData;
+  /** Chỉ có khi học viên đã sở hữu khóa này */
+  courseProgress?: DashboardCourseProgress;
+}
+
+export interface CatalogStats {
+  courseCount: number;
+  totalViews: number;
+  averageRating: number;
+  ratingCount: number;
+}
+
 export interface PreviewCourseProgress {
+  slug: string;
   current: number;
   total: number;
 }

@@ -1,19 +1,18 @@
 import { getUserById } from "@/lib/actions/user.action";
+import { fetchCourses } from "@/modules/course/actions";
 import {
   fetchUserCourseProgress,
   fetchUserCoursesContinue,
 } from "@/modules/user/actions";
+import { CourseStatus } from "@/shared/constants/course.constants";
 import { UserItemData } from "@/shared/types/user.types";
 import { currentUser } from "@clerk/nextjs/server";
-import { Suspense } from "react";
-import { LEARNER_COURSE_FETCH_LIMIT } from "../constants";
+import { CATALOG_COURSE_LIMIT, LEARNER_COURSE_FETCH_LIMIT } from "../constants";
 import { DashboardCourseProgress, LearningActivity } from "../types";
 import { getFirstName } from "../utils";
-import { CourseGridSkeleton } from "./course-grid-skeleton";
 import { LearnerDashboard } from "./learner-dashboard";
 import { LearnerErrorDashboard } from "./learner-error-dashboard";
 import { OutsiderDashboard } from "./outsider-dashboard";
-import { RecommendedCourses } from "./recommended-courses";
 
 interface LearnerOverviewProps {
   clerkUserId: string;
@@ -25,50 +24,47 @@ export async function LearnerOverview({
   clerkUserId,
   learningActivity,
 }: LearnerOverviewProps) {
-  // null: chưa có hồ sơ trong DB (webhook Clerk chưa đồng bộ, hay gặp ở local).
-  // undefined: truy vấn lỗi.
-  const user = (await getUserById({ userId: clerkUserId })) as
-    UserItemData | null | undefined;
-  const continueData = await fetchUserCoursesContinue({
-    userId: clerkUserId,
-    limit: LEARNER_COURSE_FETCH_LIMIT,
-  });
-  const recommendedSection = (
-    <Suspense fallback={<CourseGridSkeleton />}>
-      <RecommendedCourses title="Đề xuất cho bạn" shouldFilterEnrolled />
-    </Suspense>
+  // user null: chưa có hồ sơ trong DB (webhook Clerk chưa đồng bộ, hay gặp ở
+  // local). undefined: truy vấn lỗi.
+  const [user, continueData, catalogResult, clerkUser] = await Promise.all([
+    getUserById({ userId: clerkUserId }) as Promise<
+      UserItemData | null | undefined
+    >,
+    fetchUserCoursesContinue({
+      userId: clerkUserId,
+      limit: LEARNER_COURSE_FETCH_LIMIT,
+    }),
+    fetchCourses({
+      status: CourseStatus.Approved,
+      limit: CATALOG_COURSE_LIMIT,
+      isAll: false,
+    }),
+    currentUser(),
+  ]);
+  const catalogCourses = catalogResult || [];
+  const firstName = getFirstName(
+    user?.name || clerkUser?.fullName || "",
+    clerkUser?.firstName,
   );
 
   if (user === null) {
-    const clerkUser = await currentUser();
-
     return (
       <OutsiderDashboard
-        firstName={getFirstName(clerkUser?.fullName || "")}
-        recommendedSection={
-          <Suspense fallback={<CourseGridSkeleton />}>
-            <RecommendedCourses title="Khóa học nên bắt đầu" />
-          </Suspense>
-        }
+        firstName={firstName}
+        catalogCourses={catalogCourses}
       />
     );
   }
 
   if (!user || !continueData) {
-    return <LearnerErrorDashboard recommendedSection={recommendedSection} />;
+    return <LearnerErrorDashboard catalogCourses={catalogCourses} />;
   }
-
-  const firstName = getFirstName(user.name || user.username);
 
   if (continueData.courses.length === 0) {
     return (
       <OutsiderDashboard
         firstName={firstName}
-        recommendedSection={
-          <Suspense fallback={<CourseGridSkeleton />}>
-            <RecommendedCourses title="Khóa học nên bắt đầu" />
-          </Suspense>
-        }
+        catalogCourses={catalogCourses}
       />
     );
   }
@@ -93,9 +89,9 @@ export async function LearnerOverview({
   return (
     <LearnerDashboard
       coursesProgress={coursesProgress}
+      catalogCourses={catalogCourses}
       firstName={firstName}
       learningActivity={learningActivity}
-      recommendedSection={recommendedSection}
     />
   );
 }

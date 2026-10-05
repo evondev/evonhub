@@ -1,3 +1,4 @@
+import { cn } from "@/shared/utils";
 import { LearningStatTile } from "../types";
 
 interface LearningStatRowProps {
@@ -13,7 +14,12 @@ export function LearningStatRow({ tiles }: LearningStatRowProps) {
             <p className="text-balance text-xs font-medium text-muted">
               {tile.label}
             </p>
-            <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
+            <span
+              className={cn(
+                "grid size-8 shrink-0 place-items-center rounded-lg",
+                tile.iconClassName,
+              )}
+            >
               <tile.icon className="size-4" />
             </span>
           </div>

@@ -82,7 +82,7 @@ export function CourseItem({
                 {isFree ? "Miễn phí" : `${formatThoundsand(data.price)} đ`}
               </span>
               {hasOriginalPrice && (
-                <span className="truncate text-xs tabular-nums text-muted line-through">
+                <span className="hidden text-xs tabular-nums text-muted line-through sm:inline">
                   {formatThoundsand(data.salePrice)} đ
                 </span>
               )}

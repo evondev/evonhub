@@ -28,9 +28,9 @@ export function PreviewStateSwitcher({
             aria-current={isActive ? "page" : undefined}
             className={cn(
               "inline-flex h-8 shrink-0 items-center rounded-lg px-3 transition-colors",
-              isActive && "bg-foreground/10 font-medium text-foreground",
+              isActive && "bg-foreground/[0.12] font-medium text-foreground",
               !isActive &&
-                "text-foreground/70 hover:bg-foreground/5 hover:text-foreground",
+                "text-foreground/70 hover:bg-foreground/[0.08] hover:text-foreground",
             )}
           >
             {stateLink.label}

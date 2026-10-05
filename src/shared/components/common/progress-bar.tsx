@@ -9,6 +9,7 @@ export interface ProgressBarProps {
   total?: number;
   shouldShowLabel?: boolean;
   wrapperClassName?: string;
+  fillClassName?: string;
 }
 
 export function ProgressBar({
@@ -18,6 +19,7 @@ export function ProgressBar({
   total = 0,
   shouldShowLabel = false,
   wrapperClassName = "",
+  fillClassName = "",
 }: ProgressBarProps) {
   return (
     <div className={cn("flex flex-col", wrapperClassName)}>
@@ -31,11 +33,14 @@ export function ProgressBar({
       <div
         className={cn(
           "rounded-full h-2 bg-gray-200 dark:bg-grayDarkest ",
-          className
+          className,
         )}
       >
         <div
-          className="h-full rounded-[inherit] bg-green-400 transition-all"
+          className={cn(
+            "h-full rounded-[inherit] bg-green-400 transition-all",
+            fillClassName,
+          )}
           style={{ width: `${progress}%` }}
         ></div>
       </div>
