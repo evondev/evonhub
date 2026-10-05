@@ -7,30 +7,31 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/shared/utils";
+import { FilterTabItem } from "@/shared/types";
+import { cn, formatThoundsand } from "@/shared/utils";
 import { Check, ChevronDown } from "lucide-react";
 import { useRef } from "react";
-import { MyOrdersHistoryFilter, MyOrdersHistoryTab } from "../../../types";
 
-interface OrderHistoryTabsProps {
-  tabs: MyOrdersHistoryTab[];
-  activeFilter: MyOrdersHistoryFilter;
-  onChange: (filter: MyOrdersHistoryFilter) => void;
+interface FilterTabsProps<TValue extends string> {
+  tabs: FilterTabItem<TValue>[];
+  activeValue: TValue;
+  onChange: (value: TValue) => void;
   /** id của danh sách mà tab đang lọc */
-  controlsId: string;
+  controlsId?: string;
 }
 
 const navigationKeys = ["ArrowLeft", "ArrowRight", "Home", "End"];
 
-export function OrderHistoryTabs({
+/** Tab trạng thái phía trên bảng/danh sách. Dưới sm thành nút "Trạng thái:" */
+export function FilterTabs<TValue extends string>({
   tabs,
-  activeFilter,
+  activeValue,
   onChange,
   controlsId,
-}: OrderHistoryTabsProps) {
+}: FilterTabsProps<TValue>) {
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const activeIndex = Math.max(
-    tabs.findIndex((tab) => tab.filter === activeFilter),
+    tabs.findIndex((tab) => tab.value === activeValue),
     0,
   );
   const activeTab = tabs[activeIndex];
@@ -50,7 +51,7 @@ export function OrderHistoryTabs({
     };
     const nextIndex = nextIndexByKey[event.key];
 
-    onChange(tabs[nextIndex].filter);
+    onChange(tabs[nextIndex].value);
     tabRefs.current[nextIndex]?.focus();
   }
 
@@ -67,7 +68,7 @@ export function OrderHistoryTabs({
 
           return (
             <Button
-              key={tab.filter}
+              key={tab.value}
               ref={(element) => {
                 tabRefs.current[index] = element;
               }}
@@ -76,7 +77,7 @@ export function OrderHistoryTabs({
               aria-selected={isSelected}
               aria-controls={controlsId}
               tabIndex={isSelected ? 0 : -1}
-              onClick={() => onChange(tab.filter)}
+              onClick={() => onChange(tab.value)}
               className={cn(
                 "h-9 gap-1.5 rounded-lg border px-3 font-medium",
                 isSelected &&
@@ -86,25 +87,29 @@ export function OrderHistoryTabs({
               )}
             >
               {tab.label}
-              <span className="text-xs font-normal tabular-nums text-foreground/70">
-                {tab.count}
-              </span>
+              {tab.count !== undefined && (
+                <span className="text-xs font-normal tabular-nums text-foreground/70">
+                  {formatThoundsand(tab.count)}
+                </span>
+              )}
             </Button>
           );
         })}
       </div>
 
-      {/* Dưới sm bốn tab không vừa một hàng: thành nút chọn có nhãn "Trạng thái:" */}
+      {/* Dưới sm hàng tab không vừa: thành nút chọn có nhãn "Trạng thái:" */}
       <div className="sm:hidden">
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="w-fit gap-1.5 px-3 hover:bg-surface data-[state=open]:border-primary data-[state=open]:ring-2 data-[state=open]:ring-primary/15"
+              className="w-fit gap-1.5 whitespace-nowrap px-3 hover:bg-surface data-[state=open]:border-primary data-[state=open]:ring-2 data-[state=open]:ring-primary/15"
             >
               <span className="text-muted">Trạng thái:</span>
               <span className="font-medium text-foreground">
-                {activeTab.label} · {activeTab.count}
+                {activeTab.label}
+                {activeTab.count !== undefined &&
+                  ` · ${formatThoundsand(activeTab.count)}`}
               </span>
               <ChevronDown className="size-4 text-muted" />
             </Button>
@@ -118,8 +123,8 @@ export function OrderHistoryTabs({
 
               return (
                 <DropdownMenuItem
-                  key={tab.filter}
-                  onSelect={() => onChange(tab.filter)}
+                  key={tab.value}
+                  onSelect={() => onChange(tab.value)}
                   className={cn(
                     "flex h-9 cursor-pointer items-center gap-2 rounded-lg px-2.5 text-sm focus:text-foreground dark:focus:text-foreground",
                     isSelected &&
@@ -129,9 +134,11 @@ export function OrderHistoryTabs({
                   )}
                 >
                   <span className="flex-1">{tab.label}</span>
-                  <span className="text-xs font-normal tabular-nums text-foreground/70">
-                    {tab.count}
-                  </span>
+                  {tab.count !== undefined && (
+                    <span className="text-xs font-normal tabular-nums text-foreground/70">
+                      {formatThoundsand(tab.count)}
+                    </span>
+                  )}
                   <Check
                     aria-hidden
                     className={cn("size-4", !isSelected && "invisible")}

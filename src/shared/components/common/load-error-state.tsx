@@ -7,11 +7,19 @@ import { useRouter } from "next/navigation";
 interface LoadErrorStateProps {
   /** Nói rõ thứ chưa tải được, ví dụ "Chưa tải được đơn hàng" */
   title: string;
+  /** Dữ liệu tải ở client (React Query) thì truyền refetch; bỏ trống là gọi lại server */
+  onRetry?: () => void;
 }
 
 /** Khối lỗi tải dữ liệu của một trang, bấm "Tải lại" là gọi lại server */
-export function LoadErrorState({ title }: LoadErrorStateProps) {
+export function LoadErrorState({ title, onRetry }: LoadErrorStateProps) {
   const router = useRouter();
+
+  function handleRetry() {
+    if (onRetry) return onRetry();
+
+    router.refresh();
+  }
 
   return (
     <section
@@ -27,7 +35,7 @@ export function LoadErrorState({ title }: LoadErrorStateProps) {
           Kết nối có vấn đề. Thử tải lại, nếu vẫn lỗi thì báo cho Evondev.
         </p>
       </div>
-      <Button variant="outline" onClick={() => router.refresh()}>
+      <Button variant="outline" onClick={handleRetry}>
         <RotateCw className="size-4 shrink-0" />
         Tải lại
       </Button>

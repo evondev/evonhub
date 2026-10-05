@@ -5,15 +5,26 @@ import { CourseItemData } from "@/modules/course/types";
 import LectureModel from "@/modules/lecture/models";
 import LessonModel from "@/modules/lesson/models";
 import { LEARNABLE_COURSE_STATUSES } from "@/shared/constants/course.constants";
-import { UserRole } from "@/shared/constants/user.constants";
+import { UserRole, UserStatus } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import HistoryModel from "@/shared/models/history.model";
 import { UserInfoData, UserItemData } from "@/shared/types/user.types";
 import { auth } from "@clerk/nextjs/server";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, isValidObjectId } from "mongoose";
+import {
+  USER_STATUS_FORBIDDEN_MESSAGE,
+  USER_STATUS_NOT_FOUND_MESSAGE,
+  USER_STATUS_SAVE_ERROR_MESSAGE,
+  USER_STATUS_SELF_LOCK_MESSAGE,
+} from "../constants/user-manage.constants";
 import UserModel from "../models";
 import { FetchUsersProps } from "../types";
+import {
+  UpdateUserStatusParams,
+  UpdateUserStatusResult,
+  UserManageTabCounts,
+} from "../types/user-manage.types";
 
 export async function fetchUserCourses({
   userId,
@@ -131,58 +142,81 @@ export async function fetchUserCourseProgress({
   } catch (error) {}
 }
 
+/** User đang đăng nhập nếu là admin; chưa đăng nhập hay không phải admin thì null */
+async function findCurrentAdmin() {
+  const { userId } = auth();
+
+  if (!userId) return null;
+
+  await connectToDatabase();
+
+  const currentUser = await UserModel.findOne({ clerkId: userId });
+
+  if (currentUser?.role !== UserRole.Admin) return null;
+
+  return currentUser;
+}
+
 export async function fetchUsers({
   search,
   limit,
   page,
   isPaid,
+  status,
+  role,
 }: FetchUsersProps): Promise<
   | {
       users: UserItemData[];
       total: number;
+      tabCounts: UserManageTabCounts;
     }
   | undefined
 > {
   try {
-    connectToDatabase();
+    // Chưa đăng nhập cũng trả null, không chỉ chặn user thường
+    const currentAdmin = await findCurrentAdmin();
 
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
+    if (!currentAdmin) return undefined;
 
-    if (findUser && ![UserRole.Admin].includes(findUser?.role))
-      return undefined;
-
-    const query: FilterQuery<typeof UserModel> = {};
+    // Tìm kiếm và vai trò áp cho cả số đếm của từng tab; tab chỉ áp cho danh sách
+    const baseQuery: FilterQuery<typeof UserModel> = {};
     const skip = (page - 1) * limit;
 
     if (search) {
-      query.$or = [
+      baseQuery.$or = [
         { name: { $regex: search, $options: "i" } },
         { username: { $regex: search, $options: "i" } },
         { email: { $regex: search, $options: "i" } },
       ];
     }
 
-    if (isPaid) {
-      query.courses = {
-        $in: await CourseModel.find({ _destroy: false, free: false }).distinct(
-          "_id",
-        ),
-      };
-    }
+    if (role) baseQuery.role = role;
 
-    const users: UserItemData[] = await UserModel.find(query)
-      .skip(skip)
-      .limit(limit)
-      .sort({
-        createdAt: -1,
-      });
+    const paidCourseIds = await CourseModel.find({
+      _destroy: false,
+      free: false,
+    }).distinct("_id");
+    const paidQuery = { ...baseQuery, courses: { $in: paidCourseIds } };
+    const lockedQuery = { ...baseQuery, status: UserStatus.Inactive };
 
-    const totalUsers = await UserModel.countDocuments(query);
+    const query: FilterQuery<typeof UserModel> = { ...baseQuery };
+
+    if (status) query.status = status;
+    if (isPaid) query.courses = { $in: paidCourseIds };
+
+    const [users, totalUsers, allCount, paidCount, lockedCount] =
+      await Promise.all([
+        UserModel.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
+        UserModel.countDocuments(query),
+        UserModel.countDocuments(baseQuery),
+        UserModel.countDocuments(paidQuery),
+        UserModel.countDocuments(lockedQuery),
+      ]);
 
     return {
       users: parseData(users),
       total: totalUsers,
+      tabCounts: { all: allCount, paid: paidCount, locked: lockedCount },
     };
   } catch (error) {
     console.log(error);
@@ -314,5 +348,46 @@ export async function getUserByUsername(params: {
     return user;
   } catch (error) {
     console.log(error);
+  }
+}
+
+/** Admin khoá hoặc mở khoá một thành viên. Chỉ ghi trường status */
+export async function updateUserStatus({
+  userId,
+  status,
+}: UpdateUserStatusParams): Promise<UpdateUserStatusResult> {
+  try {
+    const currentAdmin = await findCurrentAdmin();
+
+    if (!currentAdmin) {
+      return { isSuccess: false, message: USER_STATUS_FORBIDDEN_MESSAGE };
+    }
+
+    const isKnownStatus = Object.values(UserStatus).includes(status);
+
+    if (!isValidObjectId(userId) || !isKnownStatus) {
+      return { isSuccess: false, message: USER_STATUS_NOT_FOUND_MESSAGE };
+    }
+
+    const isSelfLock =
+      currentAdmin._id.toString() === userId && status === UserStatus.Inactive;
+
+    if (isSelfLock) {
+      return { isSuccess: false, message: USER_STATUS_SELF_LOCK_MESSAGE };
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(userId, {
+      $set: { status },
+    });
+
+    if (!updatedUser) {
+      return { isSuccess: false, message: USER_STATUS_NOT_FOUND_MESSAGE };
+    }
+
+    return { isSuccess: true };
+  } catch (error) {
+    console.log(error);
+
+    return { isSuccess: false, message: USER_STATUS_SAVE_ERROR_MESSAGE };
   }
 }

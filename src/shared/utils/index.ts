@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
+import type { PaginationItem } from "../types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -46,7 +47,6 @@ export const extractDriveId = (input: string) => {
   return null;
 };
 
-
 export const formatDate = (date: Date): string => {
   return new Date(date).toLocaleDateString("vi-VN");
 };
@@ -55,3 +55,36 @@ export const formatThoundsand = (num: number): string => {
   if (!num) return "0";
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
+
+/**
+ * Các ô phân trang, luôn đủ 7 ô (tính cả "…") khi nhiều hơn 7 trang, để nav rộng
+ * cố định, chuyển trang không xô: 1 2 3 4 5 … 435 · 1 … 11 12 13 … 435 · 1 … 431 432 433 434 435
+ */
+export function buildPaginationItems(
+  currentPage: number,
+  totalPages: number,
+): PaginationItem[] {
+  const slotCount = 7;
+  const edgeLength = slotCount - 2;
+  const allPages = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+  if (totalPages <= slotCount) return allPages;
+
+  if (currentPage <= edgeLength - 1) {
+    return [...allPages.slice(0, edgeLength), "ellipsis", totalPages];
+  }
+
+  if (currentPage >= totalPages - edgeLength + 2) {
+    return [1, "ellipsis", ...allPages.slice(totalPages - edgeLength)];
+  }
+
+  return [
+    1,
+    "ellipsis",
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    "ellipsis",
+    totalPages,
+  ];
+}

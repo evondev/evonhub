@@ -1,7 +1,7 @@
 import { Trash2, TriangleAlert } from "lucide-react";
 import { useRef } from "react";
 import type { PendingContentAction } from "../types";
-import { ConfirmDialog } from "./confirm-dialog";
+import { ConfirmDialog } from "@/shared/components/common";
 
 export interface ContentConfirmDialogProps {
   pendingAction: PendingContentAction | null;

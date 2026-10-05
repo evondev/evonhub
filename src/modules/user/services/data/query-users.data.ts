@@ -26,6 +26,8 @@ export function getUsersOptions({ enabled = true, ...props }: GetUsersProps) {
       props.limit,
       props.page,
       props.search,
+      props.status,
+      props.role,
     ],
   });
 }

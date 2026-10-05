@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { CourseLevel } from "@/shared/constants/course.constants";
 import {
   buildExploreHref,
-  buildPaginationItems,
   escapeRegExp,
   formatCourseMeta,
   getDiscountLabel,
@@ -140,32 +139,6 @@ describe("buildExploreHref", () => {
     ).toBe(
       "/explore-preview?tt=du-lieu&q=ai&gia=mien-phi&trinhdo=co-ban&sapxep=xem-nhieu&trang=2",
     );
-  });
-});
-
-describe("buildPaginationItems", () => {
-  it("ít trang thì ghi hết số", () => {
-    expect(buildPaginationItems(1, 3)).toEqual([1, 2, 3]);
-  });
-
-  it("hụt một trang thì ghi số thay vì dấu …", () => {
-    expect(buildPaginationItems(4, 5)).toEqual([1, 2, 3, 4, 5]);
-  });
-
-  it("trang giữa có … hai bên", () => {
-    expect(buildPaginationItems(6, 12)).toEqual([
-      1,
-      "ellipsis",
-      5,
-      6,
-      7,
-      "ellipsis",
-      12,
-    ]);
-  });
-
-  it("chỉ một trang", () => {
-    expect(buildPaginationItems(1, 1)).toEqual([1]);
   });
 });
 

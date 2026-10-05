@@ -197,8 +197,8 @@ export function buildMyOrdersHistoryTabs(
 ): MyOrdersHistoryTab[] {
   return MY_ORDERS_HISTORY_TABS.map((tab) => ({
     ...tab,
-    count: filterMyOrdersHistory(historyItems, tab.filter).length,
-  })).filter((tab) => tab.filter === "all" || tab.count > 0);
+    count: filterMyOrdersHistory(historyItems, tab.value).length,
+  })).filter((tab) => tab.value === "all" || tab.count > 0);
 }
 
 export function filterMyOrdersHistory(

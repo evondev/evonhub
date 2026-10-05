@@ -1,3 +1,4 @@
+import { ToneBadge } from "@/shared/components/common";
 import { CourseCover } from "@/shared/components/course";
 import { cn } from "@/shared/utils";
 import { ChevronRight } from "lucide-react";
@@ -10,7 +11,6 @@ import {
   getMyOrderHistoryHref,
 } from "../../../utils";
 import { OrderPrice } from "./order-price";
-import { OrderStatusBadge } from "./order-status-badge";
 
 interface OrderHistoryRowProps {
   historyItem: MyOrderHistoryItem;
@@ -25,7 +25,7 @@ export function OrderHistoryRow({ historyItem, now }: OrderHistoryRowProps) {
   const href = getMyOrderHistoryHref(historyItem);
   const actionLabel = status === "paid" ? "Vào học" : "Mua lại";
   const badge = (
-    <OrderStatusBadge
+    <ToneBadge
       tone={MY_ORDER_STATUS_META[status].tone}
       label={getMyOrderBadgeLabel(historyItem)}
     />

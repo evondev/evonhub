@@ -2,6 +2,7 @@ import { CouponItemData } from "@/modules/coupon/types";
 import { CourseItemData } from "@/modules/course/types";
 import { OrderStatus } from "@/shared/constants/order.constants";
 import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
+import type { BadgeTone } from "@/shared/types";
 import { UserItemData } from "@/shared/types/user.types";
 import { Schema } from "mongoose";
 
@@ -93,8 +94,6 @@ export interface UpdateOrderProps {
 /** Trạng thái đơn như học viên thấy: đơn chờ quá 24 giờ tính là hết hạn */
 export type MyOrderStatus = "pending" | "paid" | "expired" | "rejected";
 
-export type OrderBadgeTone = "success" | "warning" | "neutral" | "error";
-
 export type MyOrdersHistoryFilter = "all" | "paid" | "expired" | "rejected";
 
 export type MyOrdersPreviewState =
@@ -131,17 +130,17 @@ export interface MyOrdersGroups {
 
 export interface MyOrderStatusMeta {
   label: string;
-  tone: OrderBadgeTone;
+  tone: BadgeTone;
 }
 
 export interface MyOrdersHistoryTab {
-  filter: MyOrdersHistoryFilter;
+  value: MyOrdersHistoryFilter;
   label: string;
   count: number;
 }
 
 export interface MyOrdersHistoryTabDefinition {
-  filter: MyOrdersHistoryFilter;
+  value: MyOrdersHistoryFilter;
   label: string;
 }
 

@@ -149,9 +149,6 @@ export interface ExploreFacetResult {
   total: { value: number }[];
 }
 
-/** Một ô trên thanh phân trang: số trang hoặc dấu "…" */
-export type ExplorePaginationItem = number | "ellipsis";
-
 export type ExplorePreviewState =
   | "du-lieu"
   | "mot-khoa"

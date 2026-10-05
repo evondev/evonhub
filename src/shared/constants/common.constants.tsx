@@ -8,7 +8,7 @@ import {
   Receipt,
   Users,
 } from "lucide-react";
-import { MenuLinkItemProps, StatusBadgeVariant } from "../types";
+import { BadgeTone, MenuLinkItemProps, StatusBadgeVariant } from "../types";
 
 // Trang chi tiết khóa học: /course/[slug]
 export const COURSE_DETAILS_PATH_PREFIX = "/course/";
@@ -157,3 +157,13 @@ export const SEND_EMAIL_DELAY_MS = 1000; // Resend giới hạn 2 request / giâ
 export const COMING_SOON_CHANNEL_URL = "https://fb.com/tuan.trananh.0509";
 
 export const COMING_SOON_CHANNEL_LABEL = "Theo dõi Evondev";
+
+export const BADGE_TONE_CLASSES: Record<BadgeTone, string> = {
+  success:
+    "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
+  // Hổ phách ở nền tối dùng orange-400: amber-400 trôi sang vàng, đọc ra màu khác
+  warning:
+    "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-orange-400",
+  neutral: "bg-zinc-100 text-zinc-600 dark:bg-white/10 dark:text-zinc-300",
+  error: "bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-400",
+};

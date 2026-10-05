@@ -1,5 +1,6 @@
 "use client";
 
+import { FilterTabs } from "@/shared/components/common";
 import { useState } from "react";
 import { MyOrderHistoryItem, MyOrdersHistoryFilter } from "../../../types";
 import {
@@ -7,7 +8,6 @@ import {
   filterMyOrdersHistory,
 } from "../../../utils";
 import { OrderHistoryRow } from "./order-history-row";
-import { OrderHistoryTabs } from "./order-history-tabs";
 
 interface OrderHistorySectionProps {
   historyItems: MyOrderHistoryItem[];
@@ -42,9 +42,9 @@ export function OrderHistorySection({
           Lịch sử đơn hàng
         </h2>
         {hasTabs && (
-          <OrderHistoryTabs
+          <FilterTabs
             tabs={tabs}
-            activeFilter={activeFilter}
+            activeValue={activeFilter}
             onChange={setActiveFilter}
             controlsId={historyListId}
           />

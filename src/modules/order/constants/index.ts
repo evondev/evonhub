@@ -4,7 +4,6 @@ import {
   MyOrdersPreviewStateLink,
   MyOrderStatus,
   MyOrderStatusMeta,
-  OrderBadgeTone,
 } from "../types";
 
 /** Đơn chờ còn dưới 3 giờ là sắp hết hạn: dòng thời gian chuyển hổ phách */
@@ -20,21 +19,11 @@ export const MY_ORDER_STATUS_META: Record<MyOrderStatus, MyOrderStatusMeta> = {
 /** Đơn khóa miễn phí không có tiền để "thanh toán" */
 export const FREE_ORDER_PAID_LABEL = "Đã kích hoạt";
 
-export const ORDER_BADGE_TONE_CLASSES: Record<OrderBadgeTone, string> = {
-  success:
-    "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
-  // Hổ phách ở nền tối dùng orange-400: amber-400 trôi sang vàng, đọc ra màu khác
-  warning:
-    "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-orange-400",
-  neutral: "bg-zinc-100 text-zinc-600 dark:bg-white/10 dark:text-zinc-300",
-  error: "bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-400",
-};
-
 export const MY_ORDERS_HISTORY_TABS: MyOrdersHistoryTabDefinition[] = [
-  { filter: "all", label: "Tất cả" },
-  { filter: "paid", label: "Đã thanh toán" },
-  { filter: "expired", label: "Hết hạn" },
-  { filter: "rejected", label: "Bị từ chối" },
+  { value: "all", label: "Tất cả" },
+  { value: "paid", label: "Đã thanh toán" },
+  { value: "expired", label: "Hết hạn" },
+  { value: "rejected", label: "Bị từ chối" },
 ];
 
 export const MY_ORDERS_SKELETON_ROW_COUNT = 3;

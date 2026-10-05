@@ -1,8 +1,8 @@
-import { cn } from "@/shared/utils";
+import { buildPaginationItems, cn } from "@/shared/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { ExploreFilters, ExploreLinkBase } from "../../../types";
-import { buildExploreHref, buildPaginationItems } from "../../../utils";
+import { buildExploreHref } from "../../../utils";
 
 interface ExplorePaginationProps {
   filters: ExploreFilters;

@@ -1,5 +1,7 @@
 export * from "./badge-progress";
 export * from "./card";
+export * from "./confirm-dialog";
+export * from "./filter-tabs";
 export * from "./header";
 export * from "./label-status";
 export * from "./leaderboard-item";
@@ -14,4 +16,5 @@ export * from "./spinner";
 export * from "./status-badge";
 export * from "./table-action";
 export * from "./table-actions";
+export * from "./tone-badge";
 export * from "./view-all-link";

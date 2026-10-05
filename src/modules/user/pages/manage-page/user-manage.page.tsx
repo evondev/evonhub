@@ -1,148 +1,77 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { userStatus } from "@/constants";
-import { cn } from "@/lib/utils";
-import { Heading, IconArrowLeft, IconArrowRight } from "@/shared/components";
-import { LabelStatus, PaginationControl } from "@/shared/components/common";
+import { UserRole } from "@/shared/constants/user.constants";
 import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
-import { debounce } from "lodash";
-import Link from "next/link";
 import {
-  parseAsBoolean,
   parseAsInteger,
   parseAsString,
+  parseAsStringLiteral,
   useQueryStates,
 } from "nuqs";
+import { useUserLockFlow } from "../../hooks/use-user-lock-flow";
+import { useMutationUpdateUserStatus } from "../../services/data/mutation-update-user-status.data";
 import { useQueryUsers } from "../../services/data/query-users.data";
+import {
+  getUserManageFetchFilters,
+  toUserManageRow,
+} from "../../utils/user-manage.utils";
+import { UserManageView } from "./components";
 
 export interface UserManagePageProps {}
+
+const userManageTabs = ["all", "paid", "locked"] as const;
+const userRoleFilters = [
+  "all",
+  UserRole.User,
+  UserRole.Expert,
+  UserRole.Admin,
+] as const;
 
 export function UserManagePage(_props: UserManagePageProps) {
   const [filters, setFilters] = useQueryStates({
     search: parseAsString.withDefault(""),
-    isPaidUser: parseAsBoolean.withDefault(false),
+    tab: parseAsStringLiteral(userManageTabs).withDefault("all"),
+    role: parseAsStringLiteral(userRoleFilters).withDefault("all"),
     page: parseAsInteger.withDefault(1),
   });
+  const fetchFilters = getUserManageFetchFilters(filters);
 
-  const { data } = useQueryUsers({
-    search: filters.search,
-    page: filters.page,
-    limit: ITEMS_PER_PAGE,
-    isPaid: filters.isPaidUser,
+  const { mutateAsync: updateUserStatusAsync } = useMutationUpdateUserStatus();
+  const { data, isPending, isPlaceholderData, isFetching, refetch } =
+    useQueryUsers({
+      search: filters.search,
+      page: filters.page,
+      limit: ITEMS_PER_PAGE,
+      ...fetchFilters,
+    });
+
+  // fetchUsers trả undefined khi lỗi hoặc không phải admin
+  const result = data && {
+    users: data.users.map(toUserManageRow),
+    total: data.total,
+    tabCounts: data.tabCounts,
+  };
+
+  const lockFlow = useUserLockFlow({
+    changeStatus: (user, status) =>
+      updateUserStatusAsync({ userId: user.id, status }),
   });
 
-  const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setFilters({ search: value, page: 1 });
-  }, 500);
-
-  if (!data) return null;
-  const { total, users } = data;
-
   return (
-    <>
-      <div className="mb-5 flex flex-col lg:flex-row gap-5 lg:items-center justify-between">
-        <Heading>Quản lý thành viên ({total})</Heading>
-        <Input
-          placeholder="Tìm kiếm thành viên"
-          className="w-full lg:w-[300px]"
-          onChange={handleSearch}
-        />
-      </div>
-      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-xl">
-        <div className="flex items-center gap-3 text-sm font-medium">
-          <Switch
-            checked={filters.isPaidUser}
-            onCheckedChange={(checked) => setFilters({ isPaidUser: checked })}
-          />
-          <Label
-            htmlFor="paidUser"
-            className="hidden lg:flex items-center gap-2 cursor-pointer"
-          >
-            <span>Thành viên trả phí</span>
-          </Label>
-        </div>
-        <div className="flex justify-end gap-3">
-          <PaginationControl
-            onClick={debounce(
-              () => setFilters({ page: filters.page - 1 }),
-              300
-            )}
-            disabled={filters.page <= 1}
-          >
-            <IconArrowLeft />
-          </PaginationControl>
-          <PaginationControl
-            onClick={debounce(
-              () => setFilters({ page: filters.page + 1 }),
-              300
-            )}
-          >
-            <IconArrowRight />
-          </PaginationControl>
-        </div>
-      </div>
-      <Table className="bg-white rounded-xl dark:bg-grayDarker overflow-x-auto table-responsive">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Thông tin</TableHead>
-            <TableHead>Trạng thái</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {users.map((item) => {
-            return (
-              <TableRow key={item.username}>
-                <TableCell>
-                  <Link
-                    href={`/admin/user/update?email=${item.email}`}
-                    className="flex items-center gap-3"
-                  >
-                    <img
-                      src={item.avatar}
-                      alt={item.username}
-                      width={64}
-                      height={64}
-                      className="size-10 object-cover rounded-full flex-shrink-0 borderDarkMode"
-                    />
-                    <div className="whitespace-nowrap">
-                      <h4 className="font-semibold text-sm line-clamp-2 whitespace-nowrap max-w-[400px] block">
-                        {item.name}
-                      </h4>
-                      <h5>{item.username}</h5>
-                      <h5 className="font-semibold">{item.email}</h5>
-                      <p className="text-xs text-gray-400">
-                        {new Date(item?.createdAt).toLocaleDateString("vi-VN")}
-                      </p>
-                    </div>
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <LabelStatus
-                    className={cn(
-                      userStatus[item.status]?.className,
-                      "cursor-pointer"
-                    )}
-                  >
-                    {userStatus[item.status]?.text}
-                  </LabelStatus>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </>
+    <UserManageView
+      filters={filters}
+      onFiltersChange={setFilters}
+      result={result}
+      pageSize={ITEMS_PER_PAGE}
+      isLoading={isPending}
+      isError={!isPending && !data}
+      isRefreshing={isPlaceholderData && isFetching}
+      onRetry={refetch}
+      onToggleStatus={lockFlow.handleToggleStatus}
+      userPendingLock={lockFlow.userPendingLock}
+      isLocking={lockFlow.isLocking}
+      onConfirmLock={lockFlow.handleConfirmLock}
+      onCancelLock={lockFlow.handleCancelLock}
+    />
   );
 }
