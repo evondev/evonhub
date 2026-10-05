@@ -1,6 +1,6 @@
 "use client";
 
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const THEME_MENU_ITEM_CLASS_NAME =
+  "h-10 cursor-pointer rounded-xl px-3 text-foreground focus:bg-item-hover dark:focus:bg-item-hover";
+
 export function ModeToggle() {
   const { setTheme } = useTheme();
 
@@ -18,27 +21,36 @@ export function ModeToggle() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="outline"
+          variant="ghost"
           size="icon"
-          className="size-10 dark:bg-grayDarker dark:border-white dark:border-opacity-10"
+          aria-label="Đổi giao diện sáng tối"
+          className="size-9 rounded-lg data-[state=open]:bg-foreground/5"
         >
-          <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
+          <Moon className="size-4 dark:hidden" />
+          <Sun className="hidden size-4 dark:block" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="dark:bg-grayDarker dark:border-white dark:border-opacity-10"
+        className="w-44 rounded-2xl border-border bg-surface p-1 dark:border-border dark:bg-surface"
       >
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
+        <DropdownMenuItem
+          className={THEME_MENU_ITEM_CLASS_NAME}
+          onClick={() => setTheme("light")}
+        >
+          Sáng
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
+        <DropdownMenuItem
+          className={THEME_MENU_ITEM_CLASS_NAME}
+          onClick={() => setTheme("dark")}
+        >
+          Tối
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
+        <DropdownMenuItem
+          className={THEME_MENU_ITEM_CLASS_NAME}
+          onClick={() => setTheme("system")}
+        >
+          Theo máy
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -7,13 +7,12 @@ export interface MainProps {
 
 export function Main({ children }: MainProps) {
   const { isLessonPage } = useLessonDetailsPath();
+
   return (
     <main
       className={cn(
-        "grid grid-cols-1 pt-8 xl:pt-0 ml-auto lg:min-h-[calc(100vh-144px)] relative items-start",
-        {
-          "xl:w-[var(--main-width)]": !isLessonPage,
-        }
+        "relative grid min-h-[calc(100vh-64px)] grid-cols-1 items-start",
+        !isLessonPage && "lg:pl-64",
       )}
     >
       {children}

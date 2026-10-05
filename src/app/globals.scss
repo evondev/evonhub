@@ -17,6 +17,30 @@
     --wrapper-top: calc(
       var(--header-height) + var(--header-top) + var(--main-padding)
     );
+    /* Token màu theo vai. Kênh RGB để Tailwind thêm được độ mờ (bg-primary/10) */
+    --primary: 108 95 230; /* #6c5fe6: tím brand #978df8 đậm hơn một bậc, chữ trắng trên nó 4.8:1 */
+    --primary-foreground: 255 255 255;
+    --progress: 74 222 128; /* green-400, thanh tiến độ */
+    --background: 243 244 246;
+    --surface: 255 255 255;
+    --foreground: 38 38 38;
+    --muted: 107 112 121; /* #6b7079: 4.5:1 trên nền trang */
+    --border: #efefef;
+    --border-strong: #e5e7eb;
+    --item-hover: #f3f4f6;
+    --button-hover: #f1f1f3;
+  }
+  .dark {
+    --primary: 151 141 248; /* #978df8 */
+    --primary-foreground: 21 18 46;
+    --background: 26 27 30;
+    --surface: 31 32 38;
+    --foreground: 226 232 240;
+    --muted: 146 156 173;
+    --border: rgb(255 255 255 / 0.06);
+    --border-strong: rgb(255 255 255 / 0.1);
+    --item-hover: rgb(255 255 255 / 0.05);
+    --button-hover: rgb(255 255 255 / 0.08);
   }
   ::selection {
     @apply text-white bg-primary;
@@ -26,7 +50,7 @@
   }
   .wrapper {
     max-width: 2600px;
-    @apply mx-auto pb-16 lg:pb-10 pt-16 xl:pt-[var(--wrapper-top)];
+    @apply mx-auto pb-16 pt-16 lg:pb-0;
   }
   textarea,
   input {
@@ -152,10 +176,14 @@ div .tox .tox-edit-area::before {
     @apply bg-none;
   }
 }
+.dark .skeleton::after {
+  opacity: 0.15;
+}
 .skeleton {
   position: relative;
   overflow: hidden;
-  @apply bg-gray-200 dark:bg-grayDarker;
+  // Lớp phủ mờ theo màu chữ: nền tối sáng lên, không trùng màu card
+  @apply bg-foreground/5;
 
   &::after {
     position: absolute;
@@ -469,4 +497,13 @@ div[role="dialog"] {
 .card {
   @apply border border-gray-200;
   box-shadow: inset 0 0 0px 4px #e5e7eb70;
+}
+
+// Nút mở React Query Devtools (chỉ có ở dev) mặc định nằm góc dưới phải, đè lên
+// thanh điều hướng dưới trên điện thoại. Goober gắn vị trí bằng class sinh tự
+// động nên phải dùng !important.
+@media screen and (max-width: 1023.98px) {
+  .tsqd-open-btn-container {
+    bottom: 80px !important;
+  }
 }

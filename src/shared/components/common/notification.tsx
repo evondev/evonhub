@@ -26,10 +26,11 @@ const Notification = () => {
   return (
     <Popover>
       <PopoverTrigger
-        className="size-10 flex items-center justify-center bg-white rounded-xl dark:bg-grayDarker border border-gray-200 dark:border-opacity-10"
+        aria-label="Thông báo"
+        className="relative inline-flex size-9 items-center justify-center rounded-lg text-muted outline-none transition-colors hover:bg-foreground/5 hover:text-foreground data-[state=open]:bg-foreground/5"
         onClick={handleRefetchNotifications}
       >
-        <IconBell />
+        <IconBell className="size-4" />
       </PopoverTrigger>
       <PopoverContent
         align="end"

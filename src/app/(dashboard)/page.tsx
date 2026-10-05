@@ -1,21 +1,5 @@
-import { CourseResume } from "./(dashboard-components)/course-resume";
-import { CourseSuggestion } from "./(dashboard-components)/course-suggestion";
-import { Partner } from "./(dashboard-components)/partner";
-import { Rating } from "./(dashboard-components)/rating";
-import { Welcome } from "./(dashboard-components)/welcome";
+import { DashboardPage } from "@/modules/dashboard/pages/dashboard-page";
 
-export interface DashboardPageRootProps {}
-
-export default function DashboardPageRoot(_props: DashboardPageRootProps) {
-  return (
-    <div className="flex flex-col md:grid grid-cols-[minmax(0,1fr),300px] gap-10 items-start">
-      <div className="flex flex-col gap-10 w-full">
-        <Welcome />
-        <CourseResume />
-        <CourseSuggestion />
-        <Rating />
-      </div>
-      <Partner />
-    </div>
-  );
+export default function DashboardPageRoot() {
+  return <DashboardPage />;
 }

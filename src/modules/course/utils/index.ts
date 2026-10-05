@@ -53,3 +53,16 @@ export function getDiscountLabel({
 
   return `-${100 - Math.floor((price / salePrice) * 100)} %`;
 }
+
+export function getAverageRating(ratings: number[] = []): number {
+  if (ratings.length === 0) return 0;
+
+  const ratingTotal = ratings.reduce((total, rating) => total + rating, 0);
+
+  return ratingTotal / ratings.length;
+}
+
+/** 4.666 → "4,7" */
+export function formatRating(rating: number): string {
+  return rating.toFixed(1).replace(".", ",");
+}

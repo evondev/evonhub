@@ -3,6 +3,8 @@ import { useUserContext } from "@/components/user-context";
 import { Header, Main, Sidebar } from "@/shared/components/common";
 import { MobileNavigation } from "@/shared/components/common/mobile-navigation";
 import { UserStatus } from "@/shared/constants/user.constants";
+import { useLessonDetailsPath } from "@/shared/hooks";
+import { cn } from "@/shared/utils";
 
 export default function DashboardLayout({
   children,
@@ -10,6 +12,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { userInfo } = useUserContext();
+  const { isLessonPage } = useLessonDetailsPath();
 
   if (userInfo?.status === UserStatus.Inactive) return null;
 
@@ -18,7 +21,13 @@ export default function DashboardLayout({
       <Header />
       <Main>
         <Sidebar role={userInfo?.role} />
-        <section className="px-5 lg:px-6 pb-10 max-w-screen-2xl mx-auto w-full">
+        <section
+          className={cn(
+            "w-full",
+            isLessonPage && "mx-auto max-w-screen-2xl px-5 pb-10 pt-6 lg:px-6",
+            !isLessonPage && "max-w-[1600px] p-4 sm:p-6",
+          )}
+        >
           {children}
           <MobileNavigation role={userInfo?.role || ""} />
         </section>

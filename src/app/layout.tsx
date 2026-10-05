@@ -14,7 +14,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.scss";
 
-const manrope = Manrope({ subsets: ["latin"] });
+const manrope = Manrope({ subsets: ["latin", "vietnamese"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://evonhub.dev"),

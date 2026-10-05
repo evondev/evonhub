@@ -1,17 +1,22 @@
+import { cn } from "@/shared/utils";
 import Link from "next/link";
 
 export interface ViewAllLinkProps {
   href: string;
   text?: string;
+  className?: string;
 }
 
-export function ViewAllLink({ href, text }: ViewAllLinkProps) {
+export function ViewAllLink({ href, text, className }: ViewAllLinkProps) {
   return (
     <Link
       href={href}
-      className="font-bold hover:border-primary transition-all hover:text-primary inline-flex items-center gap-2 text-sm rounded-xl justify-center underline"
+      className={cn(
+        "inline-flex h-8 shrink-0 items-center text-sm font-medium text-foreground/70 underline-offset-4 transition-colors hover:text-foreground hover:underline",
+        className,
+      )}
     >
-      <span>{text}</span>
+      {text}
     </Link>
   );
 }

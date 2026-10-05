@@ -23,11 +23,13 @@ export const menuLinks: MenuLinkItemProps[] = [
   },
   {
     title: "Khu vực học tập",
+    mobileTitle: "Học tập",
     icon: <IconStudy></IconStudy>,
     url: "/study",
   },
   {
     title: "Danh sách khóa học",
+    mobileTitle: "Khóa học",
     icon: <IconDiscover />,
     url: "/explore",
   },
@@ -67,6 +69,7 @@ export const menuLinks: MenuLinkItemProps[] = [
   },
   {
     title: "Quản lý đơn hàng",
+    mobileTitle: "Quản lý đơn",
     icon: <IconOrder />,
     url: "/admin/order/manage",
     isExpert: true,
@@ -86,6 +89,7 @@ export const menuLinks: MenuLinkItemProps[] = [
   // },
   {
     title: "Đơn hàng của tôi",
+    mobileTitle: "Đơn hàng",
     icon: <IconOrder />,
     url: "/my-orders",
     isAuth: true,
