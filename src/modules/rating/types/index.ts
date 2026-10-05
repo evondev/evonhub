@@ -30,3 +30,8 @@ export interface HandleRatingStatusProps {
   ratingId: string;
   status: RatingStatus;
 }
+
+export interface HandleRatingStatusResult {
+  isSuccess: boolean;
+  message?: string;
+}

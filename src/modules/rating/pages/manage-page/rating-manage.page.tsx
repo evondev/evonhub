@@ -20,6 +20,7 @@ import {
 import { PaginationControl } from "@/shared/components/common";
 import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
 import {
+  RATING_STATUS_SAVE_ERROR_MESSAGE,
   RatingStatus,
   ratingStatusActions,
 } from "@/shared/constants/rating.constants";
@@ -28,6 +29,7 @@ import { debounce } from "lodash";
 import Image from "next/image";
 import Link from "next/link";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
+import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { userMutationRatingStatus } from "../../services/data/mutation-rating-status.data";
 import { useQueryRatings } from "../../services/data/query-ratings";
@@ -58,11 +60,22 @@ export function RatingManagePage(_props: RatingManagePageProps) {
       confirmButtonText: "Đồng ý",
       cancelButtonText: "Hủy",
     }).then(async (result) => {
-      if (result.isConfirmed) {
-        await mutationRatingStatus.mutateAsync({
+      if (!result.isConfirmed) return;
+
+      try {
+        const statusResult = await mutationRatingStatus.mutateAsync({
           ratingId: rating._id,
           status: rating.status,
         });
+
+        if (!statusResult.isSuccess) {
+          toast.error(statusResult.message || RATING_STATUS_SAVE_ERROR_MESSAGE);
+          return;
+        }
+
+        toast.success("Thay đổi trạng thái thành công");
+      } catch {
+        toast.error(RATING_STATUS_SAVE_ERROR_MESSAGE);
       }
     });
   };

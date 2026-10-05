@@ -6,17 +6,14 @@ import { RatingStatus } from "@/shared/constants/rating.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
-import {
-  getCurrentAdmin,
-  getCurrentCourseManager,
-  getCurrentStaff,
-} from "@/shared/libs/auth";
+import { getCurrentCourseManager, getCurrentStaff } from "@/shared/libs/auth";
 import { auth } from "@clerk/nextjs/server";
 import { FilterQuery, isValidObjectId } from "mongoose";
 import RatingModel from "../models";
 import {
   FetchRatingManageProps,
   HandleRatingStatusProps,
+  HandleRatingStatusResult,
   RatingItemData,
 } from "../types";
 
@@ -94,22 +91,32 @@ export async function fetchRatings({
 export async function handleRatingStatus({
   ratingId,
   status,
-}: HandleRatingStatusProps) {
+}: HandleRatingStatusProps): Promise<HandleRatingStatusResult> {
   try {
     await connectToDatabase();
 
-    if (!isValidObjectId(ratingId)) return;
+    if (!isValidObjectId(ratingId)) {
+      return { isSuccess: false, message: "Không tìm thấy đánh giá" };
+    }
 
     const findRating = await RatingModel.findById(ratingId).select("course");
 
-    if (!findRating) return;
+    if (!findRating) {
+      return { isSuccess: false, message: "Không tìm thấy đánh giá" };
+    }
 
     // Admin duyệt mọi khóa, expert chỉ duyệt đánh giá trên khóa mình đứng tên
     const courseManager = await getCurrentCourseManager(
       findRating.course?.toString(),
     );
 
-    if (!courseManager) return;
+    if (!courseManager) {
+      return {
+        isSuccess: false,
+        message: "Bạn không có quyền duyệt đánh giá của khóa này",
+      };
+    }
+
     await RatingModel.findByIdAndUpdate(ratingId, {
       status:
         status === RatingStatus.Active
@@ -119,7 +126,13 @@ export async function handleRatingStatus({
     await syncApprovedRatings({
       courseId: findRating.course?.toString(),
     });
-  } catch (error) {}
+
+    return { isSuccess: true };
+  } catch (error) {
+    console.log(error);
+
+    return { isSuccess: false };
+  }
 }
 
 interface SyncApprovedRatingsProps {

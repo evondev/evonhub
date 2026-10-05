@@ -48,3 +48,6 @@ export const reactionLabels: Record<EReactionType, string> = {
   [EReactionType.BAD]: "Tệ",
   [EReactionType.TERRIBLE]: "Rất tệ",
 };
+
+export const RATING_STATUS_SAVE_ERROR_MESSAGE =
+  "Chưa đổi được trạng thái, thử lại sau ít phút";
