@@ -1,7 +1,9 @@
 export * from "./admin-nav";
+export * from "./app-tooltip";
 export * from "./badge-progress";
 export * from "./card";
 export * from "./confirm-dialog";
+export * from "./email-text";
 export * from "./filter-tabs";
 export * from "./header";
 export * from "./label-status";
@@ -20,4 +22,5 @@ export * from "./table-action";
 export * from "./table-actions";
 export * from "./table-pagination";
 export * from "./tone-badge";
+export * from "./truncate-tooltip";
 export * from "./view-all-link";

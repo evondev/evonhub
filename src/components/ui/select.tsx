@@ -138,8 +138,9 @@ const SelectContent = React.forwardRef<
       >
         <SelectScrollUpButton />
         <SelectPrimitive.Viewport
+          // Mục cách nhau 4px: hai nền rê, nền đang chọn không dính nhau
           className={cn(
-            "p-1.5",
+            "flex flex-col gap-1 p-1.5",
             position === "popper" &&
               "h-[var(--radix-select-trigger-height)] w-full"
           )}

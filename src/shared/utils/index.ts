@@ -150,3 +150,45 @@ export function isMenuLinkActive(link: MenuLinkItemProps, pathname: string) {
     link.activePathPrefix && pathname.startsWith(link.activePathPrefix),
   );
 }
+
+/**
+ * Chip bật tắt một bộ lọc (trang Khoá học, trang Đơn hàng). Rê vào chỉ đậm
+ * viền như nút Sắp xếp: tô nền xám thì chip tan vào nền trang
+ */
+export function getFilterChipClassName(isActive: boolean): string {
+  return cn(
+    "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-sm font-medium outline-none transition-colors",
+    isActive && "border-primary/40 bg-primary/10 text-primary-strong",
+    !isActive &&
+      "border-border-strong bg-surface text-foreground/80 hover:border-foreground/25 hover:text-foreground",
+  );
+}
+
+/**
+ * Chữ trong phần tử có đang bị cắt (truncate, line-clamp) không. Đo bằng Range,
+ * không bằng scrollWidth: hai số đó làm tròn về số nguyên, chữ rộng 182,4px
+ * trong khung 182px vẫn bị cắt mà phép so báo không cắt
+ */
+export function isTextTruncated(element: HTMLElement | null): boolean {
+  if (!element) return false;
+
+  const range = document.createRange();
+
+  range.selectNodeContents(element);
+
+  const textRect = range.getBoundingClientRect();
+  const elementRect = element.getBoundingClientRect();
+
+  return (
+    textRect.width > elementRect.width || textRect.height > elementRect.height
+  );
+}
+
+/** Tách email ở "@" để chữ xuống dòng ngay trước tên miền, không giữa tên miền */
+export function splitEmailAtSign(email: string): [string, string] {
+  const atIndex = email.lastIndexOf("@");
+
+  if (atIndex < 0) return [email, ""];
+
+  return [email.slice(0, atIndex), email.slice(atIndex)];
+}

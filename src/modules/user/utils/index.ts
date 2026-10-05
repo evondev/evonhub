@@ -58,15 +58,6 @@ export function buildPublicProfilePath(basePath: string, username: string) {
   return `${basePath}/${username.trim()}`;
 }
 
-/** Tách email ở "@" để chữ xuống dòng ngay trước tên miền, không giữa tên miền */
-export function splitEmailAtSign(email: string): [string, string] {
-  const atIndex = email.lastIndexOf("@");
-
-  if (atIndex < 0) return [email, ""];
-
-  return [email.slice(0, atIndex), email.slice(atIndex)];
-}
-
 /** Trang xem trước không ghi gì: chờ một nhịp để thấy nút đang lưu */
 export function simulatePreviewSave(delayMs: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, delayMs));

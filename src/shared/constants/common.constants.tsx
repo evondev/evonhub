@@ -168,6 +168,9 @@ export const commonStatuses: Record<
 };
 
 export const ITEMS_PER_PAGE = 10;
+
+/** Rê vào bao lâu thì tooltip hiện: đủ để lướt qua không bật, ngắn hơn hẳn title của trình duyệt */
+export const TOOLTIP_DELAY_MS = 400;
 export const MAXIUM_DISCOUNT = 500_000;
 export const MAX_RECIPIENTS = 100; // Giới hạn 100 email / request của Resend batch API
 export const SEND_EMAIL_DELAY_MS = 1000; // Resend giới hạn 2 request / giây

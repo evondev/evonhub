@@ -5,6 +5,7 @@ import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
 import type { BadgeTone } from "@/shared/types";
 import { UserItemData } from "@/shared/types/user.types";
 import { Schema } from "mongoose";
+import { OrderManageTab, OrderManageTabCounts } from "./order-manage.types";
 
 export interface OrderModelProps extends Document {
   _id: string;
@@ -64,7 +65,17 @@ export interface FetchOrdersProps {
   filter?: string;
   page: number;
   isFree?: boolean;
-  status?: OrderStatus;
+  /** Tab trên trang quản lý đơn; bỏ trống là mọi đơn */
+  tab?: OrderManageTab;
+}
+
+export interface FetchOrdersResult {
+  orders: OrderItemData[];
+  /** Số đơn khớp bộ lọc của tab đang xem, trên mọi trang */
+  total: number;
+  tabCounts: OrderManageTabCounts;
+  /** Số đơn 0 đồng đang chờ, đúng phạm vi nút "Duyệt đơn miễn phí"; chỉ admin */
+  freePendingCount: number;
 }
 
 export interface CreatePendingOrderInput {

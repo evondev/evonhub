@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import type { LucideIcon } from "lucide-react";
 import { useRef } from "react";
+import { cn } from "@/shared/utils";
 
 export interface ConfirmDialogProps {
   isOpen: boolean;
@@ -12,12 +13,15 @@ export interface ConfirmDialogProps {
   description: React.ReactNode;
   confirmLabel: string;
   cancelLabel?: string;
+  /** "neutral" chỉ khi việc không mất dữ liệu, không kết thúc thứ gì, không cắt quyền ai */
+  tone?: "danger" | "neutral";
   isConfirming: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
 
 // Hộp xác nhận việc nguy hiểm: icon đỏ cùng hàng tiêu đề, nút xác nhận nền đỏ mờ ở cuối.
+// Việc không nguy hiểm (tone "neutral"): icon xám, nút xác nhận primary.
 // Mở ra tiêu điểm rơi vào nút Huỷ để Enter không xác nhận nhầm.
 export function ConfirmDialog({
   isOpen,
@@ -26,11 +30,13 @@ export function ConfirmDialog({
   description,
   confirmLabel,
   cancelLabel = "Huỷ",
+  tone = "danger",
   isConfirming,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
+  const isDanger = tone === "danger";
 
   function handleOpenChange(isNextOpen: boolean) {
     if (!isNextOpen && !isConfirming) onCancel();
@@ -50,9 +56,19 @@ export function ConfirmDialog({
         >
           {/* Lưới hai cột: icon và tiêu đề cùng hàng; thân dưới sm trải hết bề rộng, từ sm thẳng mép tiêu đề */}
           <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-rose-500/10">
+            <div
+              className={cn(
+                "flex size-10 shrink-0 items-center justify-center rounded-full",
+                isDanger && "bg-rose-500/10",
+                !isDanger && "bg-background",
+              )}
+            >
               <Icon
-                className="size-5 text-rose-700 dark:text-rose-400"
+                className={cn(
+                  "size-5",
+                  isDanger && "text-rose-700 dark:text-rose-400",
+                  !isDanger && "text-foreground",
+                )}
                 aria-hidden
               />
             </div>
@@ -80,7 +96,7 @@ export function ConfirmDialog({
             </Button>
             <Button
               type="button"
-              variant="destructive"
+              variant={isDanger ? "destructive" : "primary"}
               className="h-11 md:h-10"
               isLoading={isConfirming}
               onClick={onConfirm}

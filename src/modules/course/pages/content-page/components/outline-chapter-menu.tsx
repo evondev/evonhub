@@ -40,7 +40,7 @@ export function OutlineChapterMenu({
         // Không trả tiêu điểm về nút ⋯ khi đóng: chọn "Đổi tên" thì ô nhập vừa mở đang giữ
         // tiêu điểm, trả về nút sẽ làm ô blur, mà blur là lưu nên ô đóng ngay
         onCloseAutoFocus={(event) => event.preventDefault()}
-        className="flex w-44 flex-col gap-0.5 rounded-xl border-border bg-surface p-1 text-foreground shadow-lg dark:border-border dark:bg-surface dark:text-foreground"
+        className="flex w-44 flex-col gap-1 rounded-xl border-border bg-surface p-1 text-foreground shadow-lg dark:border-border dark:bg-surface dark:text-foreground"
       >
         <DropdownMenuItem className={menuItemClassName} onSelect={onRename}>
           <Pencil className="size-4 text-muted" aria-hidden />

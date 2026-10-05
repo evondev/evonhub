@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FilterTabItem } from "@/shared/types";
+import { FilterTabItem, FilterTabsBreakpoint } from "@/shared/types";
 import { cn, formatThoundsand } from "@/shared/utils";
 import { Check, ChevronDown } from "lucide-react";
 import { useRef } from "react";
@@ -18,16 +18,30 @@ interface FilterTabsProps<TValue extends string> {
   onChange: (value: TValue) => void;
   /** id của danh sách mà tab đang lọc */
   controlsId?: string;
+  /** Dưới mốc này hàng tab thành nút "Trạng thái:". Hàng nhiều tab thì lên "xl" */
+  collapseBelow?: FilterTabsBreakpoint;
 }
+
+// Class viết đủ để Tailwind quét được: hàng tab hiện từ mốc, nút chọn ẩn từ mốc
+const tabListBreakpointClassNames: Record<FilterTabsBreakpoint, string> = {
+  sm: "sm:flex",
+  xl: "xl:flex",
+};
+
+const dropdownBreakpointClassNames: Record<FilterTabsBreakpoint, string> = {
+  sm: "sm:hidden",
+  xl: "xl:hidden",
+};
 
 const navigationKeys = ["ArrowLeft", "ArrowRight", "Home", "End"];
 
-/** Tab trạng thái phía trên bảng/danh sách. Dưới sm thành nút "Trạng thái:" */
+/** Tab trạng thái phía trên bảng/danh sách. Dưới sm (hay mốc collapseBelow) thành nút "Trạng thái:" */
 export function FilterTabs<TValue extends string>({
   tabs,
   activeValue,
   onChange,
   controlsId,
+  collapseBelow = "sm",
 }: FilterTabsProps<TValue>) {
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const activeIndex = Math.max(
@@ -61,7 +75,10 @@ export function FilterTabs<TValue extends string>({
         role="tablist"
         aria-label="Lọc theo trạng thái"
         onKeyDown={handleTabKeyDown}
-        className="hidden items-center gap-1 sm:flex"
+        className={cn(
+          "hidden items-center gap-1",
+          tabListBreakpointClassNames[collapseBelow],
+        )}
       >
         {tabs.map((tab, index) => {
           const isSelected = index === activeIndex;
@@ -98,8 +115,8 @@ export function FilterTabs<TValue extends string>({
         })}
       </div>
 
-      {/* Dưới sm hàng tab không vừa: thành nút chọn có nhãn "Trạng thái:" */}
-      <div className="sm:hidden">
+      {/* Dưới mốc hàng tab không vừa: thành nút chọn có nhãn "Trạng thái:" */}
+      <div className={dropdownBreakpointClassNames[collapseBelow]}>
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button

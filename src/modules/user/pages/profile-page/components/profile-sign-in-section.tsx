@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ProfileData } from "../../../types";
-import { ProfileEmail } from "./profile-email";
+import { EmailText } from "@/shared/components/common";
 import { ProfileRow } from "./profile-row";
 import { ProfileSection } from "./profile-section";
 
@@ -22,7 +22,7 @@ export function ProfileSignInSection({
       <ProfileRow label="Email">
         <div className="flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
           <p className="min-w-0 text-sm font-medium text-foreground sm:py-2.5">
-            <ProfileEmail email={profile.email} />
+            <EmailText email={profile.email} />
           </p>
           <Button
             type="button"

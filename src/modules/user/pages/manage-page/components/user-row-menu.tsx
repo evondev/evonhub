@@ -41,7 +41,7 @@ export function UserRowMenu({ user, onToggleStatus }: UserRowMenuProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="flex w-56 flex-col gap-0.5 rounded-xl border-border bg-surface p-1 text-foreground shadow-lg dark:border-border dark:bg-surface dark:text-foreground"
+        className="flex w-56 flex-col gap-1 rounded-xl border-border bg-surface p-1 text-foreground shadow-lg dark:border-border dark:bg-surface dark:text-foreground"
       >
         <DropdownMenuItem asChild className={menuItemClassName}>
           <Link href={buildUserManageHref(user)}>

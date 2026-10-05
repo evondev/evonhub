@@ -26,7 +26,7 @@ export function getOrdersOptions({ enabled, ...props }: GetOrdersProps) {
       props.isFree,
       props.page,
       props.limit,
-      props.status,
+      props.tab,
     ],
   });
 }
