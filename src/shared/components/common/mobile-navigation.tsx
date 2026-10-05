@@ -50,7 +50,7 @@ export function MobileNavigation({ role }: MobileNavigationProps) {
             aria-current={isActive ? "page" : undefined}
             className={cn(
               "flex min-w-0 flex-col items-center justify-center gap-1 outline-none",
-              isActive && "text-foreground",
+              isActive && "text-primary",
               !isActive && "text-muted",
             )}
           >
@@ -59,8 +59,8 @@ export function MobileNavigation({ role }: MobileNavigationProps) {
             </span>
             <span
               className={cn(
-                "max-w-full truncate px-1 text-xs",
-                isActive && "font-medium",
+                "max-w-full truncate px-1 text-xs font-medium",
+                isActive && "font-semibold",
               )}
             >
               {link.mobileTitle || link.title}

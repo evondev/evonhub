@@ -91,7 +91,7 @@ export function Sidebar({ role }: SidebarProps) {
             isSidebarCollapsed && "[scrollbar-width:none]",
           )}
         >
-          <ul className="flex flex-col gap-1">
+          <ul className="flex flex-col gap-1.5">
             {mainLinks.map((link) => (
               <li key={link.url}>
                 <MenuLink
@@ -124,7 +124,7 @@ export function Sidebar({ role }: SidebarProps) {
                   )}
                 />
               </div>
-              <ul className="flex flex-col gap-1">
+              <ul className="flex flex-col gap-1.5">
                 {manageLinks.map((link) => (
                   <li key={link.url}>
                     <MenuLink

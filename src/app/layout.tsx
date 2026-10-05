@@ -6,7 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import { Be_Vietnam_Pro } from "next/font/google";
 import Script from "next/script";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "prismjs/themes/prism.css";
@@ -14,7 +14,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.scss";
 
-const manrope = Manrope({ subsets: ["latin", "vietnamese"] });
+// Be Vietnam Pro không có bản variable nên phải khai đủ các độ đậm đang dùng.
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://evonhub.dev"),
@@ -49,13 +53,13 @@ export default async function RootLayout({
   return (
     <ClerkProvider afterSignOutUrl="/">
       <html lang="en" suppressHydrationWarning>
-        <body className={`${manrope.className}`}>
+        <body className={`${beVietnamPro.className}`}>
           <div className="wrapper relative">
             <ReactQueryProvider>
               <ThemeProvider
                 attribute="class"
-                defaultTheme="system"
-                enableSystem
+                defaultTheme="light"
+                enableSystem={false}
                 disableTransitionOnChange
               >
                 <Providers>
@@ -70,7 +74,7 @@ export default async function RootLayout({
             autoClose={4000}
             position="top-right"
             className="min-w-[350px] max-w-full top-0 right-0"
-            bodyClassName={`${manrope.className} font-semibold`}
+            bodyClassName={`${beVietnamPro.className} font-semibold`}
           ></ToastContainer>
           <Script
             id="mux-uploader"

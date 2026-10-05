@@ -36,14 +36,14 @@ export function MenuLink({ link, isActive, isCollapsed }: MenuLinkProps) {
           aria-current={isActive ? "page" : undefined}
           aria-label={isCollapsed ? link.title : undefined}
           className={cn(
-            "flex h-10 w-full items-center gap-2.5 whitespace-nowrap rounded-xl px-3 text-sm text-foreground/70 outline-none transition-colors",
+            "flex h-11 w-full items-center gap-3 whitespace-nowrap rounded-xl px-3 text-base font-medium text-foreground/80 outline-none transition-colors",
             !isActive && "hover:bg-item-hover hover:text-foreground",
-            isActive && "bg-item-active font-medium text-foreground",
+            isActive && "bg-item-active font-semibold text-foreground",
           )}
         >
           <span
             aria-hidden="true"
-            className="flex size-4 shrink-0 items-center justify-center [&>svg]:size-4"
+            className="flex size-[18px] shrink-0 items-center justify-center [&>svg]:size-[18px]"
           >
             {link.icon}
           </span>

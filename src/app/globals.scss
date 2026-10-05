@@ -519,3 +519,14 @@ div[role="dialog"] {
     bottom: 80px !important;
   }
 }
+
+// Vòng focus chung cho bàn phím: nhiều control đặt outline-none nên Tab tới
+// không thấy gì. Đặt ngoài @layer để thắng class outline-none; chỉ hiện với
+// :focus-visible nên bấm chuột không vẽ.
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+summary:focus-visible {
+  outline: 2px solid rgb(var(--primary));
+  outline-offset: 2px;
+}
