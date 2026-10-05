@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import Link from "next/link";
-import { useResumeLessonUrl } from "../hooks/use-resume-lesson-url";
+import { useResumeLessonUrl } from "@/shared/hooks";
 import { DashboardCourseProgress } from "../types";
 
 interface LearnerHeroProps {

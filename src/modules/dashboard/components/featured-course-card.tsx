@@ -1,7 +1,7 @@
 import { CourseItemData } from "@/modules/course/types";
 import { cn } from "@/shared/utils";
 import Link from "next/link";
-import { CourseCover } from "./course-cover";
+import { CourseCover } from "@/shared/components/course";
 import { CoursePrice } from "./course-price";
 import { CourseRating } from "./course-rating";
 

@@ -5,7 +5,7 @@ import { cn } from "@/shared/utils";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useResumeLessonUrl } from "../hooks/use-resume-lesson-url";
+import { useResumeLessonUrl } from "@/shared/hooks";
 import { DashboardCourseProgress } from "../types";
 
 interface CourseProgressRowProps {

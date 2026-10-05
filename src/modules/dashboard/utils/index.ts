@@ -11,7 +11,6 @@ import {
 import {
   CatalogStats,
   DashboardCourseProgress,
-  DashboardLessonLink,
   HeroStatItem,
   RoadmapStep,
   RoadmapStepConfig,
@@ -27,13 +26,6 @@ export function getFirstName(fullName?: string, givenName?: string | null) {
   const nameParts = (fullName || "").trim().split(/\s+/);
 
   return nameParts[nameParts.length - 1] || "";
-}
-
-export function getLessonFallbackUrl(
-  slug: string,
-  lesson?: DashboardLessonLink,
-) {
-  return `/${slug}/lesson?id=${lesson?._id || ""}`;
 }
 
 /** 507.786 → "507 nghìn", 1.250.000 → "1,3 triệu" */

@@ -24,11 +24,6 @@ export const ROADMAP_MIN_STEP_COUNT = 2;
 export const ROADMAP_SUBTITLE =
   "Từ để AI viết code, tới hiểu nó và đưa nó chạy thật";
 
-// Chưa có khóa nào public thì khối Khóa học mời theo dõi kênh này
-export const COMING_SOON_CHANNEL_URL = "https://fb.com/tuan.trananh.0509";
-
-export const COMING_SOON_CHANNEL_LABEL = "Theo dõi Evondev";
-
 // Đoạn code minh hoạ ở khối đầu trang: AI viết, dòng 3 dính SQL injection
 export const HERO_CODE_FILE_NAME = "login.ts · AI vừa viết";
 

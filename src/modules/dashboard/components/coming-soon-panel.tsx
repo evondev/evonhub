@@ -3,7 +3,7 @@ import { Bell, Clapperboard } from "lucide-react";
 import {
   COMING_SOON_CHANNEL_LABEL,
   COMING_SOON_CHANNEL_URL,
-} from "../constants";
+} from "@/shared/constants/common.constants";
 
 /** Chỗ của khối Khóa học khi chưa có khóa nào public */
 export function ComingSoonPanel() {

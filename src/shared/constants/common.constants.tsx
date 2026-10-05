@@ -163,3 +163,8 @@ export const ITEMS_PER_PAGE = 10;
 export const MAXIUM_DISCOUNT = 500_000;
 export const MAX_RECIPIENTS = 100; // Giới hạn 100 email / request của Resend batch API
 export const SEND_EMAIL_DELAY_MS = 1000; // Resend giới hạn 2 request / giây
+
+// Chưa có khóa nào mở bán thì mời theo dõi kênh này (dashboard, khu vực học tập)
+export const COMING_SOON_CHANNEL_URL = "https://fb.com/tuan.trananh.0509";
+
+export const COMING_SOON_CHANNEL_LABEL = "Theo dõi Evondev";

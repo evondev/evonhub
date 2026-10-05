@@ -1,6 +1,6 @@
 import { CourseItemData } from "@/modules/course/types";
 import Link from "next/link";
-import { CourseCover } from "./course-cover";
+import { CourseCover } from "@/shared/components/course";
 import { CoursePrice } from "./course-price";
 
 interface CourseListRowProps {
