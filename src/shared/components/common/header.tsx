@@ -13,9 +13,9 @@ import { usePathname } from "next/navigation";
 import { ModeToggle } from "../../../components/ModeToggle";
 import Notification from "./notification";
 
-// Trang tổng quan và trang Khóa học không có đầu trang riêng nên tên nằm trên
+// Trang tổng quan, Khóa học, Đơn hàng không có đầu trang riêng nên tên nằm trên
 // thanh header (là <h1>). Các trang khác tự có tiêu đề, ghi thêm ở đây sẽ bị lặp.
-const HEADER_TITLE_PATHS = ["/", "/explore"];
+const HEADER_TITLE_PATHS = ["/", "/explore", "/my-orders"];
 
 export const Header = () => {
   const { userId, isSignedIn } = useAuth();
@@ -76,8 +76,11 @@ export const Header = () => {
             </span>
           </Link>
           {headerTitle && !isLessonPage && (
-            <h1 className="hidden truncate text-base font-semibold text-foreground lg:block">
-              {headerTitle}
+            // Dưới lg thanh header chỉ có logo: tên trang vẫn là <h1> cho trình
+            // đọc màn hình, chỉ ẩn khỏi mắt
+            <h1 className="min-w-0 text-base font-semibold text-foreground">
+              <span className="sr-only lg:hidden">{headerTitle}</span>
+              <span className="hidden truncate lg:block">{headerTitle}</span>
             </h1>
           )}
         </div>

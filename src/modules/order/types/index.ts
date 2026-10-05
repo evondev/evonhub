@@ -89,3 +89,63 @@ export interface UpdateOrderProps {
   code: string;
   status: OrderStatus;
 }
+
+/** Trạng thái đơn như học viên thấy: đơn chờ quá 24 giờ tính là hết hạn */
+export type MyOrderStatus = "pending" | "paid" | "expired" | "rejected";
+
+export type OrderBadgeTone = "success" | "warning" | "neutral" | "error";
+
+export type MyOrdersHistoryFilter = "all" | "paid" | "expired" | "rejected";
+
+export type MyOrdersPreviewState =
+  "du-lieu" | "khong-cho-thanh-toan" | "rong" | "dang-tai" | "loi";
+
+export interface MyOrderCourse {
+  title: string;
+  slug: string;
+  image?: string;
+}
+
+/** Phần dữ liệu đơn mà trang "Đơn hàng của tôi" cần */
+export interface MyOrderItem {
+  id: string;
+  code: string;
+  status: OrderStatus;
+  createdAt: Date | string;
+  amount: number;
+  discount: number;
+  total: number;
+  couponCode?: string;
+  course?: MyOrderCourse;
+}
+
+export interface MyOrderHistoryItem {
+  order: MyOrderItem;
+  status: Exclude<MyOrderStatus, "pending">;
+}
+
+export interface MyOrdersGroups {
+  pendingOrders: MyOrderItem[];
+  historyItems: MyOrderHistoryItem[];
+}
+
+export interface MyOrderStatusMeta {
+  label: string;
+  tone: OrderBadgeTone;
+}
+
+export interface MyOrdersHistoryTab {
+  filter: MyOrdersHistoryFilter;
+  label: string;
+  count: number;
+}
+
+export interface MyOrdersHistoryTabDefinition {
+  filter: MyOrdersHistoryFilter;
+  label: string;
+}
+
+export interface MyOrdersPreviewStateLink {
+  state: MyOrdersPreviewState;
+  label: string;
+}
