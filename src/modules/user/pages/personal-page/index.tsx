@@ -44,11 +44,11 @@ export function UserPersonalPageContainer({
           </div>
           <div>
             {rank && rank >= 1 && rank <= 3 ? (
-              <div className="font-extrabold text-secondary text-xs lg:text-sm uppercase">
+              <div className="font-bold text-secondary text-xs lg:text-sm uppercase">
                 Top {rank} leaderboard
               </div>
             ) : null}
-            <h1 className="font-bold text-lg lg:text-2xl">
+            <h1 className="font-display font-bold text-lg lg:text-2xl">
               {userProfile?.username}
             </h1>
             <div className="text-xs lg:text-sm mb-1 font-medium">
@@ -81,7 +81,7 @@ export function UserPersonalPageContainer({
           </div>
         </div>
         <div className="flex flex-col gap-5">
-          <h2 className="font-bold text-xl lg:text-2xl">
+          <h2 className="font-display font-bold text-xl lg:text-2xl">
             <span className="capitalize">{userProfile?.username}</span> đang học
           </h2>
           <CourseList isLoading={isFetching}>

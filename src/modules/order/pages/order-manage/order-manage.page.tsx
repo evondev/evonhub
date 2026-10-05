@@ -250,7 +250,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                         </div>
                       )}
                       {order?.plan !== MembershipPlan.None && (
-                        <div className="font-bold uppercase text-base flex items-center gap-2">
+                        <div className="font-semibold uppercase text-base flex items-center gap-2">
                           <Image
                             src="/star-medal.png"
                             alt=""
@@ -325,7 +325,7 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                         ) : (
                           <p
                             className={cn(
-                              "font-bold",
+                              "font-semibold",
                               orderStatus.isApproved
                                 ? "text-green-500"
                                 : "text-orange-500"
@@ -341,8 +341,8 @@ export function OrderManagePage(_props: OrderManagePageProps) {
                   <TableCell>
                     {!!order.coupon?.amount && (
                       <div className="flex flex-col gap-2">
-                        <div className="font-bold">{order.coupon?.code}</div>
-                        <div className="text-green-500 font-bold">
+                        <div className="font-semibold">{order.coupon?.code}</div>
+                        <div className="text-green-500 font-semibold">
                           -{formatThoundsand(order.coupon?.amount || 0)}
                         </div>
                       </div>

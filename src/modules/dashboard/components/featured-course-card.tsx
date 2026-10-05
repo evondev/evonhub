@@ -33,7 +33,7 @@ export function FeaturedCourseCard({
         <span className="text-xs font-medium text-primary-strong">
           Đang mở đăng ký
         </span>
-        <h3 className="text-pretty text-lg font-bold text-foreground">
+        <h3 className="text-pretty text-lg font-semibold text-foreground">
           {course.title}
         </h3>
         {course.desc && (

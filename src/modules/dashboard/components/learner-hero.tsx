@@ -36,7 +36,7 @@ export function LearnerHero({
     <section className="grid gap-6 rounded-2xl bg-brand-band bg-gradient-to-br from-brand-band to-brand-band-end p-5 text-white sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] lg:items-center [&_a:focus-visible]:outline-white">
       <div className="min-w-0">
         <p className="text-sm font-medium">{greeting}</p>
-        <h2 className="mt-1 text-balance text-2xl font-bold sm:text-3xl">
+        <h2 className="mt-1 text-balance text-2xl font-display font-bold sm:text-3xl">
           {course.title}
         </h2>
         <p className="mt-2 text-pretty text-sm sm:text-base">

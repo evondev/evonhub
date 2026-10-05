@@ -45,7 +45,7 @@ export function LessonOutlineItem({
   const mutateCompleteLesson = useMutationCompleteLesson();
   const className = cn(
     "mb-5 pb-5 border-b border-dashed dark:border-b-slate-500 last:pb-0 last:mb-0 last:border-b-0 flex items-center gap-2 dark:text-text5 text-sm",
-    isActive ? "text-primary font-bold dark:text-primary" : "font-medium"
+    isActive ? "text-primary font-semibold dark:text-primary" : "font-medium"
   );
 
   const defaultChecked = histories

@@ -57,7 +57,7 @@ export function CourseItemResume({
         </div>
       </div>
       <div className="flex flex-col gap-3 flex-1">
-        <h3 className="font-bold text-sm leading-loose lg:text-base pr-5">
+        <h3 className="font-semibold text-sm leading-loose lg:text-base pr-5">
           {title}
         </h3>
         <BadgeProgress progress={progress || 0} />

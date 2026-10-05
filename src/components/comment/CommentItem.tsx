@@ -40,7 +40,7 @@ const CommentItem = ({
       />
       <div className="flex-1">
         <div className="bgDarkMode borderDarkMode py-2 px-4 rounded mb-4">
-          <h3 className={cn("font-bold mb-1", !isChild ? "text-primary" : "")}>
+          <h3 className={cn("font-semibold mb-1", !isChild ? "text-primary" : "")}>
             {comment.user.username}
           </h3>
           <div

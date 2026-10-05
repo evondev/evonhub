@@ -20,7 +20,7 @@ const CommentReply = ({ comment, lessonId }: CommentReplyProps) => {
           <>
             <button
               type="button"
-              className={cn("font-bold text-gray-400", {
+              className={cn("font-semibold text-gray-400", {
                 underline: isShowReply,
               })}
               onClick={() => setIsShowReply(!isShowReply)}

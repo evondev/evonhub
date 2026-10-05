@@ -89,7 +89,7 @@ export function RatingForm({ courseId }: { courseId: string }) {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle className="font-bold mb-5 text-xl">
+              <DialogTitle className="font-display font-bold mb-5 text-xl">
                 Đánh giá
               </DialogTitle>
               <DialogDescription className="flex flex-col gap-5">

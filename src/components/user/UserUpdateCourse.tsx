@@ -91,12 +91,12 @@ const UserUpdateCourse = ({ user, courses }: { user: any; courses: any[] }) => {
         />
         <div className="flex items-center gap-2">
           <div className="flex flex-col gap-1">
-            <h1 className="font-bold text-xl">{user.username}</h1>
+            <h1 className="font-display font-bold text-xl">{user.username}</h1>
             <p>{user.email}</p>
           </div>
         </div>
       </div>
-      <h2 className="font-bold text-xl mb-5">Chọn khóa học</h2>
+      <h2 className="font-display font-bold text-xl mb-5">Chọn khóa học</h2>
       <div className="flex flex-col gap-5 mb-8">
         <div className="flex items-center gap-5">
           <Select

@@ -168,7 +168,7 @@ export function CommentManagePage(_props: CommentManagePageProps) {
                       className="rounded-full shrink-0 object-cover border borderDarkMode"
                     />
                     <div className="flex flex-col">
-                      <h4 className="font-bold text-sm">
+                      <h4 className="font-semibold text-sm">
                         {comment.user?.name}
                       </h4>
                       <h5 className="text-xs mb-2">{comment.user?.email}</h5>

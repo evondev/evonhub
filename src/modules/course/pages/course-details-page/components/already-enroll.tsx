@@ -28,14 +28,14 @@ export default function AlreadyEnroll({ course, lesson }: AlreadyEnrollProps) {
         <div>
           Xin chào <strong>{userInfo.username}</strong>. Bạn đã sở hữu khóa học
           này rồi. Vui lòng vào{" "}
-          <Link href="/study" className="text-primary font-bold">
+          <Link href="/study" className="text-primary font-semibold">
             khu vực học tập
           </Link>{" "}
           để học hoặc
         </div>
         <Link
           href={`/${course}/lesson?id=${lesson}`}
-          className="rounded-xl h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0 bg-primary text-white bg-primary button-styles mt-5 w-full"
+          className="rounded-xl h-12 inline-flex items-center justify-center text-center px-5 font-semibold min-w-[120px] transition-all text-sm flex-shrink-0 bg-primary text-white bg-primary button-styles mt-5 w-full"
         >
           Nhấn vào đây
         </Link>

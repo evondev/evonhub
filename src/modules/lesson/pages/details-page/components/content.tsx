@@ -196,7 +196,7 @@ export function LessonContent({
           <button
             onClick={handleExpandScreen}
             className={
-              "rounded-xl h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0 flex w-fit gap-2 bgDarkMode borderDarkMode"
+              "rounded-xl h-12 inline-flex items-center justify-center text-center px-5 font-semibold min-w-[120px] transition-all text-sm flex-shrink-0 flex w-fit gap-2 bgDarkMode borderDarkMode"
             }
           >
             {isExpanded ? "Mặc định" : "Mở rộng"}
@@ -206,7 +206,7 @@ export function LessonContent({
               handle.enter();
             }}
             className={
-              "rounded-xl h-12 inline-flex items-center justify-center text-center px-5 font-bold min-w-[120px] transition-all text-sm flex-shrink-0 flex w-fit gap-2 bgDarkMode borderDarkMode"
+              "rounded-xl h-12 inline-flex items-center justify-center text-center px-5 font-semibold min-w-[120px] transition-all text-sm flex-shrink-0 flex w-fit gap-2 bgDarkMode borderDarkMode"
             }
           >
             <IconFullScreen />
@@ -219,7 +219,7 @@ export function LessonContent({
         </div>
       )}
       <div className="p-3">
-        <h1 className="font-extrabold text-xl lg:text-2xl xl:text-3xl lg:mb-10">
+        <h1 className="font-display font-bold text-xl lg:text-2xl xl:text-3xl lg:mb-10">
           {lessonDetails.title}
         </h1>
       </div>

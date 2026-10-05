@@ -47,7 +47,7 @@ export function CourseOutline({
             }
           >
             <AccordionItem value={item.title || ""}>
-              <AccordionTrigger className="font-bold dark:text-text5 text-sm lg:text-base">
+              <AccordionTrigger className="font-semibold dark:text-text5 text-sm lg:text-base">
                 <div className="line-clamp-1 text-left">{item.title}</div>
               </AccordionTrigger>
               <AccordionContent className="bg-white dark:bg-grayDarker rounded-xl mt-3 lg:mt-5">

@@ -27,12 +27,12 @@ export function CouponItem({ coupon }: CouponItemProps) {
 
   return (
     <Card className="p-3 rounded-xl bgDarkMode flex flex-col relative overflow-hidden group cursor-pointer">
-      <div className="py-1 px-2 text-sm font-bold text-white gradient-secondary self-start absolute top-0 left-0">
+      <div className="py-1 px-2 text-sm font-semibold text-white gradient-secondary self-start absolute top-0 left-0">
         {formatThoundsand(coupon.amount)}
         {coupon.type === CouponType.Percentage ? "%" : ""}
       </div>
       <div className="flex items-center gap-3 justify-between mt-6">
-        <h2 className="font-bold text-sm lg:text-base">{coupon.title}</h2>
+        <h2 className="font-semibold text-sm lg:text-base">{coupon.title}</h2>
         <button
           type="button"
           className={`size-10 rounded-full bgDarkMode border borderDarkMode flex items-center shrink-0 justify-center hover:bg-gray-100 dark:hover:bg-opacity-10`}

@@ -110,7 +110,7 @@ export async function replyComment(params: ReplyCommentParams) {
     await newComment.save();
     await sendNotification({
       title: "Hệ thống",
-      content: `<strong class="text-secondary">${findComment.user.username}</strong> vừa trả lời bình luận của bạn tại bài học <a href="/${findComment.course.slug}/lesson?id=${findComment.lesson._id}" class="text-primary font-bold">${findComment.lesson.title}</a>`,
+      content: `<strong class="text-secondary">${findComment.user.username}</strong> vừa trả lời bình luận của bạn tại bài học <a href="/${findComment.course.slug}/lesson?id=${findComment.lesson._id}" class="text-primary font-semibold">${findComment.lesson.title}</a>`,
       users: [findComment.user._id],
     });
     revalidatePath(params.user.path);

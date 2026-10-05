@@ -29,7 +29,7 @@ const PageNotFound = () => {
       </div>
       <button
         onClick={handleRedirect}
-        className="mx-auto flex items-center justify-center gap-3 h-12 px-5 rounded-xl borderDarkModeHover bgDarkMode font-bold min-w-[200px] mt-5"
+        className="mx-auto flex items-center justify-center gap-3 h-12 px-5 rounded-xl borderDarkModeHover bgDarkMode font-semibold min-w-[200px] mt-5"
       >
         <IconHome />
         <span>Quay về</span>

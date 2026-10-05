@@ -51,7 +51,7 @@ export function LeaderboardItem({
       <span className="text-sm font-medium truncate max-w-[120px]">
         {user.username}
       </span>
-      <span className="shrink-0 ml-auto font-bold text-xs px-2 py-1 rounded-full flex items-center gap-2 w-[70px] justify-center">
+      <span className="shrink-0 ml-auto font-semibold text-xs px-2 py-1 rounded-full flex items-center gap-2 w-[70px] justify-center">
         <Image
           src={gemImage}
           alt="score"

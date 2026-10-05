@@ -25,7 +25,7 @@ export function ProgressBar({
     <div className={cn("flex flex-col", wrapperClassName)}>
       {shouldShowLabel && (
         <div className="flex text-xs font-medium mb-0.5">
-          <strong className="font-extrabold">{current}</strong>
+          <strong className="font-bold">{current}</strong>
           <span>/</span>
           <span>{total}</span>
         </div>

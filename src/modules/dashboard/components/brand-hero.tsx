@@ -23,7 +23,7 @@ export function BrandHero({
       <div className="flex min-w-0 flex-col gap-6">
         <div>
           {firstName && <p className="text-sm font-medium">Chào {firstName}</p>}
-          <h2 className="mt-1 text-balance text-3xl font-bold sm:text-4xl">
+          <h2 className="mt-1 text-balance text-3xl font-display font-bold sm:text-4xl">
             AI viết code giúp bạn.
             <br />
             Nhưng hậu quả thì bạn chịu.
@@ -59,7 +59,7 @@ export function BrandHero({
             {statItems.map((statItem) => (
               <div key={statItem.label} className="min-w-0">
                 <dt className="sr-only">{statItem.label}</dt>
-                <dd className="whitespace-nowrap text-lg font-bold tabular-nums sm:text-xl">
+                <dd className="whitespace-nowrap text-lg font-semibold tabular-nums sm:text-xl">
                   {statItem.value}
                 </dd>
                 <dd className="text-balance text-xs text-white">

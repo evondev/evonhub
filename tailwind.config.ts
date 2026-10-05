@@ -40,6 +40,9 @@ const config: Config = {
         textPrimary: "#262626",
         grayed: "#ededed",
       },
+      fontFamily: {
+        display: ["var(--font-display)", "sans-serif"],
+      },
       screens: {
         "2xl": "1600px",
       },

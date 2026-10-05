@@ -34,7 +34,7 @@ export function StudyCoursePanel({
           className="hidden aspect-video w-40 shrink-0 rounded-xl xl:block"
         />
         <div className="min-w-0 flex-1">
-          <h2 className="text-pretty text-lg font-bold text-foreground">
+          <h2 className="text-pretty text-lg font-semibold text-foreground">
             {course.title}
           </h2>
           <div className="mt-2 flex items-center gap-3">

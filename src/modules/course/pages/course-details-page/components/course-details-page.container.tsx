@@ -113,7 +113,7 @@ export function CourseDetailsPageContainer(
           )}
           {shouldShowDefaultImage && (
             <div
-              className="w-full h-full flex items-center justify-center object-cover rounded-xl bg-grayDarker text-white uppercase font-bold text-lg xl:text-5xl p-10 text-center leading-normal"
+              className="w-full h-full flex items-center justify-center object-cover rounded-xl bg-grayDarker text-white uppercase font-semibold text-lg xl:text-5xl p-10 text-center leading-normal"
               style={{
                 color: randomColor(),
               }}
@@ -122,7 +122,7 @@ export function CourseDetailsPageContainer(
             </div>
           )}
         </div>
-        <h1 className="font-extrabold text-xl lg:text-3xl mb-4 !leading-normal">
+        <h1 className="font-display font-bold text-xl lg:text-3xl mb-4 !leading-normal">
           {title}
         </h1>
         {ratings && ratings.length > 0 && (
@@ -189,7 +189,7 @@ export function CourseDetailsPageContainer(
                     key={item.question}
                   >
                     <AccordionItem value="item-1">
-                      <AccordionTrigger className="font-bold mb-2">
+                      <AccordionTrigger className="font-semibold mb-2">
                         {item.question}
                       </AccordionTrigger>
                       <AccordionContent className="font-medium bg-white rounded-xl dark:bg-grayDarker  dark:text-text5 text-sm">

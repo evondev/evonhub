@@ -16,7 +16,7 @@ export function SectionHeading({
   return (
     <div className="flex items-end justify-between gap-3">
       <div className="min-w-0">
-        <h2 className="text-xl font-bold text-foreground">{title}</h2>
+        <h2 className="text-xl font-display font-bold text-foreground">{title}</h2>
         {subtitle && (
           <p className="mt-0.5 text-pretty text-sm text-muted">{subtitle}</p>
         )}

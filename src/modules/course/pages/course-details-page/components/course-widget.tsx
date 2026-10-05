@@ -153,7 +153,7 @@ export default function CourseWidget({
                 )}
               </div>
               {!!discountLabel && (
-                <span className="inline-block py-1 px-3 rounded-full bg-primary bg-opacity-20 text-primary font-bold">
+                <span className="inline-block py-1 px-3 rounded-full bg-primary bg-opacity-20 text-primary font-semibold">
                   {discountLabel}
                 </span>
               )}
@@ -178,7 +178,7 @@ export default function CourseWidget({
             <button
               type="button"
               onClick={handleEnrollFree}
-              className="h-12 rounded-xl px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
+              className="h-12 rounded-xl px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-semibold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
             >
               Hốt ngay
             </button>
@@ -197,7 +197,7 @@ export default function CourseWidget({
                 >
                   <Input
                     placeholder="Nhập mã giảm giá"
-                    className="border-none uppercase !shadow-none !font-bold h-auto"
+                    className="border-none uppercase !shadow-none !font-semibold h-auto"
                     value={couponCode}
                     onChange={(e) =>
                       setCouponCode(e.target.value.toUpperCase())
@@ -212,18 +212,18 @@ export default function CourseWidget({
                   </Button>
                 </div>
                 {message.error && message.error?.length > 0 && (
-                  <div className="text-sm font-bold text-red-500">
+                  <div className="text-sm font-semibold text-red-500">
                     {message.error}
                   </div>
                 )}
                 {message.success && message.success?.length > 0 && (
-                  <div className="text-sm font-bold text-green-500">
+                  <div className="text-sm font-semibold text-green-500">
                     {message.success}
                   </div>
                 )}
               </div>
               <Button
-                className="h-12 rounded-xl px-5 flex items-center justify-center bg-primary text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
+                className="h-12 rounded-xl px-5 flex items-center justify-center bg-primary text-white font-semibold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-base w-full"
                 onClick={() => !isComingSoon && handleBuyCourse()}
                 disabled={isComingSoon || mutationEnrollCourse.isPending}
                 isLoading={mutationEnrollCourse.isPending}

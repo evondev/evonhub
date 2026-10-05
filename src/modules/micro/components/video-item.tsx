@@ -16,7 +16,7 @@ export default function VideoItem({ data, isEdit = false }: VideoItemProps) {
         <h4 className="uppercase text-gray-500 text-xs font-medium mb-1">
           Video
         </h4>
-        <h3 className="font-bold text-sm lg:text-lg mb-5">{data.title}</h3>
+        <h3 className="font-semibold text-sm lg:text-lg mb-5">{data.title}</h3>
         <div
           className="text-sm text-gray-700 mb-5 dark:text-white"
           dangerouslySetInnerHTML={{

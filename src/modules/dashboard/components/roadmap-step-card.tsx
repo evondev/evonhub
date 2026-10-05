@@ -79,7 +79,7 @@ export function RoadmapStepCard({
       )}
       <span
         className={cn(
-          "relative z-10 grid size-10 shrink-0 place-items-center rounded-full text-sm font-bold",
+          "relative z-10 grid size-10 shrink-0 place-items-center rounded-full text-sm font-semibold",
           isHighlighted && "bg-primary text-primary-foreground",
           !isHighlighted &&
             "border-2 border-border-strong bg-surface text-muted",

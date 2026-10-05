@@ -6,7 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
-import { Be_Vietnam_Pro } from "next/font/google";
+import { Be_Vietnam_Pro, Bricolage_Grotesque } from "next/font/google";
 import Script from "next/script";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "prismjs/themes/prism.css";
@@ -17,7 +17,14 @@ import "./globals.scss";
 // Be Vietnam Pro không có bản variable nên phải khai đủ các độ đậm đang dùng.
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
+});
+
+// Font cho heading lớn (dùng qua class font-display). Bản variable có trục opsz
+// nên chữ cỡ to tự gọn nét hơn, có subset tiếng Việt.
+const bricolageGrotesque = Bricolage_Grotesque({
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
@@ -53,7 +60,9 @@ export default async function RootLayout({
   return (
     <ClerkProvider afterSignOutUrl="/">
       <html lang="en" suppressHydrationWarning>
-        <body className={`${beVietnamPro.className}`}>
+        <body
+          className={`${beVietnamPro.className} ${bricolageGrotesque.variable}`}
+        >
           <div className="wrapper relative">
             <ReactQueryProvider>
               <ThemeProvider

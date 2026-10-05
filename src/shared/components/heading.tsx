@@ -15,7 +15,7 @@ export function Heading({
   return (
     <Component
       className={cn(
-        "text-2xl lg:text-3xl font-extrabold text-textPrimary dark:text-white",
+        "text-2xl lg:text-3xl font-display font-bold text-textPrimary dark:text-white",
         className
       )}
     >

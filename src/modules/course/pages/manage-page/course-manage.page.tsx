@@ -183,7 +183,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
                       />
                       <div className="flex flex-col gap-2">
                         <div className="flex items-start gap-2">
-                          <div className="font-bold line-clamp-2 w-[400px] block text-sm text-balance">
+                          <div className="font-semibold line-clamp-2 w-[400px] block text-sm text-balance">
                             {course.title}
                           </div>
                         </div>

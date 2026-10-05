@@ -79,6 +79,11 @@
   svg {
     @apply max-w-full;
   }
+  // Preflight để strong/b là "bolder" (ra 700); dự án chỉ dùng 600 cho chữ nhấn.
+  b,
+  strong {
+    @apply font-semibold;
+  }
 }
 @layer components {
   .shadow-main,
@@ -168,7 +173,7 @@ div .tox .tox-edit-area::before {
     max-width: 500px;
   }
   .swal2-popup .swal2-title {
-    @apply text-xl font-bold text-grayDarkest;
+    @apply text-xl font-semibold text-grayDarkest;
     font-size: 18px !important;
   }
   .swal2-popup .swal2-html-container {
@@ -354,7 +359,7 @@ div[role="dialog"] {
     rgba(221, 165, 227, 0.2) 82.3125%,
     rgba(203, 171, 255, 0.2) 100%
   );
-  @apply font-bold relative p-1;
+  @apply font-semibold relative p-1;
   height: 48px;
   .button-inside {
     background: linear-gradient(
@@ -437,7 +442,7 @@ div[role="dialog"] {
   @apply from-[#FF979A] to-[#CBABFF] bg-gradient-to-r;
 }
 .button-mix {
-  @apply h-12 rounded-full px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-sm;
+  @apply h-12 rounded-full px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-semibold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-sm;
 }
 :root {
   --tab-gradient1: #407cff 318deg, #da8bff 1turn;

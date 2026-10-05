@@ -117,7 +117,7 @@ export function UserManagePage(_props: UserManagePageProps) {
                       className="size-10 object-cover rounded-full flex-shrink-0 borderDarkMode"
                     />
                     <div className="whitespace-nowrap">
-                      <h4 className="font-bold text-sm line-clamp-2 whitespace-nowrap max-w-[400px] block">
+                      <h4 className="font-semibold text-sm line-clamp-2 whitespace-nowrap max-w-[400px] block">
                         {item.name}
                       </h4>
                       <h5>{item.username}</h5>

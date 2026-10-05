@@ -4,7 +4,7 @@ import Link from "next/link";
 const page = () => {
   return (
     <div>
-      <h1 className=" text-secondary font-bold text-xl inline-block mb-5">
+      <h1 className=" text-secondary font-display font-bold text-xl inline-block mb-5">
         Khóa học Coaching Online 101 với Evondev
       </h1>
       <div></div>

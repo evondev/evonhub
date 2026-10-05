@@ -20,7 +20,7 @@ export function Comment({ lessonId }: CommentProps) {
       {!!rootComments && rootComments?.length > 0 && (
         <div className="mt-10 hidden lg:flex flex-col gap-10">
           <div className="flex items-center justify-between">
-            <h2 className="flex items-center gap-2 text-xl font-bold">
+            <h2 className="flex items-center gap-2 text-xl font-display font-bold">
               <span>Comments</span>
               <span className="flex items-center justify-center rounded-full bg-primary px-4 py-0.5 text-sm font-semibold text-white">
                 {comments?.length}

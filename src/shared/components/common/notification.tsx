@@ -36,7 +36,7 @@ const Notification = () => {
         align="end"
         className="w-80 p-0 shadow-sm dark:bg-grayDarker dark:border-opacity-10 dark:border-gray-200"
       >
-        <div className="p-3 font-bold text-base border-b border-b-gray-200 dark:border-opacity-10">
+        <div className="p-3 font-semibold text-base border-b border-b-gray-200 dark:border-opacity-10">
           Thông báo
         </div>
         {notifications && notifications?.length > 0 && (
@@ -49,7 +49,7 @@ const Notification = () => {
                 <span className="rounded-full size-2 bg-green-500 flex-shrink-0"></span>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-1">
-                    <h3 className="font-bold">Hệ thống</h3>
+                    <h3 className="font-semibold">Hệ thống</h3>
                     <span className="block size-1 rounded-full bg-gray-600"></span>
                     <span className="text-slate-500 text-xs">
                       {getTimestamp(new Date(el.createdAt))}

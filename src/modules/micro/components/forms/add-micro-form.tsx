@@ -101,7 +101,7 @@ export default function AddMicroForm() {
         <div className="mt-10 flex justify-end">
           <Button
             type="submit"
-            className="h-12 bg-primary dark:bg-primary dark:text-white text-white font-bold w-[150px]"
+            className="h-12 bg-primary dark:bg-primary dark:text-white text-white font-semibold w-[150px]"
             isLoading={isSubmitting}
           >
             Thêm video

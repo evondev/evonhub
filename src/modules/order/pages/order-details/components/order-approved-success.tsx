@@ -35,7 +35,7 @@ export function OrderApprovedSuccess({ isJustPaid }: OrderApprovedSuccessProps) 
   return (
     <div className="flex items-center justify-center flex-col gap-3">
       <Image alt="" src="/check.png" width={100} height={100} />
-      <h1 className="font-bold text-xl">
+      <h1 className="font-display font-bold text-xl">
         {isJustPaid
           ? "Thanh toán thành công"
           : "Đơn hàng này đã được duyệt"}
