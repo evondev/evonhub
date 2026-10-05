@@ -1,30 +1,61 @@
 "use client";
 
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
-import { Check } from "lucide-react";
+import { Check, Minus } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+export interface CheckboxProps
+  extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> {
+  // default 20px cạnh chữ text-sm; sm 16px trong bảng, menu, dòng text-xs
+  size?: "default" | "sm";
+}
+
+function getCheckboxClassName(size: CheckboxProps["size"]) {
+  const isSmall = size === "sm";
+
+  return cn(
+    "peer inline-grid shrink-0 cursor-pointer place-items-center border-[1.5px] border-border-strong bg-surface text-primary-foreground outline-none transition-colors",
+    // Rê chỉ đậm viền khi chưa chọn: ô đã chọn giữ nguyên màu nhấn
+    "data-[state=unchecked]:hover:border-foreground",
+    "data-[state=checked]:border-primary data-[state=checked]:bg-primary",
+    "data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary",
+    "disabled:cursor-not-allowed disabled:opacity-50",
+    isSmall && "size-4 rounded",
+    !isSmall && "size-5 rounded-md",
+  );
+}
+
+// Dựng trên Radix: phím Space, aria-checked, ba trạng thái (checked =
+// "indeterminate" hiện dấu trừ) đều có sẵn. Tab tới không vẽ vòng focus.
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <CheckboxPrimitive.Root
-    ref={ref}
-    className={cn(
-      "peer size-4 shrink-0 rounded-sm border border-slate-200  focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-slate-50  dark:border-slate-600 dark:data-[state=checked]:bg-primary dark:data-[state=checked]:border-primary dark:data-[state=checked]:text-white",
-      className,
-    )}
-    {...props}
-  >
-    <CheckboxPrimitive.Indicator
-      className={cn("flex items-center justify-center text-current")}
+  CheckboxProps
+>(({ className, size = "default", ...props }, ref) => {
+  const iconClassName = cn(
+    "stroke-[3]",
+    size === "sm" && "size-3",
+    size !== "sm" && "size-3.5",
+  );
+
+  return (
+    <CheckboxPrimitive.Root
+      ref={ref}
+      className={cn(getCheckboxClassName(size), className)}
+      {...props}
     >
-      <Check className="h-4 w-4" />
-    </CheckboxPrimitive.Indicator>
-  </CheckboxPrimitive.Root>
-));
+      <CheckboxPrimitive.Indicator className="group grid place-items-center">
+        <Check
+          className={cn(iconClassName, "group-data-[state=indeterminate]:hidden")}
+        />
+        <Minus
+          className={cn(iconClassName, "hidden group-data-[state=indeterminate]:block")}
+        />
+      </CheckboxPrimitive.Indicator>
+    </CheckboxPrimitive.Root>
+  );
+});
 Checkbox.displayName = CheckboxPrimitive.Root.displayName;
 
 export { Checkbox };
