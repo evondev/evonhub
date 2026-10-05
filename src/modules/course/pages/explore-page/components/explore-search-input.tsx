@@ -80,7 +80,7 @@ export function ExploreSearchInput({ defaultValue }: ExploreSearchInputProps) {
         placeholder="Tìm khóa học"
         aria-label="Tìm khóa học"
         aria-busy={isPending}
-        className="h-11 w-full rounded-xl border border-border-strong bg-surface pl-10 pr-3.5 text-base text-foreground outline-none transition-colors placeholder:text-muted focus:border-primary focus:ring-4 focus:ring-primary/15 md:h-10 md:text-sm"
+        className="h-11 w-full rounded-xl border border-border-strong bg-surface pl-10 pr-3.5 text-base text-foreground outline-none transition-colors placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/15 md:h-10 md:text-sm"
       />
     </form>
   );

@@ -156,7 +156,7 @@ export function CouponCreatePage(_props: CouponCreatePageProps) {
                   <FormControl>
                     <NumericFormat
                       className={cn(
-                        "flex h-12 file:border-0 file:bg-transparent file:text-sm file:font-medium   focus-primary form-styles w-40"
+                        "flex h-12 file:border-0 file:bg-transparent file:text-sm file:font-medium form-styles w-40"
                       )}
                       {...field}
                       onChange={(e) => field.onChange(e.target.value)}

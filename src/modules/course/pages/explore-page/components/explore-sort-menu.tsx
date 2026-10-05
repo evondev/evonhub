@@ -26,7 +26,12 @@ export function ExploreSortMenu({ filters, linkBase }: ExploreSortMenuProps) {
     // modal={false}: menu mở không khoá cuộn trang, thanh cuộn không ẩn hiện làm giật
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-1.5 px-3">
+        {/* Cùng trạng thái mở với ô Select: viền màu nhấn + ring-2, nền giữ trắng.
+            Không hover: nền rê --button-hover gần trùng nền trang, mũi tên đã đủ báo bấm được */}
+        <Button
+          variant="outline"
+          className="gap-1.5 px-3 hover:bg-surface data-[state=open]:border-primary data-[state=open]:ring-2 data-[state=open]:ring-primary/15"
+        >
           <span className="text-muted">Sắp xếp:</span>
           <span className="font-medium text-foreground">
             {currentOption.label}
