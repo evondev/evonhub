@@ -19,7 +19,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
-import { UserPlan } from "./components";
 
 export function UserProfilePage() {
   const { userInfo } = useUserContext();
@@ -218,7 +217,6 @@ export function UserProfilePage() {
               </div>
             </form>
           </Form>
-          <UserPlan />
         </div>
       </div>
     </div>

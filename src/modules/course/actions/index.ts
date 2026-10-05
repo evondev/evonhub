@@ -20,6 +20,7 @@ import { getCurrentUser } from "@/shared/libs/auth";
 import { UserItemData } from "@/shared/types/user.types";
 import { auth } from "@clerk/nextjs/server";
 import { FilterQuery } from "mongoose";
+import { EXPLORE_SORT_STAGES } from "../constants";
 import CourseModel from "../models";
 import {
   CourseItemData,
@@ -27,10 +28,13 @@ import {
   EnrollFreeProps,
   EnrollFreeResponse,
   EnrollResponse,
+  ExploreCoursesResult,
+  ExploreFacetResult,
   FetchCoursesManageProps,
   FetchCoursesParams,
+  FetchExploreCoursesParams,
 } from "../types";
-import { isCourseOwned } from "../utils";
+import { escapeRegExp, isCourseOwned } from "../utils";
 
 export async function fetchCourses({
   status,
@@ -80,6 +84,80 @@ export async function fetchCourses({
 
     return allCourses;
   } catch (error) {}
+}
+
+/**
+ * Khóa đang bán cho trang Khóa học: lọc, sắp xếp, chia trang ngay trong DB và
+ * trả kèm tổng số khóa khớp để vẽ phân trang có số.
+ */
+export async function fetchExploreCourses({
+  search,
+  isFree,
+  level,
+  sort,
+  page,
+  limit,
+}: FetchExploreCoursesParams): Promise<ExploreCoursesResult | undefined> {
+  try {
+    await connectToDatabase();
+
+    const matchQuery: FilterQuery<typeof CourseModel> = {
+      _destroy: false,
+      status: CourseStatus.Approved,
+    };
+
+    if (search) {
+      matchQuery.title = { $regex: escapeRegExp(search), $options: "i" };
+    }
+
+    // Cùng định nghĩa với isCourseFree: bật cờ free và giá 0
+    if (isFree) {
+      matchQuery.free = true;
+      matchQuery.price = { $lte: 0 };
+    }
+
+    if (level) matchQuery.level = level;
+
+    const [facetResult] = await CourseModel.aggregate<ExploreFacetResult>([
+      { $match: matchQuery },
+      {
+        $addFields: {
+          averageRating: { $avg: "$rating" },
+          ratingCount: { $size: { $ifNull: ["$rating", []] } },
+        },
+      },
+      { $sort: EXPLORE_SORT_STAGES[sort] },
+      {
+        $facet: {
+          courses: [
+            { $skip: (page - 1) * limit },
+            { $limit: limit },
+            {
+              $project: {
+                title: 1,
+                slug: 1,
+                image: 1,
+                level: 1,
+                rating: 1,
+                price: 1,
+                salePrice: 1,
+                views: 1,
+                free: 1,
+              },
+            },
+          ],
+          total: [{ $count: "value" }],
+        },
+      },
+    ]);
+
+    return {
+      courses: parseData(facetResult?.courses || []),
+      total: facetResult?.total[0]?.value || 0,
+    };
+  } catch (error) {
+    console.error("fetchExploreCourses error:", error);
+  }
 }
 
 export async function fetchCoursesIncoming(): Promise<

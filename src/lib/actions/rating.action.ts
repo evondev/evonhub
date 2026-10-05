@@ -1,7 +1,5 @@
 "use server";
 import Rating from "@/database/rating.model";
-import CourseModel from "@/modules/course/models";
-import MicroModel from "@/modules/micro/models";
 import RatingModel from "@/modules/rating/models";
 import UserModel from "@/modules/user/models";
 import { ERatingStatus } from "@/types/enums";
@@ -33,10 +31,9 @@ export default async function createRating(params: {
       rating: params.rate,
       content: params.content,
     });
+    // Chưa cộng vào `course.rating`: đánh giá mới ở trạng thái chờ duyệt, mảng
+    // sao chỉ được tính lại khi admin duyệt (handleRatingStatus).
     newRating.save();
-    const findCourse = await CourseModel.findById(params.courseId);
-    findCourse.rating.push(params.rate);
-    findCourse.save();
     revalidatePath(params.path);
   } catch (error) {
     console.log(error);
@@ -50,38 +47,6 @@ export async function getRatingByCourse(courseId: string) {
       status: ERatingStatus.ACTIVE,
     }).populate("user", "name avatar");
     return ratings;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function createRatingForVideo(params: {
-  videoId: string;
-  rate: number;
-  content: string;
-}) {
-  try {
-    connectToDatabase();
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
-    if (!findUser) return;
-    const findRating = await RatingModel.findOne({
-      user: findUser._id,
-      video: params.videoId,
-    });
-    if (findRating) {
-      return { message: "Bạn đã đánh giá video này rồi" };
-    }
-    const newRating = new RatingModel({
-      user: findUser._id,
-      video: params.videoId,
-      rating: params.rate,
-      content: params.content,
-    });
-    newRating.save();
-    const findVideo = await MicroModel.findById(params.videoId);
-    findVideo.rating.push(params.rate);
-    findVideo.save();
   } catch (error) {
     console.log(error);
   }

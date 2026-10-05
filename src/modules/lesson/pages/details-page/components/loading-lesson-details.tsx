@@ -1,17 +1,21 @@
-"use client";
-
 import { Loading } from "./loading";
 import { LoadingOutline } from "./loading-outline";
 
 export interface LoadingLessonDetailsProps {}
 
+// Cùng lưới với DetailsPageLayout: cột bài học + mục lục 380px từ lg
 export function LoadingLessonDetails(_props: LoadingLessonDetailsProps) {
   return (
-    <div className="-mt-8 lg:mt-0 flex flex-col lg:grid overflow-hidden lg:overflow-visible h-[calc(100svh-140px)] sm:h-auto grid-cols-1 lg:grid-cols-[minmax(0,2fr),minmax(0,400px)] gap-0 lg:gap-8 items-start transition-all relative -mx-5 -mb-7 lg:mb-0 lg:mx-0 lg:grid">
-      <div className="lg:overflow-hidden flex-shrink-0 w-full flex flex-col gap-3">
-        <Loading />
+    <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:gap-6">
+      <Loading />
+      <div className="hidden overflow-hidden rounded-2xl border border-border bg-surface lg:block">
+        <div className="space-y-3 p-5 pt-4">
+          <div className="skeleton h-4 w-40 rounded-full" />
+          <div className="skeleton h-3 w-32 rounded-full" />
+          <div className="skeleton h-2 w-full rounded-full" />
+        </div>
+        <LoadingOutline />
       </div>
-      <LoadingOutline />
     </div>
   );
 }

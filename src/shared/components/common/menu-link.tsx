@@ -1,47 +1,81 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { MenuLinkItemProps } from "@/shared/types";
+import { cn } from "@/shared/utils";
 import Link from "next/link";
-import { twMerge } from "tailwind-merge";
 
 interface MenuLinkProps {
   link: MenuLinkItemProps;
-  isActiveLink: (url: string) => boolean;
-  isExternal?: boolean;
-  isNew?: boolean;
-  isHot?: boolean;
-  isFree?: boolean;
+  isActive: boolean;
+  isCollapsed: boolean;
 }
 
-export function MenuLink({
-  link,
-  isActiveLink,
-  isExternal,
-  isNew = false,
-  isHot = false,
-  isFree = false,
-}: MenuLinkProps) {
+function getMenuLinkBadge(link: MenuLinkItemProps) {
+  if (link.isHot) return "Hot";
+  if (link.isNew) return "New";
+  if (link.isFree) return "Free";
+
+  return "";
+}
+
+export function MenuLink({ link, isActive, isCollapsed }: MenuLinkProps) {
+  const badge = getMenuLinkBadge(link);
+
   return (
-    <Link
-      target={isExternal ? "_blank" : "_self"}
-      href={link.url}
-      className={twMerge(
-        "flex items-center gap-3 py-2.5 pr-3 pl-6 transition-all font-medium border-l-2 border-l-transparent",
-        isActiveLink(link.url)
-          ? " text-primary font-semibold svg-animate border-l-primary"
-          : "text-gray70 dark:text-slate-400 hover:text-primary dark:hover:text-primary",
-      )}
-    >
-      <div className="size-5 flex items-center justify-center">{link.icon}</div>
-      <span>{link.title}</span>
-      {(isNew || isFree) && (
-        <span className="ml-auto inline-flex text-green-500 px-2 py-0.5 font-bold text-xs rounded-full border border-green-500 w-11 justify-center">
-          {isNew ? "New" : "Free"}
-        </span>
-      )}
-      {isHot && (
-        <span className="ml-auto inline-flex text-red-500 px-2 py-0.5 font-bold text-xs rounded-full border border-red-500 w-11 justify-center">
-          Hot
-        </span>
-      )}
-    </Link>
+    // Tooltip chỉ bật lúc thu gọn: lúc mở thì tên đã nằm ngay cạnh icon.
+    <Tooltip open={isCollapsed ? undefined : false}>
+      <TooltipTrigger asChild>
+        {/* Icon đứng yên ở cả hai trạng thái: không justify-center, không đổi
+            padding. Thu gọn thì mép sidebar cắt dần phần chữ. Link thu gọn rộng
+            40px, icon 18px cách mép 11px là nằm đúng tâm ô nền. */}
+        <Link
+          target={link.isExternal ? "_blank" : "_self"}
+          href={link.url}
+          aria-current={isActive ? "page" : undefined}
+          aria-label={isCollapsed ? link.title : undefined}
+          className={cn(
+            "flex h-11 w-full items-center gap-3 whitespace-nowrap rounded-xl px-[11px] text-sm font-normal text-foreground/80 outline-none transition-colors",
+            !isActive && "hover:bg-item-hover hover:text-foreground",
+            isActive && "bg-item-active font-medium text-foreground",
+          )}
+        >
+          <span
+            aria-hidden="true"
+            className="flex size-[18px] shrink-0 items-center justify-center [&>svg]:size-[18px]"
+          >
+            {link.icon}
+          </span>
+          <span
+            className={cn(
+              "min-w-0 flex-1 truncate transition-opacity duration-150 motion-reduce:transition-none",
+              isCollapsed && "opacity-0",
+            )}
+          >
+            {link.title}
+          </span>
+          {badge && (
+            <span
+              className={cn(
+                "shrink-0 text-xs text-muted transition-opacity duration-150 motion-reduce:transition-none",
+                isActive && "text-foreground",
+                isCollapsed && "opacity-0",
+              )}
+            >
+              {badge}
+            </span>
+          )}
+        </Link>
+      </TooltipTrigger>
+      <TooltipContent
+        side="right"
+        sideOffset={8}
+        className="rounded-lg border-0 bg-foreground px-2.5 py-1.5 text-xs font-medium text-surface shadow-none dark:border-0 dark:bg-foreground dark:text-background"
+      >
+        {link.title}
+      </TooltipContent>
+    </Tooltip>
   );
 }

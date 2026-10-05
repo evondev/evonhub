@@ -22,14 +22,18 @@ export interface LessonModelProps extends Document {
   _destroy: boolean;
   reactions: {};
 }
-export interface LessonItemData
-  extends Omit<LessonModelProps, "_id" | "lectureId" | "courseId"> {
+export interface LessonItemData extends Omit<
+  LessonModelProps,
+  "_id" | "lectureId" | "courseId"
+> {
   _id: string;
   courseId: string;
   lectureId: LectureItemData;
 }
-export interface LessonItemCutomizeData
-  extends Omit<LessonModelProps, "_id" | "lectureId" | "courseId"> {
+export interface LessonItemCutomizeData extends Omit<
+  LessonModelProps,
+  "_id" | "lectureId" | "courseId"
+> {
   _id: string;
   courseId: Omit<CourseItemData, "id"> & { _id: string };
 }
@@ -64,4 +68,10 @@ export interface UpdateLessonOrderProps {
     slug: string;
   }[];
   path: string;
+}
+
+/** Đủ để dựng link vào một bài: /<slug khóa>/lesson?id=<_id> */
+export interface LessonLinkData {
+  _id: string;
+  slug: string;
 }

@@ -1,15 +1,24 @@
+import { skeletonChapterWidths } from "@/modules/lesson/constants";
+import { cn } from "@/shared/utils";
+
 export interface LoadingOutlineProps {}
 
+// Khung chờ đúng hình hàng chương: tên chương + dòng "x / y bài"
 export function LoadingOutline(_props: LoadingOutlineProps) {
   return (
-    <div className="w-full lg:w-auto p-2 lg:p-0">
-      <div className="flex flex-col gap-2 lg:gap-5">
-        <div className="h-12 lg:h-14 skeleton rounded-xl"></div>
-        <div className="flex flex-col gap-2 lg:gap-5">
-          <div className="h-12 lg:h-14 skeleton rounded-xl"></div>
-          <div className="h-12 lg:h-14 skeleton rounded-xl"></div>
+    <div
+      aria-busy="true"
+      className="divide-y divide-border border-t border-border"
+    >
+      {skeletonChapterWidths.map((width) => (
+        <div key={width} className="space-y-2 px-5 py-4">
+          <div className={cn("skeleton h-3 rounded-full", width)} />
+          <div className="skeleton h-3 w-1/4 rounded-full" />
         </div>
-      </div>
+      ))}
+      <span className="sr-only" role="status">
+        Đang tải mục lục
+      </span>
     </div>
   );
 }

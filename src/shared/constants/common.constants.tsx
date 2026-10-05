@@ -1,13 +1,17 @@
 import {
-  IconCourseManage,
-  IconHome,
-  IconOrder,
-  IconStudy,
-  IconUser,
-  IconVideo,
-} from "../components";
-import IconDiscover from "../components/icons/IconDiscover";
+  BookOpen,
+  CircleUser,
+  ClipboardList,
+  Compass,
+  Home,
+  LibraryBig,
+  Receipt,
+  Users,
+} from "lucide-react";
 import { MenuLinkItemProps, StatusBadgeVariant } from "../types";
+
+// Trang chi tiết khóa học: /course/[slug]
+export const COURSE_DETAILS_PATH_PREFIX = "/course/";
 
 export enum CommonStatus {
   Pending = "pending",
@@ -18,26 +22,21 @@ export enum CommonStatus {
 export const menuLinks: MenuLinkItemProps[] = [
   {
     title: "Dashboard",
-    icon: <IconHome></IconHome>,
+    icon: <Home />,
     url: "/",
   },
   {
     title: "Khu vực học tập",
-    icon: <IconStudy></IconStudy>,
+    mobileTitle: "Học tập",
+    icon: <BookOpen />,
     url: "/study",
   },
   {
     title: "Danh sách khóa học",
-    icon: <IconDiscover />,
+    mobileTitle: "Khóa học",
+    icon: <Compass />,
     url: "/explore",
   },
-  // {
-  //   title: "Học qua Videos",
-  //   icon: <IconVideo />,
-  //   url: "/explore-videos",
-  //   isHot: true,
-  // },
-
   // {
   //   title: "Săn mã giảm giá",
   //   icon: <IconGift />,
@@ -47,36 +46,31 @@ export const menuLinks: MenuLinkItemProps[] = [
   // },
   {
     title: "Profile",
-    icon: <IconUser />,
+    icon: <CircleUser />,
     url: "/profile",
     isHideForAdmin: true,
   },
   {
     title: "Quản lý khóa học",
-    icon: <IconCourseManage />,
+    icon: <LibraryBig />,
     url: "/admin/course/manage",
     isExpert: true,
     isHideMobile: true,
   },
   {
-    title: "Quản lý video",
-    icon: <IconVideo />,
-    url: "/admin/micro/manage",
-    isHideMobile: true,
-    isAdmin: true,
-  },
-  {
     title: "Quản lý đơn hàng",
-    icon: <IconOrder />,
+    mobileTitle: "Quản lý đơn",
+    icon: <ClipboardList />,
     url: "/admin/order/manage",
     isExpert: true,
   },
-  // {
-  //   title: "Quản lý thành viên",
-  //   icon: <IconUsers />,
-  //   url: "/admin/user/manage",
-  //   isAdmin: true,
-  // },
+  {
+    title: "Quản lý thành viên",
+    icon: <Users />,
+    url: "/admin/user/manage",
+    isAdmin: true,
+    isHideMobile: true,
+  },
   // {
   //   title: "Quản lý coupon",
   //   icon: <IconCoupon />,
@@ -86,7 +80,8 @@ export const menuLinks: MenuLinkItemProps[] = [
   // },
   {
     title: "Đơn hàng của tôi",
-    icon: <IconOrder />,
+    mobileTitle: "Đơn hàng",
+    icon: <Receipt />,
     url: "/my-orders",
     isAuth: true,
   },
@@ -94,7 +89,6 @@ export const menuLinks: MenuLinkItemProps[] = [
 export const adminRoutes = [
   "/admin/overview",
   "/admin/user/manage",
-  "/admin/video/manage",
 ];
 
 export const statusActions = [
@@ -158,3 +152,8 @@ export const ITEMS_PER_PAGE = 10;
 export const MAXIUM_DISCOUNT = 500_000;
 export const MAX_RECIPIENTS = 100; // Giới hạn 100 email / request của Resend batch API
 export const SEND_EMAIL_DELAY_MS = 1000; // Resend giới hạn 2 request / giây
+
+// Chưa có khóa nào mở bán thì mời theo dõi kênh này (dashboard, khu vực học tập)
+export const COMING_SOON_CHANNEL_URL = "https://fb.com/tuan.trananh.0509";
+
+export const COMING_SOON_CHANNEL_LABEL = "Theo dõi Evondev";

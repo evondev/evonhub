@@ -1,3 +1,5 @@
+import { EReactionType } from "@/types/enums";
+
 export enum RatingStatus {
   Active = "ACTIVE",
   Inactive = "INACTIVE",
@@ -37,3 +39,12 @@ export const ratingStatusActions = [
     className: "bg-orange-100 text-orange-500 border border-orange-500",
   },
 ];
+
+// Nhãn tiếng Việt cho 5 mức cảm xúc trong hộp đánh giá khóa học
+export const reactionLabels: Record<EReactionType, string> = {
+  [EReactionType.AWESOME]: "Tuyệt vời",
+  [EReactionType.GOOD]: "Tốt",
+  [EReactionType.MEH]: "Bình thường",
+  [EReactionType.BAD]: "Tệ",
+  [EReactionType.TERRIBLE]: "Rất tệ",
+};

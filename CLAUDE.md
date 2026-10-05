@@ -33,7 +33,7 @@ src/
   shared/           # Cross-module shared code
     actions/        # Shared server actions
     components/     # Shared UI components (course-list, dashboard, icons, etc.)
-    constants/      # Enums and constants (CourseStatus, UserRole, MembershipPlan, etc.)
+    constants/      # Enums and constants (CourseStatus, UserRole, etc.)
     helpers/        # Pure utility functions
     hooks/          # Shared React hooks
     libs/           # Infrastructure: mongoose connection, react-query setup
@@ -68,8 +68,8 @@ Import from `@/modules/<name>/actions`, `@/modules/<name>/models`, etc.
 - Clerk handles authentication; middleware in `src/middleware.ts` protects all routes
 - User roles: `ADMIN`, `EXPERT`, `USER` (from `UserRole` enum)
 - Permissions are granular (e.g., `create:course`) stored on the user record
-- Membership plans: `personal` (1mo), `starter` (3mo), `master` (6mo), `premium` (12mo)
-- Global user state (role, permissions, membership status) is persisted in Zustand (`useGlobalStore`)
+- No membership: access to a course comes only from buying it (`user.courses`). `MembershipPlan` and `order.plan` remain only to read old plan orders, which are never granted
+- Global user state (role, permissions) lives in Zustand (`useGlobalStore`)
 
 ### Key Integrations
 

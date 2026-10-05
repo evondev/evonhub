@@ -315,8 +315,8 @@ const CourseContent = ({
 
   return (
     <div className="hidden lg:block max-w-[1280px] mx-auto">
-      <h1 className="font-bold text-3xl mb-8 max-w-[75%]">
-        Outline khóa học: <span className="font-extrabold">{data.title}</span>
+      <h1 className="font-display font-bold text-3xl mb-8 max-w-[75%]">
+        Outline khóa học: <span className="font-bold">{data.title}</span>
       </h1>
       <DragDropContext onDragEnd={onDragEnd}>
         {lectureList.map((lecture, index) => {
@@ -327,7 +327,7 @@ const CourseContent = ({
                 <>
                   <div className="p-5 rounded-xl border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
                     <div className="flex items-center gap-3 mb-5">
-                      <h3 className="flex-shrink-0 font-bold">Tên chương:</h3>
+                      <h3 className="flex-shrink-0 font-semibold">Tên chương:</h3>
                       <Input
                         placeholder="Nhập tiêu đề"
                         className="font-semibold border-gray-200 dark:border-grayDarker dark:bg-grayDarkest"
@@ -365,7 +365,7 @@ const CourseContent = ({
                   >
                     <AccordionItem value={lecture.title}>
                       <AccordionTrigger>
-                        <div className="flex items-center gap-2 font-bold">
+                        <div className="flex items-center gap-2 font-semibold">
                           <IconCube />
                           <p>{lecture.title}</p>
                           <span
@@ -413,7 +413,7 @@ const CourseContent = ({
                                         <>
                                           <div className="p-5 rounded-xl border bg-white dark:border-grayDarker my-5 dark:bg-grayDarker">
                                             <div className="flex items-baseline gap-3 mb-5">
-                                              <h3 className="flex-shrink-0 font-bold">
+                                              <h3 className="flex-shrink-0 font-semibold">
                                                 Tên bài học:
                                               </h3>
                                               <div className="flex flex-col gap-2 w-full">

@@ -14,7 +14,7 @@ export function LeaderboardItemLoading({
       <Skeleton className="size-8 rounded-full" />
       <Skeleton className="w-10 h-2" />
 
-      <span className="shrink-0 ml-auto font-bold text-sm px-2 py-1 rounded-full flex items-center gap-2 w-[70px] justify-center">
+      <span className="shrink-0 ml-auto font-semibold text-sm px-2 py-1 rounded-full flex items-center gap-2 w-[70px] justify-center">
         <Skeleton className="size-5 rounded-full" />
         <Skeleton className="w-10 h-2" />
       </span>

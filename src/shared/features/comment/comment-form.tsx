@@ -1,13 +1,12 @@
 "use client";
 
 import { createComment } from "@/lib/actions/comment.action";
-import { cn } from "@/lib/utils";
+import { CommentItemData } from "@/modules/comment/types";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { getQueryClient } from "@/shared/libs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { usePathname, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -22,6 +21,7 @@ import {
 } from "../../../components/ui/form";
 import { Textarea } from "../../../components/ui/textarea";
 import { useUserContext } from "../../../components/user-context";
+import { CommentAvatar } from "./comment-avatar";
 
 const courseCommentFormSchema = z.object({
   content: z
@@ -35,10 +35,11 @@ type CourseCommentFormValues = z.infer<typeof courseCommentFormSchema>;
 
 interface CommentFormProps {
   lessonId: string;
-  comment?: any;
+  comment?: CommentItemData;
   isReply?: boolean;
   closeReply?: () => void;
 }
+
 export function CommentForm({
   closeReply,
   comment,
@@ -52,11 +53,11 @@ export function CommentForm({
 
   const commentForm = useForm<CourseCommentFormValues>({
     resolver: zodResolver(courseCommentFormSchema),
-    defaultValues: {},
+    defaultValues: { content: "" },
   });
   const [isPending, startTransition] = useTransition();
-  const pathname = usePathname();
-  const id = useSearchParams().get("id");
+  const content = commentForm.watch("content") || "";
+  const isContentEmpty = !content.trim();
 
   const queryClient = getQueryClient();
   async function onSubmit(values: CourseCommentFormValues) {
@@ -85,13 +86,21 @@ export function CommentForm({
   }
 
   return (
-    <div className="hidden lg:block">
-      <Form {...commentForm}>
-        <form
-          autoComplete="off"
-          className="relative flex flex-col gap-5 p-3 lg:p-0"
-          onSubmit={commentForm.handleSubmit(onSubmit)}
-        >
+    <Form {...commentForm}>
+      <form
+        autoComplete="off"
+        className="flex gap-3"
+        onSubmit={commentForm.handleSubmit(onSubmit)}
+      >
+        {/* Ô gốc có avatar từ sm; ô trả lời bỏ avatar để ô viết đủ rộng */}
+        {!isReply && (
+          <CommentAvatar
+            name={userInfo?.name}
+            avatar={userInfo?.avatar}
+            className="max-sm:hidden"
+          />
+        )}
+        <div className="min-w-0 flex-1">
           <FormField
             control={commentForm.control}
             name="content"
@@ -99,10 +108,15 @@ export function CommentForm({
               <FormItem>
                 <FormControl>
                   <Textarea
-                    placeholder="Nhập bình luận..."
-                    className={cn("min-h-[150px]", {
-                      "bg-gray-50": isReply,
-                    })}
+                    aria-label={isReply ? "Trả lời bình luận" : "Bình luận"}
+                    placeholder={
+                      isReply
+                        ? "Viết câu trả lời…"
+                        : "Hỏi hoặc chia sẻ về bài này…"
+                    }
+                    rows={3}
+                    autoFocus={isReply}
+                    className="block min-h-24 resize-y border-border-strong bg-surface px-3 py-2.5 text-base font-normal !leading-6 text-foreground placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/15 md:text-sm"
                     {...field}
                   />
                 </FormControl>
@@ -111,18 +125,29 @@ export function CommentForm({
             )}
           />
 
-          <Button
-            isLoading={isPending}
-            type="submit"
-            variant="primary"
-            className={cn("ml-auto h-12 w-[140px] rounded-xl", {
-              "w-24": isReply,
-            })}
-          >
-            {isReply ? "Trả lời" : "Đăng bình luận"}
-          </Button>
-        </form>
-      </Form>
-    </div>
+          <div className="mt-3 flex justify-end gap-3">
+            {isReply && (
+              <Button
+                type="button"
+                variant="secondary"
+                className="h-11 md:h-10"
+                onClick={closeReply}
+              >
+                Huỷ
+              </Button>
+            )}
+            <Button
+              isLoading={isPending}
+              type="submit"
+              variant="primary"
+              disabled={isContentEmpty}
+              className="h-11 md:h-10"
+            >
+              {isReply ? "Trả lời" : "Đăng bình luận"}
+            </Button>
+          </div>
+        </div>
+      </form>
+    </Form>
   );
 }

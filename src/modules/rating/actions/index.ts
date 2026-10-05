@@ -93,7 +93,31 @@ export async function handleRatingStatus({
           ? RatingStatus.Inactive
           : RatingStatus.Active,
     });
+    await syncApprovedRatings({
+      courseId: findRating.course?.toString(),
+    });
   } catch (error) {}
+}
+
+interface SyncApprovedRatingsProps {
+  courseId?: string;
+}
+
+/**
+ * `rating` trên khóa là bản sao số sao của các đánh giá đã duyệt, để
+ * danh sách khóa không phải đếm lại. Tính lại mỗi lần đổi trạng thái duyệt.
+ */
+async function syncApprovedRatings({ courseId }: SyncApprovedRatingsProps) {
+  if (courseId) {
+    const approvedRatings = await RatingModel.find({
+      course: courseId,
+      status: RatingStatus.Active,
+    }).select("rating");
+
+    await CourseModel.findByIdAndUpdate(courseId, {
+      rating: approvedRatings.map((approvedRating) => approvedRating.rating),
+    });
+  }
 }
 
 export async function fetchRatingsPublic({

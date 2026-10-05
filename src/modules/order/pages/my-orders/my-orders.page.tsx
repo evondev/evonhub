@@ -40,7 +40,7 @@ export async function MyOrdersPage(_props: MyOrdersPageProps) {
               className="bgDarkMode borderDarkMode rounded-xl p-4 flex flex-col lg:flex-row lg:items-center gap-3 hover:border-primary transition-colors"
             >
               <div className="flex-1">
-                <div className="font-bold">
+                <div className="font-semibold">
                   {order.course?.title || "Đơn hàng"}
                 </div>
                 <div className="text-xs text-slate-400 mt-1">
@@ -49,7 +49,7 @@ export async function MyOrdersPage(_props: MyOrdersPageProps) {
                   <span>{formatDate(order.createdAt)}</span>
                 </div>
               </div>
-              <div className="font-bold shrink-0">
+              <div className="font-semibold shrink-0">
                 {formatThoundsand(order.total)} VNĐ
               </div>
               <div className="shrink-0 flex items-center gap-3">

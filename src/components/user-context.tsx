@@ -1,7 +1,6 @@
 "use client";
 import { useQueryUserById } from "@/modules/user/services";
 import { UserInfoData } from "@/shared/types/user.types";
-import { handleCheckMembership } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import { useAuth } from "@clerk/nextjs";
 import { createContext, useContext, useEffect } from "react";
@@ -13,7 +12,7 @@ const UserContext = createContext<{
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const { userId } = useAuth();
-  const { setUserRole, setIsMembershipUserActive } = useGlobalStore();
+  const { setUserRole } = useGlobalStore();
   const { data: userInfo, isFetching } = useQueryUserById({
     userId: userId || "",
   });
@@ -22,14 +21,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     if (!userInfo) return;
 
     setUserRole?.(userInfo?.role || "");
-
-    const isMembershipUserActive = handleCheckMembership({
-      isMembership: userInfo?.isMembership,
-      endDate: userInfo?.planEndDate || new Date().toISOString(),
-    });
-
-    setIsMembershipUserActive?.(isMembershipUserActive);
-  }, [setIsMembershipUserActive, setUserRole, userInfo]);
+  }, [setUserRole, userInfo]);
 
   return (
     <UserContext.Provider value={{ userInfo, isFetchingUser: isFetching }}>

@@ -62,10 +62,10 @@ export default function DashboardPage(_props: DashboardPageProps) {
         </section>
         <section>
           <div className="flex items-center gap-3 justify-between mb-5">
-            <h2 className="font-bold text-lg lg:text-2xl">Khóa học</h2>
+            <h2 className="font-display font-bold text-lg lg:text-2xl">Khóa học</h2>
             <Link
               href="/study"
-              className="font-bold text-primary capitalize text-sm lg:text-base"
+              className="font-semibold text-primary capitalize text-sm lg:text-base"
             >
               Xem tất cả
             </Link>
@@ -73,7 +73,7 @@ export default function DashboardPage(_props: DashboardPageProps) {
           {userCourses.length === 0 && !isFetchingUserCourses && (
             <div className="flex items-center flex-col gap-2">
               <h2 className="text-3xl">🫠</h2>
-              <h2 className="font-extrabold text-xl lg:text-3xl">404</h2>
+              <h2 className="font-display font-bold text-xl lg:text-3xl">404</h2>
               <div className="font-medium">Not found any courses</div>
             </div>
           )}
@@ -92,10 +92,10 @@ export default function DashboardPage(_props: DashboardPageProps) {
         </section>
         <section>
           <div className="flex items-center gap-3 justify-between mb-5">
-            <h2 className="font-bold text-lg lg:text-2xl">Đề xuất</h2>
+            <h2 className="font-display font-bold text-lg lg:text-2xl">Đề xuất</h2>
             <Link
               href="/explore"
-              className="font-bold text-primary capitalize text-sm lg:text-base"
+              className="font-semibold text-primary capitalize text-sm lg:text-base"
             >
               Xem tất cả
             </Link>
@@ -109,7 +109,7 @@ export default function DashboardPage(_props: DashboardPageProps) {
       </div>
       <div className="flex flex-col gap-8">
         <div className="p-5 rounded-xl bgDarkMode flex flex-col gap-5">
-          <h3 className="font-bold text-base lg:text-lg">Leaderboard</h3>
+          <h3 className="font-semibold text-base lg:text-lg">Leaderboard</h3>
           <div className="flex flex-col gap-5">
             {isFetchingLeaderboard && (
               <>
@@ -131,7 +131,7 @@ export default function DashboardPage(_props: DashboardPageProps) {
           </div>
           <Link
             href="/leaderboard"
-            className="font-bold text-primary inline-flex items-center gap-2"
+            className="font-semibold text-primary inline-flex items-center gap-2"
           >
             <span>Xem tất cả</span>
             <IconLongArrowRight />

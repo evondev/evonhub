@@ -1,90 +1,110 @@
 "use client";
-import { useUserContext } from "@/components/user-context";
+import { Button } from "@/components/ui/button";
 import { commonPath } from "@/constants";
+import { ProductLogo } from "@/shared/components/product-logo";
+import { menuLinks } from "@/shared/constants/common.constants";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { cn } from "@/shared/utils";
+import { useGlobalStore } from "@/store";
 import { useAuth, UserButton } from "@clerk/nextjs";
-import Image from "next/image";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ModeToggle } from "../../../components/ModeToggle";
 import Notification from "./notification";
 
+// Trang tổng quan và trang Khóa học không có đầu trang riêng nên tên nằm trên
+// thanh header (là <h1>). Các trang khác tự có tiêu đề, ghi thêm ở đây sẽ bị lặp.
+const HEADER_TITLE_PATHS = ["/", "/explore"];
+
 export const Header = () => {
   const { userId, isSignedIn } = useAuth();
-  const { userInfo } = useUserContext();
   const { isLessonPage } = useLessonDetailsPath();
+  const { isSidebarCollapsed = false, toggleSidebarCollapsed } =
+    useGlobalStore();
+  const pathname = usePathname();
+  const headerTitle = HEADER_TITLE_PATHS.includes(pathname)
+    ? menuLinks.find((link) => link.url === pathname)?.title
+    : undefined;
+  const isSignedInUser = Boolean(userId && isSignedIn);
+
   return (
-    <div
+    // Lớp ngoài là dải nền trang phủ khe phía trên thanh, để nội dung cuộn lên
+    // không lộ ra giữa mép màn hình và thanh header nổi.
+    <header
       className={cn(
-        "py-3 px-5 xl:borderDarkMode flex items-center justify-between gap-5 fixed top-0 left-0 right-0 xl:top-[var(--sidebar-left)] xl:right-[var(--header-right)] z-50 h-16 xl:rounded-xl dark:border-opacity-10 bg-white/50 dark:bg-grayDarker/50 backdrop-blur-md",
-        {
-          "xl:left-[var(--main-padding)]": isLessonPage,
-          "xl:left-[var(--header-left)]": !isLessonPage,
-        },
+        "fixed inset-x-0 top-0 z-40 transition-[left] duration-200 ease-out motion-reduce:transition-none",
+        !isLessonPage && "bg-background lg:pl-6 lg:pr-4 lg:pt-4",
+        !isLessonPage && isSidebarCollapsed && "lg:left-20",
+        !isLessonPage && !isSidebarCollapsed && "lg:left-[272px]",
       )}
       id="header"
     >
-      <Link
-        href="/"
-        scroll={false}
-        className={cn("flex items-center gap-2", {
-          flex: isLessonPage,
-          "lg:hidden": !isLessonPage,
-        })}
-      >
-        <div className="bg-primary p-3 rounded-full size-10 flex-shrink-0">
-          <Image
-            width={48}
-            height={48}
-            src="/logo.png"
-            alt="EvonHub"
-            className="object-contain max-h-full max-w-full"
-          ></Image>
-        </div>
-        <span className="text-lg font-bold">evonHub</span>
-      </Link>
-      <div className="hidden lg:flex items-center gap-2 text-sm lg:text-base font-medium">
-        {/* {!isLessonPage && (
-          <div>
-            Thông báo quan trọng 👉{" "}
-            <Link className="font-bold text-primary" href="/new-updates">
-              Đọc tại đây
-            </Link>
-          </div>
-        )} */}
-      </div>
-      <div className="flex items-center gap-3">
-        <ModeToggle />
-        {userId && isSignedIn ? (
-          <div className="flex items-center gap-3">
-            <Notification />
-            <UserButton />
-          </div>
-        ) : (
-          <Link
-            href={commonPath.LOGIN}
-            className="py-3 flex items-center justify-center gap-2 lg:px-5 size-10 lg:w-auto rounded-xl bg-primary text-white font-semibold"
-          >
-            <span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-            </span>
-            <span className="hidden lg:inline">Đăng nhập</span>
-          </Link>
+      <div
+        className={cn(
+          "flex h-16 items-center justify-between gap-3 border-b border-border bg-surface px-4 sm:px-6",
+          !isLessonPage && "lg:rounded-2xl lg:border lg:px-4",
         )}
+      >
+        <div className="flex min-w-0 items-center gap-2">
+          {!isLessonPage && (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={
+                isSidebarCollapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"
+              }
+              aria-expanded={!isSidebarCollapsed}
+              onClick={toggleSidebarCollapsed}
+              className="-ml-2 hidden shrink-0 lg:inline-flex"
+            >
+              {isSidebarCollapsed && <PanelLeftOpen className="size-4" />}
+              {!isSidebarCollapsed && <PanelLeftClose className="size-4" />}
+            </Button>
+          )}
+          <Link
+            href="/"
+            scroll={false}
+            className={cn(
+              "flex items-center gap-2.5",
+              !isLessonPage && "lg:hidden",
+            )}
+          >
+            <ProductLogo />
+            <span className="text-base font-semibold text-foreground">
+              EvonHub
+            </span>
+          </Link>
+          {headerTitle && !isLessonPage && (
+            <h1 className="hidden truncate text-base font-semibold text-foreground lg:block">
+              {headerTitle}
+            </h1>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <ModeToggle />
+          {isSignedInUser && (
+            <>
+              <Notification />
+              <div className="grid size-9 place-items-center">
+                <UserButton
+                  appearance={{ elements: { avatarBox: "size-8" } }}
+                />
+              </div>
+            </>
+          )}
+          {!isSignedInUser && (
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="text-foreground"
+            >
+              <Link href={commonPath.LOGIN}>Đăng nhập</Link>
+            </Button>
+          )}
+        </div>
       </div>
-    </div>
+    </header>
   );
 };

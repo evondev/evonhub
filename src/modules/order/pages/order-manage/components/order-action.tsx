@@ -15,7 +15,7 @@ export function OrderAction({
     <button
       type="button"
       className={cn(
-        "size-8 flex items-center justify-center border borderDarkMode rounded p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80",
+        "size-8 flex items-center justify-center border borderDarkMode rounded-xl p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80",
         className
       )}
       onClick={onClick}

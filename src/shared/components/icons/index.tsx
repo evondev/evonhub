@@ -40,5 +40,4 @@ export { default as IconTutorial } from "./IconTutorial";
 export { default as IconUpload } from "./IconUpload";
 export { default as IconUser } from "./IconUser";
 export { default as IconUsers } from "./IconUsers";
-export { default as IconVideo } from "./IconVideo";
 export { default as IconViews } from "./IconViews";

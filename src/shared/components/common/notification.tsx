@@ -9,7 +9,7 @@ import { useQueryNotificationsByUser } from "@/modules/notifications/services/da
 import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
 import { invalidateQueriesByKeys } from "@/shared/helpers/query-helper";
 import { getTimestamp } from "@/utils";
-import { IconBell } from "../icons";
+import { Bell } from "lucide-react";
 
 const Notification = () => {
   const { userInfo } = useUserContext();
@@ -26,16 +26,17 @@ const Notification = () => {
   return (
     <Popover>
       <PopoverTrigger
-        className="size-10 flex items-center justify-center bg-white rounded-xl dark:bg-grayDarker border border-gray-200 dark:border-opacity-10"
+        aria-label="Thông báo"
+        className="relative inline-flex size-9 items-center justify-center rounded-xl text-muted outline-none transition-colors hover:bg-foreground/5 hover:text-foreground data-[state=open]:bg-foreground/5"
         onClick={handleRefetchNotifications}
       >
-        <IconBell />
+        <Bell className="size-4" />
       </PopoverTrigger>
       <PopoverContent
         align="end"
         className="w-80 p-0 shadow-sm dark:bg-grayDarker dark:border-opacity-10 dark:border-gray-200"
       >
-        <div className="p-3 font-bold text-base border-b border-b-gray-200 dark:border-opacity-10">
+        <div className="p-3 font-semibold text-base border-b border-b-gray-200 dark:border-opacity-10">
           Thông báo
         </div>
         {notifications && notifications?.length > 0 && (
@@ -48,7 +49,7 @@ const Notification = () => {
                 <span className="rounded-full size-2 bg-green-500 flex-shrink-0"></span>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-1">
-                    <h3 className="font-bold">Hệ thống</h3>
+                    <h3 className="font-semibold">Hệ thống</h3>
                     <span className="block size-1 rounded-full bg-gray-600"></span>
                     <span className="text-slate-500 text-xs">
                       {getTimestamp(new Date(el.createdAt))}

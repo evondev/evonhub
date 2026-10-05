@@ -17,6 +17,42 @@
     --wrapper-top: calc(
       var(--header-height) + var(--header-top) + var(--main-padding)
     );
+    /* Token màu theo vai. Kênh RGB để Tailwind thêm được độ mờ (bg-primary/10) */
+    --primary: 108 95 230; /* #6c5fe6: tím brand #978df8 đậm hơn một bậc, chữ trắng trên nó 4.8:1 */
+    --primary-foreground: 255 255 255;
+    --progress: 74 222 128; /* green-400, thanh tiến độ */
+    --background: 243 244 246;
+    --surface: 255 255 255;
+    --foreground: 38 38 38;
+    --muted: 107 112 121; /* #6b7079: 4.5:1 trên nền trang */
+    --border: #efefef;
+    --border-strong: #e5e7eb;
+    --item-hover: #f3f4f6;
+    /* Mục sidebar đang chọn: đậm hơn nền rê một bậc, không dùng màu nhấn */
+    --item-active: #e9eaee;
+    --button-hover: #f1f1f3;
+    /* Dải màu đầu trang dashboard: màu nhấn, chuyển sang một bậc đậm hơn */
+    --brand-band: 108 95 230;
+    --brand-band-end: 95 84 202;
+    /* Chữ màu nhấn trên nền nhấn nhạt (bg-primary/10): đậm hơn một bậc cho đủ 4.5:1 */
+    --primary-strong: 95 84 202;
+  }
+  .dark {
+    --primary: 151 141 248; /* #978df8 */
+    --primary-foreground: 21 18 46;
+    --background: 26 27 30;
+    --surface: 31 32 38;
+    --foreground: 226 232 240;
+    --muted: 146 156 173;
+    --border: rgb(255 255 255 / 0.06);
+    --border-strong: rgb(255 255 255 / 0.1);
+    --item-hover: rgb(255 255 255 / 0.05);
+    --item-active: rgb(255 255 255 / 0.09);
+    --button-hover: rgb(255 255 255 / 0.08);
+    /* Tím đậm: chữ trắng trên #978df8 chỉ 2.8:1 */
+    --brand-band: 76 65 189;
+    --brand-band-end: 62 52 158;
+    --primary-strong: 151 141 248;
   }
   ::selection {
     @apply text-white bg-primary;
@@ -26,7 +62,7 @@
   }
   .wrapper {
     max-width: 2600px;
-    @apply mx-auto pb-16 lg:pb-10 pt-16 xl:pt-[var(--wrapper-top)];
+    @apply mx-auto pb-16 pt-16 lg:pb-0;
   }
   textarea,
   input {
@@ -42,6 +78,11 @@
   }
   svg {
     @apply max-w-full;
+  }
+  // Preflight để strong/b là "bolder" (ra 700); dự án chỉ dùng 600 cho chữ nhấn.
+  b,
+  strong {
+    @apply font-semibold;
   }
 }
 @layer components {
@@ -86,7 +127,7 @@
     @apply bg-gray-100 dark:bg-grayDarkest #{!important};
   }
   .form-styles {
-    @apply border border-gray-200 dark:border-opacity-10 rounded-md transition-all bg-white dark:bg-grayDarker focus:border-primary dark:focus:border-primary font-medium placeholder:text-slate-900 placeholder:text-opacity-40 focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50  dark:placeholder:text-slate-500  text-sm ring-offset-white px-3 py-2 w-full
+    @apply border border-gray-200 dark:border-opacity-10 rounded-xl transition-all bg-white dark:bg-grayDarker focus:border-primary dark:focus:border-primary focus:ring-2 focus:ring-primary/15 font-medium placeholder:text-slate-900 placeholder:text-opacity-40 focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50  dark:placeholder:text-slate-500  text-sm ring-offset-white px-3 py-2 w-full
     dark:text-white dark:text-opacity-90 text-gray-800;
   }
 }
@@ -132,7 +173,7 @@ div .tox .tox-edit-area::before {
     max-width: 500px;
   }
   .swal2-popup .swal2-title {
-    @apply text-xl font-bold text-grayDarkest;
+    @apply text-xl font-semibold text-grayDarkest;
     font-size: 18px !important;
   }
   .swal2-popup .swal2-html-container {
@@ -152,10 +193,14 @@ div .tox .tox-edit-area::before {
     @apply bg-none;
   }
 }
+.dark .skeleton::after {
+  opacity: 0.15;
+}
 .skeleton {
   position: relative;
   overflow: hidden;
-  @apply bg-gray-200 dark:bg-grayDarker;
+  // Lớp phủ mờ theo màu chữ: nền tối sáng lên, không trùng màu card
+  @apply bg-foreground/5;
 
   &::after {
     position: absolute;
@@ -233,6 +278,53 @@ div[role="dialog"] {
     @apply rounded-xl;
   }
 }
+// Ghi chú bài ở trang học bài (lesson-notes.tsx)
+.lesson-notes {
+  @apply text-sm leading-7 text-foreground;
+  p,
+  ul,
+  ol,
+  img,
+  figure,
+  pre {
+    @apply mb-3;
+  }
+  & > *:last-child {
+    @apply mb-0;
+  }
+  li {
+    @apply mb-1;
+  }
+  ul,
+  ol {
+    @apply pl-5;
+  }
+  ul {
+    @apply list-disc;
+  }
+  ol {
+    @apply list-decimal;
+  }
+  h2,
+  h3,
+  h4 {
+    @apply mb-2 mt-5 text-base font-semibold leading-snug;
+  }
+  & > h2:first-child,
+  & > h3:first-child,
+  & > h4:first-child {
+    @apply mt-0;
+  }
+  a {
+    @apply text-primary underline underline-offset-[3px];
+  }
+  *:not(pre) > code {
+    @apply rounded-md bg-foreground/5 px-1.5 py-px text-[13px] font-normal;
+  }
+  pre[class^="language"] {
+    @apply rounded-xl text-[13px];
+  }
+}
 // slider css
 @media screen and (max-width: 1279.98px) {
   .course-slider {
@@ -285,6 +377,33 @@ div[role="dialog"] {
   max-width: 1024px;
   margin: 0 auto;
 }
+// Thanh cuộn tự ẩn: 4px, đứng yên trong suốt (vẫn giữ bề rộng để nội dung không
+// xô ngang khi thanh hiện), rê vào vùng cuộn mới hiện mờ
+.scrollbar-auto-hide {
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: transparent;
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    background: rgb(var(--foreground) / 0.16);
+  }
+  // Chrome bỏ qua ::-webkit-scrollbar khi có scrollbar-width, nên thuộc tính
+  // chuẩn chỉ dành cho trình duyệt không có webkit (Firefox)
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    &:hover {
+      scrollbar-color: rgb(var(--foreground) / 0.18) transparent;
+    }
+  }
+}
 .scroll-hidden {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -314,7 +433,7 @@ div[role="dialog"] {
     rgba(221, 165, 227, 0.2) 82.3125%,
     rgba(203, 171, 255, 0.2) 100%
   );
-  @apply font-bold relative p-1;
+  @apply font-semibold relative p-1;
   height: 48px;
   .button-inside {
     background: linear-gradient(
@@ -397,7 +516,7 @@ div[role="dialog"] {
   @apply from-[#FF979A] to-[#CBABFF] bg-gradient-to-r;
 }
 .button-mix {
-  @apply h-12 rounded-full px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-bold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-sm;
+  @apply h-12 rounded-full px-5 flex items-center justify-center bg-gradient-to-r from-[#cbabff] to-[#ff979a] text-white font-semibold shadow-[0_0_1px_3px_rgb(203,_171,_255,0.2)] text-sm;
 }
 :root {
   --tab-gradient1: #407cff 318deg, #da8bff 1turn;
@@ -469,4 +588,23 @@ div[role="dialog"] {
 .card {
   @apply border border-gray-200;
   box-shadow: inset 0 0 0px 4px #e5e7eb70;
+}
+
+// Nút mở React Query Devtools (chỉ có ở dev) mặc định nằm góc dưới phải, đè lên
+// thanh điều hướng dưới trên điện thoại. Goober gắn vị trí bằng class sinh tự
+// động nên phải dùng !important.
+@media screen and (max-width: 1023.98px) {
+  .tsqd-open-btn-container {
+    bottom: 80px !important;
+  }
+}
+
+// Không vẽ vòng focus ở nút, link, tab, chip (chủ dự án chốt). Ô nhập vẫn có
+// viền màu nhấn + ring mờ khi focus, đặt ngay trên ô. Cần trả vòng focus cho
+// accessibility thì sửa đúng chỗ này.
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+summary:focus-visible {
+  outline: none;
 }

@@ -24,6 +24,12 @@ export enum CourseLevel {
   Medium = "medium",
   Expert = "expert",
 }
+
+export const COURSE_LEVEL_LABELS: Record<CourseLevel, string> = {
+  [CourseLevel.Easy]: "Cơ bản",
+  [CourseLevel.Medium]: "Trung bình",
+  [CourseLevel.Expert]: "Nâng cao",
+};
 export enum CourseInfo {
   Requirements = "requirements",
   Qa = "qa",

@@ -24,6 +24,13 @@ const nextConfig = {
         pathname: "/f/**",
       },
       {
+        // Ảnh mẫu cho trang xem trước dashboard ở dev
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
         protocol: "https",
         hostname: "img.clerk.com",
         port: "",

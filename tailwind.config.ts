@@ -8,7 +8,21 @@ const config: Config = {
     extend: {
       colors: {
         secondary: "#2C8FFF",
-        primary: "#978df8",
+        primary: "rgb(var(--primary) / <alpha-value>)",
+        "primary-foreground": "rgb(var(--primary-foreground) / <alpha-value>)",
+        "primary-strong": "rgb(var(--primary-strong) / <alpha-value>)",
+        progress: "rgb(var(--progress) / <alpha-value>)",
+        background: "rgb(var(--background) / <alpha-value>)",
+        surface: "rgb(var(--surface) / <alpha-value>)",
+        foreground: "rgb(var(--foreground) / <alpha-value>)",
+        muted: "rgb(var(--muted) / <alpha-value>)",
+        border: "var(--border)",
+        "border-strong": "var(--border-strong)",
+        "item-hover": "var(--item-hover)",
+        "item-active": "var(--item-active)",
+        "button-hover": "var(--button-hover)",
+        "brand-band": "rgb(var(--brand-band) / <alpha-value>)",
+        "brand-band-end": "rgb(var(--brand-band-end) / <alpha-value>)",
         third: "#fc806c",
         text4: "#C9CAD1",
         text3: "#A3A3A3",
@@ -25,6 +39,9 @@ const config: Config = {
         grayDarkest: "#1A1B1E",
         textPrimary: "#262626",
         grayed: "#ededed",
+      },
+      fontFamily: {
+        display: ["var(--font-display)", "sans-serif"],
       },
       screens: {
         "2xl": "1600px",

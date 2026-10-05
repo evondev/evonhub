@@ -1,46 +1,29 @@
 "use client";
 
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export function ModeToggle() {
-  const { setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+
+  // Bấm là đổi ngay giữa sáng và tối, không mở menu: menu Radix khoá cuộn
+  // trang nên thanh cuộn ẩn hiện làm cả trang giật.
+  function handleToggleTheme() {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          className="size-10 dark:bg-grayDarker dark:border-white dark:border-opacity-10"
-        >
-          <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        className="dark:bg-grayDarker dark:border-white dark:border-opacity-10"
-      >
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label="Đổi giao diện sáng tối"
+      className="size-9 rounded-xl"
+      onClick={handleToggleTheme}
+    >
+      <Moon className="size-4 dark:hidden" />
+      <Sun className="hidden size-4 dark:block" />
+    </Button>
   );
 }

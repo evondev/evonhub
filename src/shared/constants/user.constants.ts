@@ -24,6 +24,7 @@ export enum UserRole {
   Expert = "EXPERT",
   User = "USER",
 }
+// Chỉ còn để đọc đơn hàng gói hội viên cũ; tính năng hội viên đã gỡ
 export enum MembershipPlan {
   None = "none",
   Personal = "personal",
@@ -31,38 +32,3 @@ export enum MembershipPlan {
   Master = "master",
   Premium = "premium",
 }
-export const membershipPlans: {
-  plan: MembershipPlan;
-  duration: number;
-  price: number;
-  icon: string;
-  save?: number;
-}[] = [
-  {
-    plan: MembershipPlan.Personal,
-    duration: 1,
-    price: 150_000,
-    icon: "/star-medal.png",
-  },
-  {
-    plan: MembershipPlan.Starter,
-    duration: 3,
-    price: 400_000,
-    icon: "/gold-medal.png",
-    save: 10,
-  },
-  {
-    plan: MembershipPlan.Master,
-    duration: 6,
-    price: 700_000,
-    icon: "/trophy-star-2.png",
-    save: 28,
-  },
-  {
-    plan: MembershipPlan.Premium,
-    duration: 12,
-    price: 1_200_000,
-    icon: "/trophy-star.png",
-    save: 50,
-  },
-];

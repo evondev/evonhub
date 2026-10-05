@@ -1,5 +1,7 @@
 export type MenuLinkItemProps = {
   title: string;
+  /** Nhãn ngắn cho thanh điều hướng dưới trên điện thoại */
+  mobileTitle?: string;
   icon: React.ReactNode;
   url: string;
   isAdmin?: boolean;

@@ -1,4 +1,3 @@
-import { MicroStatus } from "@/shared/constants/micro.constant";
 import { ECourseLevel, ECourseStatus } from "@/types/enums";
 import { z } from "zod";
 
@@ -55,15 +54,3 @@ export const updateUserSchema = z.object({
     .optional(),
 });
 
-export const updateMicroSchema = z.object({
-  title: z.string().min(10, {
-    message: "Tiêu đề phải có ít nhất 10 ký tự",
-  }),
-  slug: z.string().optional(),
-  video: z.string().optional(),
-  image: z.string().optional(),
-  duration: z.string().optional(),
-  content: z.string().optional(),
-  status: z.enum([MicroStatus.Pending, MicroStatus.Approved]).optional(),
-  seoKeywords: z.string().optional(),
-});
