@@ -4,11 +4,16 @@ import {
   ClipboardList,
   Compass,
   Home,
+  LayoutGrid,
   LibraryBig,
+  MessageSquare,
   Receipt,
+  Star,
   Users,
 } from "lucide-react";
 import { BadgeTone, MenuLinkItemProps, StatusBadgeVariant } from "../types";
+
+export const ADMIN_HOME_PATH = "/admin";
 
 // Trang chi tiết khóa học: /course/[slug]
 export const COURSE_DETAILS_PATH_PREFIX = "/course/";
@@ -50,33 +55,12 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/profile",
   },
   {
-    title: "Quản lý khóa học",
-    icon: <LibraryBig />,
-    url: "/admin/course/manage",
-    isExpert: true,
-    isHideMobile: true,
-  },
-  {
-    title: "Quản lý đơn hàng",
-    mobileTitle: "Quản lý đơn",
-    icon: <ClipboardList />,
-    url: "/admin/order/manage",
+    title: "Quản lý",
+    icon: <LayoutGrid />,
+    url: ADMIN_HOME_PATH,
+    activePathPrefix: "/admin/",
     isExpert: true,
   },
-  {
-    title: "Quản lý thành viên",
-    icon: <Users />,
-    url: "/admin/user/manage",
-    isAdmin: true,
-    isHideMobile: true,
-  },
-  // {
-  //   title: "Quản lý coupon",
-  //   icon: <IconCoupon />,
-  //   url: "/admin/coupon/manage",
-  //   isAdmin: true,
-  //   isHideMobile: true,
-  // },
   {
     title: "Đơn hàng của tôi",
     mobileTitle: "Đơn hàng",
@@ -85,9 +69,45 @@ export const menuLinks: MenuLinkItemProps[] = [
     isAuth: true,
   },
 ];
-export const adminRoutes = [
-  "/admin/overview",
-  "/admin/user/manage",
+
+// Thanh tab đầu khu quản lý. Tab đầu là trang mở mặc định khi vào /admin
+export const adminNavLinks: MenuLinkItemProps[] = [
+  {
+    title: "Đơn hàng",
+    icon: <ClipboardList />,
+    url: "/admin/order/manage",
+    isExpert: true,
+  },
+  {
+    title: "Khóa học",
+    icon: <LibraryBig />,
+    url: "/admin/course/manage",
+    isExpert: true,
+  },
+  {
+    title: "Đánh giá",
+    icon: <Star />,
+    url: "/admin/rating/manage",
+    isExpert: true,
+  },
+  {
+    title: "Bình luận",
+    icon: <MessageSquare />,
+    url: "/admin/comment/manage",
+    isExpert: true,
+  },
+  {
+    title: "Thành viên",
+    icon: <Users />,
+    url: "/admin/user/manage",
+    isAdmin: true,
+  },
+  // {
+  //   title: "Coupon",
+  //   icon: <IconCoupon />,
+  //   url: "/admin/coupon/manage",
+  //   isAdmin: true,
+  // },
 ];
 
 export const statusActions = [

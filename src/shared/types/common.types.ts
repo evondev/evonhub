@@ -4,6 +4,8 @@ export type MenuLinkItemProps = {
   mobileTitle?: string;
   icon: React.ReactNode;
   url: string;
+  /** Sáng cả khi đang ở trang con, vd "/admin/" cho mục Quản lý */
+  activePathPrefix?: string;
   isAdmin?: boolean;
   isAuth?: boolean;
   isHideMobile?: boolean;

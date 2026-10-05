@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
-import type { PaginationItem } from "../types";
+import type { MenuLinkItemProps, PaginationItem } from "../types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -87,4 +87,12 @@ export function buildPaginationItems(
     "ellipsis",
     totalPages,
   ];
+}
+
+export function isMenuLinkActive(link: MenuLinkItemProps, pathname: string) {
+  if (pathname === link.url) return true;
+
+  return Boolean(
+    link.activePathPrefix && pathname.startsWith(link.activePathPrefix),
+  );
 }

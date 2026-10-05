@@ -1,6 +1,7 @@
 import PageNotFound from "@/app/not-found";
 import { commonPath } from "@/constants";
 import { getUserById } from "@/lib/actions/user.action";
+import { AdminNav } from "@/shared/components/common/admin-nav";
 import { UserRole } from "@/shared/constants/user.constants";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -16,7 +17,12 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
   if (![UserRole.Admin, UserRole.Expert].includes(user?.role))
     return <PageNotFound></PageNotFound>;
 
-  return <>{children}</>;
+  return (
+    <>
+      <AdminNav role={user.role} />
+      {children}
+    </>
+  );
 };
 
 export default AdminLayout;

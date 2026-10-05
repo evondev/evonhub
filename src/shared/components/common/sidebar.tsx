@@ -1,12 +1,12 @@
 "use client";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useUserContext } from "@/components/user-context";
-import { adminRoutes, menuLinks } from "@/shared/constants/common.constants";
+import { menuLinks } from "@/shared/constants/common.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { ProductLogo } from "@/shared/components/product-logo";
 import { MenuLinkItemProps } from "@/shared/types";
-import { cn } from "@/shared/utils";
+import { cn, isMenuLinkActive } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -25,7 +25,6 @@ function isVisibleInSidebar(
     role as UserRole,
   );
 
-  if (adminRoutes.includes(link.url) && role !== UserRole.Admin) return false;
   if ((link.isAdmin || link.isExpert) && !isManager) return false;
   if (link.isAuth && !isSignedIn) return false;
   if (link.isHideForAdmin && role === UserRole.Admin) return false;
@@ -92,7 +91,7 @@ export function Sidebar({ role }: SidebarProps) {
               <li key={link.url}>
                 <MenuLink
                   link={link}
-                  isActive={pathname === link.url}
+                  isActive={isMenuLinkActive(link, pathname)}
                   isCollapsed={isSidebarCollapsed}
                 />
               </li>
@@ -100,32 +99,15 @@ export function Sidebar({ role }: SidebarProps) {
           </ul>
 
           {manageLinks.length > 0 && (
-            <div className="mt-4">
-              {/* Nhãn mờ đi tại chỗ, giữ chiều cao hàng để icon bên dưới
-                  không nhảy; lúc thu thì gạch ngắn thẳng tâm icon thay chữ. */}
-              <div className="relative flex h-10 items-center px-[11px]">
-                <span
-                  className={cn(
-                    "whitespace-nowrap text-xs font-medium uppercase tracking-wide text-muted transition-opacity duration-150 motion-reduce:transition-none",
-                    isSidebarCollapsed && "opacity-0",
-                  )}
-                >
-                  Quản lý
-                </span>
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    "absolute left-3 h-px w-4 bg-border-strong transition-opacity duration-150 motion-reduce:transition-none",
-                    !isSidebarCollapsed && "opacity-0",
-                  )}
-                />
-              </div>
+            // Khu quản lý chỉ còn một mục, tên đã nói rõ: đường kẻ tách khỏi
+            // nhóm học tập là đủ, không cần nhãn nhóm
+            <div className="mt-3 border-t border-border pt-3">
               <ul className="flex flex-col gap-1.5">
                 {manageLinks.map((link) => (
                   <li key={link.url}>
                     <MenuLink
                       link={link}
-                      isActive={pathname === link.url}
+                      isActive={isMenuLinkActive(link, pathname)}
                       isCollapsed={isSidebarCollapsed}
                     />
                   </li>
