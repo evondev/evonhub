@@ -1,97 +1,99 @@
-import { formatRating, getAverageRating } from "@/modules/course/utils";
 import { ProgressBar } from "@/shared/components/common";
 import { cn } from "@/shared/utils";
-import { formatThoundsand } from "@/utils";
-import { CircleCheck, Star } from "lucide-react";
-import Image from "next/image";
+import { Check } from "lucide-react";
 import Link from "next/link";
 import { RoadmapStep } from "../types";
+import { CourseRating } from "./course-rating";
+import { RoadmapStepStatus } from "./roadmap-step-status";
 
 interface RoadmapStepCardProps {
   step: RoadmapStep;
-  isCurrentStep: boolean;
+  /** Bước nổi: bước 1 với người mới, bước đang học với học viên */
+  isHighlighted: boolean;
+  isLastStep: boolean;
 }
 
-export function RoadmapStepCard({ step, isCurrentStep }: RoadmapStepCardProps) {
+export function RoadmapStepCard({
+  step,
+  isHighlighted,
+  isLastStep,
+}: RoadmapStepCardProps) {
   const { course, courseProgress } = step;
-  const ratings = course.rating || [];
-  const isCompleted = (courseProgress?.progress || 0) >= 100;
-  const isNotStarted = courseProgress?.current === 0;
-
-  return (
-    <li className="min-w-0">
-      <Link
-        href={`/course/${course.slug}`}
-        className={cn(
-          "flex h-full min-w-0 gap-3 rounded-2xl border bg-surface p-3 outline-none transition-colors hover:border-border-strong sm:flex-col sm:gap-0 sm:p-4",
-          isCurrentStep && "border-primary/40",
-          !isCurrentStep && "border-border",
-        )}
-      >
-        <div className="relative w-28 shrink-0 sm:w-full">
-          <Image
-            src={course.image}
-            alt=""
-            width={600}
-            height={338}
-            sizes="(min-width: 640px) 33vw, 112px"
-            className="aspect-video w-full rounded-xl object-cover"
-          />
-          <span className="absolute left-1.5 top-1.5 inline-flex h-6 items-center rounded-full bg-surface px-2 text-xs font-medium text-foreground sm:left-2 sm:top-2 sm:px-2.5">
-            Bước {step.stepNumber}
-            {isCurrentStep && (
-              <span className="hidden sm:inline">&nbsp;· đang học</span>
-            )}
-          </span>
-        </div>
-        <div className="flex min-w-0 flex-1 flex-col">
-          <h3 className="line-clamp-2 text-pretty text-base font-semibold text-foreground sm:mt-3">
+  const progress = courseProgress?.progress || 0;
+  const isCompleted = progress >= 100;
+  const isLearning = Boolean(courseProgress?.current) && !isCompleted;
+  const cardClassName = cn(
+    "flex min-w-0 flex-1 flex-col rounded-2xl border bg-surface p-4 sm:p-5",
+    course && "outline-none transition-colors hover:border-border-strong",
+    isHighlighted && "border-primary/50",
+    !isHighlighted && "border-border",
+  );
+  const cardContent = (
+    <>
+      <div className="flex items-start gap-3">
+        <span
+          className={cn(
+            "grid size-10 shrink-0 place-items-center rounded-xl",
+            isHighlighted && "bg-primary/10 text-primary-strong",
+            !isHighlighted && "bg-foreground/5 text-muted",
+          )}
+        >
+          <step.icon className="size-5" />
+        </span>
+        <div className="min-w-0">
+          <h3 className="text-pretty text-base font-semibold text-foreground">
             {step.shortTitle}
           </h3>
-          <p className="mt-0.5 text-pretty text-sm text-muted sm:mt-1">
+          <p className="mt-0.5 text-pretty text-sm text-muted">
             {step.outcome}
           </p>
-          <div className="mt-auto flex items-baseline justify-between gap-3 pt-2 sm:pt-4">
-            {!courseProgress && (
-              <>
-                <span className="text-base font-semibold tabular-nums text-foreground">
-                  {formatThoundsand(course.price)} đ
-                </span>
-                {ratings.length > 0 && (
-                  <span className="inline-flex items-center gap-1 text-xs tabular-nums text-muted">
-                    <Star className="size-3.5 fill-current text-amber-500" />
-                    {formatRating(getAverageRating(ratings))}
-                  </span>
-                )}
-              </>
-            )}
-            {courseProgress && isCompleted && (
-              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700 dark:text-emerald-400">
-                <CircleCheck className="size-4" />
-                Đã hoàn thành
-              </span>
-            )}
-            {courseProgress && !isCompleted && isNotStarted && (
-              <span className="text-sm text-muted">
-                Chưa bắt đầu · {courseProgress.total} bài
-              </span>
-            )}
-            {courseProgress && !isCompleted && !isNotStarted && (
-              <div className="flex w-full items-center gap-3">
-                <div className="min-w-0 flex-1">
-                  <ProgressBar
-                    progress={courseProgress.progress}
-                    className="h-1.5 bg-foreground/5 dark:bg-foreground/5"
-                  />
-                </div>
-                <span className="shrink-0 text-sm font-medium tabular-nums text-foreground">
-                  {courseProgress.progress}%
-                </span>
-              </div>
-            )}
-          </div>
         </div>
-      </Link>
+      </div>
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-4">
+        <RoadmapStepStatus step={step} />
+        {course && !courseProgress && <CourseRating ratings={course.rating} />}
+      </div>
+      {isLearning && (
+        <div className="mt-3 flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <ProgressBar
+              progress={progress}
+              className="h-2 bg-foreground/5 dark:bg-foreground/5"
+            />
+          </div>
+          <span className="text-xs font-medium tabular-nums text-foreground">
+            {progress}%
+          </span>
+        </div>
+      )}
+    </>
+  );
+
+  return (
+    <li className="relative flex min-w-0 gap-4 pb-6 last:pb-0 md:flex-col md:gap-3 md:pb-0">
+      {!isLastStep && (
+        <span
+          aria-hidden="true"
+          className="absolute bottom-0 left-[19px] top-10 w-0.5 bg-border-strong md:-right-3 md:bottom-auto md:left-10 md:top-[19px] md:h-0.5 md:w-auto"
+        />
+      )}
+      <span
+        className={cn(
+          "relative z-10 grid size-10 shrink-0 place-items-center rounded-full text-sm font-bold",
+          isHighlighted && "bg-primary text-primary-foreground",
+          !isHighlighted &&
+            "border-2 border-border-strong bg-surface text-muted",
+        )}
+      >
+        {isCompleted ? <Check className="size-4" /> : step.stepNumber}
+      </span>
+      {course ? (
+        <Link href={`/course/${course.slug}`} className={cardClassName}>
+          {cardContent}
+        </Link>
+      ) : (
+        <div className={cardClassName}>{cardContent}</div>
+      )}
     </li>
   );
 }

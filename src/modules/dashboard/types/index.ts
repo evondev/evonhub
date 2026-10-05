@@ -14,46 +14,28 @@ export interface DashboardCourseProgress {
   total: number;
 }
 
-export interface WeeklyLessonCount {
-  /** Nhãn trục, ví dụ "21/09". Tuần đang chạy thì truyền isCurrent */
-  label: string;
-  value: number;
-  isCurrent?: boolean;
-}
-
-/** Số liệu học theo thời gian, tính từ lịch sử học (History.createdAt) */
-export interface LearningActivity {
-  lessonsLastSevenDays: number;
-  lessonsToday: number;
-  currentStreakDays: number;
-  longestStreakDays: number;
-  weeklyLessons: WeeklyLessonCount[];
-}
-
-export interface LearningStatTile {
-  label: string;
-  value: string;
-  note: string;
-  icon: LucideIcon;
-  /** Sắc nhạt riêng cho ô icon, mỗi ô một sắc phân loại */
-  iconClassName: string;
-}
-
 export interface PartnerLink {
   name: string;
   url: string;
 }
 
-/** Một bước của lộ trình: khóa nào, gọi ngắn là gì, học xong làm được gì */
+/**
+ * Một bước của lộ trình. Có khóa public trùng slug thì bước dẫn tới khóa đó;
+ * chưa có mà có launchLabel thì hiện là bước sắp ra mắt.
+ */
 export interface RoadmapStepConfig {
   slug: string;
   shortTitle: string;
   outcome: string;
+  icon: LucideIcon;
+  /** Ví dụ "11/2026". Bỏ trống thì bước chỉ hiện khi khóa đã public */
+  launchLabel?: string;
 }
 
 export interface RoadmapStep extends RoadmapStepConfig {
   stepNumber: number;
-  course: CourseItemData;
+  /** Không có là khóa chưa public, bước đang chờ ra mắt */
+  course?: CourseItemData;
   /** Chỉ có khi học viên đã sở hữu khóa này */
   courseProgress?: DashboardCourseProgress;
 }
@@ -65,6 +47,28 @@ export interface CatalogStats {
   ratingCount: number;
 }
 
+export interface HeroStatItem {
+  value: string;
+  label: string;
+}
+
+export interface HeroCodeLine {
+  code: string;
+  isFlagged?: boolean;
+}
+
+export interface PreviewCourseSeed {
+  slug: string;
+  title: string;
+  desc: string;
+  image: string;
+  price: number;
+  salePrice: number;
+  free: boolean;
+  rating: number[];
+  views: number;
+}
+
 export interface PreviewCourseProgress {
   slug: string;
   current: number;
@@ -72,7 +76,7 @@ export interface PreviewCourseProgress {
 }
 
 export type DashboardPreviewState =
-  "hoc-vien" | "chua-noi" | "nguoi-moi" | "khach" | "dang-tai" | "loi";
+  "hoc-vien" | "nguoi-moi" | "khach" | "chua-co-khoa" | "dang-tai" | "loi";
 
 export interface PreviewStateLink {
   state: DashboardPreviewState;

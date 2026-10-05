@@ -1,4 +1,3 @@
-import { fetchCourses } from "@/modules/course/actions";
 import {
   DashboardSkeleton,
   LearnerDashboard,
@@ -6,52 +5,48 @@ import {
   OutsiderDashboard,
   PreviewStateSwitcher,
 } from "../components";
-import {
-  CATALOG_COURSE_LIMIT,
-  PREVIEW_FIRST_NAME,
-  PREVIEW_LEARNING_ACTIVITY,
-} from "../constants";
+import { PREVIEW_FIRST_NAME, PREVIEW_ROADMAP_STEPS } from "../constants";
 import { DashboardPreviewState } from "../types";
-import { buildPreviewCoursesProgress } from "../utils";
+import { buildPreviewCourses, buildPreviewCoursesProgress } from "../utils";
 
 interface DashboardPreviewPageProps {
   state: DashboardPreviewState;
 }
 
 /**
- * Trang xem trước dashboard bằng khóa thật trong DB và tiến độ mẫu. Không ghi
- * gì vào DB. Route chỉ mở ở môi trường dev.
+ * Trang xem trước dashboard bằng khóa giả (khóa cũ đã gỡ, khóa mới chưa có).
+ * Cảm nhận học viên vẫn đọc từ DB. Không ghi gì vào DB. Route chỉ mở ở dev.
  */
-export async function DashboardPreviewPage({
-  state,
-}: DashboardPreviewPageProps) {
-  const catalogCourses =
-    (await fetchCourses({ limit: CATALOG_COURSE_LIMIT, isAll: false })) || [];
+export function DashboardPreviewPage({ state }: DashboardPreviewPageProps) {
+  const previewCourses = buildPreviewCourses();
 
   return (
     <div className="flex flex-col gap-4">
       <PreviewStateSwitcher currentState={state} />
       {state === "dang-tai" && <DashboardSkeleton />}
-      {state === "loi" && (
-        <LearnerErrorDashboard catalogCourses={catalogCourses} />
-      )}
+      {state === "loi" && <LearnerErrorDashboard />}
       {state === "khach" && (
-        <OutsiderDashboard catalogCourses={catalogCourses} />
+        <OutsiderDashboard
+          catalogCourses={previewCourses}
+          roadmapStepConfigs={PREVIEW_ROADMAP_STEPS}
+        />
       )}
       {state === "nguoi-moi" && (
         <OutsiderDashboard
           firstName={PREVIEW_FIRST_NAME}
-          catalogCourses={catalogCourses}
+          catalogCourses={previewCourses}
+          roadmapStepConfigs={PREVIEW_ROADMAP_STEPS}
         />
       )}
-      {(state === "hoc-vien" || state === "chua-noi") && (
+      {state === "chua-co-khoa" && (
+        <OutsiderDashboard firstName={PREVIEW_FIRST_NAME} catalogCourses={[]} />
+      )}
+      {state === "hoc-vien" && (
         <LearnerDashboard
-          coursesProgress={buildPreviewCoursesProgress(catalogCourses)}
-          catalogCourses={catalogCourses}
+          coursesProgress={buildPreviewCoursesProgress(previewCourses)}
+          catalogCourses={previewCourses}
           firstName={PREVIEW_FIRST_NAME}
-          learningActivity={
-            state === "hoc-vien" ? PREVIEW_LEARNING_ACTIVITY : undefined
-          }
+          roadmapStepConfigs={PREVIEW_ROADMAP_STEPS}
         />
       )}
     </div>

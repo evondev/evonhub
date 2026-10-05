@@ -1,10 +1,13 @@
 import { formatRating } from "@/modules/course/utils";
 import { fetchRatingsPublic } from "@/modules/rating/actions";
 import { RatingStatus } from "@/shared/constants/rating.constants";
-import { TESTIMONIAL_LIMIT } from "../constants";
+import { cn } from "@/shared/utils";
+import { TESTIMONIAL_FETCH_LIMIT } from "../constants";
 import { CatalogStats } from "../types";
+import { pickTestimonials } from "../utils";
 import { SectionHeading } from "./section-heading";
 import { TestimonialCard } from "./testimonial-card";
+import { TestimonialQuoteCard } from "./testimonial-quote-card";
 
 interface TestimonialsSectionProps {
   stats: CatalogStats;
@@ -13,14 +16,16 @@ interface TestimonialsSectionProps {
 export async function TestimonialsSection({ stats }: TestimonialsSectionProps) {
   const ratings = await fetchRatingsPublic({
     page: 1,
-    limit: TESTIMONIAL_LIMIT,
+    limit: TESTIMONIAL_FETCH_LIMIT,
     status: RatingStatus.Active,
   });
 
-  if (!ratings || ratings.length === 0) return null;
+  const { featuredRating, otherRatings } = pickTestimonials(ratings || []);
+
+  if (!featuredRating) return null;
 
   return (
-    <section className="flex flex-col gap-3">
+    <section className="flex flex-col gap-4">
       <SectionHeading
         title="Học viên nói gì"
         subtitle={
@@ -29,10 +34,21 @@ export async function TestimonialsSection({ stats }: TestimonialsSectionProps) {
             : undefined
         }
       />
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {ratings.map((rating) => (
-          <TestimonialCard key={rating._id} rating={rating} />
-        ))}
+      <div
+        className={cn(
+          "grid gap-3",
+          otherRatings.length > 0 &&
+            "lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]",
+        )}
+      >
+        <TestimonialQuoteCard rating={featuredRating} />
+        {otherRatings.length > 0 && (
+          <div className="grid min-w-0 gap-3">
+            {otherRatings.map((rating) => (
+              <TestimonialCard key={rating._id} rating={rating} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

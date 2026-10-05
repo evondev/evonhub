@@ -8,7 +8,7 @@ import { CourseStatus } from "@/shared/constants/course.constants";
 import { UserItemData } from "@/shared/types/user.types";
 import { currentUser } from "@clerk/nextjs/server";
 import { CATALOG_COURSE_LIMIT, LEARNER_COURSE_FETCH_LIMIT } from "../constants";
-import { DashboardCourseProgress, LearningActivity } from "../types";
+import { DashboardCourseProgress } from "../types";
 import { getFirstName } from "../utils";
 import { LearnerDashboard } from "./learner-dashboard";
 import { LearnerErrorDashboard } from "./learner-error-dashboard";
@@ -16,14 +16,9 @@ import { OutsiderDashboard } from "./outsider-dashboard";
 
 interface LearnerOverviewProps {
   clerkUserId: string;
-  /** Số bài theo ngày, theo tuần, chuỗi ngày học: tính từ History, chưa nối */
-  learningActivity?: LearningActivity;
 }
 
-export async function LearnerOverview({
-  clerkUserId,
-  learningActivity,
-}: LearnerOverviewProps) {
+export async function LearnerOverview({ clerkUserId }: LearnerOverviewProps) {
   // user null: chưa có hồ sơ trong DB (webhook Clerk chưa đồng bộ, hay gặp ở
   // local). undefined: truy vấn lỗi.
   const [user, continueData, catalogResult, clerkUser] = await Promise.all([
@@ -57,7 +52,7 @@ export async function LearnerOverview({
   }
 
   if (!user || !continueData) {
-    return <LearnerErrorDashboard catalogCourses={catalogCourses} />;
+    return <LearnerErrorDashboard />;
   }
 
   if (continueData.courses.length === 0) {
@@ -91,7 +86,6 @@ export async function LearnerOverview({
       coursesProgress={coursesProgress}
       catalogCourses={catalogCourses}
       firstName={firstName}
-      learningActivity={learningActivity}
     />
   );
 }

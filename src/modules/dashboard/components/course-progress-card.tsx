@@ -8,7 +8,7 @@ interface CourseProgressCardProps {
 
 export function CourseProgressCard({ courses }: CourseProgressCardProps) {
   return (
-    <section className="flex min-w-0 flex-col rounded-2xl border border-border bg-surface py-4 sm:py-5 lg:col-span-2">
+    <section className="flex min-w-0 flex-col rounded-2xl border border-border bg-surface py-4 sm:py-5">
       <header className="flex items-start justify-between gap-3 px-4 sm:px-5">
         <div className="flex min-h-10 items-center">
           <h2 className="text-base font-semibold text-foreground">

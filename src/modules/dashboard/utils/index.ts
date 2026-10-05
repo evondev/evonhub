@@ -1,18 +1,21 @@
 import { CourseItemData } from "@/modules/course/types";
-import { Award, BookOpen, CircleCheck, Flame } from "lucide-react";
-import { PREVIEW_COURSE_PROGRESS, ROADMAP_STEPS } from "../constants";
+import { formatRating } from "@/modules/course/utils";
+import { RatingItemData } from "@/modules/rating/types";
+import {
+  PREVIEW_COURSE_PROGRESS,
+  PREVIEW_COURSES,
+  ROADMAP_MIN_STEP_COUNT,
+  ROADMAP_STEPS,
+  TESTIMONIAL_SHOW_COUNT,
+} from "../constants";
 import {
   CatalogStats,
   DashboardCourseProgress,
   DashboardLessonLink,
-  LearningActivity,
-  LearningStatTile,
+  HeroStatItem,
   RoadmapStep,
-  WeeklyLessonCount,
+  RoadmapStepConfig,
 } from "../types";
-
-const EMPTY_STAT_VALUE = "—";
-const EMPTY_STAT_NOTE = "Chưa có số liệu";
 
 /**
  * Tên để chào. Ưu tiên tên Clerk tách sẵn; không có thì lấy chữ cuối của họ
@@ -59,122 +62,106 @@ export function buildCatalogStats(courses: CourseItemData[]): CatalogStats {
   };
 }
 
-/** Ghép cấu hình lộ trình với khóa thật; khóa chưa public thì bỏ bước đó */
+/** Số liệu ở khối đầu trang; số nào bằng 0 thì bỏ, không khoe con số 0 */
+export function buildHeroStatItems(stats: CatalogStats): HeroStatItem[] {
+  const statItems: HeroStatItem[] = [];
+
+  if (stats.courseCount > 0) {
+    statItems.push({
+      value: String(stats.courseCount),
+      label: "khóa học thực chiến",
+    });
+  }
+
+  if (stats.totalViews > 0) {
+    statItems.push({
+      value: formatCompactCount(stats.totalViews),
+      label: "lượt xem bài học",
+    });
+  }
+
+  if (stats.ratingCount > 0) {
+    statItems.push({
+      value: `${formatRating(stats.averageRating)} / 5`,
+      label: `từ ${stats.ratingCount} đánh giá`,
+    });
+  }
+
+  return statItems;
+}
+
+/**
+ * Ghép cấu hình lộ trình với khóa thật. Khóa đã public thì bước dẫn tới khóa;
+ * chưa public mà có launchLabel thì là bước sắp ra mắt; còn lại bỏ bước đó.
+ */
 export function buildRoadmapSteps(
   courses: CourseItemData[],
   coursesProgress: DashboardCourseProgress[] = [],
+  stepConfigs: RoadmapStepConfig[] = ROADMAP_STEPS,
 ): RoadmapStep[] {
-  return ROADMAP_STEPS.flatMap((stepConfig) => {
-    const course = courses.find((item) => item.slug === stepConfig.slug);
+  return stepConfigs
+    .flatMap((stepConfig) => {
+      const course = courses.find((item) => item.slug === stepConfig.slug);
 
-    if (!course) return [];
+      if (!course && !stepConfig.launchLabel) return [];
 
-    return [
-      {
-        ...stepConfig,
-        course,
-        courseProgress: coursesProgress.find(
-          (courseProgress) => courseProgress.course.slug === stepConfig.slug,
-        ),
-      },
-    ];
-  }).map((step, index) => ({ ...step, stepNumber: index + 1 }));
+      return [
+        {
+          ...stepConfig,
+          course,
+          courseProgress: coursesProgress.find(
+            (courseProgress) => courseProgress.course.slug === stepConfig.slug,
+          ),
+        },
+      ];
+    })
+    .map((step, index) => ({ ...step, stepNumber: index + 1 }));
 }
 
-export function getRoadmapSubtitle(steps: RoadmapStep[]) {
-  const completedCount = steps.filter(
-    (step) => (step.courseProgress?.progress || 0) >= 100,
-  ).length;
-  const currentStep = steps.find(
-    (step) => (step.courseProgress?.progress || 0) < 100,
+export function hasEnoughRoadmapSteps(steps: RoadmapStep[]) {
+  return steps.length >= ROADMAP_MIN_STEP_COUNT;
+}
+
+/** Bước đầu tiên chưa xong: người mới là bước 1, học viên là bước đang tới */
+export function findNextRoadmapStep(steps: RoadmapStep[]) {
+  return steps.find((step) => (step.courseProgress?.progress || 0) < 100);
+}
+
+/**
+ * Cảm nhận dài nhất lên ô lớn (cảm nhận ngắn trong ô lớn để trống nửa ô), các
+ * ô nhỏ giữ thứ tự mới nhất.
+ */
+export function pickTestimonials(ratings: RatingItemData[]) {
+  const featuredRating = ratings.reduce<RatingItemData | undefined>(
+    (longest, rating) =>
+      !longest || rating.content.length > longest.content.length
+        ? rating
+        : longest,
+    undefined,
   );
+  const otherRatings = ratings
+    .filter((rating) => rating !== featuredRating)
+    .slice(0, TESTIMONIAL_SHOW_COUNT - 1);
 
-  if (!currentStep) return "Bạn đã đi hết lộ trình";
-
-  if (completedCount === 0) return `Đang ở bước ${currentStep.stepNumber}`;
-
-  return `Xong ${completedCount} / ${steps.length} bước, đang ở bước ${currentStep.stepNumber}`;
+  return { featuredRating, otherRatings };
 }
 
-interface BuildStatTilesParams {
-  inProgressCourses: DashboardCourseProgress[];
-  completedCourses: DashboardCourseProgress[];
-  learningActivity?: LearningActivity;
-}
-
-export function buildStatTiles({
-  inProgressCourses,
-  completedCourses,
-  learningActivity,
-}: BuildStatTilesParams): LearningStatTile[] {
-  const notStartedCount = inProgressCourses.filter(
-    (courseProgress) => courseProgress.current === 0,
-  ).length;
-  const remainingLessons = inProgressCourses.reduce(
-    (total, courseProgress) =>
-      total + Math.max(courseProgress.total - courseProgress.current, 0),
-    0,
+/**
+ * Khóa giả cho trang xem trước ở dev. Ép kiểu vì CourseItemData kế thừa
+ * Document của Mongoose; trang xem trước chỉ đọc các trường hiển thị.
+ */
+export function buildPreviewCourses(): CourseItemData[] {
+  return PREVIEW_COURSES.map(
+    (seed) =>
+      ({
+        ...seed,
+        _id: seed.slug,
+        lecture: [],
+      }) as unknown as CourseItemData,
   );
-
-  return [
-    {
-      label: "Bài xong 7 ngày qua",
-      value: learningActivity
-        ? String(learningActivity.lessonsLastSevenDays)
-        : EMPTY_STAT_VALUE,
-      note: learningActivity
-        ? `${learningActivity.lessonsToday} bài hôm nay`
-        : EMPTY_STAT_NOTE,
-      icon: CircleCheck,
-      iconClassName:
-        "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300",
-    },
-    {
-      label: "Chuỗi ngày học",
-      value: learningActivity
-        ? `${learningActivity.currentStreakDays} ngày`
-        : EMPTY_STAT_VALUE,
-      note: learningActivity
-        ? `Dài nhất ${learningActivity.longestStreakDays} ngày`
-        : EMPTY_STAT_NOTE,
-      icon: Flame,
-      iconClassName:
-        "bg-orange-50 text-orange-600 dark:bg-orange-500/15 dark:text-orange-300",
-    },
-    {
-      label: "Khóa đang học",
-      value: String(inProgressCourses.length),
-      note:
-        notStartedCount > 0
-          ? `${notStartedCount} khóa chưa bắt đầu`
-          : `Còn ${remainingLessons} bài`,
-      icon: BookOpen,
-      iconClassName:
-        "bg-sky-50 text-sky-600 dark:bg-sky-500/15 dark:text-sky-300",
-    },
-    {
-      label: "Khóa đã hoàn thành",
-      value: String(completedCourses.length),
-      note: completedCourses[0]?.course.title || "Chưa có khóa nào",
-      icon: Award,
-      iconClassName:
-        "bg-teal-50 text-teal-600 dark:bg-teal-500/15 dark:text-teal-300",
-    },
-  ];
 }
 
-/** Nhãn trục cách một cột, đếm ngược từ cột cuối, cho khỏi dính nhau ở khung hẹp */
-export function getWeekAxisLabel(
-  week: WeeklyLessonCount,
-  index: number,
-  weekCount: number,
-) {
-  if ((weekCount - 1 - index) % 2 !== 0) return "";
-
-  return week.isCurrent ? "Nay" : week.label;
-}
-
-/** Gắn tiến độ mẫu vào khóa thật cho trang xem trước ở dev */
+/** Gắn tiến độ mẫu vào khóa giả cho trang xem trước ở dev */
 export function buildPreviewCoursesProgress(
   courses: CourseItemData[],
 ): DashboardCourseProgress[] {
