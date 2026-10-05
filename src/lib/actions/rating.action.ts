@@ -51,33 +51,3 @@ export async function getRatingByCourse(courseId: string) {
     console.log(error);
   }
 }
-
-export async function createRatingForVideo(params: {
-  videoId: string;
-  rate: number;
-  content: string;
-}) {
-  try {
-    connectToDatabase();
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
-    if (!findUser) return;
-    const findRating = await RatingModel.findOne({
-      user: findUser._id,
-      video: params.videoId,
-    });
-    if (findRating) {
-      return { message: "Bạn đã đánh giá video này rồi" };
-    }
-    const newRating = new RatingModel({
-      user: findUser._id,
-      video: params.videoId,
-      rating: params.rate,
-      content: params.content,
-    });
-    // Như đánh giá khóa học: chỉ tính vào `rating` của video khi được duyệt.
-    newRating.save();
-  } catch (error) {
-    console.log(error);
-  }
-}

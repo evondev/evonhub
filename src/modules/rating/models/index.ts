@@ -11,10 +11,6 @@ const ratingSchema = new Schema<RatingModelProps>({
     type: Schema.Types.ObjectId,
     ref: "Course",
   },
-  video: {
-    type: Schema.Types.ObjectId,
-    ref: "Micro",
-  },
   rating: {
     type: Number,
     default: 5,

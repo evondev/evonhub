@@ -1,5 +1,4 @@
 import { CourseItemData } from "@/modules/course/types";
-import { MicroItemData } from "@/modules/micro/types";
 import { RatingStatus } from "@/shared/constants/rating.constants";
 import { UserItemData } from "@/shared/types/user.types";
 import { Document, Schema } from "mongoose";
@@ -7,7 +6,6 @@ import { Document, Schema } from "mongoose";
 export interface RatingModelProps extends Document {
   user: Schema.Types.ObjectId;
   course: Schema.Types.ObjectId;
-  video: Schema.Types.ObjectId;
   rating: number;
   content: string;
   createdAt: Date;
@@ -15,11 +13,10 @@ export interface RatingModelProps extends Document {
 }
 export interface RatingItemData extends Omit<
   RatingModelProps,
-  "course" | "user" | "video"
+  "course" | "user"
 > {
   _id: string;
   course: CourseItemData;
-  video: MicroItemData;
   user: UserItemData;
 }
 

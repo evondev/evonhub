@@ -1,7 +1,6 @@
 "use server";
 
 import CourseModel from "@/modules/course/models";
-import MicroModel from "@/modules/micro/models";
 import UserModel from "@/modules/user/models";
 import { RatingStatus } from "@/shared/constants/rating.constants";
 import { UserRole } from "@/shared/constants/user.constants";
@@ -96,24 +95,19 @@ export async function handleRatingStatus({
     });
     await syncApprovedRatings({
       courseId: findRating.course?.toString(),
-      videoId: findRating.video?.toString(),
     });
   } catch (error) {}
 }
 
 interface SyncApprovedRatingsProps {
   courseId?: string;
-  videoId?: string;
 }
 
 /**
- * `rating` trên khóa / video là bản sao số sao của các đánh giá đã duyệt, để
+ * `rating` trên khóa là bản sao số sao của các đánh giá đã duyệt, để
  * danh sách khóa không phải đếm lại. Tính lại mỗi lần đổi trạng thái duyệt.
  */
-async function syncApprovedRatings({
-  courseId,
-  videoId,
-}: SyncApprovedRatingsProps) {
+async function syncApprovedRatings({ courseId }: SyncApprovedRatingsProps) {
   if (courseId) {
     const approvedRatings = await RatingModel.find({
       course: courseId,
@@ -121,17 +115,6 @@ async function syncApprovedRatings({
     }).select("rating");
 
     await CourseModel.findByIdAndUpdate(courseId, {
-      rating: approvedRatings.map((approvedRating) => approvedRating.rating),
-    });
-  }
-
-  if (videoId) {
-    const approvedRatings = await RatingModel.find({
-      video: videoId,
-      status: RatingStatus.Active,
-    }).select("rating");
-
-    await MicroModel.findByIdAndUpdate(videoId, {
       rating: approvedRatings.map((approvedRating) => approvedRating.rating),
     });
   }

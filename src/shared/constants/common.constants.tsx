@@ -1,7 +1,6 @@
 import {
   BookOpen,
   CircleUser,
-  Clapperboard,
   ClipboardList,
   Compass,
   Home,
@@ -38,13 +37,6 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/explore",
   },
   // {
-  //   title: "Học qua Videos",
-  //   icon: <IconVideo />,
-  //   url: "/explore-videos",
-  //   isHot: true,
-  // },
-
-  // {
   //   title: "Săn mã giảm giá",
   //   icon: <IconGift />,
   //   url: "/coupons",
@@ -63,13 +55,6 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/admin/course/manage",
     isExpert: true,
     isHideMobile: true,
-  },
-  {
-    title: "Quản lý video",
-    icon: <Clapperboard />,
-    url: "/admin/micro/manage",
-    isHideMobile: true,
-    isAdmin: true,
   },
   {
     title: "Quản lý đơn hàng",
@@ -102,7 +87,6 @@ export const menuLinks: MenuLinkItemProps[] = [
 export const adminRoutes = [
   "/admin/overview",
   "/admin/user/manage",
-  "/admin/video/manage",
 ];
 
 export const statusActions = [
