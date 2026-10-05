@@ -14,7 +14,8 @@ const microSchema = new Schema<MicroModelProps>({
   },
   rating: {
     type: [Number],
-    default: [5],
+    // Chỉ chứa sao của đánh giá đã duyệt (handleRatingStatus); khóa mới chưa có
+    default: [],
   },
   image: {
     type: String,
