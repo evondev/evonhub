@@ -1,20 +1,35 @@
-import { Heading } from "@/shared/components";
-
 export interface CourseSectionProps {
   children: React.ReactNode;
   title: string;
+  id?: string;
+  /** Dòng phụ dưới tiêu đề, ví dụ "3 chương · 55 bài" */
+  description?: string;
+  /** Nút hoặc số liệu căn phải, cùng hàng tiêu đề */
+  action?: React.ReactNode;
 }
 
-export default function CourseSection({ title, children }: CourseSectionProps) {
-  if (!children) return null;
+export default function CourseSection({
+  title,
+  id,
+  description,
+  action,
+  children,
+}: CourseSectionProps) {
   return (
-    <div className="flex flex-col gap-10">
-      <div className="flex flex-col gap-5">
-        <Heading className="text-lg lg:text-xl font-bold">{title}</Heading>
-        <div className="text-slate-700 dark:text-text5 !leading-loose text-sm lg:text-base font-medium">
-          {children}
+    // scroll-mt: chừa header nổi khi nhảy tới khối bằng nút "Học thử"
+    <section id={id} className="scroll-mt-24">
+      <div className="mb-3 flex items-end justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+          {description && (
+            <p className="mt-0.5 text-sm tabular-nums text-muted">
+              {description}
+            </p>
+          )}
         </div>
+        {action}
       </div>
-    </div>
+      {children}
+    </section>
   );
 }

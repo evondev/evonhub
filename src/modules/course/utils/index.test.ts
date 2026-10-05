@@ -54,7 +54,7 @@ describe("getDiscountLabel", () => {
   it("khóa có giá thì tính theo giá gốc", () => {
     expect(
       getDiscountLabel({ isFree: false, price: 999_000, salePrice: 1_999_000 }),
-    ).toBe("-51 %");
+    ).toBe("-51%");
   });
 
   it("không có giá gốc thì không hiện nhãn, tránh chia cho 0", () => {

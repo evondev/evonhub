@@ -10,6 +10,9 @@ import {
 } from "lucide-react";
 import { MenuLinkItemProps, StatusBadgeVariant } from "../types";
 
+// Trang chi tiết khóa học: /course/[slug]
+export const COURSE_DETAILS_PATH_PREFIX = "/course/";
+
 export enum CommonStatus {
   Pending = "pending",
   Approved = "approved",

@@ -1,5 +1,7 @@
 import { CourseLevel } from "@/shared/constants/course.constants";
+import { FileText, MessageCircle } from "lucide-react";
 import type {
+  CourseIncludeItem,
   ExploreFilters,
   ExploreLevelOption,
   ExplorePreviewStateLink,
@@ -166,4 +168,15 @@ export const PREVIEW_EXPLORE_STATE_LINKS: ExplorePreviewStateLink[] = [
   { state: "chua-co-khoa", label: "Chưa có khóa nào" },
   { state: "dang-tai", label: "Đang tải" },
   { state: "loi", label: "Lỗi" },
+];
+
+// Neo của khối "Nội dung khóa học", nút "Học thử" cuộn tới đây
+export const COURSE_CURRICULUM_SECTION_ID = "noi-dung";
+
+export const RATING_STAR_POSITIONS: number[] = [1, 2, 3, 4, 5];
+
+// Dòng "Khóa học gồm" trong thẻ mua, sau dòng số bài và thời lượng video
+export const COURSE_EXTRA_INCLUDES: CourseIncludeItem[] = [
+  { icon: FileText, label: "Có tài liệu kèm theo" },
+  { icon: MessageCircle, label: "Hỗ trợ trong quá trình học" },
 ];

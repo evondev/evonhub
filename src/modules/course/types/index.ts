@@ -4,6 +4,7 @@ import {
   CourseStatus,
 } from "@/shared/constants/course.constants";
 import { LectureItemData } from "@/shared/types";
+import type { LucideIcon } from "lucide-react";
 import mongoose, { Document, Schema } from "mongoose";
 
 mongoose.Promise = global.Promise;
@@ -171,4 +172,30 @@ export interface PreviewExploreCourseSeed {
   free: boolean;
   rating: number[];
   views: number;
+}
+
+export interface CourseCurriculumStats {
+  chapterCount: number;
+  lessonCount: number;
+  totalMinutes: number;
+  trialCount: number;
+}
+
+export interface CourseIncludeItem {
+  icon: LucideIcon;
+  label: string;
+}
+
+export interface CourseQaItem {
+  question: string;
+  answer: string;
+}
+
+export interface CoursePurchase {
+  /** Số tiền giảm từ mã `?appliedCoupon=` trên URL, 0 khi không có mã */
+  discount: number;
+  isBuying: boolean;
+  isEnrollingFree: boolean;
+  handleBuyCourse: () => void;
+  handleEnrollFree: () => void;
 }

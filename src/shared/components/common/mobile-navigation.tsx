@@ -1,6 +1,9 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { menuLinks } from "@/shared/constants/common.constants";
+import {
+  COURSE_DETAILS_PATH_PREFIX,
+  menuLinks,
+} from "@/shared/constants/common.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { MenuLinkItemProps } from "@/shared/types";
 import Link from "next/link";
@@ -31,6 +34,10 @@ export function MobileNavigation({ role }: MobileNavigationProps) {
   const visibleLinks = menuLinks.filter((link) =>
     isVisibleOnMobile(link, role),
   );
+
+  // Trang chi tiết khóa có thanh giá + nút mua dính đáy màn; để cả hai thì hai
+  // thanh chồng nhau ăn ~130px. Quay ra bằng đường dẫn hoặc logo trên header.
+  if (pathname.startsWith(COURSE_DETAILS_PATH_PREFIX)) return null;
 
   return (
     <nav

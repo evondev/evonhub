@@ -1,5 +1,6 @@
 import { COURSE_LEVEL_LABELS } from "@/shared/constants/course.constants";
 import { formatCompactCount } from "@/shared/helpers";
+import dayjs from "dayjs";
 import {
   EXPLORE_DEFAULT_FILTERS,
   EXPLORE_LEVEL_OPTIONS,
@@ -7,7 +8,9 @@ import {
   EXPLORE_SORT_OPTIONS,
   PREVIEW_EXPLORE_COURSES,
 } from "../constants";
+import type { LessonDetailsOutlineData } from "@/shared/types";
 import type {
+  CourseCurriculumStats,
   CourseItemData,
   ExploreCoursesResult,
   ExploreFilters,
@@ -70,7 +73,7 @@ export function getDiscountLabel({
 
   if (isFree) return "-100%";
 
-  return `-${100 - Math.floor((price / salePrice) * 100)} %`;
+  return `-${100 - Math.floor((price / salePrice) * 100)}%`;
 }
 
 export function getAverageRating(ratings: number[] = []): number {
@@ -243,4 +246,83 @@ export function buildPreviewExploreResult(
     courses: sortedCourses.slice(startIndex, startIndex + EXPLORE_PAGE_SIZE),
     total: sortedCourses.length,
   };
+}
+
+/** 161 → "2 giờ 41 phút", 45 → "45 phút", 120 → "2 giờ" */
+export function formatDurationMinutes(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  if (hours === 0) return `${minutes} phút`;
+  if (remainingMinutes === 0) return `${hours} giờ`;
+
+  return `${hours} giờ ${remainingMinutes} phút`;
+}
+
+/** Tổng phút của các bài; bài chưa có thời lượng tính 0 */
+export function sumLessonMinutes(lessons: { duration?: number }[]): number {
+  return lessons.reduce(
+    (total, lesson) => total + (Number(lesson.duration) || 0),
+    0,
+  );
+}
+
+export function getCurriculumStats(
+  lectures: LessonDetailsOutlineData[],
+): CourseCurriculumStats {
+  const lessons = lectures.flatMap((lecture) => lecture.lessons);
+
+  return {
+    chapterCount: lectures.length,
+    lessonCount: lessons.length,
+    totalMinutes: sumLessonMinutes(lessons),
+    trialCount: lessons.filter((lesson) => lesson.trial).length,
+  };
+}
+
+/** Link YouTube dạng `watch?v=` hoặc `youtu.be/` → id để nhúng */
+export function getYoutubeEmbedId(intro: string): string {
+  if (intro.includes("v=")) return intro.split("v=")[1]?.split("&")[0] || "";
+
+  return intro.split("/").at(-1) || "";
+}
+
+export function getLessonPreviewHref(courseSlug: string, lessonId: string) {
+  return `/${courseSlug}/lesson?id=${lessonId}&isPreview=true`;
+}
+
+/** Giá trị của chương trong accordion "Nội dung khóa học" */
+export function getChapterValue(index: number): string {
+  return `chuong-${index}`;
+}
+
+/** "12 bài · 2 giờ 41 phút · 1 học thử" */
+export function formatChapterSummary(
+  lessons: { duration?: number; trial?: boolean }[],
+): string {
+  const trialCount = lessons.filter((lesson) => lesson.trial).length;
+  const summaryParts = [
+    `${lessons.length} bài`,
+    formatDurationMinutes(sumLessonMinutes(lessons)),
+  ];
+
+  if (trialCount > 0) summaryParts.push(`${trialCount} học thử`);
+
+  return summaryParts.join(" · ");
+}
+
+/** Giá trị accordion của các chương có ít nhất một bài học thử */
+export function getTrialChapterValues(
+  lectures: LessonDetailsOutlineData[],
+): string[] {
+  return lectures.flatMap((lecture, index) =>
+    lecture.lessons.some((lesson) => lesson.trial)
+      ? [getChapterValue(index)]
+      : [],
+  );
+}
+
+/** "02/09/2026": ngày tháng luôn hai chữ số để cột ngày thẳng hàng */
+export function formatShortDate(date: Date | string): string {
+  return dayjs(date).format("DD/MM/YYYY");
 }
