@@ -1,99 +1,25 @@
-"use client";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Suspense } from "react";
+import { ExploreFilters, ExploreLinkBase } from "../../types";
 import {
-  CourseList,
-  Heading,
-  IconArrowLeft,
-  IconArrowRight,
-} from "@/shared/components";
-import { PaginationControl } from "@/shared/components/common";
-import { CourseStatus } from "@/shared/constants/course.constants";
-import { debounce } from "lodash";
-import {
-  parseAsBoolean,
-  parseAsInteger,
-  parseAsString,
-  useQueryStates,
-} from "nuqs";
-import { CourseItem } from "../../components";
-import { useQueryCourses } from "../../services";
+  ExploreFilterBar,
+  ExploreResultsLoader,
+  ExploreSkeleton,
+} from "./components";
 
-export interface ExplorePageProps {}
+interface ExplorePageProps {
+  filters: ExploreFilters;
+}
 
-export function ExplorePage(_props: ExplorePageProps) {
-  const [filters, setFilters] = useQueryStates({
-    search: parseAsString.withDefault(""),
-    page: parseAsInteger.withDefault(1),
-    isFree: parseAsBoolean.withDefault(false),
-  });
-  const { data: courses, isFetching } = useQueryCourses({
-    status: CourseStatus.Approved,
-    limit: 20,
-    isFree: !!filters.isFree,
-    search: filters.search,
-    page: filters.page,
-  });
-  const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setFilters({ search: value });
-  }, 500);
+const exploreLinkBase: ExploreLinkBase = { basePath: "/explore" };
 
+export function ExplorePage({ filters }: ExplorePageProps) {
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-5">
-        <Heading>Khám phá</Heading>
-        <div className="flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-xl flex-wrap gap-3">
-          <div className="flex items-center gap-5">
-            <div className="flex items-center gap-3 text-sm font-medium">
-              <Switch
-                checked={filters.isFree}
-                onCheckedChange={(checked) => setFilters({ isFree: checked })}
-              />
-              <Label
-                htmlFor="paidUser"
-                className="hidden lg:flex items-center gap-2 cursor-pointer"
-              >
-                <span>Khóa học miễn phí</span>
-              </Label>
-            </div>
-          </div>
-          <div className="flex gap-3">
-            <Input
-              placeholder="Tìm kiếm khóa học"
-              className="hidden lg:block w-full lg:w-[300px] h-10"
-              onChange={handleSearch}
-              defaultValue={filters.search}
-            />
-            <div className="flex justify-end gap-3">
-              <PaginationControl
-                onClick={() => setFilters({ page: filters.page - 1 })}
-                disabled={filters.page <= 1}
-              >
-                <IconArrowLeft />
-              </PaginationControl>
-              <PaginationControl
-                onClick={() => setFilters({ page: filters.page + 1 })}
-                disabled={Number(courses?.length) <= 0}
-              >
-                <IconArrowRight />
-              </PaginationControl>
-            </div>
-          </div>
-          <Input
-            placeholder="Tìm kiếm khóa học"
-            className="lg:hidden w-full lg:w-[300px] h-10"
-            onChange={handleSearch}
-            defaultValue={filters.search}
-          />
-        </div>
-      </div>
-      <CourseList isLoading={isFetching}>
-        {courses?.map((course, index) => (
-          <CourseItem key={index} data={course}></CourseItem>
-        ))}
-      </CourseList>
+    <div className="flex flex-col gap-4">
+      <ExploreFilterBar filters={filters} linkBase={exploreLinkBase} />
+      {/* key theo bộ lọc: đổi lọc thì phần kết quả hiện khung chờ, thanh lọc giữ nguyên */}
+      <Suspense key={JSON.stringify(filters)} fallback={<ExploreSkeleton />}>
+        <ExploreResultsLoader filters={filters} linkBase={exploreLinkBase} />
+      </Suspense>
     </div>
   );
 }

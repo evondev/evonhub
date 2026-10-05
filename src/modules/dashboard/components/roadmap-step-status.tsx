@@ -1,6 +1,6 @@
 import { CalendarClock, CircleCheck, Play } from "lucide-react";
 import { RoadmapStep } from "../types";
-import { CoursePrice } from "./course-price";
+import { CoursePrice } from "@/modules/course/components";
 
 interface RoadmapStepStatusProps {
   step: RoadmapStep;

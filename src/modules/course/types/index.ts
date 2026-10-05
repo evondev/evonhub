@@ -91,3 +91,75 @@ export interface EnrollFreeResponse {
   type: "success" | "error";
   message: string;
 }
+
+export type ExploreSort = "moi" | "xem-nhieu" | "danh-gia";
+
+export interface ExploreSortOption {
+  value: ExploreSort;
+  label: string;
+}
+
+/** Bộ lọc trang Khóa học, đọc từ URL: ?q=&gia=mien-phi&sapxep=&trang= */
+export interface ExploreFilters {
+  search: string;
+  isFree: boolean;
+  sort: ExploreSort;
+  page: number;
+}
+
+export interface ExploreSearchParams {
+  q?: string;
+  gia?: string;
+  sapxep?: string;
+  trang?: string;
+}
+
+/** Gốc để dựng link lọc: trang thật là /explore, trang xem trước giữ thêm ?tt= */
+export interface ExploreLinkBase {
+  basePath: string;
+  fixedParams?: Record<string, string>;
+}
+
+export interface FetchExploreCoursesParams extends ExploreFilters {
+  limit: number;
+}
+
+export interface ExploreCoursesResult {
+  courses: CourseItemData[];
+  /** Tổng số khóa khớp bộ lọc, chưa chia trang */
+  total: number;
+}
+
+/** Kết quả $facet của truy vấn trang Khóa học */
+export interface ExploreFacetResult {
+  courses: CourseItemData[];
+  total: { value: number }[];
+}
+
+/** Một ô trên thanh phân trang: số trang hoặc dấu "…" */
+export type ExplorePaginationItem = number | "ellipsis";
+
+export type ExplorePreviewState =
+  | "du-lieu"
+  | "mot-khoa"
+  | "khong-ket-qua"
+  | "chua-co-khoa"
+  | "dang-tai"
+  | "loi";
+
+export interface ExplorePreviewStateLink {
+  state: ExplorePreviewState;
+  label: string;
+}
+
+export interface PreviewExploreCourseSeed {
+  slug: string;
+  title: string;
+  image: string;
+  level: CourseLevel;
+  price: number;
+  salePrice: number;
+  free: boolean;
+  rating: number[];
+  views: number;
+}

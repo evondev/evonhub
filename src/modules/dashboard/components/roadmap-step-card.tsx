@@ -3,7 +3,7 @@ import { cn } from "@/shared/utils";
 import { Check } from "lucide-react";
 import Link from "next/link";
 import { RoadmapStep } from "../types";
-import { CourseRating } from "./course-rating";
+import { CourseRating } from "@/modules/course/components";
 import { RoadmapStepStatus } from "./roadmap-step-status";
 
 interface RoadmapStepCardProps {

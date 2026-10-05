@@ -535,3 +535,11 @@ summary:focus-visible {
   outline: 2px solid rgb(var(--primary));
   outline-offset: 2px;
 }
+
+// Mục trong menu Radix được focus cả khi rê chuột; mục đang trỏ đã có nền riêng
+// (data-highlighted) nên bỏ vòng focus chung, kẻo hiện viền vuông khi hover.
+[role="menuitem"]:focus-visible,
+[role="menuitemradio"]:focus-visible,
+[role="menuitemcheckbox"]:focus-visible {
+  outline: none;
+}

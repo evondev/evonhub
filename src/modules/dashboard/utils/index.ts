@@ -1,6 +1,7 @@
 import { CourseItemData } from "@/modules/course/types";
 import { formatRating } from "@/modules/course/utils";
 import { RatingItemData } from "@/modules/rating/types";
+import { formatCompactCount } from "@/shared/helpers";
 import {
   PREVIEW_COURSE_PROGRESS,
   PREVIEW_COURSES,
@@ -26,17 +27,6 @@ export function getFirstName(fullName?: string, givenName?: string | null) {
   const nameParts = (fullName || "").trim().split(/\s+/);
 
   return nameParts[nameParts.length - 1] || "";
-}
-
-/** 507.786 → "507 nghìn", 1.250.000 → "1,3 triệu" */
-export function formatCompactCount(count: number) {
-  if (count >= 1_000_000) {
-    return `${(count / 1_000_000).toFixed(1).replace(".", ",")} triệu`;
-  }
-
-  if (count >= 1_000) return `${Math.floor(count / 1_000)} nghìn`;
-
-  return String(count);
 }
 
 export function buildCatalogStats(courses: CourseItemData[]): CatalogStats {

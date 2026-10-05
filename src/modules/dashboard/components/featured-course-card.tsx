@@ -2,8 +2,7 @@ import { CourseItemData } from "@/modules/course/types";
 import { cn } from "@/shared/utils";
 import Link from "next/link";
 import { CourseCover } from "@/shared/components/course";
-import { CoursePrice } from "./course-price";
-import { CourseRating } from "./course-rating";
+import { CoursePrice, CourseRating } from "@/modules/course/components";
 
 interface FeaturedCourseCardProps {
   course: CourseItemData;

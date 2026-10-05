@@ -1,6 +1,6 @@
 import { CourseItemData } from "@/modules/course/types";
 import { CATALOG_LIST_LIMIT } from "../constants";
-import { ComingSoonPanel } from "./coming-soon-panel";
+import { ComingSoonPanel } from "@/modules/course/components";
 import { CourseListRow } from "./course-list-row";
 import { FeaturedCourseCard } from "./featured-course-card";
 import { SectionHeading } from "./section-heading";
@@ -11,13 +11,16 @@ interface CourseCatalogSectionProps {
 
 /** Một khóa lớn và danh sách bên cạnh: 1 hay 10 khóa cũng không lẻ card */
 export function CourseCatalogSection({ courses }: CourseCatalogSectionProps) {
-  if (courses.length === 0) return <ComingSoonPanel />;
+  if (courses.length === 0) return <ComingSoonPanel id="khoa-hoc" />;
 
   const [featuredCourse, ...otherCourses] = courses;
   const listedCourses = otherCourses.slice(0, CATALOG_LIST_LIMIT);
 
   return (
-    <section id="khoa-hoc" className="flex scroll-mt-20 lg:scroll-mt-24 flex-col gap-4">
+    <section
+      id="khoa-hoc"
+      className="flex scroll-mt-20 lg:scroll-mt-24 flex-col gap-4"
+    >
       <SectionHeading
         title="Khóa học"
         linkText="Xem tất cả"

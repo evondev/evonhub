@@ -13,9 +13,9 @@ import { usePathname } from "next/navigation";
 import { ModeToggle } from "../../../components/ModeToggle";
 import Notification from "./notification";
 
-// Chỉ trang tổng quan không có đầu trang riêng nên tên nằm trên thanh header
-// (là <h1>). Các trang khác tự có tiêu đề, ghi thêm ở đây sẽ bị lặp.
-const HEADER_TITLE_PATHS = ["/"];
+// Trang tổng quan và trang Khóa học không có đầu trang riêng nên tên nằm trên
+// thanh header (là <h1>). Các trang khác tự có tiêu đề, ghi thêm ở đây sẽ bị lặp.
+const HEADER_TITLE_PATHS = ["/", "/explore"];
 
 export const Header = () => {
   const { userId, isSignedIn } = useAuth();

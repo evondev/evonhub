@@ -1,6 +1,5 @@
 import {
   ECommonStatus,
-  ECourseLevel,
   EOrderStatus,
   EReactionType,
   EUserStatus,
@@ -150,11 +149,6 @@ export const editorOptions = (
     content_style: `@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');body { font-family: 'Be Vietnam Pro',Helvetica,Arial,sans-serif; font-size:15px; line-height: 2; padding-bottom: 32px; } img { max-width: 100%; height: auto; display: block; margin: 0 auto; };`,
   },
 });
-export const courseLevel: Record<ECourseLevel, string> = {
-  easy: "Dễ",
-  medium: "Trung bình",
-  expert: "Khó",
-};
 export const reactions: {
   icon: string;
   value: EReactionType;

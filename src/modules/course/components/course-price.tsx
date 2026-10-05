@@ -1,6 +1,6 @@
-import { CourseItemData } from "@/modules/course/types";
-import { isCourseFree } from "@/modules/course/utils";
 import { formatThoundsand } from "@/utils";
+import { CourseItemData } from "../types";
+import { isCourseFree } from "../utils";
 
 interface CoursePriceProps {
   course: CourseItemData;

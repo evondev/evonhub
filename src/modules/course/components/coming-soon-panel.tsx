@@ -5,11 +5,16 @@ import {
   COMING_SOON_CHANNEL_URL,
 } from "@/shared/constants/common.constants";
 
-/** Chỗ của khối Khóa học khi chưa có khóa nào public */
-export function ComingSoonPanel() {
+interface ComingSoonPanelProps {
+  /** Neo để link "#khoa-hoc" ở dashboard cuộn tới */
+  id?: string;
+}
+
+/** Chỗ của danh sách khóa học khi chưa có khóa nào public */
+export function ComingSoonPanel({ id }: ComingSoonPanelProps) {
   return (
     <section
-      id="khoa-hoc"
+      id={id}
       className="flex scroll-mt-20 lg:scroll-mt-24 flex-col items-center gap-3 rounded-2xl border border-dashed border-border-strong bg-surface px-4 py-10 text-center"
     >
       <span className="grid size-12 place-items-center rounded-xl bg-primary/10 text-primary-strong">
