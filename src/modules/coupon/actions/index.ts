@@ -6,6 +6,7 @@ import { CouponStatus } from "@/shared/constants/coupon.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
+import { getCurrentAdmin } from "@/shared/libs/auth";
 import { auth } from "@clerk/nextjs/server";
 import { FilterQuery } from "mongoose";
 import CouponModel from "../models";
@@ -64,7 +65,19 @@ export async function fetchCoupons({
   shouldFilterOutdated?: boolean;
 }): Promise<CouponItemData[] | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
+
+    // Trang "Săn mã giảm giá" công khai chỉ được xem mã đang chạy, còn lại
+    // (mã nháp, hết hạn, số lượt đã dùng...) chỉ admin xem được
+    const isPublicListing =
+      status === CouponStatus.Active && !!shouldFilterOutdated;
+
+    if (!isPublicListing) {
+      const currentAdmin = await getCurrentAdmin();
+
+      if (!currentAdmin) return;
+    }
+
     const query: FilterQuery<typeof CouponModel> = {};
     if (status) {
       query.status = status;
@@ -75,6 +88,7 @@ export async function fetchCoupons({
       };
     }
     const coupons = await CouponModel.find(query)
+      .select(isPublicListing ? "_id title code amount type courses" : "")
       .populate({
         model: CourseModel,
         path: "courses",
@@ -141,7 +155,12 @@ export async function fetchCouponByCode({
   code: string;
 }): Promise<CouponItemData | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
+
+    const currentAdmin = await getCurrentAdmin();
+
+    if (!currentAdmin) return;
+
     const findCoupon: CouponItemData | null = await CouponModel.findOne({
       code,
     });

@@ -6,8 +6,13 @@ import { RatingStatus } from "@/shared/constants/rating.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
+import {
+  getCurrentAdmin,
+  getCurrentCourseManager,
+  getCurrentStaff,
+} from "@/shared/libs/auth";
 import { auth } from "@clerk/nextjs/server";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, isValidObjectId } from "mongoose";
 import RatingModel from "../models";
 import {
   FetchRatingManageProps,
@@ -26,7 +31,12 @@ export async function fetchRatingsByCourse({
     const ratings = await RatingModel.find({
       course: courseId,
       status: RatingStatus.Active,
-    }).populate("user");
+    }).populate({
+      model: UserModel,
+      path: "user",
+      select: "name username avatar",
+    });
+
     return parseData(ratings);
   } catch (error) {
     console.log(error);
@@ -41,22 +51,24 @@ export async function fetchRatings({
   try {
     connectToDatabase();
 
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
+    const currentStaff = await getCurrentStaff();
 
-    if (!findUser) return;
-
-    if (![UserRole.Admin, UserRole.Expert].includes(findUser?.role)) return;
+    if (!currentStaff) return;
 
     const query: FilterQuery<typeof RatingModel> = {};
     const skip = (page - 1) * limit;
+    const ratingStatuses: string[] = Object.values(RatingStatus);
 
-    if (status) {
-      query.$or = [{ status: { $regex: status, $options: "i" } }];
-    }
+    // So khớp đúng giá trị: regex từ client thì lọc gì cũng được
+    if (status && ratingStatuses.includes(status)) query.status = status;
 
-    if (findUser?.role !== UserRole.Admin) {
-      query.author = findUser._id;
+    // Đánh giá không có trường author: expert lọc theo các khóa mình đứng tên
+    if (currentStaff.role !== UserRole.Admin) {
+      const ownCourseIds = await CourseModel.find({
+        author: currentStaff._id,
+      }).distinct("_id");
+
+      query.course = { $in: ownCourseIds };
     }
     const ratings = await RatingModel.find(query)
       .limit(limit)
@@ -84,9 +96,20 @@ export async function handleRatingStatus({
   status,
 }: HandleRatingStatusProps) {
   try {
-    connectToDatabase();
-    const findRating = await RatingModel.findById(ratingId);
+    await connectToDatabase();
+
+    if (!isValidObjectId(ratingId)) return;
+
+    const findRating = await RatingModel.findById(ratingId).select("course");
+
     if (!findRating) return;
+
+    // Admin duyệt mọi khóa, expert chỉ duyệt đánh giá trên khóa mình đứng tên
+    const courseManager = await getCurrentCourseManager(
+      findRating.course?.toString(),
+    );
+
+    if (!courseManager) return;
     await RatingModel.findByIdAndUpdate(ratingId, {
       status:
         status === RatingStatus.Active
@@ -142,7 +165,7 @@ export async function fetchRatingsPublic({
       .populate({
         model: UserModel,
         path: "user",
-        select: "name username email avatar",
+        select: "name username avatar",
       });
 
     return parseData(ratings);

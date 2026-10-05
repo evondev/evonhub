@@ -7,7 +7,10 @@ import IconLinkedin from "@/shared/components/icons/IconLinkedin";
 import IconYoutube from "@/shared/components/icons/IconYoutube";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useQueryUserByUsername, useQueryUserCourses } from "../../services";
+import {
+  useQueryPublicUserCourses,
+  useQueryUserByUsername,
+} from "../../services";
 
 export interface UserPersonalPageContainerProps {
   rank?: number;
@@ -17,15 +20,15 @@ export function UserPersonalPageContainer({
   rank,
 }: UserPersonalPageContainerProps) {
   const params = useParams();
+  const username = params?.username as string;
   const { data: userProfile, isFetching: isFetchingUserProfile } =
     useQueryUserByUsername({
-      username: params?.username as string,
+      username,
     });
-  const { data, isFetching } = useQueryUserCourses({
-    userId: userProfile?.clerkId as string,
-    courseOnly: true,
+  const { data: publicCourses, isFetching } = useQueryPublicUserCourses({
+    username,
   });
-  const userCourses = data?.courses || [];
+  const userCourses = publicCourses || [];
 
   if (isFetchingUserProfile) return <Spinner />;
 

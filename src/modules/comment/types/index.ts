@@ -27,7 +27,8 @@ export interface CommentItemData
 }
 
 export interface FetchCommentsProps {
-  userId: string;
+  /** Chỉ để tách cache theo người dùng, server lấy user từ session */
+  userId?: string;
   status?: CommentStatus;
   page: number;
   limit: number;
@@ -37,5 +38,6 @@ export interface FetchCommentsProps {
 export interface UpdateCommentProps {
   commentId: string;
   status: CommentStatus;
+  /** Bỏ qua ở server: người nhận thông báo lấy từ bình luận đã lưu */
   userId?: string;
 }

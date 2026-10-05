@@ -11,6 +11,10 @@ import { getCurrentUser } from "@/shared/libs/auth";
 import { FilterQuery } from "mongoose";
 import OrderModel from "../models";
 import {
+  decrementCouponUsage,
+  incrementCouponUsage,
+} from "../services/coupon-usage.service";
+import {
   grantOrderToUser,
   revokeOrderFromUser,
 } from "../services/grant-order.service";
@@ -168,6 +172,7 @@ export async function handleUpdateOrder({
 
     if (!currentUser) return;
     if (![UserRole.Admin, UserRole.Expert].includes(currentUser.role)) return;
+    if (!Object.values(OrderStatus).includes(status)) return;
 
     // Toàn bộ thông tin đơn hàng lấy từ DB, client chỉ gửi lên mã đơn
     const findOrder = await OrderModel.findOne({ code });
@@ -190,13 +195,37 @@ export async function handleUpdateOrder({
       if (!isCourseAuthor) return;
     }
 
-    findOrder.status = status;
-    await findOrder.save();
+    const previousStatus = findOrder.status;
+
+    // Chỉ đổi khi trạng thái chưa bị ai đổi trước (webhook / admin khác), để
+    // lượt dùng mã giảm giá không bị cộng trùng
+    const updatedOrder = await OrderModel.findOneAndUpdate(
+      { _id: findOrder._id, status: previousStatus },
+      { $set: { status } },
+      { new: true },
+    );
+
+    if (!updatedOrder) return;
+
+    const isNewlyApproved =
+      previousStatus !== OrderStatus.Approved &&
+      status === OrderStatus.Approved;
+    const isApprovalRevoked =
+      previousStatus === OrderStatus.Approved &&
+      status !== OrderStatus.Approved;
 
     if (status === OrderStatus.Approved) {
-      await grantOrderToUser(findOrder);
+      await grantOrderToUser(updatedOrder);
     } else {
-      await revokeOrderFromUser(findOrder);
+      await revokeOrderFromUser(updatedOrder);
+    }
+
+    if (isNewlyApproved) {
+      await incrementCouponUsage(updatedOrder);
+    }
+
+    if (isApprovalRevoked) {
+      await decrementCouponUsage(updatedOrder);
     }
 
     return true;
@@ -220,14 +249,18 @@ export async function handleUpdateFreeOrder(): Promise<boolean | undefined> {
     });
 
     for (const order of freeOrders) {
-      await OrderModel.updateOne(
-        { _id: order._id },
+      const approveResult = await OrderModel.updateOne(
+        { _id: order._id, status: OrderStatus.Pending },
         { status: OrderStatus.Approved }
       );
+
+      if (!approveResult.modifiedCount) continue;
+
       await UserModel.updateOne(
         { _id: order.user },
         { $addToSet: { courses: order.course } }
       );
+      await incrementCouponUsage(order);
     }
 
     return true;

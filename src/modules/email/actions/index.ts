@@ -7,6 +7,7 @@ import {
 } from "@/shared/constants/common.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
+import { getCurrentAdmin } from "@/shared/libs/auth";
 import { resendClient } from "@/shared/libs/resend";
 import { EmailStatus } from "@/shared/types/email.types";
 import { FilterQuery } from "mongoose";
@@ -40,6 +41,11 @@ export async function handleSendEmails({
   content,
 }: HandleSendEmailsProps): Promise<boolean | undefined> {
   await connectToDatabase();
+
+  const currentAdmin = await getCurrentAdmin();
+
+  if (!currentAdmin) return;
+
   const emailCreated = await EmailModel.create({
     title,
     content,
@@ -87,6 +93,11 @@ export async function fetchEmails({
 }: FetchEmailsProps): Promise<EmailItemData[] | undefined> {
   try {
     await connectToDatabase();
+
+    const currentAdmin = await getCurrentAdmin();
+
+    if (!currentAdmin) return;
+
     const query: FilterQuery<typeof EmailModel> = {};
     const skip = (page - 1) * limit;
 

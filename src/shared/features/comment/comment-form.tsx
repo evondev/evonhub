@@ -2,10 +2,8 @@
 
 import { createComment } from "@/lib/actions/comment.action";
 import { CommentItemData } from "@/modules/comment/types";
-import { CommentStatus } from "@/shared/constants/comment.constants";
 import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
-import { UserRole } from "@/shared/constants/user.constants";
-import { getQueryClient } from "@/shared/libs";
+import { getQueryClient } from "@/shared/libs/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -47,9 +45,6 @@ export function CommentForm({
   lessonId,
 }: CommentFormProps) {
   const { userInfo } = useUserContext();
-  const userId = userInfo?._id.toString() || "";
-  const isModerator =
-    userInfo?.role === UserRole.Admin || userInfo?.role === UserRole.Expert;
 
   const commentForm = useForm<CourseCommentFormValues>({
     resolver: zodResolver(courseCommentFormSchema),
@@ -64,10 +59,7 @@ export function CommentForm({
     const hasComment = await createComment({
       content: values.content,
       lesson: lessonId,
-      user: userId,
-      level: comment && comment?.level >= 0 ? comment?.level + 1 : 0,
       parentId: comment?._id,
-      status: isModerator ? CommentStatus.Approved : CommentStatus.Pending,
     });
 
     startTransition(() => {

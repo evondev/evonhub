@@ -192,3 +192,7 @@ export const PREVIEW_MANAGED_USERS: UserManageRow[] = [
     courseCount: 4,
   },
 ];
+
+/** Trường fetchUsers trả về cho bảng thành viên: không có bank, password, permissions */
+export const USER_MANAGE_LIST_FIELDS =
+  "_id clerkId name username email avatar createdAt status role courses";

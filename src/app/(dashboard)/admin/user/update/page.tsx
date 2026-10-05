@@ -4,6 +4,7 @@ import { getAllCoursesUser } from "@/modules/course/actions";
 import { getUserByUsername } from "@/modules/user/actions";
 import { LEARNABLE_COURSE_STATUSES } from "@/shared/constants/course.constants";
 import { parseData } from "@/shared/helpers";
+import { getCurrentStaff } from "@/shared/libs/auth";
 
 interface AddCourseForUserPageProps {
   searchParams: {
@@ -15,6 +16,11 @@ interface AddCourseForUserPageProps {
 const AddCourseForUserPage = async ({
   searchParams,
 }: AddCourseForUserPageProps) => {
+  // Expert vào từ trang quản lý đơn để cấp khóa của mình; addCourseToUser kiểm từng khóa
+  const currentStaff = await getCurrentStaff();
+
+  if (!currentStaff) return <PageNotFound />;
+
   const user = await getUserByUsername({
     username: searchParams.username,
     email: searchParams.email,

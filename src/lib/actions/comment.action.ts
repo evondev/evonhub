@@ -1,176 +1,96 @@
 "use server";
-import Comment, { IComment } from "@/database/comment.model";
-import Course from "@/database/course.model";
-import Lesson from "@/database/lesson.model";
-import User from "@/database/user.model";
-import {
-  CreateCommentParams,
-  GetAllCommentsParams,
-  ReplyCommentParams,
-  UpdateCommentParams,
-} from "@/types";
-
-import CourseModel from "@/modules/course/models";
-import { sendNotification } from "@/modules/notifications/actions";
-import UserModel from "@/modules/user/models";
+import Comment from "@/database/comment.model";
+import LessonModel from "@/modules/lesson/models";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { UserRole } from "@/shared/constants/user.constants";
-import { auth } from "@clerk/nextjs/server";
-import { revalidatePath } from "next/cache";
+import { canAccessCourseContent, getCurrentUser } from "@/shared/libs/auth";
 import { connectToDatabase } from "../mongoose";
 
-export async function createComment(
-  params: CreateCommentParams,
-  isReply?: boolean
-) {
-  try {
-    connectToDatabase();
-    const newComment = await Comment.create(params);
-    // isReply will create notification for user
+// Khớp với giới hạn của form bình luận
+const COMMENT_MIN_LENGTH = 10;
+const COMMENT_MAX_LENGTH = 250;
 
-    if (!newComment) return false;
-
-    return true;
-  } catch (error) {
-    console.log(error);
-  }
+export interface CreateCommentProps {
+  content: string;
+  lesson: string;
+  parentId?: string;
 }
-export async function getAllComments(params: GetAllCommentsParams) {
+
+/**
+ * Người viết, trạng thái duyệt và cấp lồng đều tính ở server, client chỉ gửi
+ * nội dung, bài học và bình luận cha.
+ */
+export async function createComment({
+  content,
+  lesson,
+  parentId,
+}: CreateCommentProps) {
   try {
-    connectToDatabase();
-    const { userId } = auth();
-    if (!userId) return undefined;
-    const findUser = await UserModel.findOne({ clerkId: userId });
-    let query: any = {};
-    if (params.lesson) {
-      query.lesson = params.lesson;
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) return false;
+
+    // Chỉ nhận chuỗi, chặn client gửi object toán tử Mongo như { $ne: null }
+    if (typeof content !== "string" || typeof lesson !== "string") return false;
+
+    if (parentId && typeof parentId !== "string") return false;
+
+    if (
+      content.trim().length === 0 ||
+      content.length < COMMENT_MIN_LENGTH ||
+      content.length > COMMENT_MAX_LENGTH
+    )
+      return false;
+
+    await connectToDatabase();
+
+    const findLesson = await LessonModel.findOne({
+      _id: lesson,
+      _destroy: false,
+    }).select("courseId");
+
+    if (!findLesson?.courseId) return false;
+
+    // Bình luận chỉ hiện với người đã mua hoặc quản lý khóa, bài học thử thì không
+    const hasAccess = await canAccessCourseContent(
+      findLesson.courseId.toString(),
+    );
+
+    if (!hasAccess) return false;
+
+    let level = 0;
+    let parentCommentId = null;
+
+    if (parentId) {
+      const parentComment = await Comment.findOne({
+        _id: parentId,
+        lesson: findLesson._id,
+      }).select("level");
+
+      if (!parentComment) return false;
+
+      level = (parentComment.level || 0) + 1;
+      parentCommentId = parentComment._id;
     }
-    if (params.status) {
-      query.status = params.status;
-    }
-    if (![UserRole.Admin].includes(findUser?.role)) {
-      query.user = findUser._id;
-    }
-    const comments = await Comment.find(query)
-      .sort({ createdAt: -1 })
-      .populate({
-        path: "user",
-        model: User,
-        select: "username avatar",
-      })
-      .populate({
-        path: "lesson",
-        select: "_id title slug",
-        populate: {
-          path: "courseId",
-          model: CourseModel,
-          select: "title slug",
-        },
-      });
 
-    return comments;
-  } catch (error) {
-    console.log(error);
-  }
-}
-export async function replyComment(params: ReplyCommentParams) {
-  try {
-    connectToDatabase();
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
-    const findComment = await Comment.findById(params.commentId)
-      .populate({
-        path: "lesson",
-        model: Lesson,
-        select: "title slug _id",
-      })
-      .populate({
-        path: "user",
-        model: User,
-        select: "username _id",
-      })
-      .populate({
-        path: "course",
-        model: Course,
-        select: "title slug",
-      });
-    if (!findComment) return;
+    const staffRoles: string[] = [UserRole.Admin, UserRole.Expert];
+    const status = staffRoles.includes(currentUser.role)
+      ? CommentStatus.Approved
+      : CommentStatus.Pending;
 
-    const newComment = new Comment({
-      content: params.user.content,
-      user: findUser?._id,
-      course: params.user.courseId,
-      lesson: params.user.lessonId,
-      parentId: findComment._id,
-      status:
-        UserRole.Admin === findUser.role
-          ? CommentStatus.Approved
-          : CommentStatus.Pending,
-    });
-    await newComment.save();
-    await sendNotification({
-      title: "Hệ thống",
-      content: `<strong class="text-secondary">${findComment.user.username}</strong> vừa trả lời bình luận của bạn tại bài học <a href="/${findComment.course.slug}/lesson?id=${findComment.lesson._id}" class="text-primary font-semibold">${findComment.lesson.title}</a>`,
-      users: [findComment.user._id],
-    });
-    revalidatePath(params.user.path);
-  } catch (error) {
-    console.log(error);
-  }
-}
-export async function updateComment(params: UpdateCommentParams) {
-  try {
-    connectToDatabase();
-    await Comment.findByIdAndUpdate(params.commentId, params.updateData);
-    revalidatePath(params.path || "/");
-    const findComment = await Comment.findById(params.commentId).populate({
-      path: "lesson",
-      model: Lesson,
-      select: "title",
-    });
-    if (params.userId && params.updateData.status === "approved") {
-      await sendNotification({
-        title: "Hệ thống",
-        content: `Bình luận của bạn tại bài học <strong>${findComment.lesson.title}</strong> đã được duyệt`,
-        users: [params.userId],
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-export async function deleteComment(commentId: string) {
-  try {
-    connectToDatabase();
-    await Comment.findByIdAndDelete(commentId);
-    revalidatePath("/admin/comment/manage");
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export interface CommentItemData extends Omit<IComment, "user"> {
-  user: {
-    name: string;
-    avatar: string;
-  };
-}
-
-export async function getCommentsByLesson(
-  lessonId: string
-): Promise<CommentItemData[] | undefined> {
-  try {
-    connectToDatabase();
-    const comments = await Comment.find<CommentItemData>({
-      lesson: lessonId,
-    }).populate({
-      path: "user",
-      model: User,
-      select: "name avatar",
+    const newComment = await Comment.create({
+      content,
+      lesson: findLesson._id,
+      user: currentUser._id,
+      parentId: parentCommentId,
+      level,
+      status,
     });
 
-    return JSON.parse(JSON.stringify(comments));
+    return !!newComment;
   } catch (error) {
     console.log(error);
+
+    return false;
   }
 }

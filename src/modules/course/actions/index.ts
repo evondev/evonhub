@@ -16,7 +16,11 @@ import { OrderStatus } from "@/shared/constants/order.constants";
 import { UserRole, UserStatus } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
-import { getCurrentUser } from "@/shared/libs/auth";
+import {
+  canAccessCourseContent,
+  getCurrentStaff,
+  getCurrentUser,
+} from "@/shared/libs/auth";
 import { UserItemData } from "@/shared/types/user.types";
 import { auth } from "@clerk/nextjs/server";
 import { FilterQuery } from "mongoose";
@@ -52,11 +56,18 @@ export async function fetchCourses({
 
     const skip = (page - 1) * limit;
     if (search) {
-      query.$or = [{ title: { $regex: search, $options: "i" } }];
+      query.$or = [{ title: { $regex: escapeRegExp(search), $options: "i" } }];
     }
 
-    if (status) {
-      query.status = status;
+    // Khách chỉ thấy khóa đang bán; trạng thái khác chỉ admin/expert lọc được
+    const isPublicStatus = status === CourseStatus.Approved;
+    const canFilterAnyStatus = !isPublicStatus && !!(await getCurrentStaff());
+
+    query.status = CourseStatus.Approved;
+
+    if (canFilterAnyStatus) {
+      if (status) query.status = status;
+      else delete query.status;
     }
 
     if (isFree) {
@@ -182,9 +193,10 @@ export async function fetchCourseBySlug(
   try {
     connectToDatabase();
     await updateCourseViews(slug);
-    let searchQuery: any = {};
-    searchQuery.slug = slug;
-    searchQuery._destroy = false;
+    const searchQuery: FilterQuery<typeof CourseModel> = {
+      slug,
+      _destroy: false,
+    };
     if (status) {
       searchQuery.status = status;
     }
@@ -192,6 +204,14 @@ export async function fetchCourseBySlug(
       "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author minPrice isMicro",
     );
     if (!course) return undefined;
+
+    // Đang bán và sắp ra mắt là trang công khai. Khóa ngừng bán chỉ người đã mua
+    // (vào học tiếp) hoặc người quản lý khóa mới đọc được
+    if (
+      course.status === CourseStatus.Rejected &&
+      !(await canAccessCourseContent(course._id.toString()))
+    )
+      return undefined;
 
     return parseData(course);
   } catch (error) {
@@ -341,7 +361,7 @@ export async function handleEnrollCourse({
   }
 }
 
-export async function updateCourseViews(slug: string) {
+async function updateCourseViews(slug: string) {
   try {
     connectToDatabase();
     await CourseModel.findOneAndUpdate({ slug }, { $inc: { views: 1 } });

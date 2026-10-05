@@ -28,6 +28,5 @@ const ratingSchema = new Schema<RatingModelProps>({
     default: RatingStatus.Inactive,
   },
 });
-ratingSchema.index({ clerkId: 1 }, { unique: true });
 const RatingModel = models.Rating || model("Rating", ratingSchema);
 export default RatingModel;

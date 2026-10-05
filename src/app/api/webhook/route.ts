@@ -1,4 +1,8 @@
-import { createUser, deleteUser, updateUser } from "@/lib/actions/user.action";
+import {
+  createUserFromClerk,
+  deactivateUserFromClerk,
+  syncUserFromClerk,
+} from "@/modules/user/services/clerk-sync.service";
 import { EUserStatus } from "@/types/enums";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
@@ -58,7 +62,7 @@ export async function POST(req: Request) {
   if (eventType === "user.created") {
     const { id, email_addresses, image_url, username, first_name, last_name } =
       evt.data;
-    const mongoUser = await createUser({
+    const mongoUser = await createUserFromClerk({
       clerkId: id,
       name:
         first_name || last_name
@@ -73,27 +77,18 @@ export async function POST(req: Request) {
     });
     return NextResponse.json({ message: "OK", user: mongoUser });
   } else if (eventType === "user.updated") {
-    const { id, email_addresses, image_url, username, first_name, last_name } =
-      evt.data;
-    const mongoUser = await updateUser({
+    const { id, email_addresses, image_url } = evt.data;
+    const mongoUser = await syncUserFromClerk({
       clerkId: id,
-      updateData: {
-        name:
-          first_name || last_name
-            ? `${first_name || ""} ${last_name || ""}`
-            : username!,
-        username: username!,
-        email: email_addresses[0].email_address,
-        avatar: image_url,
-      },
-      path: `/profile/${id}`,
+      email: email_addresses[0].email_address,
+      avatar: image_url,
     });
     return NextResponse.json({ message: "OK", user: mongoUser });
   }
 
   if (eventType === "user.deleted") {
     const { id } = evt.data;
-    const deletedUser = await deleteUser({ clerkId: id! });
+    const deletedUser = await deactivateUserFromClerk(id!);
     return NextResponse.json({ message: "OK", user: deletedUser });
   }
   if (eventType === "session.created") {

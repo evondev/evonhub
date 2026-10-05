@@ -45,10 +45,9 @@ export const menuLinks: MenuLinkItemProps[] = [
   //   isHideForAdmin: true,
   // },
   {
-    title: "Profile",
+    title: "Hồ sơ",
     icon: <CircleUser />,
     url: "/profile",
-    isHideForAdmin: true,
   },
   {
     title: "Quản lý khóa học",

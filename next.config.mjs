@@ -31,6 +31,13 @@ const nextConfig = {
         pathname: "/**",
       },
       {
+        // Ảnh chân dung mẫu cho trang xem trước hồ sơ ở dev
+        protocol: "https",
+        hostname: "randomuser.me",
+        port: "",
+        pathname: "/api/portraits/**",
+      },
+      {
         protocol: "https",
         hostname: "img.clerk.com",
         port: "",
