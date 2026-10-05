@@ -6,6 +6,7 @@ import {
 } from "@/shared/constants/common.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { MenuLinkItemProps } from "@/shared/types";
+import { isMenuLinkActive } from "@/shared/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -47,7 +48,7 @@ export function MobileNavigation({ role }: MobileNavigationProps) {
       }}
     >
       {visibleLinks.map((link) => {
-        const isActive = pathname === link.url;
+        const isActive = isMenuLinkActive(link, pathname);
 
         return (
           <Link

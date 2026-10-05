@@ -26,8 +26,10 @@ export function StudyCoursePanel({
   const ActionIcon = status === "completed" ? RotateCcw : Play;
 
   return (
-    <section className="hidden min-w-0 overflow-hidden rounded-2xl border border-border bg-surface lg:block">
-      <div className="flex items-center gap-4 border-b border-border p-5">
+    // Dính dưới header nổi như cột trái; đề cương dài thì cuộn trong panel,
+    // phần đầu (tên khóa, nút Học tiếp) đứng yên
+    <section className="hidden min-w-0 overflow-hidden rounded-2xl border border-border bg-surface lg:sticky lg:top-24 lg:flex lg:max-h-[calc(100vh-112px)] lg:flex-col">
+      <div className="flex shrink-0 items-center gap-4 border-b border-border p-5">
         <CourseCover
           image={course.image}
           sizes="160px"
@@ -62,13 +64,15 @@ export function StudyCoursePanel({
           </Button>
         )}
       </div>
-      {outline.chapters.length > 0 ? (
-        <StudyOutlineList outline={outline} courseSlug={course.slug} />
-      ) : (
-        <p className="px-5 py-8 text-center text-sm text-muted">
-          Khóa này chưa có bài học
-        </p>
-      )}
+      <div className="scrollbar-auto-hide min-h-0 flex-1 overflow-y-auto">
+        {outline.chapters.length > 0 ? (
+          <StudyOutlineList outline={outline} courseSlug={course.slug} />
+        ) : (
+          <p className="px-5 py-8 text-center text-sm text-muted">
+            Khóa này chưa có bài học
+          </p>
+        )}
+      </div>
     </section>
   );
 }

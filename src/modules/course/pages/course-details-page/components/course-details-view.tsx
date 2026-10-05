@@ -4,6 +4,7 @@ import { COURSE_CURRICULUM_SECTION_ID } from "@/modules/course/constants";
 import { useCoursePurchase } from "@/modules/course/hooks/use-course-purchase";
 import { useIsElementPassed } from "@/modules/course/hooks/use-is-element-passed";
 import type { CourseItemData } from "@/modules/course/types";
+import { sanitizeHtml } from "@/shared/helpers";
 import {
   getAverageRating,
   getCurriculumStats,
@@ -125,7 +126,7 @@ export default function CourseDetailsView({
                   17px đậm 500 cho trang học; ở đây về cỡ chữ nội dung như các khối khác */}
               <div
                 className="lesson-content max-w-[70ch] !text-sm/7 !font-normal text-foreground/80 [&>*:last-child]:mb-0 [&_p:last-child]:mb-0"
-                dangerouslySetInnerHTML={{ __html: course.desc }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(course.desc) }}
               />
             </CourseSection>
           )}

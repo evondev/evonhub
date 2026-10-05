@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 import mongoose from "mongoose";
 let isConnected: boolean = false;
 export const connectToDatabase = async () => {

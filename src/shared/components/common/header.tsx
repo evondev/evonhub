@@ -13,9 +13,15 @@ import { usePathname } from "next/navigation";
 import { ModeToggle } from "../../../components/ModeToggle";
 import Notification from "./notification";
 
-// Trang tổng quan và trang Khóa học không có đầu trang riêng nên tên nằm trên
+// Trang tổng quan, Khóa học, Đơn hàng, Quản lý thành viên, Quản lý bình luận không có đầu trang riêng nên tên nằm trên
 // thanh header (là <h1>). Các trang khác tự có tiêu đề, ghi thêm ở đây sẽ bị lặp.
-const HEADER_TITLE_PATHS = ["/", "/explore"];
+const HEADER_TITLE_PATHS = [
+  "/",
+  "/explore",
+  "/my-orders",
+  "/admin/user/manage",
+  "/admin/comment/manage",
+];
 
 export const Header = () => {
   const { userId, isSignedIn } = useAuth();
@@ -29,12 +35,14 @@ export const Header = () => {
   const isSignedInUser = Boolean(userId && isSignedIn);
 
   return (
-    // Lớp ngoài là dải nền trang phủ khe phía trên thanh, để nội dung cuộn lên
-    // không lộ ra giữa mép màn hình và thanh header nổi.
+    // Lớp ngoài trong suốt; ::before là dải nền trang phủ khe phía trên thanh tới
+    // giữa thanh, để nội dung cuộn lên không lộ ra giữa mép màn hình và thanh
+    // header nổi, còn hai góc bo dưới vẫn thấy nội dung đi qua.
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-40 transition-[left] duration-200 ease-out motion-reduce:transition-none",
-        !isLessonPage && "bg-background lg:pl-6 lg:pr-4 lg:pt-4",
+        !isLessonPage &&
+          "lg:pl-6 lg:pr-4 lg:pt-4 lg:before:absolute lg:before:inset-x-0 lg:before:top-0 lg:before:h-12 lg:before:bg-background",
         !isLessonPage && isSidebarCollapsed && "lg:left-20",
         !isLessonPage && !isSidebarCollapsed && "lg:left-[272px]",
       )}
@@ -42,7 +50,7 @@ export const Header = () => {
     >
       <div
         className={cn(
-          "flex h-16 items-center justify-between gap-3 border-b border-border bg-surface px-4 sm:px-6",
+          "relative flex h-16 items-center justify-between gap-3 border-b border-border bg-surface px-4 sm:px-6",
           !isLessonPage && "lg:rounded-2xl lg:border lg:px-4",
         )}
       >
@@ -76,8 +84,11 @@ export const Header = () => {
             </span>
           </Link>
           {headerTitle && !isLessonPage && (
-            <h1 className="hidden truncate text-base font-semibold text-foreground lg:block">
-              {headerTitle}
+            // Dưới lg thanh header chỉ có logo: tên trang vẫn là <h1> cho trình
+            // đọc màn hình, chỉ ẩn khỏi mắt
+            <h1 className="min-w-0 text-base font-semibold text-foreground">
+              <span className="sr-only lg:hidden">{headerTitle}</span>
+              <span className="hidden truncate lg:block">{headerTitle}</span>
             </h1>
           )}
         </div>

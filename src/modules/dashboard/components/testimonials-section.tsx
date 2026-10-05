@@ -1,31 +1,40 @@
 import { formatRating } from "@/modules/course/utils";
 import { fetchRatingsPublic } from "@/modules/rating/actions";
-import { RatingStatus } from "@/shared/constants/rating.constants";
-import { cn } from "@/shared/utils";
-import { TESTIMONIAL_FETCH_LIMIT } from "../constants";
+import {
+  TESTIMONIAL_FETCH_LIMIT,
+  TESTIMONIAL_PINNED_COURSE_SLUGS,
+  TESTIMONIAL_RATING,
+} from "../constants";
 import { CatalogStats } from "../types";
-import { pickTestimonials } from "../utils";
+import { mergeTestimonials, splitTestimonialRows } from "../utils";
 import { SectionHeading } from "./section-heading";
-import { TestimonialCard } from "./testimonial-card";
-import { TestimonialQuoteCard } from "./testimonial-quote-card";
+import { TestimonialMarquee } from "./testimonial-marquee";
 
 interface TestimonialsSectionProps {
   stats: CatalogStats;
 }
 
 export async function TestimonialsSection({ stats }: TestimonialsSectionProps) {
-  const ratings = await fetchRatingsPublic({
-    page: 1,
-    limit: TESTIMONIAL_FETCH_LIMIT,
-    status: RatingStatus.Active,
-  });
+  const [latestRatings, pinnedRatings] = await Promise.all([
+    fetchRatingsPublic({
+      page: 1,
+      limit: TESTIMONIAL_FETCH_LIMIT,
+      rating: TESTIMONIAL_RATING,
+    }),
+    fetchRatingsPublic({
+      page: 1,
+      limit: TESTIMONIAL_FETCH_LIMIT,
+      rating: TESTIMONIAL_RATING,
+      courseSlugs: TESTIMONIAL_PINNED_COURSE_SLUGS,
+    }),
+  ]);
 
-  const { featuredRating, otherRatings } = pickTestimonials(ratings || []);
+  const ratings = mergeTestimonials(pinnedRatings || [], latestRatings || []);
 
-  if (!featuredRating) return null;
+  if (ratings.length === 0) return null;
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex min-w-0 flex-col gap-4">
       <SectionHeading
         title="Học viên nói gì"
         subtitle={
@@ -34,21 +43,14 @@ export async function TestimonialsSection({ stats }: TestimonialsSectionProps) {
             : undefined
         }
       />
-      <div
-        className={cn(
-          "grid gap-3",
-          otherRatings.length > 0 &&
-            "lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]",
-        )}
-      >
-        <TestimonialQuoteCard rating={featuredRating} />
-        {otherRatings.length > 0 && (
-          <div className="grid min-w-0 gap-3">
-            {otherRatings.map((rating) => (
-              <TestimonialCard key={rating._id} rating={rating} />
-            ))}
-          </div>
-        )}
+      <div className="flex flex-col gap-3">
+        {splitTestimonialRows(ratings).map((rowRatings, rowIndex) => (
+          <TestimonialMarquee
+            key={rowIndex}
+            ratings={rowRatings}
+            isReversed={rowIndex === 1}
+          />
+        ))}
       </div>
     </section>
   );

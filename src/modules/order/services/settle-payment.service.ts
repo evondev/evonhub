@@ -6,6 +6,7 @@ import { bankAccountInfo } from "@/shared/constants/payment.constants";
 import OrderModel from "../models";
 import { SepayWebhookPayload, SettlePaymentResult } from "../types";
 import { extractOrderCode } from "../utils";
+import { incrementCouponUsage } from "./coupon-usage.service";
 import { grantOrderToUser } from "./grant-order.service";
 
 async function notifyOrderApproved(orderId: string): Promise<void> {
@@ -101,11 +102,24 @@ export async function settleSepayPayment(
 
   const isOverpaid = paidOrder.paidAmount > paidOrder.total;
 
-  paidOrder.status = OrderStatus.Approved;
-  paidOrder.paymentNote = isOverpaid
-    ? `Khách chuyển dư: đã nhận ${paidOrder.paidAmount}/${paidOrder.total}`
-    : "Tự động duyệt qua SePay";
-  await paidOrder.save();
+  // Duyệt atomic theo trạng thái PENDING: 2 webhook chạy song song chỉ một bên
+  // duyệt được, nên cấp quyền và cộng lượt dùng mã chỉ chạy một lần
+  const approvedOrder = await OrderModel.findOneAndUpdate(
+    { _id: paidOrder._id, status: OrderStatus.Pending },
+    {
+      $set: {
+        status: OrderStatus.Approved,
+        paymentNote: isOverpaid
+          ? `Khách chuyển dư: đã nhận ${paidOrder.paidAmount}/${paidOrder.total}`
+          : "Tự động duyệt qua SePay",
+      },
+    },
+    { new: true }
+  );
+
+  if (!approvedOrder) {
+    return { handled: true, message: "Đơn đã được duyệt trước đó" };
+  }
 
   if (isOverpaid) {
     console.log(
@@ -113,8 +127,9 @@ export async function settleSepayPayment(
     );
   }
 
-  await grantOrderToUser(paidOrder);
-  await notifyOrderApproved(paidOrder._id);
+  await grantOrderToUser(approvedOrder);
+  await incrementCouponUsage(approvedOrder);
+  await notifyOrderApproved(approvedOrder._id);
 
   return { handled: true, message: "Đã duyệt đơn hàng", isApproved: true };
 }

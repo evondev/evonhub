@@ -4,22 +4,57 @@ import CourseModel from "@/modules/course/models";
 import { CourseItemData } from "@/modules/course/types";
 import LectureModel from "@/modules/lecture/models";
 import LessonModel from "@/modules/lesson/models";
-import { LEARNABLE_COURSE_STATUSES } from "@/shared/constants/course.constants";
-import { UserRole } from "@/shared/constants/user.constants";
+import {
+  CourseStatus,
+  LEARNABLE_COURSE_STATUSES,
+} from "@/shared/constants/course.constants";
+import { UserRole, UserStatus } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
+import {
+  getCurrentAdmin,
+  getCurrentCourseManager,
+  getCurrentStaff,
+} from "@/shared/libs/auth";
 import HistoryModel from "@/shared/models/history.model";
 import { UserInfoData, UserItemData } from "@/shared/types/user.types";
 import { auth } from "@clerk/nextjs/server";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, isValidObjectId } from "mongoose";
+import { revalidatePath } from "next/cache";
+import {
+  PROFILE_PUBLIC_PATH,
+  PROFILE_SAVE_ERROR_MESSAGE,
+  PROFILE_USERNAME_RESERVED_MESSAGE,
+  PROFILE_USERNAME_TAKEN_MESSAGE,
+  profilePayoutSchema,
+  profilePublicSchema,
+  profileSocialSchema,
+} from "../constants";
 import UserModel from "../models";
-import { FetchUsersProps } from "../types";
+import {
+  FetchUsersProps,
+  ProfileSaveResult,
+  UpdateMyProfileParams,
+} from "../types";
+import {
+  USER_MANAGE_LIST_FIELDS,
+  USER_STATUS_FORBIDDEN_MESSAGE,
+  USER_STATUS_NOT_FOUND_MESSAGE,
+  USER_STATUS_SAVE_ERROR_MESSAGE,
+  USER_STATUS_SELF_LOCK_MESSAGE,
+} from "../constants/user-manage.constants";
+import {
+  UpdateUserStatusParams,
+  UpdateUserStatusResult,
+  UserManageTabCounts,
+} from "../types/user-manage.types";
+import { isReservedUsername } from "../utils";
 
+/** Khóa đã mua của chính user đang đăng nhập. userId client gửi lên bị bỏ qua */
 export async function fetchUserCourses({
-  userId,
   courseOnly,
 }: {
-  userId: string;
+  userId?: string;
   courseOnly?: boolean;
 }): Promise<
   | {
@@ -29,23 +64,19 @@ export async function fetchUserCourses({
   | undefined
 > {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
-    if (!userId)
+    const { userId: clerkId } = auth();
+
+    if (!clerkId)
       return {
         courses: [],
         lessons: [],
       };
 
-    const findUser: UserItemData | null = await UserModel.findOne({
-      clerkId: userId,
-    });
-
-    if (!findUser) return;
-
     // Tính năng hội viên đã bỏ: ai cũng chỉ thấy khóa mình đã mua
     const user = await UserModel.findOne({
-      clerkId: userId,
+      clerkId,
     }).populate({
       path: "courses",
       select: "title slug image rating level price salePrice views free",
@@ -79,6 +110,37 @@ export async function fetchUserCourses({
   } catch (error) {}
 }
 
+interface FetchPublicUserCoursesProps {
+  username: string;
+}
+
+/**
+ * Danh sách "đang học" ở trang hồ sơ công khai: tra theo username, chỉ trả
+ * field của thẻ khóa học và chỉ khóa đang mở bán
+ */
+export async function fetchPublicUserCourses({
+  username,
+}: FetchPublicUserCoursesProps): Promise<CourseItemData[] | undefined> {
+  try {
+    await connectToDatabase();
+
+    if (!username) return [];
+
+    const user = await UserModel.findOne({ username })
+      .select("courses")
+      .populate({
+        path: "courses",
+        select: "title slug image rating level price salePrice views free",
+        match: { status: CourseStatus.Approved, _destroy: false },
+      });
+    const courses: CourseItemData[] = user?.courses || [];
+
+    return parseData(courses);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function fetchUserById({
   userId,
 }: {
@@ -87,6 +149,12 @@ export async function fetchUserById({
   try {
     connectToDatabase();
     if (!userId) return null;
+
+    // Bản ghi đầy đủ có email, tài khoản ngân hàng: chỉ trả cho chính người đó.
+    // clerkId lộ ở trang công khai, không kiểm thì ai cũng đọc được hồ sơ người khác
+    const { userId: currentUserId } = auth();
+
+    if (userId !== currentUserId) return null;
 
     const findUser = await UserModel.findOne({ clerkId: userId });
 
@@ -98,11 +166,11 @@ export async function fetchUserById({
   }
 }
 
+/** Tiến độ học của chính user đang đăng nhập. userId client gửi lên bị bỏ qua */
 export async function fetchUserCourseProgress({
-  userId,
   courseId,
 }: {
-  userId: string;
+  userId?: string;
   courseId: string;
 }): Promise<
   | {
@@ -113,10 +181,18 @@ export async function fetchUserCourseProgress({
   | undefined
 > {
   try {
-    connectToDatabase();
+    await connectToDatabase();
+
+    const { userId: clerkId } = auth();
+
+    if (!clerkId || !courseId) return;
+
+    const currentUser = await UserModel.findOne({ clerkId }).select("_id");
+
+    if (!currentUser) return;
 
     const [historyCount, lessonCount] = await Promise.all([
-      HistoryModel.countDocuments({ user: userId, course: courseId }),
+      HistoryModel.countDocuments({ user: currentUser._id, course: courseId }),
       // Không đếm bài đã xoá, để tổng khớp với đề cương
       LessonModel.countDocuments({ courseId, _destroy: false }),
     ]);
@@ -136,53 +212,66 @@ export async function fetchUsers({
   limit,
   page,
   isPaid,
+  status,
+  role,
 }: FetchUsersProps): Promise<
   | {
       users: UserItemData[];
       total: number;
+      tabCounts: UserManageTabCounts;
     }
   | undefined
 > {
   try {
-    connectToDatabase();
+    // Chưa đăng nhập cũng trả null, không chỉ chặn user thường
+    const currentAdmin = await getCurrentAdmin();
 
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
+    if (!currentAdmin) return undefined;
 
-    if (findUser && ![UserRole.Admin].includes(findUser?.role))
-      return undefined;
-
-    const query: FilterQuery<typeof UserModel> = {};
+    // Tìm kiếm và vai trò áp cho cả số đếm của từng tab; tab chỉ áp cho danh sách
+    const baseQuery: FilterQuery<typeof UserModel> = {};
     const skip = (page - 1) * limit;
 
     if (search) {
-      query.$or = [
+      baseQuery.$or = [
         { name: { $regex: search, $options: "i" } },
         { username: { $regex: search, $options: "i" } },
         { email: { $regex: search, $options: "i" } },
       ];
     }
 
-    if (isPaid) {
-      query.courses = {
-        $in: await CourseModel.find({ _destroy: false, free: false }).distinct(
-          "_id",
-        ),
-      };
-    }
+    if (role) baseQuery.role = role;
 
-    const users: UserItemData[] = await UserModel.find(query)
-      .skip(skip)
-      .limit(limit)
-      .sort({
-        createdAt: -1,
-      });
+    const paidCourseIds = await CourseModel.find({
+      _destroy: false,
+      free: false,
+    }).distinct("_id");
+    const paidQuery = { ...baseQuery, courses: { $in: paidCourseIds } };
+    const lockedQuery = { ...baseQuery, status: UserStatus.Inactive };
 
-    const totalUsers = await UserModel.countDocuments(query);
+    const query: FilterQuery<typeof UserModel> = { ...baseQuery };
+
+    if (status) query.status = status;
+    if (isPaid) query.courses = { $in: paidCourseIds };
+
+    const [users, totalUsers, allCount, paidCount, lockedCount] =
+      await Promise.all([
+        // Chỉ các cột trang quản lý hiện: không trả bank, password, permissions
+        UserModel.find(query)
+          .select(USER_MANAGE_LIST_FIELDS)
+          .skip(skip)
+          .limit(limit)
+          .sort({ createdAt: -1 }),
+        UserModel.countDocuments(query),
+        UserModel.countDocuments(baseQuery),
+        UserModel.countDocuments(paidQuery),
+        UserModel.countDocuments(lockedQuery),
+      ]);
 
     return {
       users: parseData(users),
       total: totalUsers,
+      tabCounts: { all: allCount, paid: paidCount, locked: lockedCount },
     };
   } catch (error) {
     console.log(error);
@@ -197,12 +286,23 @@ export async function fetchUsersByCourseId({
   isGetAll?: boolean;
 }): Promise<UserItemData[] | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
+
+    // Lấy toàn bộ user chỉ admin được; học viên của một khóa thì admin hoặc
+    // expert sở hữu khóa đó
+    const currentManager = isGetAll
+      ? await getCurrentAdmin()
+      : await getCurrentCourseManager(courseId);
+
+    if (!currentManager) return;
+
     const query: FilterQuery<typeof UserModel> = {};
     if (!isGetAll) {
       query.courses = courseId;
     }
-    const users = await UserModel.find(query);
+    const users = await UserModel.find(query).select(
+      "_id name username avatar email",
+    );
 
     return parseData(users);
   } catch (error) {
@@ -226,11 +326,11 @@ async function findFirstLesson(courseId: string) {
   return firstLecture?.lessons[0] || null;
 }
 
+/** Khóa đang học của chính user đang đăng nhập. userId client gửi lên bị bỏ qua */
 export async function fetchUserCoursesContinue({
-  userId,
   limit = 3,
 }: {
-  userId: string;
+  userId?: string;
   limit?: number;
 }): Promise<
   | {
@@ -240,19 +340,21 @@ export async function fetchUserCoursesContinue({
   | undefined
 > {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
-    if (!userId) return;
+    const { userId: clerkId } = auth();
+
+    if (!clerkId) return;
 
     const findUser: UserItemData | null = await UserModel.findOne({
-      clerkId: userId,
-    });
+      clerkId,
+    }).select("_id");
 
     if (!findUser) return;
 
     // Tính năng hội viên đã bỏ: ai cũng chỉ thấy khóa mình đã mua
     const user = await UserModel.findOne({
-      clerkId: userId,
+      clerkId,
     }).populate({
       path: "courses",
       select: "title slug image rating level price salePrice views free",
@@ -282,7 +384,7 @@ export async function fetchUserByUsername({
     connectToDatabase();
 
     const user = await UserModel.findOne({ username }).select(
-      "username bio avatar clerkId _id createdAt",
+      "username bio avatar _id createdAt",
     );
 
     if (!user) return null;
@@ -298,21 +400,182 @@ export async function getUserByUsername(params: {
   email?: string;
 }) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
+
+    // Trang cấp khóa tay: admin, và expert (đi từ trang quản lý đơn) cấp khóa của mình
+    const currentStaff = await getCurrentStaff();
+
+    if (!currentStaff) return;
+
     const { username, email } = params;
     const query: FilterQuery<typeof UserModel> = {};
 
-    if (username) query.username = username;
+    // String(): chặn object kiểu { $ne: "" } lọt vào bộ lọc Mongo
+    if (username) query.username = String(username);
 
-    if (email) query.email = email;
+    if (email) query.email = String(email);
 
-    const user = await UserModel.findOne(query).populate({
-      path: "courses",
-      model: CourseModel,
-    });
+    // Không có điều kiện thì findOne trả user đầu bảng
+    if (!query.username && !query.email) return;
+
+    const user = await UserModel.findOne(query)
+      .select("_id clerkId name username email avatar status role courses createdAt")
+      .populate({
+        path: "courses",
+        model: CourseModel,
+      });
 
     return user;
   } catch (error) {
     console.log(error);
+  }
+}
+
+/**
+ * Người đang đăng nhập tự sửa hồ sơ của mình, mọi vai đều được.
+ * Chỉ ghi đúng các trường của khối đang lưu, kiểm lại dữ liệu ở server:
+ * client gửi thêm trường khác (courses, permissions…) cũng bị bỏ.
+ */
+export async function updateMyProfile(
+  params: UpdateMyProfileParams,
+): Promise<ProfileSaveResult> {
+  try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return {
+        isSuccess: false,
+        message: "Phiên đăng nhập đã hết, đăng nhập lại rồi thử lại",
+      };
+    }
+
+    await connectToDatabase();
+    const currentUser = await UserModel.findOne({ clerkId: userId }).select(
+      "role username",
+    );
+
+    if (!currentUser)
+      return { isSuccess: false, message: PROFILE_SAVE_ERROR_MESSAGE };
+
+    let updateData: Record<string, unknown> = {};
+
+    if (params.section === "public") {
+      const parsed = profilePublicSchema.safeParse(params.values);
+
+      if (!parsed.success) {
+        return { isSuccess: false, message: parsed.error.issues[0]?.message };
+      }
+
+      // Chỉ kiểm khi đổi username: tên cũ đã lưu thì sửa họ tên vẫn được
+      const isUsernameChanged = parsed.data.username !== currentUser.username;
+      const isAdmin = currentUser.role === UserRole.Admin;
+
+      if (
+        isUsernameChanged &&
+        !isAdmin &&
+        isReservedUsername(parsed.data.username)
+      ) {
+        return {
+          isSuccess: false,
+          fieldErrors: { username: PROFILE_USERNAME_RESERVED_MESSAGE },
+        };
+      }
+
+      // Không phân biệt hoa thường: "Evondev" và "evondev" là một
+      const isUsernameTaken =
+        isUsernameChanged &&
+        (await UserModel.exists({
+          username: parsed.data.username,
+          clerkId: { $ne: userId },
+        }).collation({ locale: "en", strength: 2 }));
+
+      if (isUsernameTaken) {
+        return {
+          isSuccess: false,
+          fieldErrors: { username: PROFILE_USERNAME_TAKEN_MESSAGE },
+        };
+      }
+
+      updateData = { ...parsed.data };
+    }
+
+    if (params.section === "socials") {
+      const parsed = profileSocialSchema.safeParse(params.values);
+
+      if (!parsed.success) {
+        return { isSuccess: false, message: parsed.error.issues[0]?.message };
+      }
+
+      updateData = { socials: parsed.data };
+    }
+
+    if (params.section === "payout") {
+      if (currentUser.role === UserRole.User) {
+        return {
+          isSuccess: false,
+          message: "Chỉ chuyên gia và admin có tài khoản nhận tiền",
+        };
+      }
+
+      const parsed = profilePayoutSchema.safeParse(params.values);
+
+      if (!parsed.success) {
+        return { isSuccess: false, message: parsed.error.issues[0]?.message };
+      }
+
+      updateData = { bank: parsed.data };
+    }
+
+    await UserModel.updateOne({ clerkId: userId }, { $set: updateData });
+
+    revalidatePath("/profile");
+    revalidatePath(`${PROFILE_PUBLIC_PATH}/${currentUser.username}`);
+
+    return { isSuccess: true };
+  } catch (error) {
+    console.error(error);
+
+    return { isSuccess: false, message: PROFILE_SAVE_ERROR_MESSAGE };
+  }
+}
+
+/** Admin khoá hoặc mở khoá một thành viên. Chỉ ghi trường status */
+export async function updateUserStatus({
+  userId,
+  status,
+}: UpdateUserStatusParams): Promise<UpdateUserStatusResult> {
+  try {
+    const currentAdmin = await getCurrentAdmin();
+
+    if (!currentAdmin) {
+      return { isSuccess: false, message: USER_STATUS_FORBIDDEN_MESSAGE };
+    }
+
+    const isKnownStatus = Object.values(UserStatus).includes(status);
+
+    if (!isValidObjectId(userId) || !isKnownStatus) {
+      return { isSuccess: false, message: USER_STATUS_NOT_FOUND_MESSAGE };
+    }
+
+    const isSelfLock =
+      currentAdmin._id.toString() === userId && status === UserStatus.Inactive;
+
+    if (isSelfLock) {
+      return { isSuccess: false, message: USER_STATUS_SELF_LOCK_MESSAGE };
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(userId, {
+      $set: { status },
+    });
+
+    if (!updatedUser) {
+      return { isSuccess: false, message: USER_STATUS_NOT_FOUND_MESSAGE };
+    }
+
+    return { isSuccess: true };
+  } catch (error) {
+    console.log(error);
+
+    return { isSuccess: false, message: USER_STATUS_SAVE_ERROR_MESSAGE };
   }
 }

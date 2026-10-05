@@ -2,6 +2,7 @@
 import Course from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
+import { getCurrentCourseManager } from "@/shared/libs/auth";
 import { CourseParams } from "@/types";
 import { connectToDatabase } from "../mongoose";
 
@@ -9,11 +10,20 @@ export async function getCourseUpdateOutline(
   slug: string
 ): Promise<CourseParams | undefined> {
   try {
-    connectToDatabase();
-    const course = await Course.findOne({
-      slug,
-      _destroy: false,
-    })
+    await connectToDatabase();
+    const foundCourse = await Course.findOne({ slug, _destroy: false }).select(
+      "_id"
+    );
+
+    if (!foundCourse) return;
+
+    const courseManager = await getCurrentCourseManager(
+      foundCourse._id.toString()
+    );
+
+    if (!courseManager) return;
+
+    const course = await Course.findById(foundCourse._id)
       .select("title slug")
       .populate({
         path: "lecture",
@@ -24,7 +34,7 @@ export async function getCourseUpdateOutline(
         populate: {
           path: "lessons",
           select:
-            "title slug video assetId content duration lectureId order iframe _destroy",
+            "title slug video assetId content duration lectureId order iframe trial _destroy",
           model: Lesson,
           match: { _destroy: false },
           options: { sort: { order: 1 } },

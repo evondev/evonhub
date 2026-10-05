@@ -1,9 +1,10 @@
+import { PreviewStateSwitcher } from "@/shared/components/common";
+import { PREVIEW_EXPLORE_STATE_LINKS } from "../../constants";
 import { ExploreFilters, ExplorePreviewState } from "../../types";
 import { buildPreviewExploreResult } from "../../utils";
 import {
   ExploreFilterBar,
   ExploreLoadError,
-  ExplorePreviewStateSwitcher,
   ExploreResults,
   ExploreSkeleton,
 } from "./components";
@@ -30,7 +31,10 @@ export function ExplorePreviewPage({
 
   return (
     <div className="flex flex-col gap-4 sm:gap-6">
-      <ExplorePreviewStateSwitcher currentState={state} />
+      <PreviewStateSwitcher
+        links={PREVIEW_EXPLORE_STATE_LINKS}
+        currentState={state}
+      />
       <ExploreFilterBar filters={shownFilters} linkBase={linkBase} />
       {state === "dang-tai" && <ExploreSkeleton />}
       {state === "loi" && <ExploreLoadError />}

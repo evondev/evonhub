@@ -2,13 +2,17 @@
 
 import CourseModel from "@/modules/course/models";
 import LectureModel from "@/modules/lecture/models";
-import { parseData } from "@/shared/helpers";
+import { parseData, sanitizeHtml } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
+import {
+  canAccessCourseContent,
+  getCurrentCourseManager,
+} from "@/shared/libs/auth";
 import {
   LessonDetailsOutlineData,
   LessonItemCutomizeData,
   LessonItemData,
-  UpdateLessonDragProps,
+  LessonModelProps,
   UpdateLessonOrderProps,
   UpdateLessonProps,
 } from "@/shared/types";
@@ -33,7 +37,25 @@ export async function getLessonById(
     if (!foundLesson) {
       return;
     }
-    return parseData(foundLesson);
+
+    const lessonDetails: LessonItemCutomizeData = parseData(foundLesson);
+    const canReadContent =
+      lessonDetails.trial === true ||
+      (await canAccessCourseContent(lessonDetails.courseId?._id?.toString()));
+
+    if (canReadContent) return lessonDetails;
+
+    // Chưa mua: vẫn trả khung bài (tiêu đề, khóa) để trang hiện lời mời mua,
+    // nhưng bỏ hết phần nội dung trả phí
+    const {
+      video: _video,
+      iframe: _iframe,
+      content: _content,
+      assetId: _assetId,
+      ...lessonOutline
+    } = lessonDetails;
+
+    return lessonOutline as LessonItemCutomizeData;
   } catch (error) {
     console.log(error);
   }
@@ -99,10 +121,50 @@ export async function fetchLessonsByCourseId(
 ): Promise<LessonItemData[] | undefined> {
   try {
     connectToDatabase();
-    const lessons = await LessonModel.find({ courseId });
+    // Chỉ dùng để đếm và tìm bài trước/sau: không trả video, nội dung trả phí
+    const lessons = await LessonModel.find({ courseId }).select(
+      "_id title slug order duration trial lectureId courseId",
+    );
     if (!lessons) return [];
     return JSON.parse(JSON.stringify(lessons));
   } catch (error) {}
+}
+
+// Field bài học người quản lý khóa được sửa từ trình soạn bài
+const editableLessonFields: (keyof LessonModelProps)[] = [
+  "title",
+  "slug",
+  "content",
+  "video",
+  "assetId",
+  "iframe",
+  "duration",
+  "trial",
+  "order",
+];
+
+interface LectureLessonOrderItem {
+  _id: string;
+  lessons: { _id: string }[];
+}
+
+interface UpdateLectureLessonOrderProps {
+  lectures: LectureLessonOrderItem[];
+  path: string;
+}
+
+/**
+ * Khóa chung của các bài/chương truyền lên. Khác khóa nhau hoặc thiếu bản ghi
+ * thì trả rỗng để action từ chối cả lô.
+ */
+function getSingleCourseId(records: { courseId?: unknown }[], total: number) {
+  const courseIds = new Set(
+    records.map((record) => record.courseId?.toString() || ""),
+  );
+
+  if (records.length !== total || courseIds.size !== 1) return "";
+
+  return Array.from(courseIds)[0];
 }
 
 export async function updateLesson({
@@ -111,44 +173,61 @@ export async function updateLesson({
   path,
 }: UpdateLessonProps) {
   try {
-    connectToDatabase();
-    const allLesson = await LessonModel.find();
-    const existLessonSlug = allLesson.find(
-      (lesson) => lesson.slug === data.slug && lesson.courseId === data.courseId
-    );
-    if (existLessonSlug && existLessonSlug._id.toString() !== lessonId) {
+    await connectToDatabase();
+    if (!isValidObjectId(lessonId)) return;
+
+    const lesson = await LessonModel.findById(lessonId).select("courseId");
+
+    if (!lesson) return;
+
+    const lessonCourseId = lesson.courseId?.toString();
+    const courseManager = await getCurrentCourseManager(lessonCourseId);
+
+    if (!courseManager) {
       return {
         type: "error",
-        message: "Đường dẫn bài học đã tồn tại!",
+        message: "Bạn không có quyền thực hiện thao tác này",
       };
     }
-    await LessonModel.findByIdAndUpdate(lessonId, data);
 
-    revalidatePath(path);
-  } catch (error) {
-    console.log(error);
-  }
-}
+    const lessonUpdate: Record<string, unknown> = {};
 
-export async function updateLessonDrag({
-  lessons,
-  path,
-}: UpdateLessonDragProps) {
-  try {
-    connectToDatabase();
+    editableLessonFields.forEach((field) => {
+      if (data?.[field] !== undefined) lessonUpdate[field] = data[field];
+    });
 
-    await Promise.all(
-      lessons.map(async (lesson, index) => {
-        await updateLesson({
-          lessonId: lesson._id,
-          path,
-          data: {
-            lectureId: lesson.lectureId as any,
-            order: index + 1,
-          },
-        });
-      })
-    );
+    if (typeof lessonUpdate.content === "string") {
+      lessonUpdate.content = sanitizeHtml(lessonUpdate.content);
+    }
+
+    if (data?.lectureId) {
+      // Chỉ cho chuyển bài sang chương của cùng khóa
+      const isSameCourseLecture = await LectureModel.exists({
+        _id: data.lectureId,
+        courseId: lessonCourseId,
+      });
+
+      if (!isSameCourseLecture) return;
+
+      lessonUpdate.lectureId = data.lectureId;
+    }
+
+    if (lessonUpdate.slug) {
+      const isSlugTaken = await LessonModel.exists({
+        slug: lessonUpdate.slug,
+        courseId: lessonCourseId,
+        _id: { $ne: lessonId },
+      });
+
+      if (isSlugTaken) {
+        return {
+          type: "error",
+          message: "Đường dẫn bài học đã tồn tại!",
+        };
+      }
+    }
+
+    await LessonModel.findByIdAndUpdate(lessonId, lessonUpdate);
 
     revalidatePath(path);
   } catch (error) {
@@ -158,46 +237,70 @@ export async function updateLessonDrag({
 
 export async function updateLessonOrder(params: UpdateLessonOrderProps) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
+
+    const lessonIds = params.lessons.map((lesson) => lesson._id);
+    const lessons = await LessonModel.find({ _id: { $in: lessonIds } }).select(
+      "courseId",
+    );
+    const courseId = getSingleCourseId(lessons, new Set(lessonIds).size);
+    const courseManager = await getCurrentCourseManager(courseId);
+
+    if (!courseManager) return;
 
     await Promise.all(
-      params.lessons.map(async (item, index) => {
-        return LessonModel.findOneAndUpdate(
-          {
-            slug: item.slug,
-          },
-          {
-            order: index + 1,
-          }
-        );
-      })
+      lessonIds.map((lessonId, index) =>
+        LessonModel.updateOne(
+          { _id: lessonId, courseId },
+          { order: index + 1 },
+        ),
+      ),
     );
     revalidatePath(params.path);
   } catch (error) {}
 }
 
-export async function updateLectureLessonOrder(params: {
-  lectures: any[];
-  path: string;
-}) {
+export async function updateLectureLessonOrder(
+  params: UpdateLectureLessonOrderProps,
+) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
+
+    const lectureIds = params.lectures.map((lecture) => lecture._id);
+    const lessonIds = params.lectures.flatMap((lecture) =>
+      lecture.lessons.map((lesson) => lesson._id),
+    );
+    const [lectures, lessons] = await Promise.all([
+      LectureModel.find({ _id: { $in: lectureIds } }).select("courseId"),
+      LessonModel.find({ _id: { $in: lessonIds } }).select("courseId"),
+    ]);
+    const courseId = getSingleCourseId(lectures, new Set(lectureIds).size);
+    const lessonCourseId = getSingleCourseId(lessons, new Set(lessonIds).size);
+
+    // Bài và chương đều phải thuộc đúng một khóa người gọi quản lý
+    if (lessonIds.length > 0 && lessonCourseId !== courseId) return;
+
+    const courseManager = await getCurrentCourseManager(courseId);
+
+    if (!courseManager) return;
 
     await Promise.all(
-      params.lectures.map(async (item, index) => {
-        await LectureModel.findOneAndUpdate(
-          {
-            _id: item._id,
-          },
-          {
-            lessons: item.lessons,
-          }
+      params.lectures.map(async (lecture) => {
+        const lectureLessonIds = lecture.lessons.map((lesson) => lesson._id);
+
+        await LectureModel.updateOne(
+          { _id: lecture._id, courseId },
+          { lessons: lectureLessonIds },
         );
-        await updateLessonOrder({
-          lessons: item.lessons,
-          path: params.path,
-        });
-      })
+        await Promise.all(
+          lectureLessonIds.map((lessonId, index) =>
+            LessonModel.updateOne(
+              { _id: lessonId, courseId },
+              { order: index + 1, lectureId: lecture._id },
+            ),
+          ),
+        );
+      }),
     );
     revalidatePath(params.path);
   } catch (error) {}

@@ -1,22 +1,23 @@
 import PageNotFound from "@/app/not-found";
-import CourseContent from "@/components/course/CourseContent";
 import { getCourseUpdateOutline } from "@/lib/actions/admin.action";
+import {
+  CourseContentPage,
+  type CourseContentData,
+} from "@/modules/course/pages/content-page";
 
-const page = async ({
-  searchParams,
-}: {
+interface CourseContentRouteProps {
   searchParams: {
     slug: string;
   };
-}) => {
-  const slug = searchParams.slug;
-  const findCourse = await getCourseUpdateOutline(slug);
-  if (!findCourse?.slug) return <PageNotFound></PageNotFound>;
-  return (
-    <CourseContent
-      data={JSON.parse(JSON.stringify(findCourse))}
-    ></CourseContent>
-  );
-};
+}
 
-export default page;
+export default async function CourseContentRoute({
+  searchParams,
+}: CourseContentRouteProps) {
+  const findCourse = await getCourseUpdateOutline(searchParams.slug);
+  if (!findCourse?.slug) return <PageNotFound />;
+
+  const data: CourseContentData = JSON.parse(JSON.stringify(findCourse));
+
+  return <CourseContentPage data={data} />;
+}

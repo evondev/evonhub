@@ -36,6 +36,8 @@
     --brand-band-end: 95 84 202;
     /* Chữ màu nhấn trên nền nhấn nhạt (bg-primary/10): đậm hơn một bậc cho đủ 4.5:1 */
     --primary-strong: 95 84 202;
+    /* Bóng lớp nổi nhỏ (select, dropdown, popover): bằng shadow-lg ở nền sáng */
+    --elevation-popover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   }
   .dark {
     --primary: 151 141 248; /* #978df8 */
@@ -53,12 +55,24 @@
     --brand-band: 76 65 189;
     --brand-band-end: 62 52 158;
     --primary-strong: 151 141 248;
+    /* Bóng 10% trên nền gần đen không thấy; thứ tách lớp nổi là viền + nền sáng hơn */
+    --elevation-popover: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
   }
   ::selection {
     @apply text-white bg-primary;
   }
+  // Giữ sẵn chỗ cho thanh cuộn: select, dropdown, dialog của Radix khoá cuộn
+  // trang lúc mở, thanh cuộn biến mất làm header, sidebar fixed nhảy ngang
+  html {
+    scrollbar-gutter: stable;
+  }
   body {
     @apply bg-gray-100 text-grayPrimary dark:text-[#cbd5e1] dark:bg-grayDarkest antialiased overflow-x-hidden;
+  }
+  // Đã giữ chỗ bằng scrollbar-gutter thì bỏ phần bù margin-right của
+  // react-remove-scroll, không thì trang bị đẩy sang trái gấp đôi
+  html body[data-scroll-locked] {
+    margin-right: 0 !important;
   }
   .wrapper {
     max-width: 2600px;
@@ -127,7 +141,7 @@
     @apply bg-gray-100 dark:bg-grayDarkest #{!important};
   }
   .form-styles {
-    @apply border border-gray-200 dark:border-opacity-10 rounded-xl transition-all bg-white dark:bg-grayDarker focus:border-primary dark:focus:border-primary focus:ring-2 focus:ring-primary/15 font-medium placeholder:text-slate-900 placeholder:text-opacity-40 focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50  dark:placeholder:text-slate-500  text-sm ring-offset-white px-3 py-2 w-full
+    @apply border border-gray-200 dark:border-opacity-10 rounded-xl transition-all bg-white dark:bg-grayDarker focus:border-primary dark:focus:border-primary focus:ring-2 focus:ring-primary/15 font-medium placeholder:text-muted focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50  text-sm ring-offset-white px-3 py-2 w-full
     dark:text-white dark:text-opacity-90 text-gray-800;
   }
 }
@@ -218,6 +232,10 @@ div .tox .tox-edit-area::before {
     );
     animation: shimmer 5s infinite;
     content: "";
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
   }
 
   @keyframes shimmer {

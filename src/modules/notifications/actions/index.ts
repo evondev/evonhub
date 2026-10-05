@@ -1,61 +1,37 @@
 "use server";
 
-import Course from "@/database/course.model";
-import UserModel from "@/modules/user/models";
-import { UserStatus } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
+import { getCurrentUser } from "@/shared/libs/auth";
 import NotificationModel from "../models";
-import { NotificationItemData, SendNotificationParams } from "../types";
+import { NotificationItemData } from "../types";
 
-export async function sendNotification({
-  title,
-  content,
-  users = [],
-  isSendAll,
-}: SendNotificationParams) {
-  try {
-    connectToDatabase();
-
-    let newUsers: any = users;
-
-    if (isSendAll) {
-      newUsers = await UserModel.find({
-        status: UserStatus.Active,
-        courses: {
-          $in: await Course.find({ _destroy: false }).distinct("_id"),
-        },
-      }).select("_id");
-    }
-
-    await NotificationModel.create({
-      title: title,
-      content: content,
-      users: newUsers,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-}
-
+/**
+ * Thông báo của người đang đăng nhập. Tham số `userId` chỉ còn để client làm
+ * query key, server không dùng.
+ */
 export async function fetchNotificationsByUser(
-  userId: string
+  _userId?: string,
 ): Promise<NotificationItemData[] | undefined> {
   try {
-    connectToDatabase();
-    if (!userId) return;
+    const currentUser = await getCurrentUser();
 
+    if (!currentUser) return;
+
+    await connectToDatabase();
+
+    // Bỏ `users`: thông báo gửi tất cả chứa id của mọi học viên
     const notifications = await NotificationModel.find({
-      users: userId,
+      users: currentUser._id,
     })
+      .select("title content createdAt")
       .sort({
         createdAt: -1,
       })
-
       .limit(20);
 
     return parseData(notifications);
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
   }
 }

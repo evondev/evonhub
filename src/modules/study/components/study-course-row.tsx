@@ -3,6 +3,7 @@
 import { useResumeLessonUrl } from "@/shared/hooks";
 import { cn } from "@/shared/utils";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { StudyCourse } from "../types";
 import { StudyCourseRowContent } from "./study-course-row-content";
 
@@ -23,12 +24,20 @@ export function StudyCourseRow({
     studyCourse.course.slug,
     studyCourse.firstLesson,
   );
+  const selectLinkRef = useRef<HTMLAnchorElement>(null);
   const rowClassName =
     "min-w-0 items-center gap-3 rounded-xl p-2.5 outline-none transition-colors";
+
+  // Chọn khóa thì Suspense dựng lại cả danh sách, ô cuộn của cột trái về đầu.
+  // Cuộn lại để khóa đang chọn không bị khuất khi danh sách dài
+  useEffect(() => {
+    if (isSelected) selectLinkRef.current?.scrollIntoView({ block: "nearest" });
+  }, [isSelected]);
 
   return (
     <li>
       <Link
+        ref={selectLinkRef}
         href={selectHref}
         scroll={false}
         aria-current={isSelected ? "true" : undefined}

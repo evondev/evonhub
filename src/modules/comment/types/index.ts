@@ -13,8 +13,10 @@ export interface CommentModelProps extends Document {
   level: number;
   createdAt: Date;
 }
-export interface CommentItemData
-  extends Omit<CommentModelProps, "user" | "lesson" | "parentId" | "_id"> {
+export interface CommentItemData extends Omit<
+  CommentModelProps,
+  "user" | "lesson" | "parentId" | "_id"
+> {
   _id: string;
   parentId?: string;
   user: UserItemData;
@@ -24,18 +26,4 @@ export interface CommentItemData
       title: string;
     };
   };
-}
-
-export interface FetchCommentsProps {
-  userId: string;
-  status?: CommentStatus;
-  page: number;
-  limit: number;
-  search?: string;
-}
-
-export interface UpdateCommentProps {
-  commentId: string;
-  status: CommentStatus;
-  userId?: string;
 }

@@ -1,6 +1,11 @@
 import { type ClassValue, clsx } from "clsx";
 import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
+import {
+  EXPANDABLE_TEXT_MIN_LENGTH,
+  MODERATION_STALE_PENDING_HOURS,
+} from "../constants/moderation.constants";
+import type { MenuLinkItemProps, PaginationItem } from "../types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -46,7 +51,6 @@ export const extractDriveId = (input: string) => {
   return null;
 };
 
-
 export const formatDate = (date: Date): string => {
   return new Date(date).toLocaleDateString("vi-VN");
 };
@@ -55,3 +59,136 @@ export const formatThoundsand = (num: number): string => {
   if (!num) return "0";
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
+
+/**
+ * Các ô phân trang, luôn đủ 7 ô (tính cả "…") khi nhiều hơn 7 trang, để nav rộng
+ * cố định, chuyển trang không xô: 1 2 3 4 5 … 435 · 1 … 11 12 13 … 435 · 1 … 431 432 433 434 435
+ */
+export function buildPaginationItems(
+  currentPage: number,
+  totalPages: number,
+): PaginationItem[] {
+  const slotCount = 7;
+  const edgeLength = slotCount - 2;
+  const allPages = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+  if (totalPages <= slotCount) return allPages;
+
+  if (currentPage <= edgeLength - 1) {
+    return [...allPages.slice(0, edgeLength), "ellipsis", totalPages];
+  }
+
+  if (currentPage >= totalPages - edgeLength + 2) {
+    return [1, "ellipsis", ...allPages.slice(totalPages - edgeLength)];
+  }
+
+  return [
+    1,
+    "ellipsis",
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    "ellipsis",
+    totalPages,
+  ];
+}
+
+/** "11 tới 20" của câu đếm dưới bảng */
+export function formatPageRange(
+  page: number,
+  pageSize: number,
+  total: number,
+): string {
+  const start = (page - 1) * pageSize + 1;
+  const end = Math.min(page * pageSize, total);
+
+  return `${formatThoundsand(start)} tới ${formatThoundsand(end)}`;
+}
+
+export function getTotalPages(total: number, pageSize: number): number {
+  return Math.max(Math.ceil(total / pageSize), 1);
+}
+
+/** Cắt từ khoá dài bằng số ký tự, để dấu ngoặc kép dính liền từ khoá */
+export function truncateKeyword(keyword: string, maxLength: number): string {
+  if (keyword.length <= maxLength) return keyword;
+
+  return `${keyword.slice(0, maxLength).trimEnd()}…`;
+}
+
+/** Nội dung dài hoặc nhiều đoạn thì gập lại, có "Xem thêm" */
+export function isLongText(text: string): boolean {
+  return text.length > EXPANDABLE_TEXT_MIN_LENGTH || text.includes("\n");
+}
+
+/** Mục chờ duyệt quá lâu thì cần chú ý: người viết đang đợi */
+export function isStalePending(createdAt: Date | string): boolean {
+  return (
+    dayjs().diff(dayjs(createdAt), "hour") >= MODERATION_STALE_PENDING_HOURS
+  );
+}
+
+/** "2 giờ trước"; chờ duyệt quá lâu thì nói thẳng "Chờ 3 ngày" */
+export function formatModerationAge(
+  createdAt: Date | string,
+  isStale: boolean,
+): string {
+  if (!isStale) return timeAgo(createdAt);
+
+  return `Chờ ${dayjs().diff(dayjs(createdAt), "day")} ngày`;
+}
+
+/** "14:05, 05/10/2026" cho title của mốc thời gian */
+export function formatFullDateTime(date: Date | string): string {
+  return dayjs(date).format("HH:mm, DD/MM/YYYY");
+}
+
+export function isMenuLinkActive(link: MenuLinkItemProps, pathname: string) {
+  if (pathname === link.url) return true;
+
+  return Boolean(
+    link.activePathPrefix && pathname.startsWith(link.activePathPrefix),
+  );
+}
+
+/**
+ * Chip bật tắt một bộ lọc (trang Khoá học, trang Đơn hàng). Rê vào chỉ đậm
+ * viền như nút Sắp xếp: tô nền xám thì chip tan vào nền trang
+ */
+export function getFilterChipClassName(isActive: boolean): string {
+  return cn(
+    "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-sm font-medium outline-none transition-colors",
+    isActive && "border-primary/40 bg-primary/10 text-primary-strong",
+    !isActive &&
+      "border-border-strong bg-surface text-foreground/80 hover:border-foreground/25 hover:text-foreground",
+  );
+}
+
+/**
+ * Chữ trong phần tử có đang bị cắt (truncate, line-clamp) không. Đo bằng Range,
+ * không bằng scrollWidth: hai số đó làm tròn về số nguyên, chữ rộng 182,4px
+ * trong khung 182px vẫn bị cắt mà phép so báo không cắt
+ */
+export function isTextTruncated(element: HTMLElement | null): boolean {
+  if (!element) return false;
+
+  const range = document.createRange();
+
+  range.selectNodeContents(element);
+
+  const textRect = range.getBoundingClientRect();
+  const elementRect = element.getBoundingClientRect();
+
+  return (
+    textRect.width > elementRect.width || textRect.height > elementRect.height
+  );
+}
+
+/** Tách email ở "@" để chữ xuống dòng ngay trước tên miền, không giữa tên miền */
+export function splitEmailAtSign(email: string): [string, string] {
+  const atIndex = email.lastIndexOf("@");
+
+  if (atIndex < 0) return [email, ""];
+
+  return [email.slice(0, atIndex), email.slice(atIndex)];
+}

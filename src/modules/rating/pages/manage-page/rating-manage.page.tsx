@@ -1,199 +1,113 @@
 "use client";
 
-import { Switch } from "@/components/ui/switch";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { reactions } from "@/constants";
-import { cn } from "@/lib/utils";
-import {
-  Heading,
-  IconArrowLeft,
-  IconArrowRight,
-  IconCircleCheck,
-} from "@/shared/components";
-import { PaginationControl } from "@/shared/components/common";
+import { useUserContext } from "@/components/user-context";
 import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
 import {
-  RatingStatus,
-  ratingStatusActions,
-} from "@/shared/constants/rating.constants";
-import { formatDate } from "@/utils";
-import { debounce } from "lodash";
-import Image from "next/image";
-import Link from "next/link";
-import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
-import Swal from "sweetalert2";
-import { userMutationRatingStatus } from "../../services/data/mutation-rating-status.data";
-import { useQueryRatings } from "../../services/data/query-ratings";
-import { RatingItemData } from "../../types";
+  useModeration,
+  usePurgeRejected,
+  useQueryManagedCourses,
+} from "@/shared/hooks";
+import {
+  parseAsInteger,
+  parseAsString,
+  parseAsStringLiteral,
+  useQueryStates,
+} from "nuqs";
+import {
+  RATING_MANAGE_DEFAULT_FILTERS,
+  RATING_MANAGE_TAB_VALUES,
+} from "../../constants/rating-manage.constants";
+import {
+  useMutationDeleteRejectedRatings,
+  useMutationUpdateMatchingRatings,
+  useMutationUpdateRatingsStatus,
+  useQueryRatingsManage,
+} from "../../services";
+import { RatingManageRow } from "../../types/rating-manage.types";
+import {
+  buildRatingCountSuccessMessage,
+  buildRatingPurgeSuccessMessage,
+  buildRatingSuccessMessage,
+  getRatingStatusForAction,
+  getRatingStatusForTab,
+  toRatingManageRow,
+} from "../../utils/rating-manage.utils";
+import { RatingManageView } from "./components";
 
 export interface RatingManagePageProps {}
 
 export function RatingManagePage(_props: RatingManagePageProps) {
   const [filters, setFilters] = useQueryStates({
-    search: parseAsString.withDefault(""),
-    page: parseAsInteger.withDefault(1),
-    status: parseAsString.withDefault(""),
+    search: parseAsString.withDefault(RATING_MANAGE_DEFAULT_FILTERS.search),
+    tab: parseAsStringLiteral(RATING_MANAGE_TAB_VALUES).withDefault(
+      RATING_MANAGE_DEFAULT_FILTERS.tab,
+    ),
+    courseId: parseAsString.withDefault(RATING_MANAGE_DEFAULT_FILTERS.courseId),
+    page: parseAsInteger.withDefault(RATING_MANAGE_DEFAULT_FILTERS.page),
   });
-  const { data: ratings } = useQueryRatings({
-    page: filters.page,
-    limit: ITEMS_PER_PAGE,
-    status: filters.status as RatingStatus,
-  });
+  const { userInfo } = useUserContext();
+  const userId = userInfo?.clerkId;
 
-  const mutationRatingStatus = userMutationRatingStatus();
-
-  const handleRatingStatusChange = async (rating: RatingItemData) => {
-    Swal.fire({
-      title: "Bạn chắc chứ?",
-      text: "Bạn có chắc muốn thay đổi trạng thái của đánh giá này?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Đồng ý",
-      cancelButtonText: "Hủy",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await mutationRatingStatus.mutateAsync({
-          ratingId: rating._id,
-          status: rating.status,
-        });
-      }
+  const { data, isPending, isPlaceholderData, isFetching, refetch } =
+    useQueryRatingsManage({
+      userId,
+      search: filters.search,
+      status: getRatingStatusForTab(filters.tab),
+      courseId: filters.courseId,
+      page: filters.page,
+      limit: ITEMS_PER_PAGE,
     });
+  const { data: courses } = useQueryManagedCourses(userId);
+  const { mutateAsync: updateRatingsStatusAsync } =
+    useMutationUpdateRatingsStatus();
+  const { mutateAsync: updateMatchingRatingsAsync } =
+    useMutationUpdateMatchingRatings();
+  const { mutateAsync: deleteRejectedRatingsAsync } =
+    useMutationDeleteRejectedRatings();
+  // Thao tác "tất cả" áp đúng phạm vi đang xem: từ khoá và khoá học
+  const scope = { search: filters.search, courseId: filters.courseId };
+
+  // fetchRatingsManage trả undefined khi lỗi hoặc không phải admin, expert
+  const result = data && {
+    ratings: data.ratings.map(toRatingManageRow),
+    total: data.total,
+    tabCounts: data.tabCounts,
   };
 
-  return (
-    <>
-      <Heading className="lg:min-h-10 mb-5">Quản lý đánh giá</Heading>
-      <div className="mb-2 flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-xl flex-wrap gap-3">
-        <div className="flex items-center gap-5">
-          <div className="flex gap-3">
-            {ratingStatusActions.map((item, index) => (
-              <button
-                key={index}
-                type="button"
-                className={cn(
-                  "text-xs font-semibold px-2 py-1 rounded-xl flex items-center gap-2 h-7",
-                  item.className
-                )}
-                onClick={() => setFilters({ status: item.value })}
-              >
-                {item.text}
-                {filters.status === item.value && (
-                  <IconCircleCheck className="size-4" />
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="flex gap-3">
-          <div className="flex justify-end gap-3">
-            <PaginationControl
-              onClick={debounce(
-                () => setFilters({ page: filters.page - 1 }),
-                300
-              )}
-              disabled={filters.page <= 1}
-            >
-              <IconArrowLeft />
-            </PaginationControl>
-            <PaginationControl
-              onClick={debounce(
-                () => setFilters({ page: filters.page + 1 }),
-                300
-              )}
-              disabled={Number(ratings?.length) <= 0}
-            >
-              <IconArrowRight />
-            </PaginationControl>
-          </div>
-        </div>
-      </div>
-      <Table className="bg-white rounded-xl dark:bg-grayDarker overflow-x-auto table-responsive">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Course</TableHead>
-            <TableHead>Member</TableHead>
-            <TableHead>Content</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Date</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {ratings &&
-            ratings.length > 0 &&
-            ratings
-              .filter((rating) => !!rating.course?.slug)
-              .map((rating) => {
-                const icon = reactions.find(
-                  (reaction) => reaction.rating === rating.rating
-                )?.icon;
-                return (
-                  <TableRow key={rating._id}>
-                    <TableCell>
-                      <Link
-                        href={`/course/${rating.course?.slug}`}
-                        className="flex items-center gap-3"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <Image
-                          className="size-10 rounded-md border borderDarkMode object-cover shrink-0"
-                          src={rating.course?.image}
-                          alt={rating.course?.title}
-                          width={40}
-                          height={40}
-                        ></Image>
-                        <div className="text-xs lg:text-sm font-semibold w-[200px]">
-                          {rating.course?.title}
-                        </div>
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <Link
-                        href={`/admin/user/manage?search=${rating.user?.email}`}
-                        className="flex items-center gap-3 whitespace-nowrap"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <img
-                          alt=""
-                          src={rating.user?.avatar}
-                          className="size-8 rounded-full object-cover border borderDarkMode"
-                          width={32}
-                          height={32}
-                          loading="lazy"
-                        />
-                        <div className="text-xs lg:text-sm font-semibold">
-                          {rating.user?.username}
-                        </div>
-                      </Link>
-                    </TableCell>
+  const moderation = useModeration<RatingManageRow>({
+    changeStatus: (ratingIds, action) =>
+      updateRatingsStatusAsync({
+        ratingIds,
+        status: getRatingStatusForAction(action),
+      }),
+    changeMatchingStatus: (excludedIds, action) =>
+      updateMatchingRatingsAsync({
+        scope,
+        currentStatus: getRatingStatusForTab(filters.tab),
+        excludedIds,
+        status: getRatingStatusForAction(action),
+      }),
+    buildSuccessMessage: buildRatingSuccessMessage,
+    buildCountSuccessMessage: buildRatingCountSuccessMessage,
+  });
+  const purge = usePurgeRejected({
+    purge: () => deleteRejectedRatingsAsync(scope),
+    buildSuccessMessage: buildRatingPurgeSuccessMessage,
+  });
 
-                    <TableCell>
-                      <div className="max-w-md text-left lg:text-balance font-medium leading-relaxed w-[300px] lg:w-auto">
-                        {rating.content}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Switch
-                        checked={rating.status === RatingStatus.Active}
-                        onCheckedChange={() => handleRatingStatusChange(rating)}
-                      />
-                    </TableCell>
-                    <TableCell className="text-slate-500">
-                      {formatDate(rating.createdAt)}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-        </TableBody>
-      </Table>
-    </>
+  return (
+    <RatingManageView
+      filters={filters}
+      onFiltersChange={setFilters}
+      result={result}
+      courses={courses || []}
+      pageSize={ITEMS_PER_PAGE}
+      isLoading={isPending}
+      isError={!isPending && !data}
+      isRefreshing={isPlaceholderData && isFetching}
+      onRetry={refetch}
+      moderation={moderation}
+      purge={purge}
+    />
   );
 }

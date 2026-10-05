@@ -7,7 +7,7 @@ import {
   PREVIEW_COURSES,
   ROADMAP_MIN_STEP_COUNT,
   ROADMAP_STEPS,
-  TESTIMONIAL_SHOW_COUNT,
+  TESTIMONIAL_TWO_ROW_MIN_COUNT,
 } from "../constants";
 import {
   CatalogStats,
@@ -109,23 +109,27 @@ export function findNextRoadmapStep(steps: RoadmapStep[]) {
   return steps.find((step) => (step.courseProgress?.progress || 0) < 100);
 }
 
-/**
- * Cảm nhận dài nhất lên ô lớn (cảm nhận ngắn trong ô lớn để trống nửa ô), các
- * ô nhỏ giữ thứ tự mới nhất.
- */
-export function pickTestimonials(ratings: RatingItemData[]) {
-  const featuredRating = ratings.reduce<RatingItemData | undefined>(
-    (longest, rating) =>
-      !longest || rating.content.length > longest.content.length
-        ? rating
-        : longest,
-    undefined,
-  );
-  const otherRatings = ratings
-    .filter((rating) => rating !== featuredRating)
-    .slice(0, TESTIMONIAL_SHOW_COUNT - 1);
+/** Cảm nhận của khoá ghim đứng trước, bỏ cái trùng với danh sách mới nhất */
+export function mergeTestimonials(
+  pinnedRatings: RatingItemData[],
+  latestRatings: RatingItemData[],
+) {
+  const pinnedIds = new Set(pinnedRatings.map((rating) => rating._id));
 
-  return { featuredRating, otherRatings };
+  return [
+    ...pinnedRatings,
+    ...latestRatings.filter((rating) => !pinnedIds.has(rating._id)),
+  ];
+}
+
+/** Đủ nhiều thì chia xen kẽ hai dải để cảm nhận dài ngắn rải đều cả hai */
+export function splitTestimonialRows(ratings: RatingItemData[]) {
+  if (ratings.length < TESTIMONIAL_TWO_ROW_MIN_COUNT) return [ratings];
+
+  return [
+    ratings.filter((rating, index) => index % 2 === 0),
+    ratings.filter((rating, index) => index % 2 === 1),
+  ];
 }
 
 /**

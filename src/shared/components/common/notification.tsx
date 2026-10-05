@@ -7,6 +7,7 @@ import {
 import { useUserContext } from "@/components/user-context";
 import { useQueryNotificationsByUser } from "@/modules/notifications/services/data/query-notifications-by-user";
 import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
+import { sanitizeHtml } from "@/shared/helpers";
 import { invalidateQueriesByKeys } from "@/shared/helpers/query-helper";
 import { getTimestamp } from "@/utils";
 import { Bell } from "lucide-react";
@@ -57,7 +58,7 @@ const Notification = () => {
                   </div>
                   <div
                     dangerouslySetInnerHTML={{
-                      __html: el.content,
+                      __html: sanitizeHtml(el.content),
                     }}
                     className="text-slate-600 dark:text-slate-200"
                   ></div>

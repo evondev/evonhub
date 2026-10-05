@@ -15,7 +15,6 @@ import type {
   ExploreCoursesResult,
   ExploreFilters,
   ExploreLinkBase,
-  ExplorePaginationItem,
   ExplorePreviewState,
   ExploreSearchParams,
 } from "../types";
@@ -149,41 +148,6 @@ export function buildExploreHref(
 
 export function getExploreTotalPages(total: number): number {
   return Math.ceil(total / EXPLORE_PAGE_SIZE);
-}
-
-/**
- * Các ô phân trang: luôn có trang đầu, trang cuối và hai bên trang hiện tại,
- * chỗ hụt thì là "…". Hụt đúng một trang thì ghi số luôn thay vì "…".
- */
-export function buildPaginationItems(
-  currentPage: number,
-  totalPages: number,
-): ExplorePaginationItem[] {
-  const visiblePages = new Set(
-    [1, totalPages, currentPage - 1, currentPage, currentPage + 1].filter(
-      (page) => page >= 1 && page <= totalPages,
-    ),
-  );
-  const sortedPages = Array.from(visiblePages).sort(
-    (first, second) => first - second,
-  );
-  const paginationItems: ExplorePaginationItem[] = [];
-
-  sortedPages.forEach((page, index) => {
-    const previousPage = sortedPages[index - 1];
-
-    if (previousPage && page - previousPage === 2) {
-      paginationItems.push(previousPage + 1);
-    }
-
-    if (previousPage && page - previousPage > 2) {
-      paginationItems.push("ellipsis");
-    }
-
-    paginationItems.push(page);
-  });
-
-  return paginationItems;
 }
 
 /** "Cơ bản · 12 nghìn lượt xem"; khóa chưa ai xem thì ghi "Khóa mới" */
@@ -325,4 +289,14 @@ export function getTrialChapterValues(
 /** "02/09/2026": ngày tháng luôn hai chữ số để cột ngày thẳng hàng */
 export function formatShortDate(date: Date | string): string {
   return dayjs(date).format("DD/MM/YYYY");
+}
+
+/** % giảm của giá bán so với giá gốc, null khi không có giá gốc cao hơn */
+export function getCourseDiscountPercent(
+  price: number,
+  salePrice: number,
+): number | null {
+  if (!salePrice || price >= salePrice) return null;
+
+  return Math.round(((salePrice - price) / salePrice) * 100);
 }

@@ -1,86 +1,28 @@
 "use server";
 import Course from "@/database/course.model";
-import User, { IUser } from "@/database/user.model";
 import CourseModel from "@/modules/course/models";
-import { sendNotification } from "@/modules/notifications/actions";
+import { sendNotification } from "@/modules/notifications/services/send-notification.service";
 import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
 import { canManageCourse } from "@/modules/course/services/course-permission.service";
+import { decrementCouponUsage } from "@/modules/order/services/coupon-usage.service";
+import { createManualOrder } from "@/modules/order/services/create-manual-order.service";
 import { getCurrentUser } from "@/shared/libs/auth";
-import {
-  CreateUserParams,
-  DeleteUserParams,
-  GetUsersParams,
-  UpdateUserParams,
-} from "@/types";
-import { EOrderStatus, EUserStatus, Role } from "@/types/enums";
+import { EOrderStatus } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
-import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
-import { createOrder } from "./order.action";
 
-export async function createUser(userData: CreateUserParams) {
-  try {
-    connectToDatabase();
-    const user = await UserModel.create(userData);
-    return user;
-  } catch (error) {
-    console.log(error);
-  }
-}
-export async function updateUser(params: UpdateUserParams) {
-  try {
-    connectToDatabase();
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
-    if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
-      return undefined;
-    const { clerkId, updateData, path } = params;
-    await UserModel.findOneAndUpdate({ clerkId }, updateData, {
-      new: true,
-    });
-    revalidatePath(path);
-  } catch (error) {
-    console.log(error);
-  }
-}
-export async function updateUserByUsername(params: any) {
-  try {
-    connectToDatabase();
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
-    if (findUser && ![Role.ADMIN, Role.EXPERT].includes(findUser?.role))
-      return undefined;
-    const { username, updateData } = params;
-    await UserModel.findOneAndUpdate({ username }, updateData);
-    // revalidatePath(path);
-  } catch (error) {
-    console.log(error);
-  }
-}
-export async function deleteUser(params: DeleteUserParams) {
-  try {
-    connectToDatabase();
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
-    if (findUser && ![Role.ADMIN].includes(findUser?.role)) return undefined;
-    const user = await UserModel.findOne({ clerkId: params.clerkId });
-    if (!user) {
-      throw new Error("User not found");
-    }
-    const deletedUser = await UserModel.findByIdAndUpdate(user._id, {
-      status: EUserStatus.INACTIVE,
-    });
-    return deletedUser;
-  } catch (error) {
-    console.log(error);
-  }
-}
 export async function getUserById({ userId }: { userId: string }) {
   try {
     connectToDatabase();
     if (!userId) return undefined;
+
+    // Hàm trong file "use server" ai cũng gọi được: chỉ trả bản ghi của chính người gọi
+    const { userId: currentUserId } = auth();
+
+    if (userId !== currentUserId) return undefined;
+
     let user = await UserModel.findOne({ clerkId: userId }).populate({
       path: "courses",
       model: Course,
@@ -92,62 +34,12 @@ export async function getUserById({ userId }: { userId: string }) {
   }
 }
 
-export async function getAllUsers(
-  params: GetUsersParams,
-): Promise<{ users: IUser[]; isNext: boolean; total: number } | undefined> {
-  try {
-    connectToDatabase();
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
-    if (findUser && ![Role.ADMIN].includes(findUser?.role)) return undefined;
-    const { page = 1, pageSize = 10, searchQuery, paidUser } = params;
-    const skipAmount = (page - 1) * pageSize;
-    const query: FilterQuery<typeof User> = {};
-    let limit = pageSize;
-    if (searchQuery) {
-      query.$or = [
-        { name: { $regex: searchQuery, $options: "i" } },
-        { username: { $regex: searchQuery, $options: "i" } },
-        { email: { $regex: searchQuery, $options: "i" } },
-      ];
-      limit = 5000;
-    }
-    if (paidUser) {
-      query.courses = {
-        $in: await Course.find({ _destroy: false, free: false }).distinct(
-          "_id",
-        ),
-      };
-    }
-    const users = await UserModel.find(query)
-      .select("avatar name username status createdAt email")
-      .populate({
-        path: "courses",
-        model: Course,
-        select: "title slug free",
-        match: { _destroy: false },
-      })
-      .skip(skipAmount)
-      .limit(limit)
-      .sort({
-        createdAt: -1,
-      });
-    const totalUsers = await UserModel.countDocuments(query);
-    const isNext = totalUsers > skipAmount + users.length;
-    return {
-      users,
-      isNext,
-      total: totalUsers,
-    };
-  } catch (error) {
-    console.log(error);
-  }
-}
 interface AddCourseToUserParams {
   userId: string;
   course: {
     id: string;
-    price: number;
+    // Không dùng nữa: giá luôn đọc từ DB. Giữ lại để caller cũ không lỗi type
+    price?: number;
     discount?: number;
   };
   path: string;
@@ -155,7 +47,7 @@ interface AddCourseToUserParams {
 export async function addCourseToUser({
   userId,
   path,
-  course: { id: courseId, price: coursePrice, discount = 0 },
+  course: { id: courseId },
 }: AddCourseToUserParams) {
   try {
     connectToDatabase();
@@ -189,13 +81,9 @@ export async function addCourseToUser({
     }
     user.courses.push(courseId);
     await user.save();
-    await createOrder({
-      user: user._id,
-      course: courseId,
-      amount: coursePrice,
-      total: coursePrice - discount,
-      discount,
-      status: EOrderStatus.APPROVED,
+    await createManualOrder({
+      userId: user._id.toString(),
+      courseId,
     });
     revalidatePath(path);
     const findCourse = await CourseModel.findById(courseId);
@@ -207,6 +95,12 @@ export async function addCourseToUser({
     });
   } catch (error) {
     console.log(error);
+
+    // Lỗi DB hay không tìm thấy thành viên: trả lỗi để trang không báo "Đã cấp"
+    return {
+      type: "error",
+      message: "Chưa cấp được khóa học, thử lại sau",
+    };
   }
 }
 export async function removeCourseFromUser({
@@ -228,11 +122,20 @@ export async function removeCourseFromUser({
       courseId,
     });
 
-    if (!hasPermission) return;
+    // Báo lỗi cho trang biết, không im lặng: im lặng thì trang vẫn báo "Đã thu hồi"
+    if (!hasPermission) {
+      return {
+        type: "error",
+        message: "Bạn không có quyền thực hiện thao tác này",
+      };
+    }
 
     const user = await UserModel.findOne({ clerkId: userId });
     if (!user) {
-      throw new Error("User not found");
+      return {
+        type: "error",
+        message: "Không tìm thấy thành viên này",
+      };
     }
     user.courses = user.courses.filter((c: any) => c.toString() !== courseId);
     await user.save();
@@ -245,24 +148,17 @@ export async function removeCourseFromUser({
       await OrderModel.findByIdAndUpdate(findOrder._id, {
         status: EOrderStatus.REJECTED,
       });
+
+      if (findOrder.status === EOrderStatus.APPROVED) {
+        await decrementCouponUsage(findOrder);
+      }
     }
   } catch (error) {
     console.log(error);
-  }
-}
-export async function getUserInfo({
-  userId,
-}: {
-  userId: string;
-}): Promise<IUser | null | undefined> {
-  try {
-    connectToDatabase();
-    const findUser = await UserModel.findOne({ clerkId: userId });
 
-    if (!findUser?._id) return null;
-
-    return JSON.parse(JSON.stringify(findUser));
-  } catch (error) {
-    console.log(error);
+    return {
+      type: "error",
+      message: "Chưa thu hồi được khóa học, thử lại sau",
+    };
   }
 }

@@ -5,7 +5,10 @@ import {
 } from "@/shared/constants/course.constants";
 import { LectureItemData } from "@/shared/types";
 import type { LucideIcon } from "lucide-react";
+import { ECourseLevel, ECourseStatus } from "@/types/enums";
+import { updateCourseSchema } from "@/utils/formSchema";
 import mongoose, { Document, Schema } from "mongoose";
+import { z } from "zod";
 
 mongoose.Promise = global.Promise;
 
@@ -146,9 +149,6 @@ export interface ExploreFacetResult {
   total: { value: number }[];
 }
 
-/** Một ô trên thanh phân trang: số trang hoặc dấu "…" */
-export type ExplorePaginationItem = number | "ellipsis";
-
 export type ExplorePreviewState =
   | "du-lieu"
   | "mot-khoa"
@@ -199,3 +199,43 @@ export interface CoursePurchase {
   handleBuyCourse: () => void;
   handleEnrollFree: () => void;
 }
+
+export type CourseUpdateFormValues = z.infer<typeof updateCourseSchema>;
+
+export type CourseInfoListKey = "requirements" | "gained";
+
+/** Yêu cầu, kết quả, Q/A: sửa ngoài react-hook-form, gộp vào lúc gửi */
+export interface CourseInfoDraft {
+  requirements: string[];
+  gained: string[];
+  qa: CourseQaItem[];
+}
+
+export interface CourseSelectOption {
+  value: string;
+  label: string;
+}
+
+/** Dữ liệu trang cập nhật khóa học cần, không phải cả document Mongoose */
+export interface CourseUpdateData
+  extends Pick<
+    CourseModelProps,
+    | "title"
+    | "slug"
+    | "price"
+    | "salePrice"
+    | "intro"
+    | "desc"
+    | "image"
+    | "cta"
+    | "seoKeywords"
+    | "free"
+    | "info"
+  > {
+  // Enum của form (updateCourseSchema), cùng giá trị chuỗi với CourseLevel, CourseStatus
+  level: ECourseLevel;
+  status: ECourseStatus;
+  category?: CourseModelProps["category"];
+}
+
+export type CourseUpdatePreviewState = "du-lieu" | "rong";

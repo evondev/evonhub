@@ -1,2 +1,1 @@
-export * from "./order-action";
-export * from "./order-pagination";
+export { OrderManageView } from "./order-manage-view";

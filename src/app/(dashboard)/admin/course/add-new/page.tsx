@@ -1,4 +1,3 @@
-"use server";
 import PageNotFound from "@/app/not-found";
 import AddCourseForm from "@/components/forms/AddCourseForm";
 import { commonPath } from "@/constants";

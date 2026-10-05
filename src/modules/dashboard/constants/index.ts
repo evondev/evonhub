@@ -43,6 +43,9 @@ export const HERO_CODE_WARNING_TEXT =
 
 export const IN_PROGRESS_COURSE_LIMIT = 4;
 
+// Khung chờ khối "Khóa đang học": đoán học viên có thêm ngần này khóa đang học
+export const IN_PROGRESS_SKELETON_ROW_COUNT = 2;
+
 // Lấy đủ khóa của học viên để đếm đúng số khóa đang học và đã xong
 export const LEARNER_COURSE_FETCH_LIMIT = 50;
 
@@ -52,12 +55,24 @@ export const CATALOG_COURSE_LIMIT = 20;
 // Khối Khóa học: một khóa lớn và tối đa ngần này khóa trong danh sách bên cạnh
 export const CATALOG_LIST_LIMIT = 4;
 
-// Lấy dư cảm nhận để chọn cái dài nhất làm cảm nhận lớn, rồi hiện ngần này cái
-export const TESTIMONIAL_FETCH_LIMIT = 8;
+// Khối "Học viên nói gì": chỉ đánh giá 5 sao, lấy ngần này cái mới nhất
+export const TESTIMONIAL_FETCH_LIMIT = 12;
 
-export const TESTIMONIAL_SHOW_COUNT = 3;
+export const TESTIMONIAL_RATING = 5;
 
-export const SKELETON_ROADMAP_STEP_COUNT = 3;
+// Khoá luôn có cảm nhận trong khối dù đánh giá đã cũ, đứng đầu hàng
+export const TESTIMONIAL_PINNED_COURSE_SLUGS: string[] = [
+  "minh-hoa-vector-bang-adobe-illustrator-cung-rachelizmarvel",
+];
+
+// Ít hơn ngần này thì một dải không đủ phủ bề ngang, đứng yên cho cuộn tay
+export const TESTIMONIAL_MARQUEE_MIN_COUNT = 6;
+
+// Từ ngần này trở lên thì chia hai dải chạy ngược chiều
+export const TESTIMONIAL_TWO_ROW_MIN_COUNT = 12;
+
+// Số ô trong hàng số liệu ở khối đầu trang của khách (lưới 3 cột)
+export const HERO_STAT_SKELETON_COUNT = 3;
 
 export const STAR_POSITIONS: number[] = [1, 2, 3, 4, 5];
 
@@ -137,5 +152,6 @@ export const PREVIEW_STATE_LINKS: PreviewStateLink[] = [
   { state: "khach", label: "Khách" },
   { state: "chua-co-khoa", label: "Chưa mở khóa nào" },
   { state: "dang-tai", label: "Đang tải" },
+  { state: "dang-tai-khach", label: "Đang tải (khách)" },
   { state: "loi", label: "Lỗi" },
 ];

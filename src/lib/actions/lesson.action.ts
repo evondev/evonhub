@@ -1,115 +1,106 @@
 "use server";
 import Course from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
-import Lesson, { ILesson } from "@/database/lesson.model";
-import { sendNotification } from "@/modules/notifications/actions";
+import Lesson from "@/database/lesson.model";
+import { sendNotification } from "@/modules/notifications/services/send-notification.service";
+import { escapeHtml, sanitizeHtml } from "@/shared/helpers";
+import { getCurrentCourseManager } from "@/shared/libs/auth";
 import { CreateLessonParams, DeleteLessonParams } from "@/types";
 import { ECourseStatus } from "@/types/enums";
-import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
-export async function addLesson(params: CreateLessonParams) {
+export async function addLesson({
+  title,
+  slug,
+  video,
+  content,
+  type,
+  order,
+  lectureId,
+  courseId,
+  iframe,
+}: CreateLessonParams) {
   try {
-    connectToDatabase();
-    const findLecture = await Lecture.findById(params.lectureId);
+    await connectToDatabase();
+    const findLecture = await Lecture.findOne({
+      _id: lectureId,
+      _destroy: false,
+    });
     if (!findLecture?._id) {
       throw new Error("Lecture not found");
     }
-    const existLessonSlug = await Lesson.findOne({
-      slug: params.slug,
-      courseId: params.courseId,
+
+    const lectureCourseId = findLecture.courseId?.toString();
+
+    // courseId client gửi phải khớp khóa thật của chương, quyền tính theo khóa thật
+    if (!lectureCourseId || lectureCourseId !== courseId?.toString()) return;
+
+    const courseManager = await getCurrentCourseManager(lectureCourseId);
+
+    if (!courseManager) return;
+
+    const isSlugTaken = await Lesson.exists({
+      slug,
+      courseId: lectureCourseId,
     });
 
     const newLesson = new Lesson({
-      ...params,
+      title,
+      video,
+      content: typeof content === "string" ? sanitizeHtml(content) : content,
+      type,
+      order,
+      iframe,
+      lectureId: findLecture._id,
+      courseId: lectureCourseId,
       _destroy: false,
-      slug: existLessonSlug
-        ? `${params.slug}-${new Date().getTime().toString().slice(-3)}`
-        : params.slug,
+      slug: isSlugTaken
+        ? `${slug}-${new Date().getTime().toString().slice(-3)}`
+        : slug,
     });
     await newLesson.save();
+    // Trả id để trang nội dung chọn ngay bài vừa thêm
+    const newLessonId = newLesson._id.toString();
     findLecture.lessons.push(newLesson._id);
     await findLecture.save();
-    revalidatePath(`/admin/course/content?slug=${params.slug}`);
-    const course = await Course.findById(params.courseId).select(
-      "title status"
+    const course = await Course.findById(lectureCourseId).select(
+      "title slug status",
     );
-    if (!course || course.status !== ECourseStatus.APPROVED) return;
+    revalidatePath(`/admin/course/content?slug=${course?.slug}`);
+    if (!course || course.status !== ECourseStatus.APPROVED) return newLessonId;
     await sendNotification({
       title: "Thông báo",
-      content: `Khóa học <strong>${course.title}</strong> vừa có bài học mới.`,
+      content: `Khóa học <strong>${escapeHtml(course.title)}</strong> vừa có bài học mới.`,
       isSendAll: true,
     });
+
+    return newLessonId;
   } catch (error) {
     console.log(error);
   }
 }
-export async function deleteLesson({
-  lessonId,
-  lectureId,
-  path,
-}: DeleteLessonParams) {
+export async function deleteLesson({ lessonId, path }: DeleteLessonParams) {
   try {
-    connectToDatabase();
-    // const findLecture = await Lecture.findById(lectureId);
-    // if (!findLecture) {
-    //   throw new Error("Không tìm thấy chương học");
-    // }
+    await connectToDatabase();
+    const lesson = await Lesson.findById(lessonId).select("courseId");
+
+    if (!lesson) return;
+
+    const courseManager = await getCurrentCourseManager(
+      lesson.courseId?.toString(),
+    );
+
+    if (!courseManager) return;
+
     await Lesson.findByIdAndUpdate(lessonId, { _destroy: true });
-    // findLecture.lessons = findLecture.lessons.filter(
-    //   (id: string) => id.toString() !== lessonId
-    // );
-    // await findLecture.save();
     revalidatePath(path);
   } catch (error) {
     console.log(error);
   }
 }
-
-export async function getLessonsByLectureId(lectureId: string) {
-  try {
-    connectToDatabase();
-    const lessons = await Lesson.find({ lectureId });
-    return lessons;
-  } catch (error) {
-    console.log(error);
-  }
-}
-export async function getLessonBySlug(slug: string, course?: string) {
-  try {
-    connectToDatabase();
-    const query: FilterQuery<typeof Lesson> = {
-      slug,
-      _destroy: false,
-    };
-    const findCourse = await Course.findOne({ slug: course });
-    if (findCourse) query.courseId = findCourse._id.toString();
-    const lesson = await Lesson.findOne(query)
-      .select("title content video courseId lectureId iframe")
-      .populate({
-        path: "courseId",
-        model: Course,
-        select: "id slug",
-      });
-    return lesson;
-  } catch (error) {
-    console.log(error);
-  }
-}
-export async function getLessonByCourseId(
-  courseId: string
-): Promise<ILesson[] | undefined> {
-  try {
-    connectToDatabase();
-    const lessons = await Lesson.find({ courseId, _destroy: false });
-    return lessons;
-  } catch (error) {
-    console.log(error);
-  }
-}
 export async function getLessonCount(
-  courseId: string
+  courseId: string,
 ): Promise<number | undefined> {
   try {
     connectToDatabase();

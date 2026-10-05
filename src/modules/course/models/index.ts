@@ -29,7 +29,7 @@ const courseSchema = new Schema<CourseModelProps>({
   },
   rating: {
     type: [Number],
-    // Chỉ chứa sao của đánh giá đã duyệt (handleRatingStatus); khóa mới chưa có
+    // Chỉ chứa sao của đánh giá đã duyệt (updateRatingsStatus); khóa mới chưa có
     default: [],
   },
   image: {

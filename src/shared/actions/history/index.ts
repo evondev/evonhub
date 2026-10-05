@@ -1,23 +1,52 @@
 "use server";
 
+import LessonModel from "@/modules/lesson/models";
 import ScoreModel from "@/modules/score/models";
 import UserModel from "@/modules/user/models";
 import { connectToDatabase } from "@/shared/libs";
+import { canAccessCourseContent, getCurrentUser } from "@/shared/libs/auth";
 import HistoryModel from "@/shared/models/history.model";
 
-export async function handleCompleteLesson({
-  lessonId,
-  userId,
-  courseId,
-  isSingleton = false,
-}: {
+interface HandleCompleteLessonProps {
   lessonId: string;
-  userId: string;
+  /** Bỏ qua ở server: luôn ghi cho user đang đăng nhập */
+  userId?: string;
   courseId: string;
   isSingleton?: boolean;
-}): Promise<boolean | undefined> {
+}
+
+/**
+ * Đánh dấu / bỏ đánh dấu học xong một bài, kèm cộng / trừ điểm bảng xếp hạng.
+ * Chỉ tính bài thuộc khóa đã mua hoặc quản lý (bài học thử không cộng điểm).
+ */
+export async function handleCompleteLesson({
+  lessonId,
+  courseId,
+  isSingleton = false,
+}: HandleCompleteLessonProps): Promise<boolean | undefined> {
   try {
-    connectToDatabase();
+    const currentUser = await getCurrentUser();
+
+    // Chỉ nhận chuỗi id, chặn client gửi object toán tử Mongo như { $ne: null }
+    if (!currentUser || typeof lessonId !== "string") return;
+
+    if (typeof courseId !== "string" || !courseId) return;
+
+    await connectToDatabase();
+
+    const isLessonInCourse = await LessonModel.exists({
+      _id: lessonId,
+      courseId,
+      _destroy: false,
+    });
+
+    if (!isLessonInCourse) return;
+
+    const hasAccess = await canAccessCourseContent(courseId);
+
+    if (!hasAccess) return;
+
+    const userId = currentUser._id;
     const existHistory = await HistoryModel.findOne({
       lesson: lessonId,
       user: userId,
@@ -44,6 +73,7 @@ export async function handleCompleteLesson({
           $inc: { score: 10 },
         });
       }
+
       return true;
     } else if (!isSingleton) {
       await HistoryModel.findOneAndDelete({
@@ -59,6 +89,7 @@ export async function handleCompleteLesson({
           $inc: { score: -10 },
         });
       }
+
       return false;
     }
   } catch (error) {

@@ -1,0 +1,44 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { CloudOff, RotateCw } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+interface LoadErrorStateProps {
+  /** Nói rõ thứ chưa tải được, ví dụ "Chưa tải được đơn hàng" */
+  title: string;
+  /** Dữ liệu tải ở client (React Query) thì truyền refetch; bỏ trống là gọi lại server */
+  onRetry?: () => void;
+}
+
+/** Khối lỗi tải dữ liệu của một trang, bấm "Tải lại" là gọi lại server */
+export function LoadErrorState({ title, onRetry }: LoadErrorStateProps) {
+  const router = useRouter();
+
+  function handleRetry() {
+    if (onRetry) return onRetry();
+
+    router.refresh();
+  }
+
+  return (
+    <section
+      role="alert"
+      className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-10 text-center"
+    >
+      <span className="grid size-12 place-items-center rounded-xl bg-foreground/5 text-muted">
+        <CloudOff className="size-6" />
+      </span>
+      <div>
+        <h2 className="text-base font-semibold text-foreground">{title}</h2>
+        <p className="mt-1 text-pretty text-sm text-muted">
+          Kết nối có vấn đề. Thử tải lại, nếu vẫn lỗi thì báo cho Evondev.
+        </p>
+      </div>
+      <Button variant="outline" onClick={handleRetry}>
+        <RotateCw className="size-4 shrink-0" />
+        Tải lại
+      </Button>
+    </section>
+  );
+}

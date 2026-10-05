@@ -1,4 +1,4 @@
-import mongoose, { Schema, models } from "mongoose";
+import { Schema } from "mongoose";
 
 export interface ILesson extends Document {
   _id: Schema.Types.ObjectId;
@@ -17,65 +17,8 @@ export interface ILesson extends Document {
   assetId: string;
   iframe: string;
   _destroy: boolean;
+  trial?: boolean;
 }
-const lessonSchema = new Schema<ILesson>({
-  title: {
-    type: String,
-    required: true,
-  },
-  slug: {
-    type: String,
-    required: true,
-  },
-  type: {
-    type: String,
-    default: "video",
-  },
-  video: {
-    type: String,
-    default: "",
-  },
-  duration: {
-    type: Number,
-    default: 0,
-  },
-  content: {
-    type: String,
-  },
-  status: {
-    type: String,
-    default: "draft",
-  },
-  order: {
-    type: Number,
-    default: 0,
-  },
-  courseId: {
-    type: Schema.Types.ObjectId,
-    ref: "Course",
-  },
-  lectureId: {
-    type: Schema.Types.ObjectId,
-    ref: "Lecture",
-  },
-  views: {
-    type: Number,
-    default: 0,
-  },
-  assetId: {
-    type: String,
-  },
-  iframe: {
-    type: String,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  _destroy: {
-    type: Boolean,
-    default: false,
-  },
-});
-const Lesson = models.Lesson || mongoose.model("Lesson", lessonSchema);
-export default Lesson;
+// Dùng chung model của module lesson. Hai schema cùng tên "Lesson" thì file nào nạp
+// trước thắng; schema cũ ở đây thiếu trial, nạp trước là bài học thử mất cờ khi lưu.
+export { default } from "@/modules/lesson/models";
