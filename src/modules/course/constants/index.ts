@@ -1,6 +1,7 @@
 import { CourseLevel } from "@/shared/constants/course.constants";
 import type {
   ExploreFilters,
+  ExploreLevelOption,
   ExplorePreviewStateLink,
   ExploreSort,
   ExploreSortOption,
@@ -21,6 +22,12 @@ export const EXPLORE_DEFAULT_FILTERS: ExploreFilters = {
   sort: "moi",
   page: 1,
 };
+
+export const EXPLORE_LEVEL_OPTIONS: ExploreLevelOption[] = [
+  { slug: "co-ban", level: CourseLevel.Easy },
+  { slug: "trung-binh", level: CourseLevel.Medium },
+  { slug: "nang-cao", level: CourseLevel.Expert },
+];
 
 export const EXPLORE_SORT_OPTIONS: ExploreSortOption[] = [
   { value: "moi", label: "Mới nhất" },

@@ -103,6 +103,8 @@ export interface ExploreSortOption {
 export interface ExploreFilters {
   search: string;
   isFree: boolean;
+  /** Không có là mọi trình độ */
+  level?: CourseLevel;
   sort: ExploreSort;
   page: number;
 }
@@ -110,8 +112,15 @@ export interface ExploreFilters {
 export interface ExploreSearchParams {
   q?: string;
   gia?: string;
+  trinhdo?: string;
   sapxep?: string;
   trang?: string;
+}
+
+/** Chip trình độ: slug tiếng Việt trên URL (?trinhdo=co-ban) ứng với level trong DB */
+export interface ExploreLevelOption {
+  slug: string;
+  level: CourseLevel;
 }
 
 /** Gốc để dựng link lọc: trang thật là /explore, trang xem trước giữ thêm ?tt= */

@@ -93,6 +93,7 @@ export async function fetchCourses({
 export async function fetchExploreCourses({
   search,
   isFree,
+  level,
   sort,
   page,
   limit,
@@ -114,6 +115,8 @@ export async function fetchExploreCourses({
       matchQuery.free = true;
       matchQuery.price = { $lte: 0 };
     }
+
+    if (level) matchQuery.level = level;
 
     const [facetResult] = await CourseModel.aggregate<ExploreFacetResult>([
       { $match: matchQuery },

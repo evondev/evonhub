@@ -14,7 +14,7 @@ const exploreLinkBase: ExploreLinkBase = { basePath: "/explore" };
 
 export function ExplorePage({ filters }: ExplorePageProps) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 sm:gap-6">
       <ExploreFilterBar filters={filters} linkBase={exploreLinkBase} />
       {/* key theo bộ lọc: đổi lọc thì phần kết quả hiện khung chờ, thanh lọc giữ nguyên */}
       <Suspense key={JSON.stringify(filters)} fallback={<ExploreSkeleton />}>

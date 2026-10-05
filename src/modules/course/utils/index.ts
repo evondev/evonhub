@@ -2,6 +2,7 @@ import { COURSE_LEVEL_LABELS } from "@/shared/constants/course.constants";
 import { formatCompactCount } from "@/shared/helpers";
 import {
   EXPLORE_DEFAULT_FILTERS,
+  EXPLORE_LEVEL_OPTIONS,
   EXPLORE_PAGE_SIZE,
   EXPLORE_SORT_OPTIONS,
   PREVIEW_EXPLORE_COURSES,
@@ -97,18 +98,22 @@ export function parseExploreFilters(
   const sortOption = EXPLORE_SORT_OPTIONS.find(
     (option) => option.value === searchParams.sapxep,
   );
+  const levelOption = EXPLORE_LEVEL_OPTIONS.find(
+    (option) => option.slug === searchParams.trinhdo,
+  );
   const page = Number.parseInt(searchParams.trang || "", 10);
 
   return {
     search: (searchParams.q || "").trim(),
     isFree: searchParams.gia === "mien-phi",
+    level: levelOption?.level,
     sort: sortOption?.value || EXPLORE_DEFAULT_FILTERS.sort,
     page: Number.isFinite(page) && page > 1 ? page : 1,
   };
 }
 
 export function hasActiveExploreFilters(filters: ExploreFilters): boolean {
-  return filters.isFree || Boolean(filters.search);
+  return filters.isFree || Boolean(filters.level) || Boolean(filters.search);
 }
 
 /**
@@ -123,6 +128,12 @@ export function buildExploreHref(
 
   if (filters.search) params.set("q", filters.search);
   if (filters.isFree) params.set("gia", "mien-phi");
+
+  const levelOption = EXPLORE_LEVEL_OPTIONS.find(
+    (option) => option.level === filters.level,
+  );
+
+  if (levelOption) params.set("trinhdo", levelOption.slug);
   if (filters.sort !== EXPLORE_DEFAULT_FILTERS.sort) {
     params.set("sapxep", filters.sort);
   }
@@ -216,6 +227,7 @@ export function buildPreviewExploreResult(
   const keyword = filters.search.toLowerCase();
   const filteredCourses = allCourses
     .filter((course) => !filters.isFree || isCourseFree(course))
+    .filter((course) => !filters.level || course.level === filters.level)
     .filter((course) => course.title.toLowerCase().includes(keyword));
   const sortedCourses = [...filteredCourses].sort((first, second) => {
     if (filters.sort === "xem-nhieu") return second.views - first.views;

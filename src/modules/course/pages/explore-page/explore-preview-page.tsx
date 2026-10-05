@@ -29,7 +29,7 @@ export function ExplorePreviewPage({
       : filters;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 sm:gap-6">
       <ExplorePreviewStateSwitcher currentState={state} />
       <ExploreFilterBar filters={shownFilters} linkBase={linkBase} />
       {state === "dang-tai" && <ExploreSkeleton />}

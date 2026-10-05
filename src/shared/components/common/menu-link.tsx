@@ -37,9 +37,9 @@ export function MenuLink({ link, isActive, isCollapsed }: MenuLinkProps) {
           aria-current={isActive ? "page" : undefined}
           aria-label={isCollapsed ? link.title : undefined}
           className={cn(
-            "flex h-11 w-full items-center gap-3 whitespace-nowrap rounded-xl px-[11px] text-base font-medium text-foreground/80 outline-none transition-colors",
+            "flex h-11 w-full items-center gap-3 whitespace-nowrap rounded-xl px-[11px] text-base font-normal text-foreground/80 outline-none transition-colors",
             !isActive && "hover:bg-item-hover hover:text-foreground",
-            isActive && "bg-item-active font-semibold text-foreground",
+            isActive && "bg-item-active font-medium text-foreground",
           )}
         >
           <span

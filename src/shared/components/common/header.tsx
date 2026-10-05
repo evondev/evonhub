@@ -34,7 +34,7 @@ export const Header = () => {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-40 transition-[left] duration-200 ease-out motion-reduce:transition-none",
-        !isLessonPage && "bg-background lg:px-4 lg:pt-4",
+        !isLessonPage && "bg-background lg:pl-6 lg:pr-4 lg:pt-4",
         !isLessonPage && isSidebarCollapsed && "lg:left-20",
         !isLessonPage && !isSidebarCollapsed && "lg:left-[272px]",
       )}

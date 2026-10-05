@@ -43,13 +43,13 @@ export function ExploreResults({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 sm:gap-5">
       <ExploreResultHeader
         total={total}
         filters={filters}
         linkBase={linkBase}
       />
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4 2xl:gap-6">
         {courses.map((course) => (
           <ExploreCourseCard key={course._id} course={course} />
         ))}

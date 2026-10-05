@@ -80,16 +80,34 @@ describe("parseExploreFilters", () => {
       parseExploreFilters({
         q: "  next  ",
         gia: "mien-phi",
+        trinhdo: "nang-cao",
         sapxep: "danh-gia",
         trang: "3",
       }),
-    ).toEqual({ search: "next", isFree: true, sort: "danh-gia", page: 3 });
+    ).toEqual({
+      search: "next",
+      isFree: true,
+      level: CourseLevel.Expert,
+      sort: "danh-gia",
+      page: 3,
+    });
   });
 
   it("giá trị lạ thì về mặc định", () => {
     expect(
-      parseExploreFilters({ gia: "re", sapxep: "gia-tang", trang: "-2" }),
-    ).toEqual({ search: "", isFree: false, sort: "moi", page: 1 });
+      parseExploreFilters({
+        gia: "re",
+        trinhdo: "easy",
+        sapxep: "gia-tang",
+        trang: "-2",
+      }),
+    ).toEqual({
+      search: "",
+      isFree: false,
+      level: undefined,
+      sort: "moi",
+      page: 1,
+    });
   });
 });
 
@@ -111,10 +129,16 @@ describe("buildExploreHref", () => {
     expect(
       buildExploreHref(
         { basePath: "/explore-preview", fixedParams: { tt: "du-lieu" } },
-        { search: "ai", isFree: true, sort: "xem-nhieu", page: 2 },
+        {
+          search: "ai",
+          isFree: true,
+          level: CourseLevel.Easy,
+          sort: "xem-nhieu",
+          page: 2,
+        },
       ),
     ).toBe(
-      "/explore-preview?tt=du-lieu&q=ai&gia=mien-phi&sapxep=xem-nhieu&trang=2",
+      "/explore-preview?tt=du-lieu&q=ai&gia=mien-phi&trinhdo=co-ban&sapxep=xem-nhieu&trang=2",
     );
   });
 });
