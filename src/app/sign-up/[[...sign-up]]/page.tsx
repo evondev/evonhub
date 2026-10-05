@@ -1,15 +1,16 @@
+import { AuthShell } from "@/shared/components/auth-shell";
+import { authAppearance } from "@/shared/constants/auth.constants";
 import { SignUp } from "@clerk/nextjs";
-import Head from "next/head";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function Page() {
   return (
-    <>
-      <Head>
-        <meta name="robots" content="noindex, nofollow" />
-      </Head>
-      <div className="w-full h-screen flex items-center justify-center">
-        <SignUp />
-      </div>
-    </>
+    <AuthShell>
+      <SignUp appearance={authAppearance} />
+    </AuthShell>
   );
 }
