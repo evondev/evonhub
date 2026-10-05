@@ -9,7 +9,7 @@ import { useQueryNotificationsByUser } from "@/modules/notifications/services/da
 import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
 import { invalidateQueriesByKeys } from "@/shared/helpers/query-helper";
 import { getTimestamp } from "@/utils";
-import { IconBell } from "../icons";
+import { Bell } from "lucide-react";
 
 const Notification = () => {
   const { userInfo } = useUserContext();
@@ -30,7 +30,7 @@ const Notification = () => {
         className="relative inline-flex size-9 items-center justify-center rounded-lg text-muted outline-none transition-colors hover:bg-foreground/5 hover:text-foreground data-[state=open]:bg-foreground/5"
         onClick={handleRefetchNotifications}
       >
-        <IconBell className="size-4" />
+        <Bell className="size-4" />
       </PopoverTrigger>
       <PopoverContent
         align="end"

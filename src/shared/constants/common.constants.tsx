@@ -1,12 +1,13 @@
 import {
-  IconCourseManage,
-  IconHome,
-  IconOrder,
-  IconStudy,
-  IconUser,
-  IconVideo,
-} from "../components";
-import IconDiscover from "../components/icons/IconDiscover";
+  BookOpen,
+  CircleUser,
+  Clapperboard,
+  ClipboardList,
+  Compass,
+  Home,
+  LibraryBig,
+  Receipt,
+} from "lucide-react";
 import { MenuLinkItemProps, StatusBadgeVariant } from "../types";
 
 export enum CommonStatus {
@@ -18,19 +19,19 @@ export enum CommonStatus {
 export const menuLinks: MenuLinkItemProps[] = [
   {
     title: "Dashboard",
-    icon: <IconHome></IconHome>,
+    icon: <Home />,
     url: "/",
   },
   {
     title: "Khu vực học tập",
     mobileTitle: "Học tập",
-    icon: <IconStudy></IconStudy>,
+    icon: <BookOpen />,
     url: "/study",
   },
   {
     title: "Danh sách khóa học",
     mobileTitle: "Khóa học",
-    icon: <IconDiscover />,
+    icon: <Compass />,
     url: "/explore",
   },
   // {
@@ -49,20 +50,20 @@ export const menuLinks: MenuLinkItemProps[] = [
   // },
   {
     title: "Profile",
-    icon: <IconUser />,
+    icon: <CircleUser />,
     url: "/profile",
     isHideForAdmin: true,
   },
   {
     title: "Quản lý khóa học",
-    icon: <IconCourseManage />,
+    icon: <LibraryBig />,
     url: "/admin/course/manage",
     isExpert: true,
     isHideMobile: true,
   },
   {
     title: "Quản lý video",
-    icon: <IconVideo />,
+    icon: <Clapperboard />,
     url: "/admin/micro/manage",
     isHideMobile: true,
     isAdmin: true,
@@ -70,7 +71,7 @@ export const menuLinks: MenuLinkItemProps[] = [
   {
     title: "Quản lý đơn hàng",
     mobileTitle: "Quản lý đơn",
-    icon: <IconOrder />,
+    icon: <ClipboardList />,
     url: "/admin/order/manage",
     isExpert: true,
   },
@@ -90,7 +91,7 @@ export const menuLinks: MenuLinkItemProps[] = [
   {
     title: "Đơn hàng của tôi",
     mobileTitle: "Đơn hàng",
-    icon: <IconOrder />,
+    icon: <Receipt />,
     url: "/my-orders",
     isAuth: true,
   },

@@ -1,58 +1,80 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { MenuLinkItemProps } from "@/shared/types";
 import { cn } from "@/shared/utils";
 import Link from "next/link";
 
 interface MenuLinkProps {
   link: MenuLinkItemProps;
-  isActiveLink: (url: string) => boolean;
-  isExternal?: boolean;
-  isNew?: boolean;
-  isHot?: boolean;
-  isFree?: boolean;
+  isActive: boolean;
+  isCollapsed: boolean;
 }
 
-export function MenuLink({
-  link,
-  isActiveLink,
-  isExternal,
-  isNew = false,
-  isHot = false,
-  isFree = false,
-}: MenuLinkProps) {
-  const isActive = isActiveLink(link.url);
+function getMenuLinkBadge(link: MenuLinkItemProps) {
+  if (link.isHot) return "Hot";
+  if (link.isNew) return "New";
+  if (link.isFree) return "Free";
+
+  return "";
+}
+
+export function MenuLink({ link, isActive, isCollapsed }: MenuLinkProps) {
+  const badge = getMenuLinkBadge(link);
 
   return (
-    <Link
-      target={isExternal ? "_blank" : "_self"}
-      href={link.url}
-      aria-current={isActive ? "page" : undefined}
-      className={cn(
-        "relative flex h-10 w-full items-center gap-2.5 rounded-xl px-3 text-sm outline-none transition-colors",
-        isActive && "font-semibold text-primary",
-        !isActive &&
-          "text-foreground/70 hover:bg-item-hover hover:text-foreground",
-      )}
-    >
-      {isActive && (
-        <span
-          aria-hidden="true"
-          className="absolute left-0 top-2.5 h-5 w-[3px] rounded-full bg-primary"
-        />
-      )}
-      <span className="flex size-4 shrink-0 items-center justify-center [&>svg]:size-4">
-        {link.icon}
-      </span>
-      <span className="min-w-0 flex-1 truncate">{link.title}</span>
-      {(isNew || isFree) && (
-        <span className="ml-auto inline-flex shrink-0 rounded-full border border-green-500 px-2 py-0.5 text-xs font-bold text-green-500">
-          {isNew ? "New" : "Free"}
-        </span>
-      )}
-      {isHot && (
-        <span className="ml-auto inline-flex shrink-0 rounded-full border border-red-500 px-2 py-0.5 text-xs font-bold text-red-500">
-          Hot
-        </span>
-      )}
-    </Link>
+    // Tooltip chỉ bật lúc thu gọn: lúc mở thì tên đã nằm ngay cạnh icon.
+    <Tooltip open={isCollapsed ? undefined : false}>
+      <TooltipTrigger asChild>
+        {/* Icon đứng yên ở cả hai trạng thái: không justify-center, không đổi
+            padding. Thu gọn thì mép sidebar cắt dần phần chữ. */}
+        <Link
+          target={link.isExternal ? "_blank" : "_self"}
+          href={link.url}
+          aria-current={isActive ? "page" : undefined}
+          aria-label={isCollapsed ? link.title : undefined}
+          className={cn(
+            "flex h-10 w-full items-center gap-2.5 whitespace-nowrap rounded-xl px-3 text-sm text-foreground/70 outline-none transition-colors",
+            !isActive && "hover:bg-item-hover hover:text-foreground",
+            isActive && "bg-item-active font-medium text-foreground",
+          )}
+        >
+          <span
+            aria-hidden="true"
+            className="flex size-4 shrink-0 items-center justify-center [&>svg]:size-4"
+          >
+            {link.icon}
+          </span>
+          <span
+            className={cn(
+              "min-w-0 flex-1 truncate transition-opacity duration-150 motion-reduce:transition-none",
+              isCollapsed && "opacity-0",
+            )}
+          >
+            {link.title}
+          </span>
+          {badge && (
+            <span
+              className={cn(
+                "shrink-0 text-xs text-muted transition-opacity duration-150 motion-reduce:transition-none",
+                isActive && "text-foreground",
+                isCollapsed && "opacity-0",
+              )}
+            >
+              {badge}
+            </span>
+          )}
+        </Link>
+      </TooltipTrigger>
+      <TooltipContent
+        side="right"
+        sideOffset={8}
+        className="rounded-lg border-0 bg-foreground px-2.5 py-1.5 text-xs font-medium text-surface shadow-none dark:border-0 dark:bg-foreground dark:text-background"
+      >
+        {link.title}
+      </TooltipContent>
+    </Tooltip>
   );
 }

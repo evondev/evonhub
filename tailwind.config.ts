@@ -19,6 +19,7 @@ const config: Config = {
         border: "var(--border)",
         "border-strong": "var(--border-strong)",
         "item-hover": "var(--item-hover)",
+        "item-active": "var(--item-active)",
         "button-hover": "var(--button-hover)",
         "brand-band": "rgb(var(--brand-band) / <alpha-value>)",
         "brand-band-end": "rgb(var(--brand-band-end) / <alpha-value>)",

@@ -50,7 +50,7 @@ export function MobileNavigation({ role }: MobileNavigationProps) {
             aria-current={isActive ? "page" : undefined}
             className={cn(
               "flex min-w-0 flex-col items-center justify-center gap-1 outline-none",
-              isActive && "text-primary",
+              isActive && "text-foreground",
               !isActive && "text-muted",
             )}
           >

@@ -4,6 +4,8 @@ import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 interface GlobalState {
   isExpanded?: boolean;
+  isSidebarCollapsed?: boolean;
+  toggleSidebarCollapsed?: () => void;
   toggleExpanded?: (isExpanded: boolean) => void;
   currentUser?: any;
   setCurrentUser?: (currentUser: any) => void;
@@ -22,6 +24,9 @@ export const useGlobalStore = create<GlobalState>()(
         isExpanded: false,
         toggleExpanded: (isExpanded: boolean) =>
           set((state) => ({ isExpanded: isExpanded })),
+        isSidebarCollapsed: false,
+        toggleSidebarCollapsed: () =>
+          set((state) => ({ isSidebarCollapsed: !state.isSidebarCollapsed })),
         currentUser: undefined,
         setCurrentUser: (currentUser: any) =>
           set((state) => ({ currentUser: currentUser })),

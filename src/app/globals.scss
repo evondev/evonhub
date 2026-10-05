@@ -28,6 +28,8 @@
     --border: #efefef;
     --border-strong: #e5e7eb;
     --item-hover: #f3f4f6;
+    /* Mục sidebar đang chọn: đậm hơn nền rê một bậc, không dùng màu nhấn */
+    --item-active: #e9eaee;
     --button-hover: #f1f1f3;
     /* Dải màu đầu trang dashboard: màu nhấn, chuyển sang một bậc đậm hơn */
     --brand-band: 108 95 230;
@@ -45,6 +47,7 @@
     --border: rgb(255 255 255 / 0.06);
     --border-strong: rgb(255 255 255 / 0.1);
     --item-hover: rgb(255 255 255 / 0.05);
+    --item-active: rgb(255 255 255 / 0.09);
     --button-hover: rgb(255 255 255 / 0.08);
     /* Tím đậm: chữ trắng trên #978df8 chỉ 2.8:1 */
     --brand-band: 76 65 189;
