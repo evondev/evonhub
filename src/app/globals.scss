@@ -278,6 +278,53 @@ div[role="dialog"] {
     @apply rounded-xl;
   }
 }
+// Ghi chú bài ở trang học bài (lesson-notes.tsx)
+.lesson-notes {
+  @apply text-sm leading-7 text-foreground;
+  p,
+  ul,
+  ol,
+  img,
+  figure,
+  pre {
+    @apply mb-3;
+  }
+  & > *:last-child {
+    @apply mb-0;
+  }
+  li {
+    @apply mb-1;
+  }
+  ul,
+  ol {
+    @apply pl-5;
+  }
+  ul {
+    @apply list-disc;
+  }
+  ol {
+    @apply list-decimal;
+  }
+  h2,
+  h3,
+  h4 {
+    @apply mb-2 mt-5 text-base font-semibold leading-snug;
+  }
+  & > h2:first-child,
+  & > h3:first-child,
+  & > h4:first-child {
+    @apply mt-0;
+  }
+  a {
+    @apply text-primary underline underline-offset-[3px];
+  }
+  *:not(pre) > code {
+    @apply rounded-md bg-foreground/5 px-1.5 py-px text-[13px] font-normal;
+  }
+  pre[class^="language"] {
+    @apply rounded-xl text-[13px];
+  }
+}
 // slider css
 @media screen and (max-width: 1279.98px) {
   .course-slider {
@@ -329,6 +376,33 @@ div[role="dialog"] {
 .l-container {
   max-width: 1024px;
   margin: 0 auto;
+}
+// Thanh cuộn tự ẩn: 4px, đứng yên trong suốt (vẫn giữ bề rộng để nội dung không
+// xô ngang khi thanh hiện), rê vào vùng cuộn mới hiện mờ
+.scrollbar-auto-hide {
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: transparent;
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    background: rgb(var(--foreground) / 0.16);
+  }
+  // Chrome bỏ qua ::-webkit-scrollbar khi có scrollbar-width, nên thuộc tính
+  // chuẩn chỉ dành cho trình duyệt không có webkit (Firefox)
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    &:hover {
+      scrollbar-color: rgb(var(--foreground) / 0.18) transparent;
+    }
+  }
 }
 .scroll-hidden {
   -ms-overflow-style: none;

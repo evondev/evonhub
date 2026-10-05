@@ -1,5 +1,6 @@
 "use client";
 import { useUserContext } from "@/components/user-context";
+import { LessonHeader } from "@/modules/lesson/components";
 import { Header, Main, Sidebar } from "@/shared/components/common";
 import { MobileNavigation } from "@/shared/components/common/mobile-navigation";
 import { UserStatus } from "@/shared/constants/user.constants";
@@ -18,13 +19,15 @@ export default function DashboardLayout({
 
   return (
     <>
-      <Header />
+      {isLessonPage && <LessonHeader />}
+      {!isLessonPage && <Header />}
       <Main>
         <Sidebar role={userInfo?.role} />
         <section
           className={cn(
             "w-full",
-            isLessonPage && "mx-auto max-w-screen-2xl px-5 pb-10 pt-6 lg:px-6",
+            // Trang học bài: video sát mép ở mobile, từ lg mới có lề
+            isLessonPage && "mx-auto max-w-screen-2xl pb-10 lg:px-6 lg:pt-6",
             // Từ lg: khe với sidebar 24px (header cũng lùi 24px cho thẳng mép), mép
             // phải 16px như mép màn hình. Wrapper đã chừa 64px, header nổi thì đáy ở
             // 80px nên thêm 16 + 16
@@ -33,7 +36,8 @@ export default function DashboardLayout({
           )}
         >
           {children}
-          <MobileNavigation role={userInfo?.role || ""} />
+          {/* Trang học bài thoát bằng logo trên header, không cần thanh dưới */}
+          {!isLessonPage && <MobileNavigation role={userInfo?.role || ""} />}
         </section>
       </Main>
     </>

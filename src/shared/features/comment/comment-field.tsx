@@ -1,40 +1,46 @@
 "use client";
-import { cn, timeAgo } from "@/lib/utils";
+import { timeAgo } from "@/lib/utils";
 import { CommentItemData } from "@/modules/comment/types";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { UserRole } from "@/shared/constants/user.constants";
+import { cn } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
-import { ObjectId } from "mongoose";
 import { useEffect } from "react";
+import { CommentAvatar } from "./comment-avatar";
 import CommentReply from "./comment-reply";
 
 interface CommentItemProps {
   comment: CommentItemData;
   lessonId: string;
   comments: CommentItemData[];
+  parentName?: string;
+}
+
+// Từ tầng 2 trở đi, màn hẹp không thụt thêm (cột chữ còn quá hẹp), thay bằng
+// dòng "Trả lời <tên>" ở đầu bình luận
+function getRepliesClassName(level: number) {
+  return cn(
+    "mt-3 ml-4 space-y-4 border-l border-border-strong pl-3",
+    level >= 1 && "max-sm:ml-0 max-sm:border-l-0 max-sm:pl-0",
+  );
 }
 
 const CommentField = ({
   comment,
   comments = [],
   lessonId,
+  parentName,
 }: CommentItemProps) => {
   const { userRole } = useGlobalStore();
 
-  const getRepliesComment = (
-    comments: CommentItemData[],
-    parentId: string | ObjectId
-  ) => {
-    return comments.filter(
-      (item) => item.parentId?.toString() === parentId.toString()
-    );
-  };
-
-  const replies = getRepliesComment(comments, comment._id);
+  const replies = comments.filter(
+    (item) => item.parentId?.toString() === comment._id.toString(),
+  );
   const level = comment.level || 0;
-  const COMMENT_SPACING = 55;
   const isPending =
     comment.status === CommentStatus.Pending && userRole !== UserRole.Admin;
+  const authorName = comment.user?.name || "Ẩn danh";
+  const createdAt = new Date(comment.createdAt);
 
   useEffect(() => {
     const hash = window.location.hash;
@@ -48,59 +54,49 @@ const CommentField = ({
   }, []);
 
   return (
-    <>
-      <div
-        id={comment._id.toString()}
-        className={cn("ml-auto flex items-start gap-3 dark:border-opacity-50", {
-          "pointer-events-none opacity-50": isPending,
-          "mt-5 first:mt-0": level === 0,
-        })}
-        style={{
-          width: `calc(100% - ${level * COMMENT_SPACING}px)`,
-        }}
-      >
-        <div className="borderDarkMode bgDarkMode size-10 shrink-0 rounded-full border">
-          <img
-            alt={comment.user?.name}
-            className="size-full rounded-full object-cover"
-            height={40}
-            width={40}
-            src={
-              comment.user?.avatar ||
-              "https://images.unsplash.com/photo-1487139975590-b4f1dce9b035?q=80&w=4912&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            }
-          />
-        </div>
-        <div className="flex w-full flex-col gap-1">
-          <div className="mb-1 flex items-center gap-2">
-            <h4 className="text-sm font-medium">
-              {comment.user?.name || "Anonymous"}
-            </h4>
-            <span className="size-1 rounded-full bg-gray-500" />
-            <span className="text-xs font-medium text-gray-500">
-              {timeAgo(comment.createdAt)}
-            </span>
-          </div>
-          <div className="borderDarkMode bgDarkMode rounded-xl border p-5">
-            <p className="mb-3 text-sm font-medium leading-relaxed text-gray-600 dark:text-white">
-              {comment.content}
+    <li id={comment._id.toString()}>
+      <div className={cn("flex gap-3", isPending && "opacity-60")}>
+        <CommentAvatar name={comment.user?.name} avatar={comment.user?.avatar} />
+        <div className="min-w-0 flex-1">
+          {level >= 2 && parentName && (
+            <p className="text-xs text-muted sm:hidden">
+              Trả lời <span className="font-medium">{parentName}</span>
             </p>
-            {!isPending && (
-              <CommentReply comment={comment} lessonId={lessonId} />
+          )}
+          <p className="flex min-h-8 flex-wrap items-center gap-x-1 text-sm">
+            <span className="font-medium text-foreground">{authorName}</span>
+            <time
+              dateTime={createdAt.toISOString()}
+              title={createdAt.toLocaleString("vi-VN")}
+              className="text-xs text-muted"
+            >
+              · {timeAgo(comment.createdAt)}
+            </time>
+            {isPending && (
+              <span className="text-xs text-muted">· Đang chờ duyệt</span>
             )}
-          </div>
+          </p>
+          <p className="whitespace-pre-line text-pretty break-words text-sm/6 text-foreground">
+            {comment.content}
+          </p>
+          {!isPending && <CommentReply comment={comment} lessonId={lessonId} />}
         </div>
       </div>
-      {replies.length > 0 &&
-        replies.map((reply) => (
-          <CommentField
-            key={reply._id.toString()}
-            comment={reply}
-            comments={comments}
-            lessonId={lessonId}
-          />
-        ))}
-    </>
+
+      {replies.length > 0 && (
+        <ul className={getRepliesClassName(level)}>
+          {replies.map((reply) => (
+            <CommentField
+              key={reply._id.toString()}
+              comment={reply}
+              comments={comments}
+              lessonId={lessonId}
+              parentName={authorName}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
   );
 };
 
