@@ -89,6 +89,10 @@ const userSchema = new Schema<UserModelProps>({
     type: Number,
     default: 0,
   },
+  // Mốc xem panel thông báo lần cuối: thông báo mới hơn mốc này là chưa đọc
+  notificationsSeenAt: {
+    type: Date,
+  },
   socials: {
     facebook: {
       type: String,

@@ -2,8 +2,9 @@
 import Course from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
+import { NotificationType } from "@/modules/notifications/constants/notification-type.constants";
 import { sendNotification } from "@/modules/notifications/services/send-notification.service";
-import { escapeHtml, sanitizeHtml } from "@/shared/helpers";
+import { sanitizeHtml } from "@/shared/helpers";
 import { getCurrentCourseManager } from "@/shared/libs/auth";
 import { CreateLessonParams, DeleteLessonParams } from "@/types";
 import { ECourseStatus } from "@/types/enums";
@@ -70,8 +71,13 @@ export async function addLesson({
     revalidatePath(`/admin/course/content?slug=${course?.slug}`);
     if (!course || course.status !== ECourseStatus.APPROVED) return newLessonId;
     await sendNotification({
-      title: "Thông báo",
-      content: `Khóa học <strong>${escapeHtml(course.title)}</strong> vừa có bài học mới.`,
+      type: NotificationType.NewLesson,
+      data: {
+        courseTitle: course.title,
+        courseSlug: course.slug,
+        lessonId: newLessonId,
+        lessonTitle: newLesson.title,
+      },
       isSendAll: true,
     });
 

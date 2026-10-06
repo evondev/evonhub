@@ -3,8 +3,8 @@
 import CourseModel from "@/modules/course/models";
 import { canManageCourse } from "@/modules/course/services/course-permission.service";
 import LessonModel from "@/modules/lesson/models";
-import { sendNotifications } from "@/modules/notifications/services/send-notification.service";
 import UserModel from "@/modules/user/models";
+import { notifyApprovedComments } from "../services/comment-notification.service";
 import {
   CommentStatus,
   MAX_REPLY_LEVEL,
@@ -15,7 +15,6 @@ import {
 } from "@/shared/constants/moderation.constants";
 import {
   buildStatusCountPipeline,
-  escapeHtml,
   getStatusCount,
   parseData,
   toStatusCountMap,
@@ -271,7 +270,7 @@ export async function updateCommentsStatus({
     await connectToDatabase();
 
     const comments = await CommentModel.find({ _id: { $in: commentIds } })
-      .select("user lesson status")
+      .select("user lesson status parentId")
       .populate({
         path: "lesson",
         model: LessonModel,
@@ -311,25 +310,6 @@ export async function updateCommentsStatus({
 
     return { isSuccess: false, message: MODERATION_SAVE_ERROR_MESSAGE };
   }
-}
-
-interface ApprovedCommentToNotify {
-  user?: unknown;
-  lesson?: { title?: string } | null;
-}
-
-/** Báo cho người viết là bình luận đã được duyệt; người nhận lấy từ bình luận đã lưu */
-async function notifyApprovedComments(comments: ApprovedCommentToNotify[]) {
-  // Mỗi bình luận vẫn một thông báo riêng, nhưng ghi chung một lần insertMany
-  await sendNotifications(
-    comments
-      .filter((comment) => comment.user)
-      .map((comment) => ({
-        title: "Hệ thống",
-        content: `Bình luận của bạn tại bài học <strong>${escapeHtml(comment.lesson?.title || "")}</strong> đã được duyệt`,
-        users: [String(comment.user)],
-      })),
-  );
 }
 
 /**
@@ -373,8 +353,12 @@ export async function updateMatchingCommentsStatus({
 
     if (status === CommentStatus.Approved) {
       const commentsToApprove = await CommentModel.find(query)
-        .select("user lesson")
-        .populate({ path: "lesson", model: LessonModel, select: "title" });
+        .select("user lesson parentId")
+        .populate({
+          path: "lesson",
+          model: LessonModel,
+          select: "title courseId",
+        });
 
       await CommentModel.updateMany(
         { _id: { $in: commentsToApprove.map((comment) => comment._id) } },

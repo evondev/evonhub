@@ -6,37 +6,40 @@ import { UserStatus } from "@/shared/constants/user.constants";
 import { connectToDatabase } from "@/shared/libs";
 import NotificationModel from "../models";
 import { NotificationDraft, SendNotificationParams } from "../types";
+import { pingNotificationRecipients } from "./ping-notification-recipients.service";
 
 /**
- * Chỉ code server gọi (action đã kiểm quyền). Không đặt trong file "use server":
- * nội dung hiện bằng HTML ở chuông thông báo, để ngỏ là ai cũng gửi được script.
- * Chữ do người dùng đặt (tên, tiêu đề) phải qua escapeHtml trước khi ghép vào content.
+ * Chỉ code server gọi (action đã kiểm quyền). Thông báo lưu type + data, câu hiển
+ * thị ghép ở client bằng chữ thường, nên tên khóa, tên bài không cần escape.
  */
 export async function sendNotification({
-  title,
-  content,
+  type,
+  data,
   users = [],
   isSendAll,
 }: SendNotificationParams) {
   try {
     await connectToDatabase();
 
-    let recipientIds: unknown = users;
+    let recipientIds = users.map(String);
 
     if (isSendAll) {
-      recipientIds = await UserModel.find({
+      const recipients = await UserModel.find({
         status: UserStatus.Active,
         courses: {
           $in: await Course.find({ _destroy: false }).distinct("_id"),
         },
       }).select("_id");
+
+      recipientIds = recipients.map((recipient) => String(recipient._id));
     }
 
     await NotificationModel.create({
-      title,
-      content,
+      type,
+      data,
       users: recipientIds,
     });
+    await pingNotificationRecipients(recipientIds);
   } catch (error) {
     console.log(error);
   }
@@ -45,7 +48,6 @@ export async function sendNotification({
 /**
  * Ghi nhiều thông báo trong một lần insertMany thay vì mỗi thông báo một lần
  * create. ordered: false để một thông báo lỗi không chặn các thông báo còn lại.
- * Cùng lưu ý escapeHtml với sendNotification.
  */
 export async function sendNotifications(notifications: NotificationDraft[]) {
   if (notifications.length === 0) return;
@@ -53,6 +55,9 @@ export async function sendNotifications(notifications: NotificationDraft[]) {
   try {
     await connectToDatabase();
     await NotificationModel.insertMany(notifications, { ordered: false });
+    await pingNotificationRecipients(
+      notifications.flatMap((notification) => notification.users),
+    );
   } catch (error) {
     console.log(error);
   }

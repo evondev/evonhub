@@ -1,5 +1,6 @@
 "use server";
 import Comment from "@/database/comment.model";
+import { notifyCommentReplies } from "@/modules/comment/services/comment-notification.service";
 import LessonModel from "@/modules/lesson/models";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { UserRole } from "@/shared/constants/user.constants";
@@ -47,7 +48,7 @@ export async function createComment({
     const findLesson = await LessonModel.findOne({
       _id: lesson,
       _destroy: false,
-    }).select("courseId");
+    }).select("title courseId");
 
     if (!findLesson?.courseId) return false;
 
@@ -86,6 +87,18 @@ export async function createComment({
       level,
       status,
     });
+
+    // Bình luận chờ duyệt thì báo lúc được duyệt (notifyApprovedComments)
+    if (newComment && parentCommentId && status === CommentStatus.Approved) {
+      await notifyCommentReplies([
+        {
+          _id: newComment._id,
+          user: currentUser._id,
+          parentId: parentCommentId,
+          lesson: findLesson,
+        },
+      ]);
+    }
 
     return !!newComment;
   } catch (error) {

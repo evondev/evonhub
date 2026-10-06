@@ -23,8 +23,6 @@ export const VIETNAM_UTC_OFFSET_MS = 7 * 60 * 60 * 1000;
 /** Presence channel: Pusher tự biết ai đang online, cần auth qua /api/pusher/auth */
 export const CHAT_CHANNEL_NAME = "presence-chat";
 
-export const CHAT_PUSHER_AUTH_ENDPOINT = "/api/pusher/auth";
-
 export const CHAT_EVENTS = {
   MESSAGE_NEW: "message:new",
   MESSAGE_DELETED: "message:deleted",
@@ -67,7 +65,8 @@ export const CHAT_MESSAGE_MENU_ITEM_CLASS_NAME =
 export const CHAT_STACKED_AVATAR_COUNT = 4;
 
 /** Lỗi dựng sẵn cho trạng thái "Gửi bị chặn" của trang xem trước */
-export const CHAT_PREVIEW_BLOCKED_DRAFT = "d.m cái bug này fix cả tối không xong";
+export const CHAT_PREVIEW_BLOCKED_DRAFT =
+  "d.m cái bug này fix cả tối không xong";
 
 export const CHAT_SIGN_IN_REQUIRED_MESSAGE = "Bạn cần đăng nhập để trò chuyện";
 export const CHAT_ACCOUNT_LOCKED_MESSAGE = "Tài khoản của bạn đang bị khoá";
@@ -89,7 +88,4 @@ export {
   chatPreviewVisitors,
 } from "./chat-preview.constants";
 export { chatRoleLabels } from "./chat-role.constants";
-export {
-  bannedTerms,
-  bannedTermsWithDiacritics,
-} from "./profanity.constants";
+export { bannedTerms, bannedTermsWithDiacritics } from "./profanity.constants";
