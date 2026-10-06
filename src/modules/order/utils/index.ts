@@ -1,4 +1,5 @@
 import {
+  OrderPaymentMethod,
   OrderStatus,
   PENDING_ORDER_TTL_MS,
 } from "@/shared/constants/order.constants";
@@ -6,6 +7,7 @@ import {
   bankAccountInfo,
   ORDER_CODE_PATTERN,
 } from "@/shared/constants/payment.constants";
+import { ManualPaymentPayee } from "@/shared/types/payment.types";
 import { formatThoundsand } from "@/shared/utils";
 import {
   FREE_ORDER_PAID_LABEL,
@@ -22,7 +24,9 @@ import {
   MyOrdersHistoryTab,
   MyOrdersPreviewState,
   MyOrderStatus,
+  ManualPaymentPayeeSource,
   OrderItemData,
+  OrderModelProps,
 } from "../types";
 
 /** Mốc thời gian mà đơn PENDING tạo trước đó bị coi là hết hạn. */
@@ -70,6 +74,40 @@ export function getPaymentQrUrl(orderCode: string, amount: number): string {
   });
 
   return `https://qr.sepay.vn/img?${params.toString()}`;
+}
+
+export function isManualPaymentOrder(
+  order: Pick<OrderModelProps, "paymentMethod">,
+): boolean {
+  return order.paymentMethod === OrderPaymentMethod.Manual;
+}
+
+/**
+ * Thông tin nhận tiền của chuyên gia. Thiếu ngân hàng, số tài khoản hay chủ tài
+ * khoản thì trả về undefined: khách không có chỗ để chuyển tiền.
+ */
+export function toManualPaymentPayee(
+  author: ManualPaymentPayeeSource | null | undefined,
+): ManualPaymentPayee | undefined {
+  const bankName = author?.bank?.bankName?.trim();
+  const bankNumber = author?.bank?.bankNumber?.trim();
+  const bankAccount = author?.bank?.bankAccount?.trim();
+
+  if (!author || !bankName || !bankNumber || !bankAccount) return;
+
+  // Schema hồ sơ nhận cả link javascript:, chỉ giữ link web thật
+  const facebook = author.socials?.facebook?.trim();
+  const isWebLink = !!facebook && /^https?:\/\//i.test(facebook);
+
+  return {
+    name: author.name || author.username || "Chuyên gia",
+    email: author.email || "",
+    facebook: isWebLink ? facebook : undefined,
+    bankName,
+    bankNumber,
+    bankAccount,
+    bankBranch: author.bank?.bankBranch?.trim() || undefined,
+  };
 }
 
 /** Tách mã đơn hàng ra khỏi nội dung chuyển khoản do ngân hàng gửi về. */

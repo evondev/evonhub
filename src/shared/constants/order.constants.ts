@@ -7,6 +7,16 @@ export const PENDING_ORDER_TTL_MS = 24 * 60 * 60 * 1000;
  */
 export const ORDER_REMINDER_DELAY_MS = 3 * 60 * 60 * 1000;
 
+/**
+ * Cách khách trả tiền cho đơn. Khóa của Evondev đi qua SePay, tự duyệt khi tiền
+ * về. Khóa của chuyên gia thì khách chuyển thẳng vào tài khoản chuyên gia, rồi
+ * chuyên gia tự duyệt tay vì SePay không thấy được giao dịch đó.
+ */
+export enum OrderPaymentMethod {
+  Sepay = "SEPAY",
+  Manual = "MANUAL",
+}
+
 export enum OrderStatus {
   Pending = "PENDING",
   Approved = "APPROVED",

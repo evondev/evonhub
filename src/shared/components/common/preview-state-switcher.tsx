@@ -7,7 +7,10 @@ interface PreviewStateSwitcherProps {
   currentState: string;
 }
 
-/** Thanh chuyển trạng thái (?tt=) của các trang xem trước, chỉ mở ở dev */
+/**
+ * Thanh chuyển trạng thái (?tt=) của các trang xem trước, chỉ mở ở dev. Xuống
+ * dòng thay vì cuộn ngang: trang nhiều trạng thái thì mục cuối khuất hẳn
+ */
 export function PreviewStateSwitcher({
   links,
   currentState,
@@ -15,7 +18,7 @@ export function PreviewStateSwitcher({
   return (
     <nav
       aria-label="Trạng thái xem trước"
-      className="scroll-hidden flex items-center gap-2 overflow-x-auto whitespace-nowrap rounded-2xl border border-dashed border-foreground/15 p-3 text-sm"
+      className="flex flex-wrap items-center gap-2 rounded-2xl border border-dashed border-foreground/15 p-3 text-sm"
     >
       <span className="mr-1 shrink-0 text-xs font-medium text-muted">
         Xem trước (chỉ ở dev):

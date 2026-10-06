@@ -2,12 +2,17 @@
 
 import CouponModel from "@/modules/coupon/models";
 import CourseModel from "@/modules/course/models";
+import { sendOrderApprovedEmail } from "@/modules/email/services/order-email.service";
 import UserModel from "@/modules/user/models";
-import { OrderStatus } from "@/shared/constants/order.constants";
+import {
+  OrderPaymentMethod,
+  OrderStatus,
+} from "@/shared/constants/order.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { getCurrentUser } from "@/shared/libs/auth";
+import { UserModelProps } from "@/shared/types/user.types";
 import { FilterQuery } from "mongoose";
 import OrderModel from "../models";
 import {
@@ -23,13 +28,14 @@ import {
   FetchOrdersResult,
   FetchOrderStatusProps,
   OrderItemData,
+  OrderModelProps,
   UpdateOrderProps,
 } from "../types";
 import {
   OrderManageGroup,
   OrderManageTabCounts,
 } from "../types/order-manage.types";
-import { getPendingOrderExpiryDate } from "../utils";
+import { getPendingOrderExpiryDate, isManualPaymentOrder } from "../utils";
 
 export async function fetchCountOrdersByCourse(
   courseId: string
@@ -56,8 +62,10 @@ const unpaidCondition = { paidAmount: { $in: [null, 0] } };
 /**
  * Điều kiện của từng nhóm trên trang quản lý đơn, khớp getOrderManageGroup ở
  * client. DB chỉ ghi PENDING cho mọi đơn chưa xong, nên tách thêm: cần admin xử
- * lý (đơn 0 đồng, đã nhận tiền), đang đợi khách, và chờ quá hạn mà chưa nhận
- * đồng nào (tính là hết hạn cùng đơn đã ghi EXPIRED)
+ * lý (đơn 0 đồng, đã nhận tiền, đơn chuyển khoản thủ công còn hạn), đang đợi
+ * khách, và chờ quá hạn mà chưa nhận đồng nào (tính là hết hạn cùng đơn đã ghi
+ * EXPIRED). Đơn thủ công không bao giờ có paidAmount: hệ thống không thấy tiền
+ * chuyển cho chuyên gia, chuyên gia phải tự kiểm tra
  */
 function buildOrderGroupCondition(
   group: OrderManageGroup,
@@ -72,12 +80,23 @@ function buildOrderGroupCondition(
   if (group === "needs-action") {
     return {
       status: OrderStatus.Pending,
-      $or: [{ total: { $lte: 0 } }, { paidAmount: { $gt: 0 } }],
+      $or: [
+        { total: { $lte: 0 } },
+        { paidAmount: { $gt: 0 } },
+        {
+          paymentMethod: OrderPaymentMethod.Manual,
+          createdAt: { $gt: expiryDate },
+        },
+      ],
     };
   }
 
   if (group === "waiting") {
-    return { ...unpaidPendingCondition, createdAt: { $gt: expiryDate } };
+    return {
+      ...unpaidPendingCondition,
+      paymentMethod: { $ne: OrderPaymentMethod.Manual },
+      createdAt: { $gt: expiryDate },
+    };
   }
 
   if (group === OrderStatus.Expired) {
@@ -264,6 +283,31 @@ export async function fetchOrderStatus({
   }
 }
 
+/**
+ * Học viên chuyển khoản thủ công không có trang nào tự cập nhật lúc chuyên gia
+ * duyệt, nên báo qua email. Gửi hỏng chỉ ghi log, đơn vẫn đã duyệt.
+ */
+async function notifyManualOrderApproved(
+  order: OrderModelProps,
+  student: UserModelProps,
+): Promise<void> {
+  try {
+    const findCourse = await CourseModel.findById(order.course)
+      .select("title author")
+      .populate({ path: "author", model: UserModel, select: "name username" });
+
+    await sendOrderApprovedEmail(student.email, {
+      code: order.code,
+      username: student.username || "bạn",
+      total: order.total,
+      courseTitle: findCourse?.title,
+      payeeName: findCourse?.author?.name || findCourse?.author?.username,
+    });
+  } catch (error) {
+    console.log("[order] Gửi email duyệt đơn thủ công lỗi:", error);
+  }
+}
+
 export async function handleUpdateOrder({
   code,
   status,
@@ -325,6 +369,10 @@ export async function handleUpdateOrder({
 
     if (isNewlyApproved) {
       await incrementCouponUsage(updatedOrder);
+    }
+
+    if (isNewlyApproved && isManualPaymentOrder(updatedOrder)) {
+      await notifyManualOrderApproved(updatedOrder, findUser);
     }
 
     if (isApprovalRevoked) {

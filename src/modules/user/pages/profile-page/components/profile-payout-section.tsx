@@ -38,7 +38,7 @@ export function ProfilePayoutSection({
   return (
     <ProfileFormSection
       title="Tài khoản nhận tiền"
-      description="Dùng khi Evondev chuyển tiền cho bạn. Không hiện trên trang công khai."
+      description="Học viên mua khóa của bạn chuyển khoản thẳng vào tài khoản này, rồi bạn tự duyệt đơn. Chỉ hiện ở trang thanh toán đơn hàng, không hiện trên trang công khai."
       form={form}
       onSave={onSave}
     >

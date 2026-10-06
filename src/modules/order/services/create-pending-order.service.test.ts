@@ -1,4 +1,7 @@
-import { OrderStatus } from "@/shared/constants/order.constants";
+import {
+  OrderPaymentMethod,
+  OrderStatus,
+} from "@/shared/constants/order.constants";
 import {
   clearCollections,
   connectMemoryDatabase,
@@ -18,6 +21,7 @@ const orderInput = {
   amount: 999_000,
   discount: 0,
   total: 999_000,
+  paymentMethod: OrderPaymentMethod.Sepay,
 };
 
 const HOUR_IN_MS = 60 * 60 * 1000;
@@ -82,6 +86,15 @@ describe("createPendingOrder", () => {
     expect(result.order?.status).toBe(OrderStatus.Pending);
     expect(result.order?.total).toBe(999_000);
     expect(await OrderModel.countDocuments({})).toBe(1);
+  });
+
+  it("ghi lại phương thức chuyển khoản thủ công cho khóa của chuyên gia", async () => {
+    const result = await createPendingOrder({
+      ...orderInput,
+      paymentMethod: OrderPaymentMethod.Manual,
+    });
+
+    expect(result.order?.paymentMethod).toBe(OrderPaymentMethod.Manual);
   });
 
   it("đơn PENDING của khóa học khác không bị ảnh hưởng", async () => {

@@ -1,4 +1,7 @@
-import { OrderStatus } from "@/shared/constants/order.constants";
+import {
+  OrderPaymentMethod,
+  OrderStatus,
+} from "@/shared/constants/order.constants";
 import { MembershipPlan } from "@/shared/constants/user.constants";
 import mongoose, { models, Schema } from "mongoose";
 import { OrderModelProps } from "../types";
@@ -52,6 +55,12 @@ const orderSchema = new Schema<OrderModelProps>({
   _destroy: {
     type: Boolean,
     default: false,
+  },
+  // Đơn cũ không có trường này là đơn SePay
+  paymentMethod: {
+    type: String,
+    enum: Object.values(OrderPaymentMethod),
+    default: OrderPaymentMethod.Sepay,
   },
   // Tổng số tiền đã nhận được qua SePay, cộng dồn nếu khách chuyển nhiều lần
   paidAmount: {

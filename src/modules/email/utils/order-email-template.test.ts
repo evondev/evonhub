@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildManualOrderCreatedEmail,
   buildOrderApprovedEmail,
   buildOrderCreatedEmail,
   buildOrderReminderEmail,
@@ -96,5 +97,39 @@ describe("khung email dùng chung", () => {
       expect(html).toContain("trả lời thẳng email này");
       expect(html).toContain("#978df8");
     }
+  });
+});
+
+describe("buildManualOrderCreatedEmail", () => {
+  const manualData = {
+    code: "DH12345678",
+    username: "hocvien",
+    total: 999_000,
+    courseTitle: "Khóa học NextJS Pro",
+    payee: {
+      name: "Chuyên Gia <b>",
+      email: "chuyengia@example.com",
+      facebook: "https://facebook.com/chuyengia",
+      bankName: "Vietcombank",
+      bankNumber: "1029384756",
+      bankAccount: "NGUYEN VAN CHUYEN GIA",
+    },
+  };
+
+  it("hiện tài khoản của chuyên gia, không hiện tài khoản SePay hay QR", () => {
+    const { html } = buildManualOrderCreatedEmail(manualData);
+
+    expect(html).toContain("1029384756");
+    expect(html).toContain("NGUYEN VAN CHUYEN GIA");
+    expect(html).toContain("999.000");
+    expect(html).toContain("https://facebook.com/chuyengia");
+    expect(html).not.toContain("qr.sepay.vn");
+  });
+
+  it("escape thông tin chuyên gia tự nhập", () => {
+    const { html } = buildManualOrderCreatedEmail(manualData);
+
+    expect(html).toContain("Chuyên Gia &lt;b&gt;");
+    expect(html).not.toContain("Chuyên Gia <b>");
   });
 });

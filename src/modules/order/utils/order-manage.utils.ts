@@ -5,6 +5,7 @@ import { formatThoundsand } from "@/shared/utils";
 import {
   formatOrderDate,
   formatRemainingPendingTime,
+  isManualPaymentOrder,
   isPendingOrderExpired,
 } from ".";
 import { PREVIEW_ORDER_COURSES } from "../constants";
@@ -36,6 +37,7 @@ export function toOrderManageRow(order: OrderItemData): OrderManageRow {
     couponCode: order.couponCode || order.coupon?.code,
     paidAmount: order.paidAmount || 0,
     isPaidViaSepay: Boolean(order.paymentReferences?.length),
+    isManualPayment: isManualPaymentOrder(order),
     courseTitle: order.course?.title,
     planName: hasPlan ? formatPlanName(order.plan) : undefined,
     student: {
@@ -57,10 +59,14 @@ export function canProcessOrder(order: OrderManageRow): boolean {
 /**
  * Nhóm (tab) của một đơn, khớp buildOrderGroupCondition ở server: đơn chờ mà
  * 0 đồng hay đã nhận tiền thì cần admin xử lý; chưa nhận đồng nào thì đợi khách,
- * quá 24 giờ thì tính là hết hạn
+ * quá 24 giờ thì tính là hết hạn. Đơn chuyển khoản thủ công còn hạn luôn cần
+ * chuyên gia xử lý vì hệ thống không biết khách đã chuyển hay chưa
  */
 export function getOrderManageGroup(
-  order: Pick<OrderManageRow, "status" | "total" | "paidAmount" | "createdAt">,
+  order: Pick<
+    OrderManageRow,
+    "status" | "total" | "paidAmount" | "createdAt" | "isManualPayment"
+  >,
   now: Date = new Date(),
 ): OrderManageGroup {
   if (order.status !== OrderStatus.Pending) return order.status;
@@ -68,6 +74,7 @@ export function getOrderManageGroup(
   if (isPendingOrderExpired(new Date(order.createdAt), now)) {
     return OrderStatus.Expired;
   }
+  if (order.isManualPayment) return "needs-action";
 
   return "waiting";
 }
@@ -130,6 +137,14 @@ export function getOrderManageStatusView(
     };
   }
 
+  if (order.isManualPayment) {
+    return {
+      label: "Chờ xác nhận",
+      tone: "warning",
+      detail: "Kiểm tra tài khoản chuyên gia",
+    };
+  }
+
   return {
     label: "Chờ thanh toán",
     tone: "neutral",
@@ -139,6 +154,7 @@ export function getOrderManageStatusView(
 
 function getApprovedDetail(order: OrderManageRow): string {
   if (order.total <= 0) return "Đơn miễn phí";
+  if (order.isManualPayment) return "Chuyển khoản cho chuyên gia";
   if (!order.isPaidViaSepay) return "Duyệt tay";
 
   const overpaidAmount = order.paidAmount - order.total;
@@ -195,7 +211,8 @@ export function buildOrderActionSuccessMessage(
 
 /**
  * Đơn giả cho trang xem trước, phủ các ca biên: thiếu tiền, đủ tiền mà chưa
- * duyệt, đơn 0 đồng chờ duyệt, chờ quá 24 giờ, SePay chuyển dư, duyệt tay, gói
+ * duyệt, đơn 0 đồng chờ duyệt, chờ quá 24 giờ, SePay chuyển dư, duyệt tay,
+ * chuyển khoản thủ công cho chuyên gia (chờ xác nhận và đã duyệt), gói
  * thành viên cũ, khoá đã gỡ, học viên chưa đặt tên, email và tên khoá dài
  */
 export function buildPreviewManageOrders(
@@ -210,6 +227,7 @@ export function buildPreviewManageOrders(
     discount: 0,
     paidAmount: 0,
     isPaidViaSepay: false,
+    isManualPayment: false,
   };
 
   return [
@@ -331,6 +349,28 @@ export function buildPreviewManageOrders(
       createdAt: minutesAgo(9 * 24 * 60),
       total: 499000,
       student: { name: "Ngô Bảo Châu", email: "baochau.ngo@gmail.com" },
+    },
+    {
+      ...baseOrder,
+      id: "preview-12",
+      code: "DH48201164",
+      status: OrderStatus.Pending,
+      createdAt: minutesAgo(45),
+      total: 1490000,
+      isManualPayment: true,
+      courseTitle: aiCourse.title,
+      student: { name: "Đặng Thu Hà", email: "thuha.dang@gmail.com" },
+    },
+    {
+      ...baseOrder,
+      id: "preview-13",
+      code: "DH48110293",
+      status: OrderStatus.Approved,
+      createdAt: minutesAgo(2 * 24 * 60 + 90),
+      total: 1490000,
+      isManualPayment: true,
+      courseTitle: aiCourse.title,
+      student: { name: "Lý Minh Tuấn", email: "minhtuan.ly@gmail.com" },
     },
     {
       ...baseOrder,

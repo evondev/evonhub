@@ -1,7 +1,10 @@
 import CourseModel from "@/modules/course/models";
 import { sendOrderApprovedEmail } from "@/modules/email/services/order-email.service";
 import UserModel from "@/modules/user/models";
-import { OrderStatus } from "@/shared/constants/order.constants";
+import {
+  OrderPaymentMethod,
+  OrderStatus,
+} from "@/shared/constants/order.constants";
 import { bankAccountInfo } from "@/shared/constants/payment.constants";
 import OrderModel from "../models";
 import { SepayWebhookPayload, SettlePaymentResult } from "../types";
@@ -67,11 +70,13 @@ export async function settleSepayPayment(
   const reference = String(payload.id);
 
   // Cộng tiền và ghi nhận giao dịch trong một thao tác atomic. Webhook gọi lại
-  // cùng một id sẽ không khớp filter nên không bị cộng trùng.
+  // cùng một id sẽ không khớp filter nên không bị cộng trùng. Đơn chuyển khoản
+  // thủ công là tiền của chuyên gia, chỉ chuyên gia duyệt, SePay không đụng tới.
   const paidOrder = await OrderModel.findOneAndUpdate(
     {
       code: orderCode,
       status: OrderStatus.Pending,
+      paymentMethod: { $ne: OrderPaymentMethod.Manual },
       paymentReferences: { $ne: reference },
     },
     {

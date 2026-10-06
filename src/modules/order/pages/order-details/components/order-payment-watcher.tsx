@@ -10,8 +10,9 @@ export interface OrderPaymentWatcherProps {
 }
 
 /**
- * Hỏi lại trạng thái đơn hàng mỗi 5 giây. Khi webhook SePay duyệt đơn thì
- * refresh để server component render lại màn hình thành công.
+ * Hỏi lại trạng thái đơn hàng mỗi 5 giây. Khi webhook SePay hay chuyên gia
+ * duyệt đơn thì refresh để server component render lại màn hình thành công.
+ * Không vẽ gì: dòng "Đang chờ…" nằm trong card thanh toán.
  */
 export function OrderPaymentWatcher({ code }: OrderPaymentWatcherProps) {
   const router = useRouter();
@@ -26,10 +27,5 @@ export function OrderPaymentWatcher({ code }: OrderPaymentWatcherProps) {
     router.refresh();
   }, [status, router, code]);
 
-  return (
-    <div className="flex items-center gap-2 text-sm text-slate-500">
-      <span className="size-2 rounded-full bg-primary animate-pulse" />
-      <span>Hệ thống đang chờ xác nhận chuyển khoản tự động...</span>
-    </div>
-  );
+  return null;
 }
