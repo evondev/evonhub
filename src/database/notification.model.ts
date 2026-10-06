@@ -1,4 +1,4 @@
-import mongoose, { Schema, models } from "mongoose";
+import { Schema } from "mongoose";
 
 export interface INotification extends Document {
   _id: string;
@@ -8,13 +8,6 @@ export interface INotification extends Document {
   createdBy: string;
   createdAt: Date;
 }
-const notificationSchema = new Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  users: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  createdBy: { type: Schema.Types.ObjectId, ref: "User" },
-  createdAt: { type: Date, default: Date.now },
-});
-const Notification =
-  models.Notification || mongoose.model("Notification", notificationSchema);
-export default Notification;
+// Dùng chung model của module. Hai schema cùng tên "Notification" thì file nào nạp
+// trước thắng (hai schema như nhau), và index chỉ khai ở schema của module.
+export { default } from "@/modules/notifications/models";

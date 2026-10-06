@@ -85,7 +85,7 @@ export default function DashboardPage(_props: DashboardPageProps) {
                 title={course.title}
                 courseId={course._id}
                 slug={course.slug}
-                lesson={userLessons[index]}
+                lesson={userLessons[index] ?? undefined}
               />
             ))}
           </CourseResumeList>

@@ -16,7 +16,7 @@ import {
   UpdateLessonOrderProps,
   UpdateLessonProps,
 } from "@/shared/types";
-import { isValidObjectId } from "@/utils";
+import { Types } from "mongoose";
 import { revalidatePath } from "next/cache";
 import LessonModel from "../models";
 
@@ -24,8 +24,8 @@ export async function getLessonById(
   lessonId: string
 ): Promise<LessonItemCutomizeData | undefined> {
   try {
-    connectToDatabase();
-    const isValidId = isValidObjectId(lessonId);
+    await connectToDatabase();
+    const isValidId = Types.ObjectId.isValid(lessonId);
     if (!isValidId) {
       return;
     }
@@ -64,8 +64,8 @@ export async function getLessonPreview(
   lessonId: string
 ): Promise<LessonItemCutomizeData | undefined> {
   try {
-    connectToDatabase();
-    const isValidId = isValidObjectId(lessonId);
+    await connectToDatabase();
+    const isValidId = Types.ObjectId.isValid(lessonId);
     if (!isValidId) {
       return;
     }
@@ -83,7 +83,7 @@ export async function fetchLessonDetailsOutline(
   slug: string
 ): Promise<LessonDetailsOutlineData[] | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const foundCourse = await CourseModel.findOne({ slug }).select("_id");
     if (!foundCourse) return [];
     const lectureList = await LectureModel.find({
@@ -92,23 +92,15 @@ export async function fetchLessonDetailsOutline(
     })
       .select("title lessons")
       .sort({ order: 1 })
-      .populate({
-        path: "courseId",
-        model: CourseModel,
-        select: "id",
-      })
+      // Không populate courseId (mọi chương cùng một khóa) hay lectureId của bài
+      // (chính là chương cha): 4 trang đọc mục lục này đều không dùng tới
       .populate({
         path: "lessons",
         model: LessonModel,
-        select: "_id title slug user course order duration trial",
+        select: "_id title slug order duration trial",
         match: { _destroy: false },
         options: {
           sort: { order: 1 },
-        },
-        populate: {
-          path: "lectureId",
-          model: LectureModel,
-          select: "id title",
         },
       });
     if (!lectureList) return [];
@@ -120,7 +112,7 @@ export async function fetchLessonsByCourseId(
   courseId: string
 ): Promise<LessonItemData[] | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     // Chỉ dùng để đếm và tìm bài trước/sau: không trả video, nội dung trả phí
     const lessons = await LessonModel.find({ courseId }).select(
       "_id title slug order duration trial lectureId courseId",
@@ -174,7 +166,7 @@ export async function updateLesson({
 }: UpdateLessonProps) {
   try {
     await connectToDatabase();
-    if (!isValidObjectId(lessonId)) return;
+    if (!Types.ObjectId.isValid(lessonId)) return;
 
     const lesson = await LessonModel.findById(lessonId).select("courseId");
 
@@ -248,14 +240,19 @@ export async function updateLessonOrder(params: UpdateLessonOrderProps) {
 
     if (!courseManager) return;
 
-    await Promise.all(
-      lessonIds.map((lessonId, index) =>
-        LessonModel.updateOne(
-          { _id: lessonId, courseId },
-          { order: index + 1 },
-        ),
-      ),
-    );
+    // Một bulkWrite thay vì mỗi bài một updateOne
+    if (lessonIds.length > 0) {
+      await LessonModel.bulkWrite(
+        lessonIds.map((lessonId, index) => ({
+          updateOne: {
+            filter: { _id: lessonId, courseId },
+            update: { $set: { order: index + 1 } },
+          },
+        })),
+        { ordered: false },
+      );
+    }
+
     revalidatePath(params.path);
   } catch (error) {}
 }
@@ -284,24 +281,30 @@ export async function updateLectureLessonOrder(
 
     if (!courseManager) return;
 
-    await Promise.all(
-      params.lectures.map(async (lecture) => {
-        const lectureLessonIds = lecture.lessons.map((lesson) => lesson._id);
-
-        await LectureModel.updateOne(
-          { _id: lecture._id, courseId },
-          { lessons: lectureLessonIds },
-        );
-        await Promise.all(
-          lectureLessonIds.map((lessonId, index) =>
-            LessonModel.updateOne(
-              { _id: lessonId, courseId },
-              { order: index + 1, lectureId: lecture._id },
-            ),
-          ),
-        );
-      }),
+    // Hai bulkWrite (chương, bài) thay vì mỗi chương, mỗi bài một updateOne
+    const lectureUpdates = params.lectures.map((lecture) => ({
+      updateOne: {
+        filter: { _id: lecture._id, courseId },
+        update: {
+          $set: { lessons: lecture.lessons.map((lesson) => lesson._id) },
+        },
+      },
+    }));
+    const lessonUpdates = params.lectures.flatMap((lecture) =>
+      lecture.lessons.map((lesson, index) => ({
+        updateOne: {
+          filter: { _id: lesson._id, courseId },
+          update: { $set: { order: index + 1, lectureId: lecture._id } },
+        },
+      })),
     );
+
+    await Promise.all([
+      lectureUpdates.length > 0 &&
+        LectureModel.bulkWrite(lectureUpdates, { ordered: false }),
+      lessonUpdates.length > 0 &&
+        LessonModel.bulkWrite(lessonUpdates, { ordered: false }),
+    ]);
     revalidatePath(params.path);
   } catch (error) {}
 }

@@ -130,5 +130,11 @@ const courseSchema = new Schema<CourseModelProps>({
     default: true,
   },
 });
+// trang chi tiết, trang học, enroll đều tìm khóa theo slug
+courseSchema.index({ slug: 1 });
+// danh sách khóa, khám phá, sắp ra mắt
+courseSchema.index({ status: 1, _destroy: 1, createdAt: -1 });
+// khóa của expert (quyền quản lý, đơn hàng, trang quản lý)
+courseSchema.index({ author: 1 });
 const CourseModel = models.Course || mongoose.model("Course", courseSchema);
 export default CourseModel;

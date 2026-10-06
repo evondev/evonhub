@@ -13,7 +13,7 @@ export interface CourseItemResumeProps {
   title: string;
   courseId: string;
   url?: string;
-  lesson: {
+  lesson?: {
     _id: string;
     slug: string;
   };

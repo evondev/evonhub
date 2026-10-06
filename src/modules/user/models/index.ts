@@ -105,5 +105,7 @@ const userSchema = new Schema<UserModelProps>({
   },
 });
 userSchema.index({ clerkId: 1 }, { unique: true });
+// đếm học viên của khóa, lọc user đã mua
+userSchema.index({ courses: 1 });
 const UserModel = models.User || model("User", userSchema);
 export default UserModel;

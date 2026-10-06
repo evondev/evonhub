@@ -2,16 +2,18 @@ import CourseModel from "@/modules/course/models";
 import { canManageCourse } from "@/modules/course/services/course-permission.service";
 import UserModel from "@/modules/user/models";
 import { UserRole } from "@/shared/constants/user.constants";
-import { connectToDatabase } from "@/shared/libs";
+import { connectToDatabase } from "@/shared/libs/mongoose";
 import { auth } from "@clerk/nextjs/server";
 import { isValidObjectId } from "mongoose";
+import { cache } from "react";
 
 /**
  * Lấy user đang đăng nhập từ Clerk session.
  * Mọi server action thao tác dữ liệu của user phải dùng hàm này thay vì nhận
  * userId / userRole từ client.
  */
-export async function getCurrentUser() {
+// cache(): layout, page và các action trong cùng một request dùng chung một lần đọc
+export const getCurrentUser = cache(async () => {
   const { userId: clerkId } = auth();
 
   if (!clerkId) return null;
@@ -19,7 +21,7 @@ export async function getCurrentUser() {
   await connectToDatabase();
 
   return UserModel.findOne({ clerkId });
-}
+});
 
 /** User đang đăng nhập nếu là admin, không thì null */
 export async function getCurrentAdmin() {

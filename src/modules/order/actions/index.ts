@@ -9,10 +9,11 @@ import {
   OrderStatus,
 } from "@/shared/constants/order.constants";
 import { UserRole } from "@/shared/constants/user.constants";
-import { parseData } from "@/shared/helpers";
+import { parseData, readFacetCount } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { getCurrentUser } from "@/shared/libs/auth";
 import { UserModelProps } from "@/shared/types/user.types";
+import { escapeRegExp } from "lodash";
 import { FilterQuery } from "mongoose";
 import OrderModel from "../models";
 import {
@@ -32,6 +33,7 @@ import {
   UpdateOrderProps,
 } from "../types";
 import {
+  OrderManageCountFacet,
   OrderManageGroup,
   OrderManageTabCounts,
 } from "../types/order-manage.types";
@@ -41,7 +43,7 @@ export async function fetchCountOrdersByCourse(
   courseId: string
 ): Promise<number | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const count = await UserModel.countDocuments({ courses: courseId });
     return count;
   } catch (error) {
@@ -149,12 +151,19 @@ export async function fetchOrders({
 
     if (filter) {
       const matchedUsers = await UserModel.find({
-        email: { $regex: filter, $options: "i" },
+        email: { $regex: escapeRegExp(filter), $options: "i" },
       }).select("_id");
 
       scopeConditions.push({
         $or: [
-          { code: { $regex: filter, $options: "i" } },
+          // Mã đơn luôn là "DH" + số, viết hoa: so tiền tố có neo ^ và không
+          // dùng cờ "i" thì Mongo đi được index { code: 1 }. Gõ thiếu "DH"
+          // (chỉ phần số) vẫn tìm ra
+          {
+            code: {
+              $regex: `^DH${escapeRegExp(filter.trim().toUpperCase().replace(/^DH/, ""))}`,
+            },
+          },
           { user: { $in: matchedUsers.map((user) => user._id) } },
         ],
       });
@@ -181,47 +190,69 @@ export async function fetchOrders({
         : [...scopeConditions, buildOrderGroupCondition(tab, expiryDate)];
     const isAdmin = currentUser.role === UserRole.Admin;
 
-    const [orders, allCount, groupCounts, freePendingCount] =
-      await Promise.all([
-        OrderModel.find(combineConditions(tabConditions))
-          .limit(limit)
-          .skip(skip)
-          .sort({
-            createdAt: -1,
-          })
-          .populate({
-            path: "course",
-            model: CourseModel,
-            select: "_id title",
-          })
-          .populate({
-            path: "coupon",
-            model: CouponModel,
-            select: "_id code amount",
-          })
-          .populate({
-            path: "user",
-            model: UserModel,
-            select: "_id username email",
-          }),
-        OrderModel.countDocuments(combineConditions(scopeConditions)),
-        Promise.all(
-          orderManageGroups.map((group) =>
-            OrderModel.countDocuments(
-              combineConditions([
-                ...scopeConditions,
-                buildOrderGroupCondition(group, expiryDate),
+    // Một aggregate đếm mọi tab thay vì mỗi tab một countDocuments: $match phạm vi
+    // quét một lần, mỗi nhánh $facet lọc tiếp bằng đúng điều kiện của nhóm. Id
+    // khoá và user trong scopeConditions lấy từ kết quả find nên đã là ObjectId
+    const [orders, [orderCountFacet], freePendingCount] = await Promise.all([
+      OrderModel.find(combineConditions(tabConditions))
+        .limit(limit)
+        .skip(skip)
+        .sort({
+          createdAt: -1,
+        })
+        .populate({
+          path: "course",
+          model: CourseModel,
+          select: "_id title",
+        })
+        .populate({
+          path: "coupon",
+          model: CouponModel,
+          select: "_id code amount",
+        })
+        .populate({
+          path: "user",
+          model: UserModel,
+          select: "_id username email",
+        }),
+      OrderModel.aggregate<OrderManageCountFacet>([
+        { $match: combineConditions(scopeConditions) },
+        // Chỉ các trường buildOrderGroupCondition đọc
+        {
+          $project: {
+            _id: 0,
+            status: 1,
+            total: 1,
+            paidAmount: 1,
+            paymentMethod: 1,
+            createdAt: 1,
+          },
+        },
+        {
+          $facet: {
+            all: [{ $count: "count" }],
+            ...Object.fromEntries(
+              orderManageGroups.map((group) => [
+                group,
+                [
+                  { $match: buildOrderGroupCondition(group, expiryDate) },
+                  { $count: "count" },
+                ],
               ]),
             ),
-          ),
-        ),
-        // Đúng phạm vi handleUpdateFreeOrder sẽ duyệt, không theo bộ lọc
-        isAdmin ? OrderModel.countDocuments(freePendingOrderQuery) : 0,
-      ]);
+          },
+        },
+      ]),
+      // Đúng phạm vi handleUpdateFreeOrder sẽ duyệt, không theo bộ lọc
+      isAdmin ? OrderModel.countDocuments(freePendingOrderQuery) : 0,
+    ]);
 
     const tabCounts = Object.fromEntries([
-      ["all", allCount],
-      ...orderManageGroups.map((group, index) => [group, groupCounts[index]]),
+      ["all", readFacetCount(orderCountFacet?.all)],
+      ...orderManageGroups.map((group) => [
+        group,
+        readFacetCount(orderCountFacet?.[group]),
+      ]),
     ]) as OrderManageTabCounts;
 
     return {
@@ -394,26 +425,41 @@ export async function handleUpdateFreeOrder(): Promise<number | undefined> {
 
     if (!currentUser || currentUser.role !== UserRole.Admin) return;
 
-    const freeOrders = await OrderModel.find(freePendingOrderQuery);
-    let approvedCount = 0;
+    const freeOrders: OrderModelProps[] = await OrderModel.find(
+      freePendingOrderQuery,
+    );
 
-    for (const order of freeOrders) {
-      const approveResult = await OrderModel.updateOne(
-        { _id: order._id, status: OrderStatus.Pending },
-        { status: OrderStatus.Approved }
-      );
+    // Mỗi đơn vẫn duyệt bằng một updateOne có điều kiện PENDING (đơn đã bị
+    // webhook / admin khác đổi thì bỏ qua), nhưng chạy song song thay vì lần lượt
+    const approveResults = await Promise.all(
+      freeOrders.map((order) =>
+        OrderModel.updateOne(
+          { _id: order._id, status: OrderStatus.Pending },
+          { status: OrderStatus.Approved },
+        ),
+      ),
+    );
+    const approvedOrders = freeOrders.filter(
+      (_order, index) => approveResults[index].modifiedCount > 0,
+    );
 
-      if (!approveResult.modifiedCount) continue;
+    if (approvedOrders.length === 0) return 0;
 
-      await UserModel.updateOne(
-        { _id: order.user },
-        { $addToSet: { courses: order.course } }
-      );
-      await incrementCouponUsage(order);
-      approvedCount += 1;
-    }
+    // Cấp khoá cho mọi đơn vừa duyệt trong một lần ghi
+    await UserModel.bulkWrite(
+      approvedOrders.map((order) => ({
+        updateOne: {
+          filter: { _id: order.user },
+          update: { $addToSet: { courses: order.course } },
+        },
+      })),
+      { ordered: false },
+    );
+    await Promise.all(
+      approvedOrders.map((order) => incrementCouponUsage(order)),
+    );
 
-    return approvedCount;
+    return approvedOrders.length;
   } catch (error) {
     console.log(error);
   }

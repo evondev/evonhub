@@ -26,7 +26,7 @@ export async function getLessonDetailsContent({
   courseSlug: string;
 }): Promise<IGetLessonContent[] | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const findCourse = await Course.findOne({ slug: courseSlug }).select("_id");
     if (!findCourse) return [];
     const lectureList = await Lecture.find({
@@ -50,7 +50,7 @@ export async function getLessonDetailsContent({
 
 export async function countOverview() {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const { userId } = auth();
     const findUser = await User.findOne({ clerkId: userId });
     if (!findUser) return null;

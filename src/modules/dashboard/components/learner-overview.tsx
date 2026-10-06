@@ -1,9 +1,6 @@
 import { getUserById } from "@/lib/actions/user.action";
 import { fetchCourses } from "@/modules/course/actions";
-import {
-  fetchUserCourseProgress,
-  fetchUserCoursesContinue,
-} from "@/modules/user/actions";
+import { fetchUserCoursesContinue } from "@/modules/user/actions";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { UserItemData } from "@/shared/types/user.types";
 import { currentUser } from "@clerk/nextjs/server";
@@ -64,21 +61,19 @@ export async function LearnerOverview({ clerkUserId }: LearnerOverviewProps) {
     );
   }
 
-  const coursesProgress: DashboardCourseProgress[] = await Promise.all(
-    continueData.courses.map(async (course, index) => {
-      const courseProgress = await fetchUserCourseProgress({
-        userId: user._id.toString(),
-        courseId: course._id.toString(),
-      });
+  // Tiến độ đã tính gộp trong fetchUserCoursesContinue, cùng thứ tự với courses
+  const coursesProgress: DashboardCourseProgress[] = continueData.courses.map(
+    (course, index) => {
+      const courseProgress = continueData.progresses[index];
 
       return {
         course,
-        lesson: continueData.lessons[index],
-        progress: Math.min(courseProgress?.progress || 0, 100),
-        current: courseProgress?.current || 0,
-        total: courseProgress?.total || 0,
+        lesson: continueData.lessons[index] ?? undefined,
+        progress: Math.min(courseProgress.progress, 100),
+        current: courseProgress.current,
+        total: courseProgress.total,
       };
-    }),
+    },
   );
 
   return (

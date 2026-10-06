@@ -1,5 +1,12 @@
 import { UserRole, UserStatus } from "@/shared/constants/user.constants";
 
+export type {
+  CountByCourse,
+  CourseProgress,
+  FirstLessonLink,
+  UserCoursesContinueData,
+} from "./course-progress.types";
+
 export interface FetchUsersProps {
   search?: string;
   limit: number;

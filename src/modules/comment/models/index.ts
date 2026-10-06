@@ -38,5 +38,9 @@ const commentSchema = new Schema<CommentModelProps>({
     default: Date.now,
   },
 });
+// bình luận của bài học
+commentSchema.index({ lesson: 1, status: 1, createdAt: -1 });
+// xóa bình luận kéo theo trả lời
+commentSchema.index({ parentId: 1 });
 const CommentModel = models.Comment || mongoose.model("Comment", commentSchema);
 export default CommentModel;

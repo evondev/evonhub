@@ -24,7 +24,7 @@ export async function handleCreateCoupon({
   type,
 }: CreateCouponProps): Promise<boolean | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const { userId } = auth();
     const findUser = await UserModel.findOne({ clerkId: userId });
@@ -111,7 +111,7 @@ export async function handleCheckCoupon({
   courseId,
 }: FetchCouponProps): Promise<CouponItemData | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const findCoupon: CouponItemData | null = await CouponModel.findOne({
       code,
     });

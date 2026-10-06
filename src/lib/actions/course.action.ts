@@ -165,8 +165,7 @@ export async function getCourseBySlug(
 
 export async function deleteCourse(slug: string) {
   try {
-    connectToDatabase();
-    connectToDatabase();
+    await connectToDatabase();
     const { userId } = auth();
     const findUser = await UserModel.findOne({ clerkId: userId });
     if (![Role.ADMIN].includes(findUser?.role)) return undefined;

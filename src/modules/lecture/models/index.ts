@@ -29,5 +29,7 @@ const lectureSchema = new Schema<LectureModelProps>({
     default: false,
   },
 });
+// mục lục khóa, bài đầu tiên của khóa
+lectureSchema.index({ courseId: 1, _destroy: 1, order: 1 });
 const LectureModel = models.Lecture || mongoose.model("Lecture", lectureSchema);
 export default LectureModel;

@@ -5,7 +5,6 @@ import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { getCurrentUser } from "@/shared/libs/auth";
 import HistoryModel from "@/shared/models/history.model";
-import { HistoryItemData } from "@/shared/types/history.types";
 import { ScoreItemData } from "@/shared/types/score.types";
 import { UserItemData } from "@/shared/types/user.types";
 import ScoreModel from "../models";
@@ -16,7 +15,7 @@ export const fetchLeaderBoard = async ({
   limit: number;
 }): Promise<ScoreItemData[] | undefined> => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const response = await ScoreModel.find({})
       .limit(limit)
@@ -51,26 +50,34 @@ export const syncUserLeaderboard = async (
     const userId = findUser._id;
 
     if (findUser.role === UserRole.Admin) {
-      const existScores = (await ScoreModel.find({}).limit(
-        100
-      )) as ScoreItemData[];
-      existScores.forEach(async (score) => {
-        const user = await UserModel.findById(score.user.toString());
-        if (user) {
-          user.score = score.score;
-          await user.save();
-        }
-      });
+      const existScores = (await ScoreModel.find({})
+        .limit(100)
+        .select("user score")) as ScoreItemData[];
+      // Một bulkWrite chép điểm sang user thay vì mỗi điểm một findById + save
+      // chạy ngầm không await. Điểm không gắn user thì bỏ qua
+      const scoreUpdates = existScores
+        .filter((score) => score.user)
+        .map((score) => ({
+          updateOne: {
+            filter: { _id: score.user.toString() },
+            update: { $set: { score: score.score } },
+          },
+        }));
+
+      if (scoreUpdates.length > 0) {
+        await UserModel.bulkWrite(scoreUpdates, { ordered: false });
+      }
+
       return true;
     }
-    const existScore = await ScoreModel.findOne({ user: userId });
-    const histories = (await HistoryModel.find({
-      user: userId,
-    })) as HistoryItemData[];
-    let totalScore = 0;
-    histories.forEach(() => {
-      totalScore += 10;
-    });
+
+    // Mỗi bài đã học được 10 điểm: chỉ cần đếm, không tải cả lịch sử
+    const [existScore, historyCount] = await Promise.all([
+      ScoreModel.findOne({ user: userId }),
+      HistoryModel.countDocuments({ user: userId }),
+    ]);
+    const totalScore = historyCount * 10;
+
     if (existScore) {
       existScore.score = totalScore;
       await existScore.save();
@@ -91,7 +98,7 @@ export const fetchUserLeaderboardRank = async ({
   userId: string;
 }) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const leaderBoard = await ScoreModel.find({}).sort({ score: -1 }).limit(4);
     const userRank = leaderBoard.findIndex(
       (user) => user.user.toString() === userId

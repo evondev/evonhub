@@ -1,4 +1,4 @@
-import { getQueryClient } from "../libs";
+import { getQueryClient } from "../libs/react-query/query-client";
 import { toArray } from "./array-helper";
 
 export function invalidateQueriesByKeys(

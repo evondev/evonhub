@@ -1,5 +1,6 @@
 import { OrderStatus } from "@/shared/constants/order.constants";
 import { BadgeTone } from "@/shared/types";
+import { FacetCountItem } from "@/shared/types/count.types";
 
 /**
  * Nhóm của một đơn trên trang quản lý. Mỗi đơn đúng một nhóm: đơn PENDING tách
@@ -16,6 +17,9 @@ export type OrderManageGroup =
 export type OrderManageTab = "all" | OrderManageGroup;
 
 export type OrderManageTabCounts = Record<OrderManageTab, number>;
+
+/** Kết quả $facet đếm của fetchOrders: mỗi tab một nhánh $count */
+export type OrderManageCountFacet = Record<OrderManageTab, FacetCountItem[]>;
 
 export interface OrderManageTabDefinition {
   value: OrderManageTab;

@@ -5,7 +5,7 @@ import UserModel from "@/modules/user/models";
 import { UserStatus } from "@/shared/constants/user.constants";
 import { connectToDatabase } from "@/shared/libs";
 import NotificationModel from "../models";
-import { SendNotificationParams } from "../types";
+import { NotificationDraft, SendNotificationParams } from "../types";
 
 /**
  * Chỉ code server gọi (action đã kiểm quyền). Không đặt trong file "use server":
@@ -37,6 +37,22 @@ export async function sendNotification({
       content,
       users: recipientIds,
     });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Ghi nhiều thông báo trong một lần insertMany thay vì mỗi thông báo một lần
+ * create. ordered: false để một thông báo lỗi không chặn các thông báo còn lại.
+ * Cùng lưu ý escapeHtml với sendNotification.
+ */
+export async function sendNotifications(notifications: NotificationDraft[]) {
+  if (notifications.length === 0) return;
+
+  try {
+    await connectToDatabase();
+    await NotificationModel.insertMany(notifications, { ordered: false });
   } catch (error) {
     console.log(error);
   }

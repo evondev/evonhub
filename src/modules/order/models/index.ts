@@ -88,5 +88,13 @@ const orderSchema = new Schema<OrderModelProps>({
     default: MembershipPlan.None,
   },
 });
+// webhook SePay và trang trạng thái đơn (poll 5 giây) tìm theo mã
+orderSchema.index({ code: 1 });
+// đơn đang chờ của user cho một khóa
+orderSchema.index({ user: 1, course: 1, status: 1 });
+// đơn của tôi
+orderSchema.index({ user: 1, createdAt: -1 });
+// tab trạng thái ở trang quản lý đơn, cron nhắc thanh toán
+orderSchema.index({ status: 1, createdAt: -1 });
 const OrderModel = models.Order || mongoose.model("Order", orderSchema);
 export default OrderModel;

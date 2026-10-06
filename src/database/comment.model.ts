@@ -1,5 +1,5 @@
 import { CommentStatus } from "@/shared/constants/comment.constants";
-import mongoose, { Schema, models } from "mongoose";
+import { Schema } from "mongoose";
 
 export interface IComment extends Document {
   _id: Schema.Types.ObjectId;
@@ -11,41 +11,6 @@ export interface IComment extends Document {
   level: number;
   createdAt: Date;
 }
-const commentSchema = new Schema<IComment>({
-  content: {
-    type: String,
-    required: true,
-  },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
-  lesson: {
-    type: Schema.Types.ObjectId,
-    ref: "Lesson",
-  },
-  status: {
-    type: String,
-    enum: [
-      CommentStatus.Pending,
-      CommentStatus.Approved,
-      CommentStatus.Rejected,
-    ],
-    default: CommentStatus.Pending,
-  },
-  parentId: {
-    type: Schema.Types.ObjectId,
-    ref: "Comment",
-    default: null,
-  },
-  level: {
-    type: Number,
-    default: 0,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-const Comment = models.Comment || mongoose.model("Comment", commentSchema);
-export default Comment;
+// Dùng chung model của module. Hai schema cùng tên "Comment" thì file nào nạp
+// trước thắng (hai schema như nhau), và index chỉ khai ở schema của module.
+export { default } from "@/modules/comment/models";
