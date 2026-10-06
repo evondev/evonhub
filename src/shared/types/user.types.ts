@@ -28,6 +28,7 @@ export interface UserModelProps extends Document {
     bankBranch: string;
   };
   score: number;
+  notificationsSeenAt?: Date;
   _destroy: boolean;
   socials: {
     facebook?: string;

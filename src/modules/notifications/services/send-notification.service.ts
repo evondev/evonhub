@@ -8,13 +8,12 @@ import NotificationModel from "../models";
 import { NotificationDraft, SendNotificationParams } from "../types";
 
 /**
- * Chỉ code server gọi (action đã kiểm quyền). Không đặt trong file "use server":
- * nội dung hiện bằng HTML ở chuông thông báo, để ngỏ là ai cũng gửi được script.
- * Chữ do người dùng đặt (tên, tiêu đề) phải qua escapeHtml trước khi ghép vào content.
+ * Chỉ code server gọi (action đã kiểm quyền). Thông báo lưu type + data, câu hiển
+ * thị ghép ở client bằng chữ thường, nên tên khóa, tên bài không cần escape.
  */
 export async function sendNotification({
-  title,
-  content,
+  type,
+  data,
   users = [],
   isSendAll,
 }: SendNotificationParams) {
@@ -33,8 +32,8 @@ export async function sendNotification({
     }
 
     await NotificationModel.create({
-      title,
-      content,
+      type,
+      data,
       users: recipientIds,
     });
   } catch (error) {
@@ -45,7 +44,6 @@ export async function sendNotification({
 /**
  * Ghi nhiều thông báo trong một lần insertMany thay vì mỗi thông báo một lần
  * create. ordered: false để một thông báo lỗi không chặn các thông báo còn lại.
- * Cùng lưu ý escapeHtml với sendNotification.
  */
 export async function sendNotifications(notifications: NotificationDraft[]) {
   if (notifications.length === 0) return;

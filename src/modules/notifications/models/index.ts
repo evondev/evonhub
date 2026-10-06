@@ -1,9 +1,24 @@
 import mongoose, { models, Schema } from "mongoose";
+import { NotificationType } from "../constants/notification-type.constants";
 import { NotificationModelProps } from "../types";
 
 const notificationSchema = new Schema<NotificationModelProps>({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
+  type: { type: String, enum: Object.values(NotificationType) },
+  data: {
+    type: new Schema(
+      {
+        courseTitle: String,
+        courseSlug: String,
+        lessonId: String,
+        lessonTitle: String,
+        commentId: String,
+      },
+      { _id: false },
+    ),
+  },
+  // Thông báo cũ chưa có type: câu ghép sẵn bằng HTML
+  title: { type: String },
+  content: { type: String },
   users: [{ type: Schema.Types.ObjectId, ref: "User" }],
   createdBy: { type: Schema.Types.ObjectId, ref: "User" },
   createdAt: { type: Date, default: Date.now },

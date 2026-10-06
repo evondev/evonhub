@@ -1,71 +1,127 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useUserContext } from "@/components/user-context";
-import { useQueryNotificationsByUser } from "@/modules/notifications/services/data/query-notifications-by-user";
+import { markNotificationsSeen } from "@/modules/notifications/actions";
+import {
+  NotificationList,
+  NotificationListSkeleton,
+} from "@/modules/notifications/components";
+import { NOTIFICATION_PANEL_SIDE_OFFSET } from "@/modules/notifications/constants";
+import {
+  getNotificationsByUserOptions,
+  useQueryNotificationsByUser,
+} from "@/modules/notifications/services/data/query-notifications-by-user";
+import { isNotificationUnread } from "@/modules/notifications/utils";
 import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
-import { sanitizeHtml } from "@/shared/helpers";
 import { invalidateQueriesByKeys } from "@/shared/helpers/query-helper";
-import { getTimestamp } from "@/utils";
-import { Bell } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Bell, BellDot } from "lucide-react";
+import { useState } from "react";
 
 const Notification = () => {
   const { userInfo } = useUserContext();
+  const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = useState(false);
+  const userId = userInfo?._id || "";
 
-  const { data: notifications } = useQueryNotificationsByUser({
-    userId: userInfo?._id || "",
+  const { data: feed, isPending } = useQueryNotificationsByUser({
+    userId,
     enabled: !!userInfo?._id,
   });
 
-  const handleRefetchNotifications = () => {
-    invalidateQueriesByKeys(QUERY_KEYS.GET_NOTIFICATIONS_BY_USER);
-  };
+  const notifications = feed?.notifications;
+  const seenAt = feed?.seenAt ?? null;
+  const unreadCount =
+    notifications?.filter((notification) =>
+      isNotificationUnread(notification.createdAt, seenAt),
+    ).length ?? 0;
+  // Action trả undefined khi lỗi, không ném ra, nên tải xong mà không có dữ liệu là lỗi
+  const hasLoadFailed = !isPending && !feed;
+
+  // Đóng panel mới ghi mốc đã xem: lúc đang mở vẫn thấy cái nào mới.
+  // Mốc là thông báo mới nhất đang hiện, không phải giờ hiện tại.
+  async function markLatestNotificationSeen() {
+    const latestCreatedAt = notifications?.[0]?.createdAt;
+
+    if (!latestCreatedAt || unreadCount === 0) return;
+
+    const savedSeenAt = await markNotificationsSeen(latestCreatedAt);
+
+    if (!savedSeenAt) return;
+
+    queryClient.setQueryData(
+      getNotificationsByUserOptions({ userId }).queryKey,
+      (currentFeed) =>
+        currentFeed ? { ...currentFeed, seenAt: savedSeenAt } : currentFeed,
+    );
+  }
+
+  function handleOpenChange(isNextOpen: boolean) {
+    setIsOpen(isNextOpen);
+
+    if (isNextOpen) {
+      invalidateQueriesByKeys(QUERY_KEYS.GET_NOTIFICATIONS_BY_USER);
+      return;
+    }
+
+    void markLatestNotificationSeen();
+  }
+
+  function handleNavigate() {
+    handleOpenChange(false);
+  }
 
   return (
-    <Popover>
-      <PopoverTrigger
-        aria-label="Thông báo"
-        className="relative inline-flex size-9 items-center justify-center rounded-xl text-muted outline-none transition-colors hover:bg-foreground/5 hover:text-foreground data-[state=open]:bg-foreground/5"
-        onClick={handleRefetchNotifications}
-      >
-        <Bell className="size-4" />
+    <Popover open={isOpen} onOpenChange={handleOpenChange}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={
+            unreadCount > 0
+              ? `Thông báo, ${unreadCount} chưa đọc`
+              : "Thông báo"
+          }
+          className="size-9 rounded-xl data-[state=open]:bg-foreground/5 data-[state=open]:text-foreground"
+        >
+          {/* BellDot gốc chỉ vẽ viền chấm, tô đặc cho thấy rõ ở cỡ nhỏ */}
+          {unreadCount > 0 && (
+            <BellDot className="size-4 [&_circle]:fill-current" />
+          )}
+          {unreadCount === 0 && <Bell className="size-4" />}
+        </Button>
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        className="w-80 p-0 shadow-sm dark:bg-grayDarker dark:border-opacity-10 dark:border-gray-200"
+        sideOffset={NOTIFICATION_PANEL_SIDE_OFFSET}
+        collisionPadding={16}
+        className="w-96 max-w-[calc(100vw-2rem)] rounded-2xl border-border bg-surface p-0 text-foreground shadow-popover dark:border-border dark:bg-surface dark:text-foreground"
       >
-        <div className="p-3 font-semibold text-base border-b border-b-gray-200 dark:border-opacity-10">
+        <h2 className="border-b border-border px-4 py-3 text-sm font-semibold">
           Thông báo
-        </div>
-        {notifications && notifications?.length > 0 && (
-          <div className="p-3  max-h-[300px] overflow-y-auto">
-            {notifications.map((el) => (
-              <div
-                className="flex items-baseline gap-3 text-sm font-medium pb-3 mb-3 border-b border-b-gray-100 border-dashed dark:border-opacity-10 last:mb-0 last:pb-0 last:border-b-0"
-                key={el.title}
-              >
-                <span className="rounded-full size-2 bg-green-500 flex-shrink-0"></span>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-1">
-                    <h3 className="font-semibold">Hệ thống</h3>
-                    <span className="block size-1 rounded-full bg-gray-600"></span>
-                    <span className="text-slate-500 text-xs">
-                      {getTimestamp(new Date(el.createdAt))}
-                    </span>
-                  </div>
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: sanitizeHtml(el.content),
-                    }}
-                    className="text-slate-600 dark:text-slate-200"
-                  ></div>
-                </div>
-              </div>
-            ))}
-          </div>
+        </h2>
+        {isPending && <NotificationListSkeleton />}
+        {hasLoadFailed && (
+          <p className="px-4 py-10 text-center text-sm text-muted">
+            Chưa tải được thông báo, đóng rồi mở lại để thử lại
+          </p>
+        )}
+        {notifications && notifications.length === 0 && (
+          <p className="px-4 py-10 text-center text-sm text-muted">
+            Chưa có thông báo nào
+          </p>
+        )}
+        {notifications && notifications.length > 0 && (
+          <NotificationList
+            notifications={notifications}
+            seenAt={seenAt}
+            onNavigate={handleNavigate}
+          />
         )}
       </PopoverContent>
     </Popover>

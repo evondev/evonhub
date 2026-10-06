@@ -3,6 +3,7 @@
 import CourseModel from "@/modules/course/models";
 import { canManageCourse } from "@/modules/course/services/course-permission.service";
 import LessonModel from "@/modules/lesson/models";
+import { NotificationType } from "@/modules/notifications/constants/notification-type.constants";
 import { sendNotifications } from "@/modules/notifications/services/send-notification.service";
 import UserModel from "@/modules/user/models";
 import {
@@ -15,7 +16,6 @@ import {
 } from "@/shared/constants/moderation.constants";
 import {
   buildStatusCountPipeline,
-  escapeHtml,
   getStatusCount,
   parseData,
   toStatusCountMap,
@@ -314,21 +314,42 @@ export async function updateCommentsStatus({
 }
 
 interface ApprovedCommentToNotify {
+  _id: unknown;
   user?: unknown;
-  lesson?: { title?: string } | null;
+  lesson?: { _id?: unknown; title?: string; courseId?: unknown } | null;
 }
 
-/** Báo cho người viết là bình luận đã được duyệt; người nhận lấy từ bình luận đã lưu */
+/**
+ * Báo cho người viết là bình luận đã được duyệt; người nhận lấy từ bình luận đã lưu.
+ * Kèm slug khóa và id bài để bấm thông báo mở đúng bình luận.
+ */
 async function notifyApprovedComments(comments: ApprovedCommentToNotify[]) {
+  const commentsToNotify = comments.filter((comment) => comment.user);
+
+  if (commentsToNotify.length === 0) return;
+
+  const courseIds = commentsToNotify.map((comment) =>
+    String(comment.lesson?.courseId),
+  );
+  const courses = await CourseModel.find({ _id: { $in: courseIds } }).select(
+    "slug",
+  );
+  const courseSlugById = new Map<string, string>(
+    courses.map((course) => [String(course._id), course.slug]),
+  );
+
   // Mỗi bình luận vẫn một thông báo riêng, nhưng ghi chung một lần insertMany
   await sendNotifications(
-    comments
-      .filter((comment) => comment.user)
-      .map((comment) => ({
-        title: "Hệ thống",
-        content: `Bình luận của bạn tại bài học <strong>${escapeHtml(comment.lesson?.title || "")}</strong> đã được duyệt`,
-        users: [String(comment.user)],
-      })),
+    commentsToNotify.map((comment) => ({
+      type: NotificationType.CommentApproved,
+      data: {
+        courseSlug: courseSlugById.get(String(comment.lesson?.courseId)),
+        lessonId: comment.lesson?._id ? String(comment.lesson._id) : undefined,
+        lessonTitle: comment.lesson?.title,
+        commentId: String(comment._id),
+      },
+      users: [String(comment.user)],
+    })),
   );
 }
 
@@ -374,7 +395,11 @@ export async function updateMatchingCommentsStatus({
     if (status === CommentStatus.Approved) {
       const commentsToApprove = await CommentModel.find(query)
         .select("user lesson")
-        .populate({ path: "lesson", model: LessonModel, select: "title" });
+        .populate({
+          path: "lesson",
+          model: LessonModel,
+          select: "title courseId",
+        });
 
       await CommentModel.updateMany(
         { _id: { $in: commentsToApprove.map((comment) => comment._id) } },

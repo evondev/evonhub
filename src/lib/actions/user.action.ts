@@ -1,6 +1,7 @@
 "use server";
 import Course from "@/database/course.model";
 import CourseModel from "@/modules/course/models";
+import { NotificationType } from "@/modules/notifications/constants/notification-type.constants";
 import { sendNotification } from "@/modules/notifications/services/send-notification.service";
 import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
@@ -79,7 +80,7 @@ export async function addCourseToUser({
     }
 
     const findCourse = await CourseModel.findById(courseId).select(
-      "title status",
+      "title slug status",
     );
 
     // Khóa lưu trữ đã xóa nội dung, cấp xong thành viên cũng không vào học được
@@ -110,8 +111,8 @@ export async function addCourseToUser({
     revalidatePath(path);
     if (!findCourse?.title) return;
     await sendNotification({
-      title: "Hệ thống",
-      content: `Chúc mừng bạn đã đăng ký khóa học <strong>${findCourse.title}</strong> thành công`,
+      type: NotificationType.CourseEnrolled,
+      data: { courseTitle: findCourse.title, courseSlug: findCourse.slug },
       users: [user._id],
     });
   } catch (error) {
