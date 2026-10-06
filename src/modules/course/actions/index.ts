@@ -27,6 +27,10 @@ import { FilterQuery } from "mongoose";
 import { EXPLORE_SORT_STAGES } from "../constants";
 import CourseModel from "../models";
 import {
+  FetchCoursesManageResult,
+  StudentCountByCourse,
+} from "../types/course-manage.types";
+import {
   CourseItemData,
   EnrollCourseProps,
   EnrollFreeProps,
@@ -376,59 +380,96 @@ export async function fetchCoursesManage({
   limit = 10,
   page,
   status,
-}: FetchCoursesManageProps): Promise<CourseItemData[] | undefined> {
+}: FetchCoursesManageProps): Promise<FetchCoursesManageResult | undefined> {
   try {
-    connectToDatabase();
+    const currentStaff = await getCurrentStaff();
 
-    const { userId } = auth();
-    const findUser = await UserModel.findOne({ clerkId: userId });
+    if (!currentStaff) return;
 
-    if (!findUser) return;
-
-    if (![UserRole.Admin, UserRole.Expert].includes(findUser?.role)) return;
-
-    const query: FilterQuery<typeof CourseModel> = {};
+    // Từ khoá, lọc miễn phí và quyền expert áp cho cả số đếm của từng tab;
+    // trạng thái chỉ áp cho danh sách
+    const baseQuery: FilterQuery<typeof CourseModel> = {};
     const skip = (page - 1) * limit;
 
-    if (status) {
-      query.$or = [{ status: { $regex: status, $options: "i" } }];
-    }
-
     if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { desc: { $regex: search, $options: "i" } },
-        { content: { $regex: search, $options: "i" } },
-      ];
+      baseQuery.title = { $regex: escapeRegExp(search), $options: "i" };
     }
 
+    // Cùng định nghĩa với isCourseFree: cờ free bật và giá 0
     if (isFree) {
-      query.free = isFree;
+      baseQuery.free = true;
+      baseQuery.price = { $lte: 0 };
     }
 
-    if (findUser?.role !== UserRole.Admin) {
-      query.author = findUser._id;
+    if (currentStaff.role !== UserRole.Admin) {
+      baseQuery.author = currentStaff._id;
     }
-    const courses = await CourseModel.find(query)
-      .limit(limit)
-      .skip(skip)
-      .sort({ createdAt: -1 })
-      .select("title slug image createdAt status price _id free rating views");
-    // count total students for each course
-    const coursesWithStudentCount = await Promise.all(
-      courses.map(async (course) => {
-        const studentCount = await UserModel.countDocuments({
-          courses: course._id,
-        });
-        return {
-          ...course.toObject(),
-          studentCount,
-        };
+
+    const query: FilterQuery<typeof CourseModel> = { ...baseQuery };
+
+    if (status) query.status = status;
+
+    const [
+      courses,
+      total,
+      allCount,
+      approvedCount,
+      pendingCount,
+      rejectedCount,
+    ] = await Promise.all([
+      CourseModel.find(query)
+        .limit(limit)
+        .skip(skip)
+        .sort({ createdAt: -1 })
+        .select("title slug image createdAt status price _id free"),
+      CourseModel.countDocuments(query),
+      CourseModel.countDocuments(baseQuery),
+      CourseModel.countDocuments({
+        ...baseQuery,
+        status: CourseStatus.Approved,
       }),
+      CourseModel.countDocuments({
+        ...baseQuery,
+        status: CourseStatus.Pending,
+      }),
+      CourseModel.countDocuments({
+        ...baseQuery,
+        status: CourseStatus.Rejected,
+      }),
+    ]);
+    // Một lần aggregate cho cả trang thay vì đếm từng khóa. $setIntersection bỏ
+    // id lặp trong user.courses: mỗi học viên chỉ tính một lần, như countDocuments
+    const courseIds = courses.map((course) => course._id);
+    const studentCounts: StudentCountByCourse[] = await UserModel.aggregate([
+      { $match: { courses: { $in: courseIds } } },
+      { $project: { courses: { $setIntersection: ["$courses", courseIds] } } },
+      { $unwind: "$courses" },
+      { $group: { _id: "$courses", count: { $sum: 1 } } },
+    ]);
+    const studentCountMap = new Map(
+      studentCounts.map((studentCount) => [
+        String(studentCount._id),
+        studentCount.count,
+      ]),
     );
+    const coursesWithStudentCount = courses.map((course) => ({
+      ...course.toObject(),
+      studentCount: studentCountMap.get(String(course._id)) || 0,
+    }));
 
-    return parseData(coursesWithStudentCount);
-  } catch (error) {}
+    return {
+      courses: parseData(coursesWithStudentCount),
+      total,
+      tabCounts: {
+        all: allCount,
+        [CourseStatus.Approved]: approvedCount,
+        [CourseStatus.Pending]: pendingCount,
+        [CourseStatus.Rejected]: rejectedCount,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function getAllCoursesUser(

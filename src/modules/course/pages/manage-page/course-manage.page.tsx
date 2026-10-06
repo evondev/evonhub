@@ -1,250 +1,57 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useUserContext } from "@/components/user-context";
-import { courseStatus } from "@/constants";
-import {
-  Heading,
-  IconArrowLeft,
-  IconArrowRight,
-  IconCircleCheck,
-  IconEdit,
-  IconEye,
-  IconPlus,
-  IconStudy,
-  IconUsers,
-} from "@/shared/components";
-import { LabelStatus, PaginationControl } from "@/shared/components/common";
-import {
-  ITEMS_PER_PAGE,
-  statusActions,
-} from "@/shared/constants/common.constants";
-import { CourseStatus } from "@/shared/constants/course.constants";
-import { UserRole } from "@/shared/constants/user.constants";
-import { cn } from "@/shared/utils";
-import { formatDate, formatThoundsand } from "@/utils";
-import { debounce } from "lodash";
-import Image from "next/image";
-import Link from "next/link";
+import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
 import {
   parseAsBoolean,
   parseAsInteger,
   parseAsString,
+  parseAsStringLiteral,
   useQueryStates,
 } from "nuqs";
+import { COURSE_MANAGE_TAB_VALUES } from "../../constants/course-manage.constants";
 import { useQueryCoursesManage } from "../../services";
+import {
+  getCourseManageStatus,
+  toCourseManageRow,
+} from "../../utils/course-manage.utils";
+import { CourseManageView } from "./components";
 
 export interface CourseManagePageProps {}
 
 export function CourseManagePage(_props: CourseManagePageProps) {
   const [filters, setFilters] = useQueryStates({
     search: parseAsString.withDefault(""),
+    tab: parseAsStringLiteral(COURSE_MANAGE_TAB_VALUES).withDefault("all"),
     isFree: parseAsBoolean.withDefault(false),
     page: parseAsInteger.withDefault(1),
-    status: parseAsString.withDefault(""),
   });
 
-  const { userInfo } = useUserContext();
-  const userRole = userInfo?.role;
+  const { data, isPending, isPlaceholderData, isFetching, refetch } =
+    useQueryCoursesManage({
+      search: filters.search,
+      page: filters.page,
+      limit: ITEMS_PER_PAGE,
+      isFree: filters.isFree,
+      status: getCourseManageStatus(filters.tab),
+    });
 
-  const canEdit =
-    userRole && [UserRole.Admin, UserRole.Expert].includes(userRole);
-
-  const { data: courses } = useQueryCoursesManage({
-    search: filters.search,
-    page: filters.page,
-    limit: ITEMS_PER_PAGE,
-    isFree: filters.isFree,
-    status: filters.status as CourseStatus,
-    enabled: !!canEdit,
-  });
-
-  const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setFilters({ search: value });
-  }, 500);
-
-  if (!canEdit) return null;
+  // fetchCoursesManage trả undefined khi lỗi hoặc không phải admin, expert
+  const result = data && {
+    courses: data.courses.map(toCourseManageRow),
+    total: data.total,
+    tabCounts: data.tabCounts,
+  };
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-col gap-5">
-        <Heading className="lg:min-h-10">Quản lý khóa học</Heading>
-        <div className="flex items-center justify-between px-3 py-2 bgDarkMode borderDarkMode rounded-xl flex-wrap gap-3">
-          <div className="flex items-center gap-5">
-            <div className="flex items-center gap-3 text-sm font-medium">
-              <Switch
-                checked={filters.isFree}
-                onCheckedChange={(checked) => setFilters({ isFree: checked })}
-              />
-              <Label
-                htmlFor="paidUser"
-                className="hidden lg:flex items-center gap-2 cursor-pointer"
-              >
-                <span>Khóa học miễn phí</span>
-              </Label>
-            </div>
-            <div className="hidden lg:flex gap-3">
-              {statusActions.map((item, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className={cn(
-                    "text-xs font-semibold px-2 py-1 rounded-xl flex items-center gap-2 h-7",
-                    item.className,
-                  )}
-                  onClick={() => setFilters({ status: item.value })}
-                >
-                  {item.text}
-                  {filters.status === item.value && (
-                    <IconCircleCheck className="size-4" />
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="flex gap-3">
-            <Input
-              placeholder="Tìm kiếm khóa học"
-              className="hidden lg:block w-full lg:w-[300px] h-10"
-              onChange={handleSearch}
-              defaultValue={filters.search}
-            />
-            <div className="flex justify-end gap-3">
-              <PaginationControl
-                onClick={debounce(
-                  () => setFilters({ page: filters.page - 1 }),
-                  300,
-                )}
-                disabled={filters.page <= 1}
-              >
-                <IconArrowLeft />
-              </PaginationControl>
-              <PaginationControl
-                onClick={debounce(
-                  () => setFilters({ page: filters.page + 1 }),
-                  300,
-                )}
-                disabled={Number(courses?.length) <= 0}
-              >
-                <IconArrowRight />
-              </PaginationControl>
-            </div>
-          </div>
-          <Input
-            placeholder="Tìm kiếm khóa học"
-            className="lg:hidden w-full lg:w-[300px] h-10"
-            onChange={(e) => setFilters({ search: e.target.value })}
-          />
-        </div>
-      </div>
-      <Link
-        href="/admin/course/add-new"
-        className="fixed bottom-10 right-10 z-50 size-10 bg-primary text-white hidden lg:flex items-center justify-center rounded-full"
-        target="_blank"
-      >
-        <IconPlus />
-      </Link>
-      <Table className="bg-white rounded-xl dark:bg-grayDarker overflow-x-auto table-responsive">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Thông tin</TableHead>
-            <TableHead>Giá khóa học</TableHead>
-            <TableHead>Trạng thái</TableHead>
-            <TableHead>Ngày tạo</TableHead>
-            <TableHead className="text-center">&nbsp;</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {courses &&
-            courses.length > 0 &&
-            courses.map((course) => {
-              return (
-                <TableRow key={course.slug}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={course.image}
-                        alt={course.title}
-                        width={200}
-                        height={200}
-                        className="size-12 object-cover rounded-md flex-shrink-0 border borderDarkMode"
-                        priority
-                      />
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-start gap-2">
-                          <div className="font-semibold line-clamp-2 w-[400px] block text-sm text-balance">
-                            {course.title}
-                          </div>
-                        </div>
-                        <div className="font-medium text-xs flex items-center gap-2 text-gray-600">
-                          <IconUsers className="size-4 shrink-0" />
-                          <span>{course.studentCount} học viên</span>
-                        </div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {course.free ? (
-                      <LabelStatus className={courseStatus.approved.className}>
-                        Miễn phí
-                      </LabelStatus>
-                    ) : (
-                      <p className="font-semibold whitespace-nowrap text-primary">
-                        {formatThoundsand(course.price)} VNĐ
-                      </p>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Switch checked={course.status === CourseStatus.Approved} />
-                  </TableCell>
-                  <TableCell className="text-slate-400">
-                    {formatDate(course.createdAt)}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-4 justify-center text-gray-400 dark:text-white">
-                      <Link
-                        href={`/admin/course/content?slug=${course.slug}`}
-                        target="_blank"
-                        className="size-8 flex items-center justify-center border borderDarkMode rounded-xl p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
-                      >
-                        <IconStudy></IconStudy>
-                      </Link>
-                      <Link
-                        href={`/course/${course.slug}`}
-                        target="_blank"
-                        className="size-8 flex items-center justify-center border borderDarkMode rounded-xl p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
-                      >
-                        <IconEye></IconEye>
-                      </Link>
-                      {canEdit && (
-                        <>
-                          <Link
-                            href={`/admin/course/update?slug=${course.slug}`}
-                            className="size-8 flex items-center justify-center border borderDarkMode rounded-xl p-2 transition-all hover:text-gray-500 dark:hover:text-opacity-80"
-                            target="_blank"
-                          >
-                            <IconEdit></IconEdit>
-                          </Link>
-                        </>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-        </TableBody>
-      </Table>
-    </div>
+    <CourseManageView
+      filters={filters}
+      onFiltersChange={setFilters}
+      result={result}
+      pageSize={ITEMS_PER_PAGE}
+      isLoading={isPending}
+      isError={!isPending && !data}
+      isRefreshing={isPlaceholderData && isFetching}
+      onRetry={refetch}
+    />
   );
 }

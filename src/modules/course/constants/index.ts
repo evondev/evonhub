@@ -17,6 +17,7 @@ import type {
   ExploreSortOption,
   PreviewExploreCourseSeed,
 } from "../types";
+import { COURSE_MANAGE_STATUS_LABELS } from "./course-manage.constants";
 
 // 12 chia hết cho lưới 2, 3 và 4 cột nên hàng cuối của trang đầy
 export const EXPLORE_PAGE_SIZE = 12;
@@ -215,17 +216,22 @@ export const COURSE_LEVEL_OPTIONS: CourseSelectOption[] = Object.values(
   CourseLevel,
 ).map((level) => ({ value: level, label: COURSE_LEVEL_LABELS[level] }));
 
+// Cùng nhãn với tab và badge của trang Quản lý khóa học
 export const COURSE_STATUS_OPTIONS: CourseSelectOption[] = [
-  { value: CourseStatus.Approved, label: "Đã duyệt" },
-  { value: CourseStatus.Pending, label: "Chờ duyệt" },
-  { value: CourseStatus.Rejected, label: "Bị từ chối" },
-];
+  CourseStatus.Approved,
+  CourseStatus.Pending,
+  CourseStatus.Rejected,
+].map((status) => ({
+  value: status,
+  label: COURSE_MANAGE_STATUS_LABELS[status],
+}));
 
 // Viền đỏ khi FormControl gắn aria-invalid (Input, Select chưa tự có trạng thái lỗi)
 export const COURSE_FORM_CONTROL_CLASS_NAME =
   "aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus:ring-red-500/10";
 
-export const COURSE_IMAGE_HINT = "Ảnh 16:9, hiện ở thẻ khóa học và đầu trang bán";
+export const COURSE_IMAGE_HINT =
+  "Ảnh 16:9, hiện ở thẻ khóa học và đầu trang bán";
 
 // ----- Chỉ dùng cho trang xem trước ở dev (/course-update-preview) -----
 // Dữ liệu giả: tiêu đề dài nhất đang có, đủ yêu cầu, kết quả, Q/A
@@ -245,7 +251,10 @@ const PREVIEW_COURSE_UPDATE_FILLED: CourseUpdateData = {
   seoKeywords: "",
   free: false,
   info: {
-    requirements: ["Biết HTML, CSS cơ bản", "Có máy tính cài được Node.js 20 trở lên"],
+    requirements: [
+      "Biết HTML, CSS cơ bản",
+      "Có máy tính cài được Node.js 20 trở lên",
+    ],
     gained: [
       "Tự dựng được landing page có thanh toán và email tự động",
       "Biết nối AI agent vào sản phẩm thật",
