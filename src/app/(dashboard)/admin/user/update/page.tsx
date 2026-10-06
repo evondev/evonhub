@@ -1,4 +1,4 @@
-import PageNotFound from "@/app/not-found";
+import { NotFoundState } from "@/shared/components/not-found";
 import { getAllCoursesUser } from "@/modules/course/actions";
 import { getUserByUsername } from "@/modules/user/actions";
 import { UserCourseAccessPage } from "@/modules/user/pages";
@@ -27,14 +27,14 @@ const AddCourseForUserPage = async ({
   // Expert vào từ trang quản lý đơn để cấp khóa của mình; addCourseToUser kiểm từng khóa
   const currentStaff = await getCurrentStaff();
 
-  if (!currentStaff) return <PageNotFound />;
+  if (!currentStaff) return <NotFoundState />;
 
   const user = await getUserByUsername({
     username: searchParams.username,
     email: searchParams.email,
   });
 
-  if (!user) return <PageNotFound />;
+  if (!user) return <NotFoundState />;
 
   // Gồm cả khóa đã ngừng bán: admin vẫn cần thêm tay cho trường hợp ngoại lệ
   const courses = await getAllCoursesUser({

@@ -1,4 +1,4 @@
-import PageNotFound from "@/app/not-found";
+import { NotFoundState } from "@/shared/components/not-found";
 import { getOrderDetails } from "@/lib/actions/order.action";
 import { OrderDetailsView } from "./order-details-view";
 
@@ -13,7 +13,7 @@ export async function OrderDetailsLoader({
 }: OrderDetailsLoaderProps) {
   const order = await getOrderDetails(orderCode);
 
-  if (!order) return <PageNotFound />;
+  if (!order) return <NotFoundState />;
 
   return (
     <OrderDetailsView

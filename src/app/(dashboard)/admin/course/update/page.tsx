@@ -1,4 +1,4 @@
-import PageNotFound from "@/app/not-found";
+import { NotFoundState } from "@/shared/components/not-found";
 import { getCourseBySlug } from "@/lib/actions/course.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { CourseUpdatePage } from "@/modules/course/pages";
@@ -20,8 +20,8 @@ const page = async ({ searchParams }: CourseUpdateRouteProps) => {
     findCourse?.author?.toString() !== mongoUser._id.toString() &&
     ![Role.ADMIN].includes(mongoUser?.role)
   )
-    return <PageNotFound></PageNotFound>;
-  if (!findCourse?.title) return <PageNotFound></PageNotFound>;
+    return <NotFoundState />;
+  if (!findCourse?.title) return <NotFoundState />;
 
   return (
     <CourseUpdatePage
