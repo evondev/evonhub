@@ -1,4 +1,4 @@
-import PageNotFound from "@/app/not-found";
+import { NotFoundState } from "@/shared/components/not-found";
 import { getUserById } from "@/lib/actions/user.action";
 import { fetchCourseBySlug } from "@/modules/course/actions";
 import { getLessonById } from "@/modules/lesson/actions";
@@ -37,29 +37,42 @@ export default async function LessonNewPage({
     // việc đã sở hữu khóa quyết định chứ không phải trạng thái bán
     fetchCourseBySlug(courseSlug),
     getLessonById(lessonId),
-  ])) as [UserItemData, CourseItemData, LessonItemCutomizeData | undefined];
+  ])) as [
+    UserItemData | undefined,
+    CourseItemData,
+    LessonItemCutomizeData | undefined,
+  ];
 
   const userCourseIds =
     mongoUser?.courses.map((course) => course._id.toString()) || [];
 
   const courseId = courseDetails?._id?.toString() || "";
-  const isPreviewLesson = lessonDetails?.trial === true;
+  const lessonCourseId = lessonDetails?.courseId?._id?.toString() || "";
+  const isLessonInCourse =
+    !!lessonDetails &&
+    !!courseId &&
+    lessonCourseId === courseId &&
+    !lessonDetails._destroy;
 
-  const isOwnedCourse = userCourseIds.includes(courseId) && !!lessonDetails;
+  const isOwnedCourse = isLessonInCourse && userCourseIds.includes(courseId);
+  // Bài học thử mở cho mọi người, kể cả chưa đăng nhập. getLessonById chỉ trả
+  // video, nội dung của bài trial cho người chưa mua, nên không lộ bài khác
+  const isPreviewLesson =
+    isLessonInCourse && !isOwnedCourse && lessonDetails?.trial === true;
 
-  if (!isOwnedCourse) return <PageNotFound />;
+  if (!isOwnedCourse && !isPreviewLesson) return <NotFoundState />;
 
   return (
     <LessonQueryHydration
       course={courseDetails}
       lessonId={lessonId}
-      userId={mongoUser._id.toString()}
+      userId={mongoUser?._id?.toString() || ""}
     >
       <DetailsPageLayout>
         <LessonDetailsPage
           lessonDetails={lessonDetails}
           lessonId={lessonId}
-          isPreviewLesson={isPreviewLesson && !isOwnedCourse}
+          isPreviewLesson={isPreviewLesson}
         />
       </DetailsPageLayout>
     </LessonQueryHydration>

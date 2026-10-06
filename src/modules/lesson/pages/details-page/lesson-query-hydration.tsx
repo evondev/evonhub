@@ -39,7 +39,9 @@ export async function LessonQueryHydration({
     queryClient.prefetchQuery(
       getLessonDetailsOutlineOptions({ slug: course.slug }),
     ),
-    queryClient.prefetchQuery(getHistoriesByUserOptions({ userId, courseId })),
+    // Khách học thử chưa đăng nhập thì không có lịch sử để đọc
+    userId &&
+      queryClient.prefetchQuery(getHistoriesByUserOptions({ userId, courseId })),
     queryClient.prefetchQuery(getCommentsByLessonOptions({ lessonId })),
   ]);
 
