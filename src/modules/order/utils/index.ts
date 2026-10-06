@@ -7,6 +7,7 @@ import {
   bankAccountInfo,
   ORDER_CODE_PATTERN,
 } from "@/shared/constants/payment.constants";
+import { isWebUrl } from "@/shared/helpers/url.helper";
 import { ManualPaymentPayee } from "@/shared/types/payment.types";
 import { formatThoundsand } from "@/shared/utils";
 import {
@@ -97,12 +98,11 @@ export function toManualPaymentPayee(
 
   // Schema hồ sơ nhận cả link javascript:, chỉ giữ link web thật
   const facebook = author.socials?.facebook?.trim();
-  const isWebLink = !!facebook && /^https?:\/\//i.test(facebook);
 
   return {
     name: author.name || author.username || "Chuyên gia",
     email: author.email || "",
-    facebook: isWebLink ? facebook : undefined,
+    facebook: isWebUrl(facebook) ? facebook : undefined,
     bankName,
     bankNumber,
     bankAccount,

@@ -127,6 +127,23 @@ describe("buildManualOrderCreatedEmail", () => {
     expect(html).not.toContain("qr.sepay.vn");
   });
 
+  it("ưu tiên Facebook của chuyên gia, có Facebook thì không hiện email", () => {
+    const { html } = buildManualOrderCreatedEmail(manualData);
+
+    expect(html).toContain('href="https://facebook.com/chuyengia"');
+    expect(html).not.toContain("mailto:chuyengia@example.com");
+  });
+
+  it("chuyên gia không có Facebook thì gửi qua email", () => {
+    const { html } = buildManualOrderCreatedEmail({
+      ...manualData,
+      payee: { ...manualData.payee, facebook: undefined },
+    });
+
+    expect(html).toContain("mailto:chuyengia@example.com");
+    expect(html).not.toContain("facebook.com");
+  });
+
   it("escape thông tin chuyên gia tự nhập", () => {
     const { html } = buildManualOrderCreatedEmail(manualData);
 

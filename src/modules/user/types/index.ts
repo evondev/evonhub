@@ -1,4 +1,5 @@
 import { UserRole, UserStatus } from "@/shared/constants/user.constants";
+import { LucideIcon } from "lucide-react";
 
 export type {
   CountByCourse,
@@ -50,6 +51,16 @@ export interface ProfileSocialField {
   name: keyof ProfileSocialFormValues;
   label: string;
   placeholder: string;
+}
+
+export interface ProfileSocialLinkItem {
+  name: keyof ProfileSocialFormValues;
+  label: string;
+  icon: LucideIcon;
+}
+
+export interface ProfileSocialLink extends ProfileSocialLinkItem {
+  url: string;
 }
 
 export interface ProfilePayoutField {

@@ -92,23 +92,19 @@ function renderManualPaymentBlock(
   return renderInfoRows(rows);
 }
 
-function renderPayeeContacts(payee: ManualPaymentPayee): string {
+// Ưu tiên Facebook vì chuyên gia đọc tin nhắn nhanh hơn email, không có mới gửi email
+function renderPayeeContact(payee: ManualPaymentPayee): string {
   const linkStyle = `color: ${EMAIL_BRAND.primary}; font-weight: 600;`;
-  const contacts: string[] = [];
 
   if (payee.facebook) {
-    contacts.push(
-      `<a href="${escapeHtml(payee.facebook)}" style="${linkStyle}">Facebook</a>`,
-    );
+    return `<a href="${escapeHtml(payee.facebook)}" style="${linkStyle}">Facebook</a>`;
   }
 
   if (payee.email) {
-    contacts.push(
-      `<a href="mailto:${escapeHtml(payee.email)}" style="${linkStyle}">${escapeHtml(payee.email)}</a>`,
-    );
+    return `<a href="mailto:${escapeHtml(payee.email)}" style="${linkStyle}">${escapeHtml(payee.email)}</a>`;
   }
 
-  return contacts.join(" · ");
+  return "";
 }
 
 export function buildManualOrderCreatedEmail(
@@ -116,7 +112,7 @@ export function buildManualOrderCreatedEmail(
 ) {
   const productName = data.courseTitle || "khóa học";
   const payeeName = escapeHtml(data.payee.name);
-  const payeeContacts = renderPayeeContacts(data.payee);
+  const payeeContact = renderPayeeContact(data.payee);
 
   return {
     subject: `Chuyển khoản cho chuyên gia để mở khóa — đơn ${data.code}`,
@@ -136,7 +132,7 @@ export function buildManualOrderCreatedEmail(
         ${renderManualPaymentBlock(data.code, data.total, data.payee)}
         <p style="margin: 0 0 14px;">
           <strong>Bước 2.</strong> Gửi ảnh biên lai kèm mã đơn
-          <strong>${data.code}</strong> cho chuyên gia${payeeContacts ? ` qua ${payeeContacts}` : ""}.
+          <strong>${data.code}</strong> cho chuyên gia${payeeContact ? ` qua ${payeeContact}` : ""}.
           Chuyên gia kiểm tra tài khoản rồi duyệt đơn, khóa học sẽ mở trong tài
           khoản của bạn và bạn nhận được email báo.
         </p>

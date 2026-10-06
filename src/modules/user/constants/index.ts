@@ -1,3 +1,4 @@
+import { Facebook, Linkedin, Youtube } from "lucide-react";
 import { z } from "zod";
 import {
   ProfileData,
@@ -8,6 +9,7 @@ import {
   ProfilePublicFormValues,
   ProfileSocialField,
   ProfileSocialFormValues,
+  ProfileSocialLinkItem,
 } from "../types";
 
 /** Giới thiệu hiện ngay dưới tên trên trang công khai: một hai câu */
@@ -72,6 +74,9 @@ export const PREVIEW_TAKEN_USERNAME = "phuongthao_frontend_mentor";
 /** Đường dẫn trang công khai, dùng cho nút đầu trang và gợi ý dưới ô username */
 export const PROFILE_PUBLIC_PATH = "/user-profile";
 
+/** Trang tự sửa hồ sơ, nút "Sửa hồ sơ" ở trang công khai dẫn về đây */
+export const PROFILE_EDIT_PATH = "/profile";
+
 const optionalUrlSchema = z
   .string()
   .trim()
@@ -135,6 +140,13 @@ export const PROFILE_SOCIAL_FIELDS: ProfileSocialField[] = [
     label: "LinkedIn",
     placeholder: "https://linkedin.com/in/ten-cua-ban",
   },
+];
+
+/** Icon mạng xã hội trên trang công khai, theo thứ tự hiện */
+export const PROFILE_SOCIAL_LINK_ITEMS: ProfileSocialLinkItem[] = [
+  { name: "facebook", label: "Facebook", icon: Facebook },
+  { name: "linkedin", label: "LinkedIn", icon: Linkedin },
+  { name: "youtube", label: "YouTube", icon: Youtube },
 ];
 
 export const PROFILE_PAYOUT_FIELDS: ProfilePayoutField[] = [
