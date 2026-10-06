@@ -12,6 +12,7 @@ import {
   NotificationListSkeleton,
 } from "@/modules/notifications/components";
 import { NOTIFICATION_PANEL_SIDE_OFFSET } from "@/modules/notifications/constants";
+import { useNotificationChannel } from "@/modules/notifications/hooks";
 import {
   getNotificationsByUserOptions,
   useQueryNotificationsByUser,
@@ -33,6 +34,11 @@ const Notification = () => {
     userId,
     enabled: !!userInfo?._id,
   });
+
+  // Có thông báo mới (Pusher) thì tải lại, chuông hiện chấm mà không cần mở panel
+  useNotificationChannel(userId, () =>
+    invalidateQueriesByKeys(QUERY_KEYS.GET_NOTIFICATIONS_BY_USER),
+  );
 
   const notifications = feed?.notifications;
   const seenAt = feed?.seenAt ?? null;
@@ -83,9 +89,7 @@ const Notification = () => {
           variant="ghost"
           size="icon"
           aria-label={
-            unreadCount > 0
-              ? `Thông báo, ${unreadCount} chưa đọc`
-              : "Thông báo"
+            unreadCount > 0 ? `Thông báo, ${unreadCount} chưa đọc` : "Thông báo"
           }
           className="size-9 rounded-xl data-[state=open]:bg-foreground/5 data-[state=open]:text-foreground"
         >

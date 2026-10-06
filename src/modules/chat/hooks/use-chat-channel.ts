@@ -1,13 +1,15 @@
 "use client";
 
-import type PusherClient from "pusher-js";
+import {
+  getPusherClient,
+  IS_PUSHER_CONFIGURED,
+} from "@/shared/libs/pusher/client";
 import type { Members, PresenceChannel } from "pusher-js";
 import { useEffect, useRef, useState } from "react";
 import {
   CHAT_CHANNEL_NAME,
   CHAT_EVENTS,
   CHAT_POLL_INTERVAL_MS,
-  CHAT_PUSHER_AUTH_ENDPOINT,
 } from "../constants";
 import {
   ChatMessageDeletedPayload,
@@ -16,11 +18,6 @@ import {
   UseChatChannelHandlers,
 } from "../types";
 import { toOnlineMembers } from "../utils";
-
-// Next thay NEXT_PUBLIC_* lúc build nên phải đọc đúng tên biến, không destructure
-const PUSHER_KEY = process.env.NEXT_PUBLIC_PUSHER_KEY;
-const PUSHER_CLUSTER = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
-const IS_REALTIME_ENABLED = Boolean(PUSHER_KEY && PUSHER_CLUSTER);
 
 /**
  * Nối vào presence channel của phòng chat: nhận tin mới, tin bị xoá và danh
@@ -36,10 +33,9 @@ export function useChatChannel(handlers: UseChatChannelHandlers) {
   });
 
   useEffect(() => {
-    const pusherKey = PUSHER_KEY;
-    const pusherCluster = PUSHER_CLUSTER;
+    const pusherClientPromise = getPusherClient();
 
-    if (!pusherKey || !pusherCluster) {
+    if (!pusherClientPromise) {
       const pollTimer = window.setInterval(
         () => handlersRef.current.onSync(),
         CHAT_POLL_INTERVAL_MS,
@@ -49,19 +45,10 @@ export function useChatChannel(handlers: UseChatChannelHandlers) {
     }
 
     let isCancelled = false;
-    let pusherClient: PusherClient | null = null;
 
-    // Tải lười: chỉ trang chat mới kéo pusher-js về
-    import("pusher-js").then(({ default: Pusher }) => {
+    // Dùng chung kết nối với chuông thông báo, chỉ thêm kênh chat
+    pusherClientPromise.then((pusherClient) => {
       if (isCancelled) return;
-
-      pusherClient = new Pusher(pusherKey, {
-        cluster: pusherCluster,
-        channelAuthorization: {
-          endpoint: CHAT_PUSHER_AUTH_ENDPOINT,
-          transport: "ajax",
-        },
-      });
 
       const channel = pusherClient.subscribe(
         CHAT_CHANNEL_NAME,
@@ -88,11 +75,14 @@ export function useChatChannel(handlers: UseChatChannelHandlers) {
       );
     });
 
+    // Rời trang chat chỉ bỏ kênh chat (người khác thấy mình offline), giữ kết nối
     return () => {
       isCancelled = true;
-      pusherClient?.disconnect();
+      pusherClientPromise.then((pusherClient) => {
+        pusherClient.unsubscribe(CHAT_CHANNEL_NAME);
+      });
     };
   }, []);
 
-  return { onlineMembers, isRealtimeEnabled: IS_REALTIME_ENABLED };
+  return { onlineMembers, isRealtimeEnabled: IS_PUSHER_CONFIGURED };
 }

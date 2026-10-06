@@ -1,4 +1,10 @@
-import { Bell, BookOpen, GraduationCap, MessageSquareText } from "lucide-react";
+import {
+  Bell,
+  BookOpen,
+  GraduationCap,
+  MessageSquareReply,
+  MessageSquareText,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { NotificationType } from "./notification-type.constants";
 
@@ -7,12 +13,14 @@ export const notificationTypeLabels: Record<NotificationType, string> = {
   [NotificationType.NewLesson]: "Bài học mới",
   [NotificationType.CourseEnrolled]: "Khóa học",
   [NotificationType.CommentApproved]: "Bình luận",
+  [NotificationType.CommentReply]: "Trả lời",
 };
 
 export const notificationTypeIcons: Record<NotificationType, LucideIcon> = {
   [NotificationType.NewLesson]: BookOpen,
   [NotificationType.CourseEnrolled]: GraduationCap,
   [NotificationType.CommentApproved]: MessageSquareText,
+  [NotificationType.CommentReply]: MessageSquareReply,
 };
 
 /** Icon của thông báo cũ chưa có loại */

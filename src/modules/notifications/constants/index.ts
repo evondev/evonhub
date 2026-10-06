@@ -1,4 +1,10 @@
-export { NotificationType } from "./notification-type.constants";
+export {
+  NOTIFICATION_CHANNEL_PREFIX,
+  NOTIFICATION_PUSHER_EVENT,
+  NOTIFICATION_TTL_SECONDS,
+  NotificationType,
+  PUSHER_MAX_CHANNELS_PER_TRIGGER,
+} from "./notification-type.constants";
 export {
   LEGACY_NOTIFICATION_ICON,
   NOTIFICATION_LIST_MAX_HEIGHT,

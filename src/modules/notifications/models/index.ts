@@ -1,5 +1,8 @@
 import mongoose, { models, Schema } from "mongoose";
-import { NotificationType } from "../constants/notification-type.constants";
+import {
+  NOTIFICATION_TTL_SECONDS,
+  NotificationType,
+} from "../constants/notification-type.constants";
 import { NotificationModelProps } from "../types";
 
 const notificationSchema = new Schema<NotificationModelProps>({
@@ -12,6 +15,8 @@ const notificationSchema = new Schema<NotificationModelProps>({
         lessonId: String,
         lessonTitle: String,
         commentId: String,
+        parentCommentId: String,
+        actorName: String,
       },
       { _id: false },
     ),
@@ -26,6 +31,11 @@ const notificationSchema = new Schema<NotificationModelProps>({
 
 // chuông thông báo trên header
 notificationSchema.index({ users: 1, createdAt: -1 });
+// tự dọn thông báo cũ
+notificationSchema.index(
+  { createdAt: 1 },
+  { expireAfterSeconds: NOTIFICATION_TTL_SECONDS },
+);
 const NotificationModel =
   models.Notification || mongoose.model("Notification", notificationSchema);
 

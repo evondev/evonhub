@@ -1,12 +1,12 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   NOTIFICATION_LIST_MAX_HEIGHT,
   NOTIFICATION_LIST_VIEWPORT_OFFSET,
 } from "../constants";
 import { NotificationItemData } from "../types";
-import { getPeekListHeight, isNotificationUnread } from "../utils";
+import { getPeekListHeight, groupNotifications } from "../utils";
 import { NotificationItem } from "./notification-item";
 
 interface NotificationListProps {
@@ -25,6 +25,10 @@ export function NotificationList({
   onNavigate,
 }: NotificationListProps) {
   const listRef = useRef<HTMLUListElement>(null);
+  const notificationGroups = useMemo(
+    () => groupNotifications(notifications, seenAt),
+    [notifications, seenAt],
+  );
   const [listHeight, setListHeight] = useState<number>();
 
   useLayoutEffect(() => {
@@ -36,7 +40,7 @@ export function NotificationList({
     );
 
     setListHeight(getPeekListHeight(listRef.current, maxHeight));
-  }, [notifications]);
+  }, [notificationGroups]);
 
   return (
     // Khe phải trừ 4px của thanh cuộn; rãnh lùi 8px dưới đường kẻ và 16px ở góc bo dưới
@@ -45,11 +49,10 @@ export function NotificationList({
       style={{ maxHeight: listHeight }}
       className="scrollbar-auto-hide flex flex-col gap-1 overflow-y-auto py-2 pl-2 pr-1 [scrollbar-gutter:stable] [&::-webkit-scrollbar-track]:mb-4 [&::-webkit-scrollbar-track]:mt-2"
     >
-      {notifications.map((notification) => (
+      {notificationGroups.map((group) => (
         <NotificationItem
-          key={notification._id}
-          notification={notification}
-          isUnread={isNotificationUnread(notification.createdAt, seenAt)}
+          key={group.key}
+          group={group}
           onNavigate={onNavigate}
         />
       ))}

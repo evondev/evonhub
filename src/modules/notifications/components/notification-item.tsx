@@ -6,25 +6,23 @@ import {
   notificationTypeIcons,
   notificationTypeLabels,
 } from "../constants";
-import { NotificationItemData } from "../types";
+import { NotificationGroup } from "../types";
 import { getNotificationLink } from "../utils";
 import { NotificationMessage } from "./notification-message";
 
 interface NotificationItemProps {
-  notification: NotificationItemData;
-  isUnread: boolean;
+  group: NotificationGroup;
   onNavigate: () => void;
 }
 
 /**
- * Một thông báo: icon theo loại, câu thông báo, nguồn và thời gian, chấm chưa đọc
- * bên phải. Có link thì cả hàng là link; thông báo cũ không có link thì để tĩnh.
+ * Một dòng thông báo (một thông báo, hoặc một nhóm đã gộp): icon theo loại, câu,
+ * nguồn và thời gian của cái mới nhất, chấm chưa đọc bên phải. Có link thì cả
+ * hàng là link; thông báo cũ không có link thì để tĩnh.
  */
-export function NotificationItem({
-  notification,
-  isUnread,
-  onNavigate,
-}: NotificationItemProps) {
+export function NotificationItem({ group, onNavigate }: NotificationItemProps) {
+  const notification = group.latest;
+  const isUnread = group.isUnread;
   const createdAt = new Date(notification.createdAt);
   const link = getNotificationLink(notification);
   const NotificationIcon = notification.type
@@ -44,7 +42,7 @@ export function NotificationItem({
         <NotificationIcon className="size-4" />
       </span>
       <div className="min-w-0 flex-1">
-        <NotificationMessage notification={notification} isUnread={isUnread} />
+        <NotificationMessage group={group} />
         <p className="mt-1 text-xs text-muted">
           {sourceLabel} ·{" "}
           <time dateTime={createdAt.toISOString()}>
