@@ -51,6 +51,15 @@ export interface OrderReminderEmailData {
   courseTitle?: string;
 }
 
+export interface ManualOrderPendingExpertEmailData {
+  code: string;
+  studentName: string;
+  studentEmail: string;
+  total: number;
+  courseTitle?: string;
+  payee: ManualPaymentPayee;
+}
+
 export interface SendTransactionalEmailProps {
   to: string;
   subject: string;

@@ -1,6 +1,7 @@
 import { resendClient } from "@/shared/libs/resend";
 import {
   ManualOrderCreatedEmailData,
+  ManualOrderPendingExpertEmailData,
   OrderApprovedEmailData,
   OrderCreatedEmailData,
   OrderReminderEmailData,
@@ -8,6 +9,7 @@ import {
 } from "../types";
 import {
   buildManualOrderCreatedEmail,
+  buildManualOrderPendingExpertEmail,
   buildOrderApprovedEmail,
   buildOrderCreatedEmail,
   buildOrderReminderEmail,
@@ -70,6 +72,15 @@ export async function sendOrderApprovedEmail(
   data: OrderApprovedEmailData
 ): Promise<boolean> {
   const { subject, html } = buildOrderApprovedEmail(data);
+
+  return sendTransactionalEmail({ to, subject, html });
+}
+
+export async function sendManualOrderPendingExpertEmail(
+  to: string,
+  data: ManualOrderPendingExpertEmailData
+): Promise<boolean> {
+  const { subject, html } = buildManualOrderPendingExpertEmail(data);
 
   return sendTransactionalEmail({ to, subject, html });
 }

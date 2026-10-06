@@ -12,6 +12,7 @@ import {
 } from "@/modules/order/utils";
 import {
   sendManualOrderCreatedEmail,
+  sendManualOrderPendingExpertEmail,
   sendOrderCreatedEmail,
 } from "@/modules/email/services/order-email.service";
 import UserModel from "@/modules/user/models";
@@ -416,6 +417,23 @@ export async function handleEnrollCourse({
         }
       } catch (error) {
         console.log("[order] Gửi email hướng dẫn thanh toán lỗi:", error);
+      }
+    }
+
+    // Tiền chuyển thẳng cho chuyên gia, hệ thống không tự đối soát được nên
+    // báo chuyên gia kiểm tra tài khoản rồi vào duyệt đơn
+    if (order?.code && payee?.email) {
+      try {
+        await sendManualOrderPendingExpertEmail(payee.email, {
+          code: order.code,
+          studentName: currentUser.name || currentUser.username || "Học viên",
+          studentEmail: currentUser.email,
+          total: order.total,
+          courseTitle: findCourse.title,
+          payee,
+        });
+      } catch (error) {
+        console.log("[order] Gửi email báo chuyên gia có đơn mới lỗi:", error);
       }
     }
 
