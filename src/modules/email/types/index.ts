@@ -1,4 +1,5 @@
 import { EmailModelProps } from "@/shared/types/email.types";
+import { ManualPaymentPayee } from "@/shared/types/payment.types";
 import { z } from "zod";
 import { sendEmailSchema } from "../schemas";
 
@@ -21,6 +22,8 @@ export interface OrderApprovedEmailData {
   total: number;
   courseTitle?: string;
   plan?: string;
+  /** Đơn chuyển khoản thủ công: tên chuyên gia đã xác nhận nhận tiền */
+  payeeName?: string;
 }
 
 export interface OrderCreatedEmailData {
@@ -29,6 +32,14 @@ export interface OrderCreatedEmailData {
   total: number;
   qrUrl: string;
   courseTitle?: string;
+}
+
+export interface ManualOrderCreatedEmailData {
+  code: string;
+  username: string;
+  total: number;
+  courseTitle?: string;
+  payee: ManualPaymentPayee;
 }
 
 export interface OrderReminderEmailData {

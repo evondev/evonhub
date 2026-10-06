@@ -1,5 +1,8 @@
 import UserModel from "@/modules/user/models";
-import { OrderStatus } from "@/shared/constants/order.constants";
+import {
+  OrderPaymentMethod,
+  OrderStatus,
+} from "@/shared/constants/order.constants";
 import {
   clearCollections,
   connectMemoryDatabase,
@@ -122,6 +125,15 @@ describe("sendOrderReminders", () => {
     const result = await sendOrderReminders();
 
     expect(result.sent).toBe(0);
+  });
+
+  it("bỏ qua đơn chuyển khoản thủ công cho chuyên gia", async () => {
+    await createPendingOrder(4, { paymentMethod: OrderPaymentMethod.Manual });
+
+    const result = await sendOrderReminders();
+
+    expect(result.sent).toBe(0);
+    expect(sendOrderReminderEmail).not.toHaveBeenCalled();
   });
 
   it("trả lại cờ để nhắc lần sau khi gửi email thất bại", async () => {

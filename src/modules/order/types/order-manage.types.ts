@@ -43,6 +43,8 @@ export interface OrderManageRow {
   paidAmount: number;
   /** Có giao dịch SePay: đơn đủ tiền là do SePay tự duyệt */
   isPaidViaSepay: boolean;
+  /** Khách chuyển thẳng cho chuyên gia, chuyên gia tự kiểm tra rồi duyệt */
+  isManualPayment: boolean;
   courseTitle?: string;
   /** Đơn gói thành viên cũ: tên gói */
   planName?: string;

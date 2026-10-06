@@ -41,6 +41,7 @@ export async function createPendingOrder({
   total,
   couponCode,
   couponId,
+  paymentMethod,
 }: CreatePendingOrderInput): Promise<CreatePendingOrderResult> {
   await expireStalePendingOrders({ userId, courseId });
 
@@ -61,6 +62,7 @@ export async function createPendingOrder({
         code: `DH${new Date().getTime().toString().slice(-8)}`,
         couponCode,
         coupon: couponId,
+        paymentMethod,
       },
     },
     {

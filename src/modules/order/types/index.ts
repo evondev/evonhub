@@ -1,9 +1,12 @@
 import { CouponItemData } from "@/modules/coupon/types";
 import { CourseItemData } from "@/modules/course/types";
-import { OrderStatus } from "@/shared/constants/order.constants";
+import {
+  OrderPaymentMethod,
+  OrderStatus,
+} from "@/shared/constants/order.constants";
 import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
 import type { BadgeTone } from "@/shared/types";
-import { UserItemData } from "@/shared/types/user.types";
+import { UserItemData, UserModelProps } from "@/shared/types/user.types";
 import { Schema } from "mongoose";
 import { OrderManageTab, OrderManageTabCounts } from "./order-manage.types";
 
@@ -21,11 +24,21 @@ export interface OrderModelProps extends Document {
   couponCode: string;
   plan: MembershipPlan;
   _destroy: boolean;
+  paymentMethod?: OrderPaymentMethod;
   paidAmount?: number;
   paidAt?: Date;
   paymentReferences?: string[];
   paymentNote?: string;
   reminderSentAt?: Date;
+}
+
+/** Phần hồ sơ chuyên gia cần để dựng thông tin nhận tiền */
+export interface ManualPaymentPayeeSource {
+  name?: string;
+  username?: string;
+  email?: string;
+  socials?: Partial<UserModelProps["socials"]>;
+  bank?: Partial<UserModelProps["bank"]>;
 }
 
 export interface SendOrderRemindersResult {
@@ -86,6 +99,7 @@ export interface CreatePendingOrderInput {
   total: number;
   couponCode?: string;
   couponId?: string;
+  paymentMethod: OrderPaymentMethod;
 }
 
 export interface CreatePendingOrderResult {

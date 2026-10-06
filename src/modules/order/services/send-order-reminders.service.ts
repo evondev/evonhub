@@ -3,6 +3,7 @@ import { sendOrderReminderEmail } from "@/modules/email/services/order-email.ser
 import UserModel from "@/modules/user/models";
 import {
   ORDER_REMINDER_DELAY_MS,
+  OrderPaymentMethod,
   OrderStatus,
 } from "@/shared/constants/order.constants";
 import OrderModel from "../models";
@@ -25,6 +26,9 @@ export async function sendOrderReminders(): Promise<SendOrderRemindersResult> {
     status: OrderStatus.Pending,
     reminderSentAt: null,
     paidAmount: { $lte: 0 },
+    // Hệ thống không thấy tiền chuyển cho chuyên gia, nhắc "chưa nhận được
+    // thanh toán" sẽ sai với khách đã chuyển rồi
+    paymentMethod: { $ne: OrderPaymentMethod.Manual },
     // Quá 1 giờ nhưng chưa hết hạn 24 giờ
     createdAt: {
       $lte: remindBefore,

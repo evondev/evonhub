@@ -12,6 +12,7 @@ function buildOrder(
     status: OrderStatus.Pending,
     total: 499000,
     paidAmount: 0,
+    isManualPayment: false,
     createdAt: new Date(now.getTime() - 2 * HOUR_IN_MS),
     ...overrides,
   };
@@ -37,6 +38,21 @@ describe("getOrderManageGroup", () => {
     });
 
     expect(getOrderManageGroup(order, now)).toBe("needs-action");
+  });
+
+  it("đơn chuyển khoản thủ công còn hạn cần chuyên gia xử lý", () => {
+    expect(
+      getOrderManageGroup(buildOrder({ isManualPayment: true }), now),
+    ).toBe("needs-action");
+  });
+
+  it("đơn chuyển khoản thủ công quá 24 giờ là hết hạn", () => {
+    const order = buildOrder({
+      isManualPayment: true,
+      createdAt: new Date(now.getTime() - 25 * HOUR_IN_MS),
+    });
+
+    expect(getOrderManageGroup(order, now)).toBe(OrderStatus.Expired);
   });
 
   it("đơn 0 đồng đang chờ cần xử lý", () => {

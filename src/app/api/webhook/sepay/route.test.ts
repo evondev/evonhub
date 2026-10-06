@@ -1,7 +1,10 @@
 import CourseModel from "@/modules/course/models";
 import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
-import { OrderStatus } from "@/shared/constants/order.constants";
+import {
+  OrderPaymentMethod,
+  OrderStatus,
+} from "@/shared/constants/order.constants";
 import {
   clearCollections,
   connectMemoryDatabase,
@@ -238,6 +241,23 @@ describe("POST /api/webhook/sepay", () => {
     const user = await UserModel.findById(userId);
 
     expect(user?.courses.map(String)).toContain(courseId);
+  });
+
+  it("không duyệt đơn chuyển khoản thủ công dù nội dung có mã đơn", async () => {
+    await OrderModel.updateOne(
+      { code: ORDER_CODE },
+      { paymentMethod: OrderPaymentMethod.Manual },
+    );
+
+    const response = await POST(buildRequest(buildPayload()));
+
+    expect(response.status).toBe(200);
+
+    const order = await OrderModel.findOne({ code: ORDER_CODE });
+
+    expect(order?.status).toBe(OrderStatus.Pending);
+    expect(order?.paidAmount).toBe(0);
+    expect(sendOrderApprovedEmail).not.toHaveBeenCalled();
   });
 
   it("bỏ qua giao dịch tiền ra", async () => {

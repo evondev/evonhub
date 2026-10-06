@@ -3,6 +3,7 @@ import {
   extractOrderCode,
   formatRemainingPendingTime,
   isPendingOrderExpired,
+  toManualPaymentPayee,
 } from "./index";
 
 const HOUR_IN_MS = 60 * 60 * 1000;
@@ -55,5 +56,50 @@ describe("extractOrderCode", () => {
 
   it("trả về rỗng khi không có mã", () => {
     expect(extractOrderCode(null, "chuyen tien mua khoa hoc")).toBe("");
+  });
+});
+
+describe("toManualPaymentPayee", () => {
+  const expert = {
+    name: "Nguyễn Văn Chuyên Gia",
+    username: "chuyengia",
+    email: "chuyengia@example.com",
+    socials: { facebook: "https://facebook.com/chuyengia" },
+    bank: {
+      bankName: " Vietcombank ",
+      bankNumber: "1029384756",
+      bankAccount: "NGUYEN VAN CHUYEN GIA",
+      bankBranch: "",
+    },
+  };
+
+  it("lấy đủ thông tin nhận tiền và liên hệ của chuyên gia", () => {
+    expect(toManualPaymentPayee(expert)).toEqual({
+      name: "Nguyễn Văn Chuyên Gia",
+      email: "chuyengia@example.com",
+      facebook: "https://facebook.com/chuyengia",
+      bankName: "Vietcombank",
+      bankNumber: "1029384756",
+      bankAccount: "NGUYEN VAN CHUYEN GIA",
+      bankBranch: undefined,
+    });
+  });
+
+  it("trả về undefined khi chuyên gia chưa điền số tài khoản", () => {
+    expect(
+      toManualPaymentPayee({
+        ...expert,
+        bank: { ...expert.bank, bankNumber: "  " },
+      }),
+    ).toBeUndefined();
+  });
+
+  it("bỏ link Facebook không phải http(s)", () => {
+    const payee = toManualPaymentPayee({
+      ...expert,
+      socials: { facebook: "javascript:alert(1)" },
+    });
+
+    expect(payee?.facebook).toBeUndefined();
   });
 });

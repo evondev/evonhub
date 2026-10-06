@@ -8,11 +8,18 @@ import { createPendingOrder } from "@/modules/order/services/create-pending-orde
 import {
   formatRemainingPendingTime,
   getPaymentQrUrl,
+  toManualPaymentPayee,
 } from "@/modules/order/utils";
-import { sendOrderCreatedEmail } from "@/modules/email/services/order-email.service";
+import {
+  sendManualOrderCreatedEmail,
+  sendOrderCreatedEmail,
+} from "@/modules/email/services/order-email.service";
 import UserModel from "@/modules/user/models";
 import { CourseStatus } from "@/shared/constants/course.constants";
-import { OrderStatus } from "@/shared/constants/order.constants";
+import {
+  OrderPaymentMethod,
+  OrderStatus,
+} from "@/shared/constants/order.constants";
 import { UserRole, UserStatus } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
@@ -323,6 +330,23 @@ export async function handleEnrollCourse({
     const discount = calculateCouponDiscount(appliedCoupon, amount);
     const total = Math.max(amount - discount, 0);
 
+    // Khóa của chuyên gia: khách chuyển thẳng cho chuyên gia, chuyên gia tự
+    // duyệt. Đơn 0 đồng không có gì để chuyển, vẫn đi luồng duyệt đơn miễn phí.
+    const courseAuthor = await UserModel.findById(findCourse.author).select(
+      "name username email role bank socials",
+    );
+    const isManualPayment =
+      courseAuthor?.role === UserRole.Expert && total > 0;
+    const payee = isManualPayment
+      ? toManualPaymentPayee(courseAuthor)
+      : undefined;
+
+    if (isManualPayment && !payee)
+      return {
+        error:
+          "Chuyên gia của khóa học này chưa cập nhật tài khoản nhận tiền nên chưa nhận đơn được. Bạn quay lại sau nhé.",
+      };
+
     const { order, existingOrder } = await createPendingOrder({
       userId: currentUser._id.toString(),
       courseId,
@@ -331,6 +355,9 @@ export async function handleEnrollCourse({
       total,
       couponCode: appliedCoupon?.code,
       couponId: appliedCoupon?._id,
+      paymentMethod: isManualPayment
+        ? OrderPaymentMethod.Manual
+        : OrderPaymentMethod.Sepay,
     });
 
     if (existingOrder) {
@@ -345,13 +372,24 @@ export async function handleEnrollCourse({
     // Gửi hỏng cũng không được làm hỏng đơn vừa tạo.
     if (order?.code) {
       try {
-        await sendOrderCreatedEmail(currentUser.email, {
+        const emailData = {
           code: order.code,
           username: currentUser.username || "bạn",
           total: order.total,
-          qrUrl: getPaymentQrUrl(order.code, order.total),
           courseTitle: findCourse.title,
-        });
+        };
+
+        if (payee) {
+          await sendManualOrderCreatedEmail(currentUser.email, {
+            ...emailData,
+            payee,
+          });
+        } else {
+          await sendOrderCreatedEmail(currentUser.email, {
+            ...emailData,
+            qrUrl: getPaymentQrUrl(order.code, order.total),
+          });
+        }
       } catch (error) {
         console.log("[order] Gửi email hướng dẫn thanh toán lỗi:", error);
       }
