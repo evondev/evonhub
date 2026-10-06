@@ -66,6 +66,17 @@
   html {
     scrollbar-gutter: stable;
   }
+  // Trang chat: khung chat cao vừa viewport, chỉ danh sách tin cuộn. Khoá cuộn
+  // của trang để kéo trong khung không kéo cả trang, cũng không hiện thanh cuộn
+  html:has([data-chat-room]),
+  html:has([data-chat-room]) body {
+    overflow: hidden;
+  }
+  // Khung chat đã tự chừa chỗ cho thanh dưới (CHAT_FRAME_HEIGHT_CLASS_NAME),
+  // phần đệm đáy của wrapper chỉ làm trang dài hơn viewport 64px
+  html:has([data-chat-room]) .wrapper {
+    padding-bottom: 0;
+  }
   body {
     @apply bg-gray-100 text-grayPrimary dark:text-[#cbd5e1] dark:bg-grayDarkest antialiased overflow-x-hidden;
   }

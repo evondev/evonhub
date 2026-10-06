@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/shared/utils";
 import { CloudOff, RotateCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -9,10 +10,16 @@ interface LoadErrorStateProps {
   title: string;
   /** Dữ liệu tải ở client (React Query) thì truyền refetch; bỏ trống là gọi lại server */
   onRetry?: () => void;
+  /** Khối lỗi nằm trong một khung có sẵn (khung chat) thì bỏ viền, giãn hết khung */
+  className?: string;
 }
 
 /** Khối lỗi tải dữ liệu của một trang, bấm "Tải lại" là gọi lại server */
-export function LoadErrorState({ title, onRetry }: LoadErrorStateProps) {
+export function LoadErrorState({
+  title,
+  onRetry,
+  className,
+}: LoadErrorStateProps) {
   const router = useRouter();
 
   function handleRetry() {
@@ -24,7 +31,10 @@ export function LoadErrorState({ title, onRetry }: LoadErrorStateProps) {
   return (
     <section
       role="alert"
-      className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-10 text-center"
+      className={cn(
+        "flex flex-col items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-10 text-center",
+        className,
+      )}
     >
       <span className="grid size-12 place-items-center rounded-xl bg-foreground/5 text-muted">
         <CloudOff className="size-6" />
