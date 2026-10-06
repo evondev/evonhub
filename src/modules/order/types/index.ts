@@ -6,6 +6,7 @@ import {
 } from "@/shared/constants/order.constants";
 import { MembershipPlan, UserRole } from "@/shared/constants/user.constants";
 import type { BadgeTone } from "@/shared/types";
+import { ManualPaymentPayee } from "@/shared/types/payment.types";
 import { UserItemData, UserModelProps } from "@/shared/types/user.types";
 import { Schema } from "mongoose";
 import { OrderManageTab, OrderManageTabCounts } from "./order-manage.types";
@@ -172,4 +173,69 @@ export interface MyOrdersHistoryTabDefinition {
 export interface MyOrdersPreviewStateLink {
   state: MyOrdersPreviewState;
   label: string;
+}
+
+/** Phần dữ liệu đơn mà trang chi tiết đơn hàng cần */
+export interface OrderDetailsData {
+  code: string;
+  status: OrderStatus;
+  createdAt: Date | string;
+  amount: number;
+  discount: number;
+  total: number;
+  couponCode?: string;
+  /** Tiền SePay đã nhận, cộng dồn nếu khách chuyển nhiều lần */
+  paidAmount: number;
+  paidAt?: Date | string;
+  /** Đơn cũ không có trường này là đơn SePay */
+  paymentMethod?: OrderPaymentMethod;
+  /** Tài khoản nhận tiền của chuyên gia, chỉ có ở đơn chuyển khoản thủ công */
+  payee?: ManualPaymentPayee;
+  course?: MyOrderCourse;
+}
+
+export type OrderDetailsPreviewState =
+  | "cho-thanh-toan"
+  | "sap-het-han"
+  | "chuyen-thieu"
+  | "vua-thanh-toan"
+  | "da-thanh-toan"
+  | "het-han"
+  | "bi-tu-choi"
+  | "mien-phi"
+  | "thu-cong"
+  | "thu-cong-thieu-tai-khoan"
+  | "thu-cong-het-han"
+  | "dang-tai";
+
+export interface OrderDetailsPreviewStateLink {
+  state: OrderDetailsPreviewState;
+  label: string;
+}
+
+export interface OrderDetailsPreview {
+  order: OrderDetailsData;
+  isJustPaid: boolean;
+}
+
+/** Màn trang chi tiết đơn đang hiện, suy từ trạng thái, cách trả tiền và giờ */
+export type OrderDetailsKind =
+  | "sepay-pending"
+  | "manual-pending"
+  | "manual-missing-payee"
+  | "manual-expired"
+  | "free-pending"
+  | "paid"
+  | "expired"
+  | "rejected";
+
+/** Một dòng thông tin chuyển khoản, xếp theo thứ tự khách nhập vào app ngân hàng */
+export interface TransferDetailRow {
+  label: string;
+  value: string;
+  /** Có thì dòng có nút sao chép, chép đúng chuỗi này (số tiền chép số trơn) */
+  copyValue?: string;
+  isMono?: boolean;
+  isEmphasized?: boolean;
+  hint?: string;
 }
