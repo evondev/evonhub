@@ -2,11 +2,13 @@ export enum CourseStatus {
   Pending = "pending",
   Approved = "approved",
   Rejected = "rejected",
+  Archived = "archived",
 }
 
 /**
  * Khóa đang bán và khóa đã ngừng bán (`Rejected`) đều học được với người đã sở
  * hữu. Ngừng bán chỉ có nghĩa là không bán nữa, không phải thu hồi quyền học.
+ * Khóa lưu trữ (`Archived`) đã xóa nội dung nên ẩn với mọi học viên.
  */
 export const LEARNABLE_COURSE_STATUSES = [
   CourseStatus.Approved,

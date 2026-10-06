@@ -30,6 +30,7 @@ import {
 import { connectToDatabase } from "@/shared/libs";
 import {
   canAccessCourseContent,
+  getCurrentCourseManager,
   getCurrentStaff,
   getCurrentUser,
 } from "@/shared/libs/auth";
@@ -236,6 +237,14 @@ export async function fetchCourseBySlug(
     if (
       course.status === CourseStatus.Rejected &&
       !(await canAccessCourseContent(course._id.toString()))
+    )
+      return undefined;
+
+    // Khóa lưu trữ đã xóa nội dung: chỉ người quản lý khóa còn đọc được,
+    // người đã mua cũng không vào được
+    if (
+      course.status === CourseStatus.Archived &&
+      !(await getCurrentCourseManager(course._id.toString()))
     )
       return undefined;
 
@@ -504,6 +513,10 @@ export async function fetchCoursesManage({
         [CourseStatus.Rejected]: getStatusCount(
           statusCountMap,
           CourseStatus.Rejected,
+        ),
+        [CourseStatus.Archived]: getStatusCount(
+          statusCountMap,
+          CourseStatus.Archived,
         ),
       },
     };

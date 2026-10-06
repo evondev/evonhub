@@ -18,7 +18,11 @@ export async function CourseDetailsContent({ slug }: CourseDetailsContentProps) 
     incrementCourseViews(slug),
   ]);
 
-  if (!course?._id || course.status === CourseStatus.Rejected) notFound();
+  const isHiddenFromSale =
+    course?.status === CourseStatus.Rejected ||
+    course?.status === CourseStatus.Archived;
+
+  if (!course?._id || isHiddenFromSale) notFound();
 
   const reviews = await fetchRatingsByCourse({
     courseId: course._id.toString(),

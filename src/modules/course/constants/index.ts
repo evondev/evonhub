@@ -221,6 +221,7 @@ export const COURSE_STATUS_OPTIONS: CourseSelectOption[] = [
   CourseStatus.Approved,
   CourseStatus.Pending,
   CourseStatus.Rejected,
+  CourseStatus.Archived,
 ].map((status) => ({
   value: status,
   label: COURSE_MANAGE_STATUS_LABELS[status],

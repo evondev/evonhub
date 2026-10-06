@@ -13,6 +13,7 @@ export const COURSE_MANAGE_TAB_VALUES = [
   CourseStatus.Approved,
   CourseStatus.Pending,
   CourseStatus.Rejected,
+  CourseStatus.Archived,
 ] as const;
 
 export const COURSE_MANAGE_STATUS_LABELS: Record<CourseStatus, string> = {
@@ -20,12 +21,15 @@ export const COURSE_MANAGE_STATUS_LABELS: Record<CourseStatus, string> = {
   [CourseStatus.Pending]: "Chờ duyệt",
   // Rejected là thôi bán: người đã mua vẫn học được (LEARNABLE_COURSE_STATUSES)
   [CourseStatus.Rejected]: "Ngừng bán",
+  // Archived là đã xóa nội dung: ẩn với mọi học viên, không cấp tay được
+  [CourseStatus.Archived]: "Lưu trữ",
 };
 
 export const COURSE_MANAGE_STATUS_TONES: Record<CourseStatus, BadgeTone> = {
   [CourseStatus.Approved]: "success",
   [CourseStatus.Pending]: "warning",
   [CourseStatus.Rejected]: "neutral",
+  [CourseStatus.Archived]: "neutral",
 };
 
 export const COURSE_MANAGE_TABS: FilterTabItem<CourseManageTab>[] = [
@@ -41,6 +45,10 @@ export const COURSE_MANAGE_TABS: FilterTabItem<CourseManageTab>[] = [
   {
     value: CourseStatus.Rejected,
     label: COURSE_MANAGE_STATUS_LABELS[CourseStatus.Rejected],
+  },
+  {
+    value: CourseStatus.Archived,
+    label: COURSE_MANAGE_STATUS_LABELS[CourseStatus.Archived],
   },
 ];
 
@@ -70,6 +78,7 @@ export const COURSE_MANAGE_PREVIEW_TAB_COUNTS: CourseManageTabCounts = {
   [CourseStatus.Approved]: 15,
   [CourseStatus.Pending]: 5,
   [CourseStatus.Rejected]: 4,
+  [CourseStatus.Archived]: 0,
 };
 
 /** Từ khoá trang xem trước dùng cho trạng thái "Rỗng do tìm" */
