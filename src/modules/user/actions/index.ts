@@ -4,6 +4,7 @@ import CourseModel from "@/modules/course/models";
 import { CourseItemData } from "@/modules/course/types";
 import LectureModel from "@/modules/lecture/models";
 import LessonModel from "@/modules/lesson/models";
+import ScoreModel from "@/modules/score/models";
 import {
   CourseStatus,
   LEARNABLE_COURSE_STATUSES,
@@ -471,12 +472,18 @@ export async function fetchUserByUsername({
     await connectToDatabase();
 
     const user = await UserModel.findOne({ username }).select(
-      "username bio avatar _id createdAt",
+      "name username bio avatar _id createdAt socials",
     );
 
     if (!user) return null;
 
-    return parseData(user);
+    // Điểm đọc từ collection scores như bảng xếp hạng: người xem bấm từ bảng
+    // xếp hạng sang thấy đúng con số đó, kể cả khi user.score lệch
+    const userScore = await ScoreModel.findOne({ user: user._id }).select(
+      "score",
+    );
+
+    return parseData({ ...user.toObject(), score: userScore?.score || 0 });
   } catch (error) {
     console.log(error);
   }

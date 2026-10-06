@@ -1,14 +1,19 @@
+import { isWebUrl } from "@/shared/helpers/url.helper";
+import { format } from "date-fns";
 import {
   PREVIEW_TAKEN_USERNAME,
   PROFILE_RESERVED_USERNAME_PARTS,
   PROFILE_RESERVED_USERNAMES,
   PROFILE_USERNAME_RESERVED_MESSAGE,
+  PROFILE_SOCIAL_LINK_ITEMS,
   PROFILE_USERNAME_TAKEN_MESSAGE,
 } from "../constants";
 import {
   ProfileAvatarTone,
   ProfilePublicFormValues,
   ProfileSaveResult,
+  ProfileSocialFormValues,
+  ProfileSocialLink,
 } from "../types";
 
 const profileAvatarTones: ProfileAvatarTone[] = [
@@ -101,4 +106,20 @@ export async function simulatePreviewPublicSave(
   }
 
   return { isSuccess: true };
+}
+
+/** Mạng xã hội user đã điền và là link web thật; không điền thì không hiện icon */
+export function getProfileSocialLinks(
+  socials: Partial<ProfileSocialFormValues> | undefined,
+): ProfileSocialLink[] {
+  return PROFILE_SOCIAL_LINK_ITEMS.flatMap((item) => {
+    const url = socials?.[item.name]?.trim();
+
+    return isWebUrl(url) ? [{ ...item, url }] : [];
+  });
+}
+
+/** Mốc tham gia trên trang công khai: "03/2024" */
+export function formatJoinedMonth(date: Date | string): string {
+  return format(new Date(date), "MM/yyyy");
 }
