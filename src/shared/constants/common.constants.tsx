@@ -110,25 +110,6 @@ export const adminNavLinks: MenuLinkItemProps[] = [
   // },
 ];
 
-export const statusActions = [
-  {
-    text: "Tất cả",
-    value: "",
-    className:
-      "bg-gray-100 text-gray-500 border border-gray-500 dark:bg-grayDarkest dark:text-gray-200",
-  },
-  {
-    text: "Đã duyệt",
-    value: CommonStatus.Approved,
-    className: "bg-green-100 text-green-500 border border-green-500",
-  },
-  {
-    text: "Chờ duyệt",
-    value: CommonStatus.Pending,
-    className: "bg-orange-100 text-orange-500 border border-orange-500",
-  },
-];
-
 export const commonStatus: Record<
   CommonStatus,
   {

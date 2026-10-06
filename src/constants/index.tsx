@@ -53,20 +53,6 @@ export const ArrowLeft = (
     />
   </svg>
 );
-export const courseStatus = {
-  approved: {
-    text: "Đã duyệt",
-    className: "bg-green-500 text-green-500",
-  },
-  pending: {
-    text: "Chờ duyệt",
-    className: "bg-orange-500 text-orange-500",
-  },
-  rejected: {
-    text: "Bị từ chối",
-    className: "bg-red-500 text-red-500",
-  },
-};
 export const orderStatus: Record<
   EOrderStatus,
   {
