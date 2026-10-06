@@ -13,4 +13,8 @@ describe("LEARNABLE_COURSE_STATUSES", () => {
   it("khóa chưa ra mắt thì không nằm trong nhóm học được", () => {
     expect(LEARNABLE_COURSE_STATUSES).not.toContain(CourseStatus.Pending);
   });
+
+  it("khóa lưu trữ đã xóa nội dung nên không học được, kể cả người đã mua", () => {
+    expect(LEARNABLE_COURSE_STATUSES).not.toContain(CourseStatus.Archived);
+  });
 });

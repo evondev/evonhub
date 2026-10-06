@@ -34,7 +34,8 @@ export default async function LessonNewPage({
   const [mongoUser, courseDetails, lessonDetails] = (await Promise.all([
     getUserById({ userId: userId || "" }),
     // Không lọc theo trạng thái: khóa ngừng bán vẫn học được, quyền vào học do
-    // việc đã sở hữu khóa quyết định chứ không phải trạng thái bán
+    // việc đã sở hữu khóa quyết định chứ không phải trạng thái bán. Riêng khóa
+    // lưu trữ trả về undefined với người không quản lý khóa nên rơi xuống NotFoundState
     fetchCourseBySlug(courseSlug),
     getLessonById(lessonId),
   ])) as [

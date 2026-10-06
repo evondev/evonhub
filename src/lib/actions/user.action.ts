@@ -7,6 +7,7 @@ import UserModel from "@/modules/user/models";
 import { canManageCourse } from "@/modules/course/services/course-permission.service";
 import { decrementCouponUsage } from "@/modules/order/services/coupon-usage.service";
 import { createManualOrder } from "@/modules/order/services/create-manual-order.service";
+import { CourseStatus } from "@/shared/constants/course.constants";
 import { getCurrentUser } from "@/shared/libs/auth";
 import { EOrderStatus } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
@@ -77,6 +78,18 @@ export async function addCourseToUser({
       };
     }
 
+    const findCourse = await CourseModel.findById(courseId).select(
+      "title status",
+    );
+
+    // Khóa lưu trữ đã xóa nội dung, cấp xong thành viên cũng không vào học được
+    if (findCourse?.status === CourseStatus.Archived) {
+      return {
+        type: "error",
+        message: "Khóa học này đã lưu trữ, không cấp được",
+      };
+    }
+
     const user = await UserModel.findOne({ clerkId: userId });
     if (!user) {
       throw new Error("User not found");
@@ -95,7 +108,6 @@ export async function addCourseToUser({
       courseId,
     });
     revalidatePath(path);
-    const findCourse = await CourseModel.findById(courseId);
     if (!findCourse?.title) return;
     await sendNotification({
       title: "Hệ thống",

@@ -2,6 +2,7 @@
 
 import CourseModel from "@/modules/course/models";
 import LectureModel from "@/modules/lecture/models";
+import { CourseStatus } from "@/shared/constants/course.constants";
 import { parseData, sanitizeHtml } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import {
@@ -32,16 +33,22 @@ export async function getLessonById(
     const foundLesson = await LessonModel.findById(lessonId).populate({
       path: "courseId",
       model: CourseModel,
-      select: "id slug",
+      select: "id slug status",
     });
     if (!foundLesson) {
       return;
     }
 
     const lessonDetails: LessonItemCutomizeData = parseData(foundLesson);
-    const canReadContent =
-      lessonDetails.trial === true ||
-      (await canAccessCourseContent(lessonDetails.courseId?._id?.toString()));
+    const courseId = lessonDetails.courseId?._id?.toString();
+    // Khóa lưu trữ đã xóa nội dung: chỉ người quản lý khóa còn đọc, bài học
+    // thử và người đã mua đều không
+    const isArchivedCourse =
+      lessonDetails.courseId?.status === CourseStatus.Archived;
+    const canReadContent = isArchivedCourse
+      ? Boolean(await getCurrentCourseManager(courseId))
+      : lessonDetails.trial === true ||
+        (await canAccessCourseContent(courseId));
 
     if (canReadContent) return lessonDetails;
 

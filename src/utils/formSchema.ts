@@ -23,6 +23,7 @@ export const updateCourseSchema = z.object({
       ECourseStatus.PENDING,
       ECourseStatus.APPROVED,
       ECourseStatus.REJECTED,
+      ECourseStatus.ARCHIVED,
     ])
     .optional(),
   qa: z

@@ -90,5 +90,6 @@ export function countPreviewCourseTabs(
     [CourseStatus.Approved]: countTab(CourseStatus.Approved),
     [CourseStatus.Pending]: countTab(CourseStatus.Pending),
     [CourseStatus.Rejected]: countTab(CourseStatus.Rejected),
+    [CourseStatus.Archived]: countTab(CourseStatus.Archived),
   };
 }

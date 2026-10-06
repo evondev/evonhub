@@ -7,6 +7,7 @@ export enum ECourseStatus {
   PENDING = "pending",
   APPROVED = "approved",
   REJECTED = "rejected",
+  ARCHIVED = "archived",
 }
 export enum EcourseLabel {
   NEW = "new",
