@@ -7,6 +7,7 @@ import {
   LayoutGrid,
   LibraryBig,
   MessageSquare,
+  MessagesSquare,
   Receipt,
   Star,
   Users,
@@ -42,6 +43,12 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <Compass />,
     url: "/explore",
   },
+  {
+    title: "Trò chuyện",
+    mobileTitle: "Chat",
+    icon: <MessagesSquare />,
+    url: "/chat",
+  },
   // {
   //   title: "Săn mã giảm giá",
   //   icon: <IconGift />,
@@ -49,11 +56,6 @@ export const menuLinks: MenuLinkItemProps[] = [
   //   isHot: true,
   //   isHideForAdmin: true,
   // },
-  {
-    title: "Hồ sơ",
-    icon: <CircleUser />,
-    url: "/profile",
-  },
   {
     title: "Quản lý",
     icon: <LayoutGrid />,
@@ -67,6 +69,14 @@ export const menuLinks: MenuLinkItemProps[] = [
     icon: <Receipt />,
     url: "/my-orders",
     isAuth: true,
+    // Mobile: nằm trong menu avatar trên header, thanh dưới chừa chỗ cho Chat
+    isHideMobile: true,
+  },
+  {
+    title: "Hồ sơ",
+    icon: <CircleUser />,
+    url: "/profile",
+    isHideMobile: true,
   },
 ];
 
