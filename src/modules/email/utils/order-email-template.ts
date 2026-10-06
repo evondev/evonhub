@@ -3,6 +3,7 @@ import { escapeHtml } from "@/shared/helpers/html.helper";
 import { ManualPaymentPayee } from "@/shared/types/payment.types";
 import {
   ManualOrderCreatedEmailData,
+  ManualOrderPendingExpertEmailData,
   OrderApprovedEmailData,
   OrderCreatedEmailData,
   OrderReminderEmailData,
@@ -214,6 +215,53 @@ export function buildOrderApprovedEmail(data: OrderApprovedEmailData) {
         url: `${EMAIL_BRAND.siteUrl}/study`,
       },
       footerNote: `Hóa đơn của bạn được lưu tại <a href="${EMAIL_BRAND.siteUrl}/my-orders" style="color: ${EMAIL_BRAND.muted};">Đơn hàng của tôi</a>.`,
+    }),
+  };
+}
+
+/**
+ * Đơn chuyển khoản thủ công: tiền vào thẳng tài khoản chuyên gia nên hệ thống
+ * không tự đối soát được, phải nhắc chuyên gia kiểm tra rồi tự duyệt. Tên học
+ * viên, tên khóa, thông tin ngân hàng do người dùng tự nhập nên phải escape.
+ */
+export function buildManualOrderPendingExpertEmail(
+  data: ManualOrderPendingExpertEmailData,
+) {
+  const productName = escapeHtml(data.courseTitle || "khóa học");
+  const studentName = escapeHtml(data.studentName);
+  const payeeAccount = `${escapeHtml(data.payee.bankName)} · ${escapeHtml(data.payee.bankNumber)}`;
+
+  return {
+    subject: `Đơn mới ${data.code} đang chờ bạn duyệt`,
+    html: renderEmailLayout({
+      preview: `${studentName} vừa đặt ${productName}. Kiểm tra khoản ${formatMoney(data.total)} VNĐ rồi duyệt đơn cho học viên.`,
+      heading: `Chào ${escapeHtml(data.payee.name)}, có học viên vừa đặt khóa của bạn!`,
+      body: `
+        <p style="margin: 0 0 14px;">
+          <strong>${studentName}</strong> vừa đặt <strong>${productName}</strong>.
+          Đơn này chuyển khoản thẳng vào tài khoản của bạn nên hệ thống không tự
+          duyệt được, cần bạn xác nhận.
+        </p>
+        ${renderInfoRows([
+          { label: "Mã đơn", value: data.code },
+          { label: "Học viên", value: studentName },
+          { label: "Email học viên", value: escapeHtml(data.studentEmail) },
+          { label: "Số tiền", value: `${formatMoney(data.total)} VNĐ` },
+          { label: "Tài khoản nhận", value: payeeAccount },
+        ])}
+        <p style="margin: 0 0 14px;">
+          Mở app ngân hàng kiểm tra khoản <strong>${formatMoney(data.total)} VNĐ</strong>
+          với nội dung <strong>${data.code}</strong>. Tiền vào rồi thì bấm duyệt đơn,
+          khóa học sẽ mở ngay cho học viên và học viên nhận được email báo.
+        </p>
+        <p style="margin: 0 0 14px; color: ${EMAIL_BRAND.muted}; font-size: 14px;">
+          Học viên có thể gửi ảnh biên lai cho bạn qua Facebook hoặc email. Đơn
+          giữ chỗ trong <strong>24 giờ</strong>, quá hạn bạn vẫn duyệt được.
+        </p>`,
+      button: {
+        label: "Kiểm tra và duyệt đơn",
+        url: `${EMAIL_BRAND.siteUrl}/admin/order/manage?search=${data.code}`,
+      },
     }),
   };
 }

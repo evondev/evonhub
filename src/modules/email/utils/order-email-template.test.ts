@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildManualOrderCreatedEmail,
+  buildManualOrderPendingExpertEmail,
   buildOrderApprovedEmail,
   buildOrderCreatedEmail,
   buildOrderReminderEmail,
@@ -131,5 +132,42 @@ describe("buildManualOrderCreatedEmail", () => {
 
     expect(html).toContain("Chuyên Gia &lt;b&gt;");
     expect(html).not.toContain("Chuyên Gia <b>");
+  });
+});
+
+describe("buildManualOrderPendingExpertEmail", () => {
+  const pendingData = {
+    code: "DH12345678",
+    studentName: "Học <b>viên</b>",
+    studentEmail: "hocvien@example.com",
+    total: 999_000,
+    courseTitle: "Khóa học NextJS Pro",
+    payee: {
+      name: "Chuyên Gia",
+      email: "chuyengia@example.com",
+      bankName: "Vietcombank",
+      bankNumber: "1029384756",
+      bankAccount: "NGUYEN VAN CHUYEN GIA",
+    },
+  };
+
+  it("nhắc kiểm tra đúng khoản tiền, nội dung, tài khoản nhận và dẫn tới đơn cần duyệt", () => {
+    const { subject, html } = buildManualOrderPendingExpertEmail(pendingData);
+
+    expect(subject).toContain("DH12345678");
+    expect(html).toContain("Chuyên Gia");
+    expect(html).toContain("999.000");
+    expect(html).toContain("hocvien@example.com");
+    expect(html).toContain("Vietcombank · 1029384756");
+    expect(html).toContain(
+      "https://evonhub.dev/admin/order/manage?search=DH12345678",
+    );
+  });
+
+  it("escape tên học viên do người dùng tự nhập", () => {
+    const { html } = buildManualOrderPendingExpertEmail(pendingData);
+
+    expect(html).not.toContain("<b>viên</b>");
+    expect(html).toContain("&lt;b&gt;viên&lt;/b&gt;");
   });
 });
