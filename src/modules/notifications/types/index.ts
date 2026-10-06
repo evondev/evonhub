@@ -8,6 +8,9 @@ export interface NotificationPayload {
   lessonId?: string;
   lessonTitle?: string;
   commentId?: string;
+  /** Trả lời bình luận: bình luận gốc của người nhận, và tên người trả lời */
+  parentCommentId?: string;
+  actorName?: string;
 }
 
 export interface NotificationModelProps extends Document {
@@ -35,6 +38,14 @@ export interface NotificationFeedData {
   notifications: NotificationItemData[];
   /** Mốc người dùng xem panel lần cuối; null là chưa xem lần nào */
   seenAt: string | null;
+}
+
+/** Các thông báo cùng loại, cùng đối tượng gộp thành một dòng; latest là cái mới nhất */
+export interface NotificationGroup {
+  key: string;
+  latest: NotificationItemData;
+  items: NotificationItemData[];
+  isUnread: boolean;
 }
 
 export interface NotificationMessagePart {

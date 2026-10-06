@@ -58,9 +58,7 @@ export async function markNotificationsSeen(
     if (!currentUser) return;
 
     // Không cho client đặt mốc ở tương lai để ẩn trước thông báo chưa tới
-    const cappedSeenDate = new Date(
-      Math.min(seenDate.getTime(), Date.now()),
-    );
+    const cappedSeenDate = new Date(Math.min(seenDate.getTime(), Date.now()));
 
     await connectToDatabase();
     await UserModel.updateOne(

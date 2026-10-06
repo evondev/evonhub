@@ -1,3 +1,5 @@
+export { getNotificationChannelName } from "./notification-channel.utils";
+export { groupNotifications } from "./notification-group.utils";
 export {
   getNotificationLink,
   getNotificationMessage,
