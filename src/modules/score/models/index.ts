@@ -17,5 +17,9 @@ const scoreSchema = new Schema<ScoreModelProps>({
     default: false,
   },
 });
+// bảng xếp hạng
+scoreSchema.index({ score: -1 });
+// điểm của một user
+scoreSchema.index({ user: 1 });
 const ScoreModel = models.Score || model("Score", scoreSchema);
 export default ScoreModel;

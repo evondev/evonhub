@@ -1,7 +1,8 @@
 "use client";
 
 import { NEAR_END_SECONDS } from "@/modules/lesson/constants";
-import MuxPlayer from "@mux/mux-player-react";
+// Bản lazy tách player (~200KB) khỏi bundle chính, tải khi khung video vào màn hình
+import MuxPlayer from "@mux/mux-player-react/lazy";
 
 export interface LessonVideoProps {
   videoId: string;

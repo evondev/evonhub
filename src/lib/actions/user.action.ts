@@ -11,11 +11,23 @@ import { getCurrentUser } from "@/shared/libs/auth";
 import { EOrderStatus } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { cache } from "react";
 import { connectToDatabase } from "../mongoose";
+
+// File "use server" chỉ export được async function nên cache() đặt ở hàm nội bộ:
+// layout và page trong cùng một request dùng chung một lần đọc
+const findUserWithCourses = cache(async (clerkId: string) => {
+  await connectToDatabase();
+
+  return UserModel.findOne({ clerkId }).populate({
+    path: "courses",
+    model: Course,
+    select: "title slug free",
+  });
+});
 
 export async function getUserById({ userId }: { userId: string }) {
   try {
-    connectToDatabase();
     if (!userId) return undefined;
 
     // Hàm trong file "use server" ai cũng gọi được: chỉ trả bản ghi của chính người gọi
@@ -23,11 +35,8 @@ export async function getUserById({ userId }: { userId: string }) {
 
     if (userId !== currentUserId) return undefined;
 
-    let user = await UserModel.findOne({ clerkId: userId }).populate({
-      path: "courses",
-      model: Course,
-      select: "title slug free",
-    });
+    const user = await findUserWithCourses(userId);
+
     return user;
   } catch (error) {
     console.log(error);
@@ -50,7 +59,7 @@ export async function addCourseToUser({
   course: { id: courseId },
 }: AddCourseToUserParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     // Cấp khóa thủ công: admin làm được với mọi khóa, expert chỉ với khóa của
     // chính mình. Không được tin quyền do client gửi lên.
@@ -113,7 +122,7 @@ export async function removeCourseFromUser({
   path: string;
 }) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const currentUser = await getCurrentUser();
     const hasPermission = await canManageCourse({

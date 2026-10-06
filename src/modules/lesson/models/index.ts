@@ -64,5 +64,7 @@ const lessonSchema = new Schema<LessonModelProps>({
     default: false,
   },
 });
+// danh sách và đếm bài của khóa (tiến độ học)
+lessonSchema.index({ courseId: 1, _destroy: 1 });
 const LessonModel = models.Lesson || mongoose.model("Lesson", lessonSchema);
 export default LessonModel;

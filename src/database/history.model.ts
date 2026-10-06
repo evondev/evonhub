@@ -1,4 +1,4 @@
-import { Document, Schema, model, models } from "mongoose";
+import { Document, Schema } from "mongoose";
 
 export interface IHistory extends Document {
   user: Schema.Types.ObjectId;
@@ -6,23 +6,6 @@ export interface IHistory extends Document {
   lesson: Schema.Types.ObjectId;
   createdAt: Date;
 }
-const historySchema = new Schema<IHistory>({
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
-  course: {
-    type: Schema.Types.ObjectId,
-    ref: "Course",
-  },
-  lesson: {
-    type: Schema.Types.ObjectId,
-    ref: "Lesson",
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-const History = models.History || model("History", historySchema);
-export default History;
+// Dùng chung model của module. Hai schema cùng tên "History" thì file nào nạp
+// trước thắng (hai schema như nhau), và index chỉ khai ở schema của module.
+export { default } from "@/shared/models/history.model";

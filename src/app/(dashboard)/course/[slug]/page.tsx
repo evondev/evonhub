@@ -1,37 +1,35 @@
 import { fetchCourseBySlug } from "@/modules/course/actions";
-import { CourseDetailsPage } from "@/modules/course/pages";
-import parse from "html-react-parser";
-import { Metadata, ResolvingMetadata } from "next";
+import { CourseDetailsPage } from "@/modules/course/pages/course-details-page";
+import { htmlToPlainText } from "@/shared/helpers/html.helper";
+import { Metadata } from "next";
 
-export interface CourseDetailsPageRootProps {}
-
-interface MetadataParams {
+interface CourseDetailsPageRootProps {
   params: {
     slug: string;
   };
 }
-export async function generateMetadata(
-  { params }: MetadataParams,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
-  const slug = params.slug;
 
-  const courseDetails = await fetchCourseBySlug(slug);
+export async function generateMetadata({
+  params,
+}: CourseDetailsPageRootProps): Promise<Metadata> {
+  // fetchCourseBySlug đọc qua cache(): page bên dưới dùng lại kết quả, không query lần hai
+  const courseDetails = await fetchCourseBySlug(params.slug);
+  const description = htmlToPlainText(courseDetails?.desc || "");
 
   return {
     title: courseDetails?.title,
-    description: parse(courseDetails?.desc || "").toString(),
+    description,
     keywords: courseDetails?.seoKeywords,
     openGraph: {
       title: courseDetails?.title,
-      description: parse(courseDetails?.desc || "").toString(),
+      description,
       images: [courseDetails?.image || "/cover.jpg"],
     },
   };
 }
 
-export default function CourseDetailsPageRoot(
-  _props: CourseDetailsPageRootProps,
-) {
-  return <CourseDetailsPage />;
+export default function CourseDetailsPageRoot({
+  params,
+}: CourseDetailsPageRootProps) {
+  return <CourseDetailsPage slug={params.slug} />;
 }

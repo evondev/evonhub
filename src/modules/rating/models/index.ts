@@ -28,5 +28,9 @@ const ratingSchema = new Schema<RatingModelProps>({
     default: RatingStatus.Inactive,
   },
 });
+// đánh giá của khóa ở trang chi tiết
+ratingSchema.index({ course: 1, status: 1 });
+// danh sách đánh giá công khai và trang quản lý
+ratingSchema.index({ status: 1, createdAt: -1 });
 const RatingModel = models.Rating || model("Rating", ratingSchema);
 export default RatingModel;

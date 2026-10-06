@@ -103,7 +103,7 @@ export async function getLessonCount(
   courseId: string,
 ): Promise<number | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     // count all lessons in course
     const count = await Lesson.countDocuments({ courseId, _destroy: false });
     return count;
@@ -113,7 +113,7 @@ export async function getLessonCount(
 }
 export async function getCourseIdByLesson(slug: string) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const lesson = await Lesson.findOne({ slug });
     if (!lesson) return;
     return lesson.courseId;
@@ -123,7 +123,7 @@ export async function getCourseIdByLesson(slug: string) {
 }
 export async function getAllLessonByCourseId(courseId: string) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const lesson = await Lesson.find({ courseId }).select("title slug");
     if (!lesson) return [];
     return lesson;
@@ -133,7 +133,7 @@ export async function getAllLessonByCourseId(courseId: string) {
 }
 export async function getAllLectureByCourseId(courseId: string) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const lecture = await Lecture.find({ courseId }).select("title slug");
     if (!lecture) return [];
     return lecture;

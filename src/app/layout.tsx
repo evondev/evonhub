@@ -1,13 +1,13 @@
 import Providers from "@/components/Providers";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { UserProvider } from "@/components/user-context";
-import { ReactQueryProvider } from "@/shared/libs";
+import { UserQueryHydration } from "@/shared/components/user-query-hydration";
+import { ReactQueryProvider } from "@/shared/libs/react-query/react-query-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { Be_Vietnam_Pro, Bricolage_Grotesque } from "next/font/google";
-import Script from "next/script";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "prismjs/themes/prism.css";
 import { ToastContainer } from "react-toastify";
@@ -72,9 +72,11 @@ export default async function RootLayout({
                 disableTransitionOnChange
               >
                 <Providers>
-                  <UserProvider>
-                    <NuqsAdapter>{children}</NuqsAdapter>
-                  </UserProvider>
+                  <UserQueryHydration>
+                    <UserProvider>
+                      <NuqsAdapter>{children}</NuqsAdapter>
+                    </UserProvider>
+                  </UserQueryHydration>
                 </Providers>
               </ThemeProvider>
             </ReactQueryProvider>
@@ -85,10 +87,6 @@ export default async function RootLayout({
             className="min-w-[350px] max-w-full top-0 right-0"
             bodyClassName={`${beVietnamPro.className} font-semibold`}
           ></ToastContainer>
-          <Script
-            id="mux-uploader"
-            src="https://cdn.jsdelivr.net/npm/@mux/mux-uploader@1.0.0-beta.6"
-          ></Script>
           <SpeedInsights></SpeedInsights>
           <Analytics></Analytics>
         </body>

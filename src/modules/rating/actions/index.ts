@@ -7,16 +7,22 @@ import {
   MODERATION_DELETE_ERROR_MESSAGE,
   MODERATION_SAVE_ERROR_MESSAGE,
 } from "@/shared/constants/moderation.constants";
-import { parseData } from "@/shared/helpers";
+import {
+  buildStatusCountPipeline,
+  getStatusCount,
+  parseData,
+  toStatusCountMap,
+} from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { findManageableCourseIds, getCurrentStaff } from "@/shared/libs/auth";
 import { ModerationResult, ModerationScope } from "@/shared/types";
+import { StatusCountGroup } from "@/shared/types/count.types";
 import {
   getSafeKeyword,
   isExcludedIdList,
 } from "@/shared/utils/moderation.utils";
 import { escapeRegExp } from "lodash";
-import { FilterQuery, isValidObjectId } from "mongoose";
+import { FilterQuery, isValidObjectId, Types } from "mongoose";
 import RatingModel from "../models";
 import {
   MAX_RATINGS_PER_PAGE,
@@ -38,7 +44,7 @@ export async function fetchRatingsByCourse({
   courseId: string;
 }): Promise<RatingItemData[] | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const ratings = await RatingModel.find({
       course: courseId,
@@ -88,6 +94,25 @@ async function buildRatingScopeQuery(
 }
 
 /**
+ * Bản dùng cho $match của scope query: admin lọc một khoá thì id khoá còn là
+ * chuỗi, $match không tự ép sang ObjectId như find() nên phải đổi trước
+ */
+function toRatingMatchQuery(
+  scopeQuery: FilterQuery<typeof RatingModel>,
+): FilterQuery<typeof RatingModel> {
+  const courseIds: unknown[] | undefined = scopeQuery.course?.$in;
+
+  if (!courseIds) return scopeQuery;
+
+  return {
+    ...scopeQuery,
+    course: {
+      $in: courseIds.map((courseId) => new Types.ObjectId(String(courseId))),
+    },
+  };
+}
+
+/**
  * Admin thấy mọi đánh giá, expert chỉ thấy đánh giá trên khoá mình đứng tên.
  * Từ khoá và khoá học áp cho cả số đếm từng tab; trạng thái chỉ áp cho danh sách.
  */
@@ -120,37 +145,34 @@ export async function fetchRatingsManage({
     // So khớp đúng giá trị: chuỗi lạ từ client thì không lọc
     if (isRatingStatus(status)) query.status = status;
 
-    const [ratings, total, pendingCount, approvedCount, rejectedCount] =
-      await Promise.all([
-        RatingModel.find(query)
-          .select("content rating status createdAt user course")
-          .skip(skip)
-          .limit(safeLimit)
-          .sort({ createdAt: -1 })
-          .populate({ model: UserModel, path: "user", select: "name avatar" })
-          .populate({
-            model: CourseModel,
-            path: "course",
-            select: "title slug",
-          }),
-        RatingModel.countDocuments(query),
-        RatingModel.countDocuments({
-          ...baseQuery,
-          status: RatingStatus.Inactive,
+    // Một aggregate đếm mọi tab thay vì mỗi tab một countDocuments
+    const [ratings, statusCountGroups] = await Promise.all([
+      RatingModel.find(query)
+        .select("content rating status createdAt user course")
+        .skip(skip)
+        .limit(safeLimit)
+        .sort({ createdAt: -1 })
+        .populate({ model: UserModel, path: "user", select: "name avatar" })
+        .populate({
+          model: CourseModel,
+          path: "course",
+          select: "title slug",
         }),
-        RatingModel.countDocuments({
-          ...baseQuery,
-          status: RatingStatus.Active,
-        }),
-        RatingModel.countDocuments({
-          ...baseQuery,
-          status: RatingStatus.Rejected,
-        }),
-      ]);
+      RatingModel.aggregate<StatusCountGroup>(
+        buildStatusCountPipeline(toRatingMatchQuery(baseQuery)),
+      ),
+    ]);
+    const statusCountMap = toStatusCountMap(statusCountGroups);
+    const pendingCount = getStatusCount(statusCountMap, RatingStatus.Inactive);
+    const approvedCount = getStatusCount(statusCountMap, RatingStatus.Active);
+    const rejectedCount = getStatusCount(statusCountMap, RatingStatus.Rejected);
 
     return {
       ratings: parseData(ratings),
-      total,
+      total: getStatusCount(
+        statusCountMap,
+        isRatingStatus(status) ? status : undefined,
+      ),
       tabCounts: {
         [RatingStatus.Inactive]: pendingCount,
         [RatingStatus.Active]: approvedCount,
@@ -355,7 +377,7 @@ export async function fetchRatingsPublic({
   courseSlugs,
 }: FetchRatingsPublicProps): Promise<RatingItemData[] | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const query: FilterQuery<typeof RatingModel> = {};
     const skip = (page - 1) * limit;

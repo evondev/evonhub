@@ -8,7 +8,8 @@ export interface DashboardLessonLink {
 
 export interface DashboardCourseProgress {
   course: CourseItemData;
-  lesson: DashboardLessonLink;
+  // Không có khi khóa chưa có bài nào
+  lesson?: DashboardLessonLink;
   progress: number;
   current: number;
   total: number;

@@ -1,6 +1,7 @@
 export const handleGetLastUrl = (
   slug: string,
-  lesson: {
+  // Không có khi khóa chưa có bài nào
+  lesson?: {
     _id: string;
     slug: string;
   }

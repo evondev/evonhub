@@ -4,12 +4,19 @@ import { Button } from "@/components/ui/button";
 import { useQueryCommentsByLesson } from "@/modules/comment/services";
 import { lessonTabs } from "@/modules/lesson/constants";
 import { LessonTabItem, LessonTabValue } from "@/modules/lesson/types";
-import { Comment } from "@/shared/features/comment";
 import { useMediaQuery } from "@/shared/hooks";
 import { cn } from "@/shared/utils";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { LessonNotes } from "./lesson-notes";
 import { LessonOutline } from "./outline";
+
+// Tab bình luận mở thì mới tải form bình luận (react-hook-form, zod, editor)
+const Comment = dynamic(() =>
+  import("@/shared/features/comment").then(
+    (commentModule) => commentModule.Comment,
+  ),
+);
 
 export interface LessonTabsProps {
   lessonId: string;

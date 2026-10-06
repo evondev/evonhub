@@ -18,3 +18,10 @@ export interface SendNotificationParams {
   users?: string[];
   isSendAll?: boolean;
 }
+
+/** Một thông báo gửi riêng cho danh sách người nhận đã biết, dùng khi ghi nhiều thông báo một lần */
+export interface NotificationDraft {
+  title: string;
+  content: string;
+  users: string[];
+}

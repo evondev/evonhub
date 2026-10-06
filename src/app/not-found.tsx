@@ -1,41 +1,11 @@
-"use client";
-import FuzzyText from "@/components/FuzzyText";
-import { IconHome } from "@/shared/components";
-import { useTheme } from "next-themes";
-import { useRouter } from "next/navigation";
+import { NotFoundState } from "@/shared/components/not-found";
 
-const PageNotFound = () => {
-  const router = useRouter();
-  const { theme } = useTheme();
-
-  const handleRedirect = () => {
-    const history = globalThis.history;
-
-    if (history.length > 1) {
-      router.back();
-    } else {
-      router.push("/");
-    }
-  };
-
-  const color = theme === "dark" ? "white" : "black";
-
+// Sai đường dẫn ngoài khung app: trang đứng riêng, có logo. `.wrapper` ở layout
+// gốc chừa pt-16 cho header dashboard, kéo margin âm bù lại
+export default function NotFound() {
   return (
-    <div className="py-5 lg:py-20 flex flex-col items-center justify-center gap-5">
-      <div className="h-[86px]">
-        <FuzzyText color={color} baseIntensity={0.2} hoverIntensity={1}>
-          404
-        </FuzzyText>
-      </div>
-      <button
-        onClick={handleRedirect}
-        className="mx-auto flex items-center justify-center gap-3 h-12 px-5 rounded-xl borderDarkModeHover bgDarkMode font-semibold min-w-[200px] mt-5"
-      >
-        <IconHome />
-        <span>Quay về</span>
-      </button>
-    </div>
+    <main className="-mb-16 -mt-16 min-h-dvh px-4 pt-24 sm:pt-40 lg:mb-0">
+      <NotFoundState isStandalone />
+    </main>
   );
-};
-
-export default PageNotFound;
+}

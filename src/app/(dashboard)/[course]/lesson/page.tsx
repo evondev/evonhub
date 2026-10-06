@@ -1,8 +1,12 @@
-import PageNotFound from "@/app/not-found";
+import { NotFoundState } from "@/shared/components/not-found";
 import { getUserById } from "@/lib/actions/user.action";
 import { fetchCourseBySlug } from "@/modules/course/actions";
-import { getLessonById, getLessonPreview } from "@/modules/lesson/actions";
-import { DetailsPageLayout, LessonDetailsPage } from "@/modules/lesson/pages";
+import { getLessonById } from "@/modules/lesson/actions";
+import {
+  DetailsPageLayout,
+  LessonDetailsPage,
+  LessonQueryHydration,
+} from "@/modules/lesson/pages";
 import { LessonItemCutomizeData } from "@/shared/types";
 import { CourseItemData } from "@/shared/types/course.types";
 import { UserItemData } from "@/shared/types/user.types";
@@ -25,33 +29,52 @@ export default async function LessonNewPage({
   const courseSlug = params.course;
 
   const { userId } = auth();
-  const [mongoUser, courseDetails, lessonPreview] = (await Promise.all([
+  // getLessonById tự cắt nội dung trả phí nếu chưa có quyền, nên chạy song song
+  // với phần kiểm tra sở hữu thay vì đợi kiểm tra xong mới đọc bài
+  const [mongoUser, courseDetails, lessonDetails] = (await Promise.all([
     getUserById({ userId: userId || "" }),
     // Không lọc theo trạng thái: khóa ngừng bán vẫn học được, quyền vào học do
     // việc đã sở hữu khóa quyết định chứ không phải trạng thái bán
     fetchCourseBySlug(courseSlug),
-    getLessonPreview(lessonId),
-  ])) as [UserItemData, CourseItemData, LessonItemCutomizeData];
+    getLessonById(lessonId),
+  ])) as [
+    UserItemData | undefined,
+    CourseItemData,
+    LessonItemCutomizeData | undefined,
+  ];
 
   const userCourseIds =
     mongoUser?.courses.map((course) => course._id.toString()) || [];
 
   const courseId = courseDetails?._id?.toString() || "";
-  const isPreviewLesson = lessonPreview?.trial === true;
+  const lessonCourseId = lessonDetails?.courseId?._id?.toString() || "";
+  const isLessonInCourse =
+    !!lessonDetails &&
+    !!courseId &&
+    lessonCourseId === courseId &&
+    !lessonDetails._destroy;
 
-  const isOwnedCourse = userCourseIds.includes(courseId) && !!lessonPreview;
+  const isOwnedCourse = isLessonInCourse && userCourseIds.includes(courseId);
+  // Bài học thử mở cho mọi người, kể cả chưa đăng nhập. getLessonById chỉ trả
+  // video, nội dung của bài trial cho người chưa mua, nên không lộ bài khác
+  const isPreviewLesson =
+    isLessonInCourse && !isOwnedCourse && lessonDetails?.trial === true;
 
-  if (!isOwnedCourse) return <PageNotFound />;
-
-  const lessonDetails = await getLessonById(lessonId);
+  if (!isOwnedCourse && !isPreviewLesson) return <NotFoundState />;
 
   return (
-    <DetailsPageLayout>
-      <LessonDetailsPage
-        lessonDetails={lessonDetails}
-        lessonId={lessonId}
-        isPreviewLesson={isPreviewLesson && !isOwnedCourse}
-      />
-    </DetailsPageLayout>
+    <LessonQueryHydration
+      course={courseDetails}
+      lessonId={lessonId}
+      userId={mongoUser?._id?.toString() || ""}
+    >
+      <DetailsPageLayout>
+        <LessonDetailsPage
+          lessonDetails={lessonDetails}
+          lessonId={lessonId}
+          isPreviewLesson={isPreviewLesson}
+        />
+      </DetailsPageLayout>
+    </LessonQueryHydration>
   );
 }

@@ -9,6 +9,8 @@ const notificationSchema = new Schema<NotificationModelProps>({
   createdAt: { type: Date, default: Date.now },
 });
 
+// chuông thông báo trên header
+notificationSchema.index({ users: 1, createdAt: -1 });
 const NotificationModel =
   models.Notification || mongoose.model("Notification", notificationSchema);
 

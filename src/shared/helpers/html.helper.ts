@@ -17,3 +17,12 @@ export function escapeHtml(text: string): string {
 export function sanitizeHtml(html: string): string {
   return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
 }
+
+/** Bỏ thẻ HTML, gộp khoảng trắng: dùng cho meta description từ mô tả soạn trong admin */
+export function htmlToPlainText(html: string): string {
+  return html
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}

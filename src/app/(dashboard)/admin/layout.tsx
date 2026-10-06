@@ -1,4 +1,4 @@
-import PageNotFound from "@/app/not-found";
+import { NotFoundState } from "@/shared/components/not-found";
 import { commonPath } from "@/constants";
 import { getUserById } from "@/lib/actions/user.action";
 import { AdminNav } from "@/shared/components/common/admin-nav";
@@ -15,7 +15,7 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
   const user = await getUserById({ userId });
 
   if (![UserRole.Admin, UserRole.Expert].includes(user?.role))
-    return <PageNotFound></PageNotFound>;
+    return <NotFoundState />;
 
   return (
     <>

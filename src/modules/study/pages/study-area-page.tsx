@@ -1,10 +1,7 @@
 import { getUserById } from "@/lib/actions/user.action";
 import { fetchHistoriesByUserId } from "@/modules/history/actions";
 import { fetchLessonDetailsOutline } from "@/modules/lesson/actions";
-import {
-  fetchUserCourseProgress,
-  fetchUserCoursesContinue,
-} from "@/modules/user/actions";
+import { fetchUserCoursesContinue } from "@/modules/user/actions";
 import { UserItemData } from "@/shared/types/user.types";
 import { StudyArea, StudyLoadError } from "../components";
 import { STUDY_COURSE_FETCH_LIMIT } from "../constants";
@@ -44,24 +41,21 @@ export async function StudyAreaPage({
 
   if (!user || !continueData) return <StudyLoadError />;
 
-  const studyCourses: StudyCourse[] = await Promise.all(
-    continueData.courses.map(async (course, index) => {
-      const courseProgress = await fetchUserCourseProgress({
-        userId: user._id.toString(),
-        courseId: course._id.toString(),
-      });
-      const current = courseProgress?.current || 0;
-      const progress = Math.min(courseProgress?.progress || 0, 100);
+  // Tiến độ đã tính gộp trong fetchUserCoursesContinue, cùng thứ tự với courses
+  const studyCourses: StudyCourse[] = continueData.courses.map(
+    (course, index) => {
+      const courseProgress = continueData.progresses[index];
+      const progress = Math.min(courseProgress.progress, 100);
 
       return {
         course,
-        firstLesson: continueData.lessons[index],
+        firstLesson: continueData.lessons[index] ?? undefined,
         progress,
-        current,
-        total: courseProgress?.total || 0,
-        status: getStudyCourseStatus(current, progress),
+        current: courseProgress.current,
+        total: courseProgress.total,
+        status: getStudyCourseStatus(courseProgress.current, progress),
       };
-    }),
+    },
   );
   const sortedCourses = sortStudyCourses(studyCourses);
   const selectedCourse = findSelectedStudyCourse(sortedCourses, selectedSlug);

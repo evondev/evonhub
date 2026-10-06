@@ -21,16 +21,23 @@ import {
   OrderStatus,
 } from "@/shared/constants/order.constants";
 import { UserRole, UserStatus } from "@/shared/constants/user.constants";
-import { parseData } from "@/shared/helpers";
+import {
+  buildStatusCountPipeline,
+  getStatusCount,
+  parseData,
+  toStatusCountMap,
+} from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import {
   canAccessCourseContent,
   getCurrentStaff,
   getCurrentUser,
 } from "@/shared/libs/auth";
+import { StatusCountGroup } from "@/shared/types/count.types";
 import { UserItemData } from "@/shared/types/user.types";
 import { auth } from "@clerk/nextjs/server";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
+import { cache } from "react";
 import { EXPLORE_SORT_STAGES } from "../constants";
 import CourseModel from "../models";
 import {
@@ -61,7 +68,7 @@ export async function fetchCourses({
   shouldFilterEnrolled = false,
 }: FetchCoursesParams): Promise<CourseItemData[] | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     // Khóa đã soft-delete thì không được lọt vào bất kỳ danh sách nào
     let query: FilterQuery<typeof CourseModel> = { _destroy: false };
 
@@ -186,7 +193,7 @@ export async function fetchCoursesIncoming(): Promise<
   CourseItemData[] | undefined
 > {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const courses = await CourseModel.find({
       status: CourseStatus.Pending,
       _destroy: false,
@@ -197,23 +204,31 @@ export async function fetchCoursesIncoming(): Promise<
   } catch (error) {}
 }
 
+// File "use server" chỉ export được async function nên cache() đặt ở hàm nội bộ:
+// generateMetadata và page trong cùng một request dùng chung một lần đọc
+const findCourseBySlug = cache(async (slug: string, status?: CourseStatus) => {
+  await connectToDatabase();
+
+  const searchQuery: FilterQuery<typeof CourseModel> = {
+    slug,
+    _destroy: false,
+  };
+  if (status) {
+    searchQuery.status = status;
+  }
+
+  return CourseModel.findOne(searchQuery).select(
+    "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author minPrice isMicro",
+  );
+});
+
+/** Chỉ đọc, không tăng lượt xem: lượt xem tăng ở trang chi tiết khóa (incrementCourseViews) */
 export async function fetchCourseBySlug(
   slug: string,
   status?: CourseStatus,
 ): Promise<CourseItemData | undefined> {
   try {
-    connectToDatabase();
-    await updateCourseViews(slug);
-    const searchQuery: FilterQuery<typeof CourseModel> = {
-      slug,
-      _destroy: false,
-    };
-    if (status) {
-      searchQuery.status = status;
-    }
-    const course = await CourseModel.findOne(searchQuery).select(
-      "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author minPrice isMicro",
-    );
+    const course = await findCourseBySlug(slug, status);
     if (!course) return undefined;
 
     // Đang bán và sắp ra mắt là trang công khai. Khóa ngừng bán chỉ người đã mua
@@ -403,15 +418,6 @@ export async function handleEnrollCourse({
   }
 }
 
-async function updateCourseViews(slug: string) {
-  try {
-    connectToDatabase();
-    await CourseModel.findOneAndUpdate({ slug }, { $inc: { views: 1 } });
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 export async function fetchCoursesManage({
   isFree = false,
   search,
@@ -439,42 +445,29 @@ export async function fetchCoursesManage({
       baseQuery.price = { $lte: 0 };
     }
 
+    // ObjectId tường minh: baseQuery còn dùng cho $match, nơi không tự ép kiểu như find()
     if (currentStaff.role !== UserRole.Admin) {
-      baseQuery.author = currentStaff._id;
+      baseQuery.author = new Types.ObjectId(String(currentStaff._id));
     }
 
     const query: FilterQuery<typeof CourseModel> = { ...baseQuery };
 
     if (status) query.status = status;
 
-    const [
-      courses,
-      total,
-      allCount,
-      approvedCount,
-      pendingCount,
-      rejectedCount,
-    ] = await Promise.all([
+    // Một aggregate đếm mọi tab thay vì mỗi tab một countDocuments
+    const [courses, statusCountGroups] = await Promise.all([
       CourseModel.find(query)
         .limit(limit)
         .skip(skip)
         .sort({ createdAt: -1 })
         .select("title slug image createdAt status price _id free"),
-      CourseModel.countDocuments(query),
-      CourseModel.countDocuments(baseQuery),
-      CourseModel.countDocuments({
-        ...baseQuery,
-        status: CourseStatus.Approved,
-      }),
-      CourseModel.countDocuments({
-        ...baseQuery,
-        status: CourseStatus.Pending,
-      }),
-      CourseModel.countDocuments({
-        ...baseQuery,
-        status: CourseStatus.Rejected,
-      }),
+      CourseModel.aggregate<StatusCountGroup>(
+        buildStatusCountPipeline(baseQuery),
+      ),
     ]);
+    const statusCountMap = toStatusCountMap(statusCountGroups);
+    const total = getStatusCount(statusCountMap, status);
+
     // Một lần aggregate cho cả trang thay vì đếm từng khóa. $setIntersection bỏ
     // id lặp trong user.courses: mỗi học viên chỉ tính một lần, như countDocuments
     const courseIds = courses.map((course) => course._id);
@@ -499,10 +492,19 @@ export async function fetchCoursesManage({
       courses: parseData(coursesWithStudentCount),
       total,
       tabCounts: {
-        all: allCount,
-        [CourseStatus.Approved]: approvedCount,
-        [CourseStatus.Pending]: pendingCount,
-        [CourseStatus.Rejected]: rejectedCount,
+        all: getStatusCount(statusCountMap),
+        [CourseStatus.Approved]: getStatusCount(
+          statusCountMap,
+          CourseStatus.Approved,
+        ),
+        [CourseStatus.Pending]: getStatusCount(
+          statusCountMap,
+          CourseStatus.Pending,
+        ),
+        [CourseStatus.Rejected]: getStatusCount(
+          statusCountMap,
+          CourseStatus.Rejected,
+        ),
       },
     };
   } catch (error) {
@@ -514,7 +516,7 @@ export async function getAllCoursesUser(
   params: FetchCoursesParams,
 ): Promise<CourseItemData[] | undefined> {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const { userId } = auth();
     const findUser: UserItemData | null = await UserModel.findOne({
       clerkId: userId,

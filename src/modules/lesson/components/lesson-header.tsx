@@ -1,11 +1,13 @@
 "use client";
 
 import { ModeToggle } from "@/components/ModeToggle";
+import { Button } from "@/components/ui/button";
+import { commonPath } from "@/constants";
 import { useCourseProgress } from "@/modules/lesson/hooks";
 import Notification from "@/shared/components/common/notification";
 import { ProductLogo } from "@/shared/components/product-logo";
 import { RatingForm } from "@/shared/features/rating";
-import { UserButton } from "@clerk/nextjs";
+import { useAuth, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { LessonProgress } from "./lesson-progress";
@@ -16,10 +18,13 @@ export interface LessonHeaderProps {}
 // đã học tới đâu. Cố định trên cùng như header chung (wrapper đã chừa 64px).
 export function LessonHeader(_props: LessonHeaderProps) {
   const params = useParams();
+  const { userId, isSignedIn } = useAuth();
+  const isSignedInUser = Boolean(userId && isSignedIn);
   const courseSlug = params.course?.toString() || "";
   const { courseDetails, completedCount, totalCount, percent } =
     useCourseProgress(courseSlug);
-  const hasProgress = totalCount > 0;
+  // Khách học thử chưa đăng nhập: không có tiến độ, không đánh giá được
+  const hasProgress = isSignedInUser && totalCount > 0;
 
   return (
     <header className="fixed inset-x-0 top-0 z-40 flex h-16 items-center gap-3 border-b border-border bg-surface px-4 sm:px-6">
@@ -59,7 +64,7 @@ export function LessonHeader(_props: LessonHeaderProps) {
       )}
 
       <div className="flex shrink-0 items-center gap-1.5">
-        {courseDetails?._id && (
+        {isSignedInUser && courseDetails?._id && (
           <RatingForm
             courseId={courseDetails._id.toString()}
             courseTitle={courseDetails.title}
@@ -68,10 +73,19 @@ export function LessonHeader(_props: LessonHeaderProps) {
         <div className="hidden sm:block">
           <ModeToggle />
         </div>
-        <Notification />
-        <div className="grid size-9 place-items-center">
-          <UserButton appearance={{ elements: { avatarBox: "size-8" } }} />
-        </div>
+        {isSignedInUser && (
+          <>
+            <Notification />
+            <div className="grid size-9 place-items-center">
+              <UserButton appearance={{ elements: { avatarBox: "size-8" } }} />
+            </div>
+          </>
+        )}
+        {!isSignedInUser && (
+          <Button asChild variant="ghost" size="sm" className="text-foreground">
+            <Link href={commonPath.LOGIN}>Đăng nhập</Link>
+          </Button>
+        )}
       </div>
     </header>
   );

@@ -1,5 +1,5 @@
-import { getYoutubeEmbedId } from "@/modules/course/utils";
 import { CourseCover } from "@/shared/components/course";
+import CourseIntroVideo from "./course-intro-video";
 
 export interface CourseBuyMediaProps {
   title: string;
@@ -14,21 +14,13 @@ export default function CourseBuyMedia({
   image,
 }: CourseBuyMediaProps) {
   if (intro) {
-    return (
-      <iframe
-        src={`https://www.youtube.com/embed/${getYoutubeEmbedId(intro)}`}
-        title={title}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-        className="block aspect-video w-full"
-      />
-    );
+    return <CourseIntroVideo title={title} intro={intro} image={image} />;
   }
 
   return (
     <CourseCover
       image={image}
+      isPriority
       className="aspect-video w-full"
       sizes="(min-width: 1280px) 360px, 100vw"
     />

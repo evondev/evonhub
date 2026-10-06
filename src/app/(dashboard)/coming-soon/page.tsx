@@ -1,4 +1,4 @@
-import { ComingSoonPage } from "@/modules/course/pages";
+import { ComingSoonPage } from "@/modules/course/pages/coming-soon/coming-soon.page";
 
 export interface ComingSoonPageRootProps {}
 

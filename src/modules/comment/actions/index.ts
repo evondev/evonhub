@@ -3,7 +3,7 @@
 import CourseModel from "@/modules/course/models";
 import { canManageCourse } from "@/modules/course/services/course-permission.service";
 import LessonModel from "@/modules/lesson/models";
-import { sendNotification } from "@/modules/notifications/services/send-notification.service";
+import { sendNotifications } from "@/modules/notifications/services/send-notification.service";
 import UserModel from "@/modules/user/models";
 import {
   CommentStatus,
@@ -13,9 +13,16 @@ import {
   MODERATION_DELETE_ERROR_MESSAGE,
   MODERATION_SAVE_ERROR_MESSAGE,
 } from "@/shared/constants/moderation.constants";
-import { escapeHtml, parseData } from "@/shared/helpers";
+import {
+  buildStatusCountPipeline,
+  escapeHtml,
+  getStatusCount,
+  parseData,
+  toStatusCountMap,
+} from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import { ModerationResult, ModerationScope } from "@/shared/types";
+import { StatusCountGroup } from "@/shared/types/count.types";
 import {
   getSafeKeyword,
   isExcludedIdList,
@@ -171,48 +178,52 @@ export async function fetchCommentsManage({
 
     if (isCommentStatus(status)) query.status = status;
 
-    const [comments, total, pendingCount, approvedCount, rejectedCount] =
-      await Promise.all([
-        CommentModel.find(query)
-          .select("content status createdAt user lesson parentId")
-          .skip(skip)
-          .limit(safeLimit)
-          .sort({ createdAt: -1 })
-          .populate({ path: "user", model: UserModel, select: "name avatar" })
-          .populate({
-            path: "lesson",
-            model: LessonModel,
-            select: "_id title",
-            populate: {
-              path: "courseId",
-              model: CourseModel,
-              select: "title slug",
-            },
-          })
-          .populate({
-            path: "parentId",
-            model: CommentModel,
-            select: "user",
-            populate: { path: "user", model: UserModel, select: "name" },
-          }),
-        CommentModel.countDocuments(query),
-        CommentModel.countDocuments({
-          ...baseQuery,
-          status: CommentStatus.Pending,
+    // Một aggregate đếm mọi tab thay vì mỗi tab một countDocuments. Phạm vi lọc
+    // theo lessonIds lấy từ distinct nên đã là ObjectId, $match dùng được ngay
+    const [comments, statusCountGroups] = await Promise.all([
+      CommentModel.find(query)
+        .select("content status createdAt user lesson parentId")
+        .skip(skip)
+        .limit(safeLimit)
+        .sort({ createdAt: -1 })
+        .populate({ path: "user", model: UserModel, select: "name avatar" })
+        .populate({
+          path: "lesson",
+          model: LessonModel,
+          select: "_id title",
+          populate: {
+            path: "courseId",
+            model: CourseModel,
+            select: "title slug",
+          },
+        })
+        .populate({
+          path: "parentId",
+          model: CommentModel,
+          select: "user",
+          populate: { path: "user", model: UserModel, select: "name" },
         }),
-        CommentModel.countDocuments({
-          ...baseQuery,
-          status: CommentStatus.Approved,
-        }),
-        CommentModel.countDocuments({
-          ...baseQuery,
-          status: CommentStatus.Rejected,
-        }),
-      ]);
+      CommentModel.aggregate<StatusCountGroup>(
+        buildStatusCountPipeline(baseQuery),
+      ),
+    ]);
+    const statusCountMap = toStatusCountMap(statusCountGroups);
+    const pendingCount = getStatusCount(statusCountMap, CommentStatus.Pending);
+    const approvedCount = getStatusCount(
+      statusCountMap,
+      CommentStatus.Approved,
+    );
+    const rejectedCount = getStatusCount(
+      statusCountMap,
+      CommentStatus.Rejected,
+    );
 
     return {
       comments: parseData(comments),
-      total,
+      total: getStatusCount(
+        statusCountMap,
+        isCommentStatus(status) ? status : undefined,
+      ),
       tabCounts: {
         [CommentStatus.Pending]: pendingCount,
         [CommentStatus.Approved]: approvedCount,
@@ -309,16 +320,15 @@ interface ApprovedCommentToNotify {
 
 /** Báo cho người viết là bình luận đã được duyệt; người nhận lấy từ bình luận đã lưu */
 async function notifyApprovedComments(comments: ApprovedCommentToNotify[]) {
-  await Promise.all(
+  // Mỗi bình luận vẫn một thông báo riêng, nhưng ghi chung một lần insertMany
+  await sendNotifications(
     comments
       .filter((comment) => comment.user)
-      .map((comment) =>
-        sendNotification({
-          title: "Hệ thống",
-          content: `Bình luận của bạn tại bài học <strong>${escapeHtml(comment.lesson?.title || "")}</strong> đã được duyệt`,
-          users: [String(comment.user)],
-        }),
-      ),
+      .map((comment) => ({
+        title: "Hệ thống",
+        content: `Bình luận của bạn tại bài học <strong>${escapeHtml(comment.lesson?.title || "")}</strong> đã được duyệt`,
+        users: [String(comment.user)],
+      })),
   );
 }
 

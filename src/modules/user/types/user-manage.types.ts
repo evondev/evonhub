@@ -1,4 +1,5 @@
 import { UserRole, UserStatus } from "@/shared/constants/user.constants";
+import { FacetCountItem } from "@/shared/types/count.types";
 
 /** Tab trên bảng thành viên */
 export type UserManageTab = "all" | "paid" | "locked";
@@ -28,6 +29,14 @@ export interface UserManageRow {
 
 /** Số thành viên của từng tab, đã áp từ khoá và vai trò đang lọc */
 export type UserManageTabCounts = Record<UserManageTab, number>;
+
+/** Kết quả $facet đếm của fetchUsers: tổng theo bộ lọc đang xem và từng tab */
+export interface UserManageCountFacet {
+  total: FacetCountItem[];
+  all: FacetCountItem[];
+  paid: FacetCountItem[];
+  locked: FacetCountItem[];
+}
 
 export interface UserManageResult {
   users: UserManageRow[];

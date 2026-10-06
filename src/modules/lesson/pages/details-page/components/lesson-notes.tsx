@@ -1,7 +1,6 @@
 "use client";
 
 import { sanitizeHtml } from "@/shared/helpers";
-import Prism from "prismjs";
 import { useEffect, useMemo, useRef } from "react";
 
 export interface LessonNotesProps {
@@ -22,7 +21,10 @@ export function LessonNotes({ html }: LessonNotesProps) {
       link.setAttribute("target", "_blank");
       link.setAttribute("rel", "noreferrer");
     });
-    Prism.highlightAllUnder(article);
+    // Chỉ tải Prism khi có ghi chú để tô màu, không kéo vào bundle trang học
+    import("prismjs").then(({ default: Prism }) => {
+      Prism.highlightAllUnder(article);
+    });
   }, [safeHtml]);
 
   return (
