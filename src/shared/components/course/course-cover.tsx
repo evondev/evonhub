@@ -7,10 +7,17 @@ interface CourseCoverProps {
   /** Khung ảnh: kích thước, tỉ lệ, bo góc */
   className: string;
   sizes: string;
+  /** Ảnh đầu trang (thường là LCP): tải ngay thay vì đợi cuộn tới */
+  isPriority?: boolean;
 }
 
 /** Ảnh bìa khóa phủ kín khung; khóa chưa có ảnh thì hiện khung "Chưa có ảnh" */
-export function CourseCover({ image, className, sizes }: CourseCoverProps) {
+export function CourseCover({
+  image,
+  className,
+  sizes,
+  isPriority = false,
+}: CourseCoverProps) {
   if (!image) {
     return (
       <div
@@ -29,7 +36,14 @@ export function CourseCover({ image, className, sizes }: CourseCoverProps) {
 
   return (
     <div className={cn("relative overflow-hidden", className)}>
-      <Image src={image} alt="" fill sizes={sizes} className="object-cover" />
+      <Image
+        src={image}
+        alt=""
+        fill
+        sizes={sizes}
+        priority={isPriority}
+        className="object-cover"
+      />
     </div>
   );
 }

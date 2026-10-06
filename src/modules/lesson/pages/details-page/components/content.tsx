@@ -6,14 +6,19 @@ import {
   useQueryLessonDetailsOutline,
   useQueryLessonsByCourseId,
 } from "@/modules/lesson/services";
-import Fireworks from "@/shared/components/common/fireworks";
 import { useMutationCompleteLesson } from "@/shared/data";
 import { LessonItemCutomizeData } from "@/shared/types";
 import { cn, extractDriveId } from "@/shared/utils";
+import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import { LessonBar } from "./lesson-bar";
 import { LessonTabs } from "./lesson-tabs";
 import { LessonVideo } from "./lesson-video";
+
+// Pháo hoa chỉ hiện khi học xong 100%: tải canvas-confetti lúc đó thôi
+const Fireworks = dynamic(() => import("@/shared/components/common/fireworks"), {
+  ssr: false,
+});
 
 export interface LessonContentProps {
   lessonId: string;
