@@ -14,7 +14,11 @@ import {
   toStatusCountMap,
 } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
-import { findManageableCourseIds, getCurrentStaff } from "@/shared/libs/auth";
+import {
+  findManageableCourseIds,
+  getCurrentStaff,
+  getCurrentUser,
+} from "@/shared/libs/auth";
 import { ModerationResult, ModerationScope } from "@/shared/types";
 import { StatusCountGroup } from "@/shared/types/count.types";
 import {
@@ -58,6 +62,42 @@ export async function fetchRatingsByCourse({
     return parseData(ratings);
   } catch (error) {
     console.log(error);
+  }
+}
+
+interface FetchCanRateCourseParams {
+  courseId: string;
+}
+
+/**
+ * User đang đăng nhập gửi được đánh giá cho khóa này không: đã mua và chưa có
+ * đánh giá nào, kể cả đang chờ duyệt hay bị từ chối, giống điều kiện của
+ * createRating. Lỗi thì coi như không, để không nhắc nhầm.
+ */
+export async function fetchCanRateCourse({
+  courseId,
+}: FetchCanRateCourseParams): Promise<boolean> {
+  try {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser || !isValidObjectId(courseId)) return false;
+
+    const ownedCourseIds: string[] = (currentUser.courses || []).map(
+      (ownedCourseId: unknown) => String(ownedCourseId),
+    );
+
+    if (!ownedCourseIds.includes(courseId)) return false;
+
+    const existingRating = await RatingModel.exists({
+      user: currentUser._id,
+      course: courseId,
+    });
+
+    return !existingRating;
+  } catch (error) {
+    console.log(error);
+
+    return false;
   }
 }
 

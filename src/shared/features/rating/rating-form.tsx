@@ -10,9 +10,15 @@ import {
 } from "@/components/ui/dialog";
 import { reactions } from "@/constants";
 import createRating from "@/lib/actions/rating.action";
-import { reactionLabels } from "@/shared/constants/rating.constants";
+import {
+  DEFAULT_RATING,
+  reactionLabels,
+} from "@/shared/constants/rating.constants";
+import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
 import { cn } from "@/shared/utils";
+import { toggleRatingSuggestion } from "@/shared/utils/rating.utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -29,6 +35,8 @@ import {
   FormMessage,
 } from "../../../components/ui/form";
 import { Textarea } from "../../../components/ui/textarea";
+import { RatingSuggestionTags } from "./rating-suggestion-tags";
+import { useRatingPrompt } from "./use-rating-prompt";
 
 const ratingSchema = z.object({
   content: z.string().min(5, {
@@ -39,6 +47,9 @@ const ratingSchema = z.object({
 export interface RatingFormProps {
   courseId: string;
   courseTitle?: string;
+  userId: string;
+  /** Tiến độ học (%) để tự mở hộp đánh giá khi đủ ngưỡng */
+  progressPercent: number;
 }
 
 function getReactionOptionClassName(isSelected: boolean) {
@@ -50,10 +61,28 @@ function getReactionOptionClassName(isSelected: boolean) {
   );
 }
 
-export function RatingForm({ courseId, courseTitle }: RatingFormProps) {
-  const [rating, setRating] = useState(0);
+// Còn đánh giá được thì nút nổi bật để mời, đánh giá rồi thì về dạng viền
+function getTriggerClassName(canRate: boolean) {
+  return cn(
+    "h-9 rounded-xl px-3 max-md:w-9 max-md:px-0",
+    canRate && "shadow-sm shadow-primary/30",
+  );
+}
+
+export function RatingForm({
+  courseId,
+  courseTitle,
+  userId,
+  progressPercent,
+}: RatingFormProps) {
+  const queryClient = useQueryClient();
+  const [rating, setRating] = useState(DEFAULT_RATING);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const { canRate, isOpen, setIsOpen } = useRatingPrompt({
+    courseId,
+    userId,
+    progressPercent,
+  });
 
   const form = useForm<z.infer<typeof ratingSchema>>({
     resolver: zodResolver(ratingSchema),
@@ -61,6 +90,13 @@ export function RatingForm({ courseId, courseTitle }: RatingFormProps) {
       content: "",
     },
   });
+  const content = form.watch("content");
+
+  function handleToggleSuggestion(suggestion: string) {
+    form.setValue("content", toggleRatingSuggestion(content, suggestion), {
+      shouldValidate: form.formState.isSubmitted,
+    });
+  }
 
   async function onSubmit(values: z.infer<typeof ratingSchema>) {
     if (rating < 1 || rating > 5) {
@@ -80,6 +116,11 @@ export function RatingForm({ courseId, courseTitle }: RatingFormProps) {
         return;
       }
       toast.success("Cám ơn bạn đã đánh giá khóa học!");
+      form.reset();
+      setRating(DEFAULT_RATING);
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_CAN_RATE_COURSE, courseId],
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -92,11 +133,16 @@ export function RatingForm({ courseId, courseTitle }: RatingFormProps) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
+          variant={canRate ? "primary" : "outline"}
           title="Đánh giá khóa học"
-          className="h-9 rounded-xl px-3 max-md:w-9 max-md:px-0"
+          className={getTriggerClassName(canRate)}
         >
-          <Star className="size-4 shrink-0" />
+          <Star
+            className={cn(
+              "size-4 shrink-0",
+              canRate && "fill-amber-300 text-amber-300",
+            )}
+          />
           <span className="max-md:sr-only">Đánh giá khóa học</span>
         </Button>
       </DialogTrigger>
@@ -173,6 +219,11 @@ export function RatingForm({ courseId, courseTitle }: RatingFormProps) {
                       className="mt-2 block min-h-28 resize-y border-border-strong bg-surface px-3 py-2.5 text-base font-normal !leading-6 text-foreground placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/15 md:text-sm"
                     />
                   </FormControl>
+                  <RatingSuggestionTags
+                    rating={rating}
+                    content={content}
+                    onToggle={handleToggleSuggestion}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
