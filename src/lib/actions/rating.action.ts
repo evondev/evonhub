@@ -1,5 +1,7 @@
 "use server";
+import { recordActivity } from "@/modules/activity/services/activity.service";
 import RatingModel from "@/modules/rating/models";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import { getCurrentUser } from "@/shared/libs/auth";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -69,6 +71,12 @@ export default async function createRating({
       course: courseId,
       rating: rate,
       content,
+    });
+    await recordActivity({
+      userId: currentUser._id,
+      type: ActivityType.RateCourse,
+      courseId,
+      detail: `${rate}★ · ${content}`,
     });
     revalidatePath("/");
   } catch (error) {

@@ -1,8 +1,10 @@
 "use server";
 
+import { recordActivity } from "@/modules/activity/services/activity.service";
 import LessonModel from "@/modules/lesson/models";
 import ScoreModel from "@/modules/score/models";
 import UserModel from "@/modules/user/models";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import { connectToDatabase } from "@/shared/libs";
 import { canAccessCourseContent, getCurrentUser } from "@/shared/libs/auth";
 import HistoryModel from "@/shared/models/history.model";
@@ -59,6 +61,12 @@ export async function handleCompleteLesson({
         user: userId,
         course: courseId,
         lesson: lessonId,
+      });
+      await recordActivity({
+        userId,
+        type: ActivityType.CompleteLesson,
+        courseId,
+        lessonId,
       });
       await UserModel.findByIdAndUpdate(userId, {
         $inc: { score: 10 },

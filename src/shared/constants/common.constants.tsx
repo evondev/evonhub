@@ -1,4 +1,5 @@
 import {
+  Activity,
   BookOpen,
   CircleUser,
   ClipboardList,
@@ -110,6 +111,12 @@ export const adminNavLinks: MenuLinkItemProps[] = [
     title: "Thành viên",
     icon: <Users />,
     url: "/admin/user/manage",
+    isAdmin: true,
+  },
+  {
+    title: "Hoạt động",
+    icon: <Activity />,
+    url: "/admin/activity/manage",
     isAdmin: true,
   },
   // {
