@@ -2,8 +2,10 @@
 import Course from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
 import Lesson from "@/database/lesson.model";
+import { recordActivity } from "@/modules/activity/services/activity.service";
 import { NotificationType } from "@/modules/notifications/constants/notification-type.constants";
 import { sendNotification } from "@/modules/notifications/services/send-notification.service";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import { sanitizeHtml } from "@/shared/helpers";
 import { getCurrentCourseManager } from "@/shared/libs/auth";
 import { CreateLessonParams, DeleteLessonParams } from "@/types";
@@ -65,6 +67,14 @@ export async function addLesson({
     const newLessonId = newLesson._id.toString();
     findLecture.lessons.push(newLesson._id);
     await findLecture.save();
+    await recordActivity({
+      userId: courseManager._id,
+      type: ActivityType.CreateLesson,
+      courseId: lectureCourseId,
+      lessonId: newLesson._id,
+      targetTitle: newLesson.title,
+      detail: `Chương: ${findLecture.title}`,
+    });
     const course = await Course.findById(lectureCourseId).select(
       "title slug status",
     );
@@ -89,7 +99,7 @@ export async function addLesson({
 export async function deleteLesson({ lessonId, path }: DeleteLessonParams) {
   try {
     await connectToDatabase();
-    const lesson = await Lesson.findById(lessonId).select("courseId");
+    const lesson = await Lesson.findById(lessonId).select("courseId title");
 
     if (!lesson) return;
 
@@ -100,6 +110,13 @@ export async function deleteLesson({ lessonId, path }: DeleteLessonParams) {
     if (!courseManager) return;
 
     await Lesson.findByIdAndUpdate(lessonId, { _destroy: true });
+    await recordActivity({
+      userId: courseManager._id,
+      type: ActivityType.DeleteLesson,
+      courseId: lesson.courseId,
+      lessonId: lesson._id,
+      targetTitle: lesson.title,
+    });
     revalidatePath(path);
   } catch (error) {
     console.log(error);

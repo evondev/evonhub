@@ -1,6 +1,7 @@
 "use client";
 
 import { useUserContext } from "@/components/user-context";
+import { useTrackLessonActivity } from "@/modules/activity/hooks";
 import { useCourseProgress } from "@/modules/lesson/hooks";
 import {
   useQueryLessonDetailsOutline,
@@ -50,6 +51,7 @@ export function LessonContent({
   });
   const { data: lectures } = useQueryLessonDetailsOutline({ slug: courseSlug });
   const { percent } = useCourseProgress(courseSlug);
+  useTrackLessonActivity({ lessonId, courseId, isEnabled: !!userId });
 
   const lessonIndex =
     lessonList?.findIndex((lesson) => lesson._id.toString() === lessonId) || 0;

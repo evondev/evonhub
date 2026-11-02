@@ -1,6 +1,8 @@
+import ActivityModel from "@/modules/activity/models";
 import CourseModel from "@/modules/course/models";
 import OrderModel from "@/modules/order/models";
 import UserModel from "@/modules/user/models";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import {
   OrderPaymentMethod,
   OrderStatus,
@@ -181,6 +183,15 @@ describe("POST /api/webhook/sepay", () => {
       "hocvien@example.com",
       expect.objectContaining({ code: ORDER_CODE, total: ORDER_TOTAL })
     );
+
+    const purchaseActivities = await ActivityModel.find({
+      type: ActivityType.PurchaseCourse,
+    });
+
+    expect(purchaseActivities).toHaveLength(1);
+    expect(String(purchaseActivities[0].user)).toBe(userId);
+    expect(String(purchaseActivities[0].course)).toBe(courseId);
+    expect(purchaseActivities[0].detail).toContain(ORDER_CODE);
   });
 
   it("không cộng tiền hai lần khi SePay gọi lại cùng một giao dịch", async () => {
@@ -195,6 +206,9 @@ describe("POST /api/webhook/sepay", () => {
     expect(order?.paidAmount).toBe(ORDER_TOTAL);
     expect(order?.paymentReferences).toHaveLength(1);
     expect(sendOrderApprovedEmail).toHaveBeenCalledTimes(1);
+    await expect(
+      ActivityModel.countDocuments({ type: ActivityType.PurchaseCourse }),
+    ).resolves.toBe(1);
   });
 
   it("giữ PENDING khi khách chuyển thiếu tiền", async () => {

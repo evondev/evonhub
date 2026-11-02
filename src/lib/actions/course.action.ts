@@ -2,8 +2,12 @@
 import { sanitizeHtml } from "@/shared/helpers";
 import { ICourse } from "@/database/course.model";
 import Lecture from "@/database/lecture.model";
+import { COURSE_FIELD_LABELS } from "@/modules/activity/constants";
+import { recordActivity } from "@/modules/activity/services/activity.service";
+import { buildChangedFieldsDetail } from "@/modules/activity/utils/activity-detail.utils";
 import CourseModel from "@/modules/course/models";
 import UserModel from "@/modules/user/models";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { getCurrentCourseManager, getCurrentStaff } from "@/shared/libs/auth";
 import {
@@ -14,6 +18,7 @@ import {
 } from "@/types";
 import { ECourseStatus, Role } from "@/types/enums";
 import { auth } from "@clerk/nextjs/server";
+import { Types } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
@@ -62,12 +67,18 @@ export async function createCourse({ title, slug, path }: CreateCourseParams) {
       };
     }
 
-    await CourseModel.create({
+    const newCourse = await CourseModel.create({
       title,
       slug,
       _destroy: false,
       author: currentStaff._id,
       isMicro: true,
+    });
+    await recordActivity({
+      userId: currentStaff._id,
+      type: ActivityType.CreateCourse,
+      courseId: newCourse._id,
+      targetTitle: title,
     });
     revalidatePath(path);
   } catch (error) {
@@ -82,9 +93,10 @@ export async function updateCourse({
 }: UpdateCourseParams) {
   try {
     await connectToDatabase();
-    const course = await CourseModel.findOne({ slug: courseSlug }).select(
-      "_id slug",
-    );
+    // Đọc cả giá trị cũ của các trường sửa được: nhật ký ghi đúng trường đã đổi
+    const course = await CourseModel.findOne({ slug: courseSlug })
+      .select([...editableCourseFields, "status"].join(" "))
+      .lean<Record<string, unknown> & { _id: Types.ObjectId; slug: string }>();
 
     if (!course) return;
 
@@ -130,6 +142,22 @@ export async function updateCourse({
       new: true,
     });
 
+    const changedFieldsDetail = buildChangedFieldsDetail(
+      course,
+      courseUpdate,
+      COURSE_FIELD_LABELS,
+    );
+
+    if (changedFieldsDetail) {
+      await recordActivity({
+        userId: courseManager._id,
+        type: ActivityType.UpdateCourse,
+        courseId: course._id,
+        targetTitle: String(courseUpdate.title || course.title || ""),
+        detail: changedFieldsDetail,
+      });
+    }
+
     revalidatePath(path || `/admin/course/update?slug=${slug}`);
   } catch (error) {
     console.log("error:", error);
@@ -169,12 +197,22 @@ export async function deleteCourse(slug: string) {
     const { userId } = auth();
     const findUser = await UserModel.findOne({ clerkId: userId });
     if (![Role.ADMIN].includes(findUser?.role)) return undefined;
-    await CourseModel.findOneAndUpdate(
+    const deletedCourse = await CourseModel.findOneAndUpdate(
       { slug },
       {
         status: ECourseStatus.PENDING,
       },
     );
+
+    if (deletedCourse) {
+      await recordActivity({
+        userId: findUser._id,
+        type: ActivityType.DeleteCourse,
+        courseId: deletedCourse._id,
+        targetTitle: deletedCourse.title,
+        detail: "Chuyển về chờ duyệt, ẩn khỏi trang",
+      });
+    }
     revalidatePath("/admin/course/manage");
   } catch (error) {}
 }
@@ -204,6 +242,12 @@ export async function updateCourseWithLecture({
     await newLecture.save();
     course.lecture.push(newLecture._id);
     await course.save();
+    await recordActivity({
+      userId: courseManager._id,
+      type: ActivityType.CreateLecture,
+      courseId: course._id,
+      targetTitle: title,
+    });
     revalidatePath(`/admin/course/content?slug=${course.slug}`);
   } catch (error) {
     console.log(error);

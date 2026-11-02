@@ -1,5 +1,9 @@
 import { FilterTabs, SearchInput } from "@/shared/components/common";
-import { CourseFilterOption, FilterTabItem } from "@/shared/types";
+import {
+  CourseFilterOption,
+  FilterTabItem,
+  FilterTabsBreakpoint,
+} from "@/shared/types";
 import { RefObject } from "react";
 import { CourseFilter } from "./course-filter";
 
@@ -18,6 +22,8 @@ interface ModerationToolbarProps<TTab extends string> {
   searchInputRef: RefObject<HTMLInputElement>;
   /** id của danh sách mà tab đang lọc */
   controlsId: string;
+  /** Hàng nhiều tab thì thu thành nút chọn từ "xl" */
+  collapseTabsBelow?: FilterTabsBreakpoint;
 }
 
 /**
@@ -38,6 +44,7 @@ export function ModerationToolbar<TTab extends string>({
   onSearch,
   searchInputRef,
   controlsId,
+  collapseTabsBelow,
 }: ModerationToolbarProps<TTab>) {
   return (
     <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
@@ -48,6 +55,7 @@ export function ModerationToolbar<TTab extends string>({
           activeValue={activeTab}
           onChange={onTabChange}
           controlsId={controlsId}
+          collapseBelow={collapseTabsBelow}
         />
         <CourseFilter
           courses={courses}

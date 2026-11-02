@@ -1,8 +1,10 @@
+import { recordActivity } from "@/modules/activity/services/activity.service";
 import {
   createUserFromClerk,
   deactivateUserFromClerk,
   syncUserFromClerk,
 } from "@/modules/user/services/clerk-sync.service";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import { EUserStatus } from "@/types/enums";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
@@ -75,6 +77,9 @@ export async function POST(req: Request) {
       status: EUserStatus.ACTIVE,
       bio: "User at Evonhub",
     });
+    if (mongoUser?._id) {
+      await recordActivity({ userId: mongoUser._id, type: ActivityType.SignUp });
+    }
     return NextResponse.json({ message: "OK", user: mongoUser });
   } else if (eventType === "user.updated") {
     const { id, email_addresses, image_url } = evt.data;

@@ -1,7 +1,11 @@
 "use server";
 
+import { LESSON_FIELD_LABELS } from "@/modules/activity/constants";
+import { recordActivity } from "@/modules/activity/services/activity.service";
+import { buildChangedFieldsDetail } from "@/modules/activity/utils/activity-detail.utils";
 import CourseModel from "@/modules/course/models";
 import LectureModel from "@/modules/lecture/models";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { parseData, sanitizeHtml } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
@@ -175,11 +179,14 @@ export async function updateLesson({
     await connectToDatabase();
     if (!Types.ObjectId.isValid(lessonId)) return;
 
-    const lesson = await LessonModel.findById(lessonId).select("courseId");
+    // Đọc cả giá trị cũ của các trường sửa được: nhật ký ghi đúng trường đã đổi
+    const lesson = await LessonModel.findById(lessonId)
+      .select([...editableLessonFields, "courseId", "lectureId"].join(" "))
+      .lean<Record<string, unknown> & { courseId?: Types.ObjectId }>();
 
     if (!lesson) return;
 
-    const lessonCourseId = lesson.courseId?.toString();
+    const lessonCourseId = lesson.courseId?.toString() || "";
     const courseManager = await getCurrentCourseManager(lessonCourseId);
 
     if (!courseManager) {
@@ -228,6 +235,23 @@ export async function updateLesson({
 
     await LessonModel.findByIdAndUpdate(lessonId, lessonUpdate);
 
+    const changedFieldsDetail = buildChangedFieldsDetail(
+      lesson,
+      lessonUpdate,
+      LESSON_FIELD_LABELS,
+    );
+
+    if (changedFieldsDetail) {
+      await recordActivity({
+        userId: courseManager._id,
+        type: ActivityType.UpdateLesson,
+        courseId: lessonCourseId,
+        lessonId,
+        targetTitle: String(lessonUpdate.title || lesson.title || ""),
+        detail: changedFieldsDetail,
+      });
+    }
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -260,6 +284,13 @@ export async function updateLessonOrder(params: UpdateLessonOrderProps) {
       );
     }
 
+    // Kéo thả nhiều lần liền tay chỉ thành một dòng nhật ký
+    await recordActivity({
+      userId: courseManager._id,
+      type: ActivityType.ReorderOutline,
+      courseId,
+      shouldMergeRecent: true,
+    });
     revalidatePath(params.path);
   } catch (error) {}
 }
@@ -312,6 +343,13 @@ export async function updateLectureLessonOrder(
       lessonUpdates.length > 0 &&
         LessonModel.bulkWrite(lessonUpdates, { ordered: false }),
     ]);
+    // Kéo thả nhiều lần liền tay chỉ thành một dòng nhật ký
+    await recordActivity({
+      userId: courseManager._id,
+      type: ActivityType.ReorderOutline,
+      courseId,
+      shouldMergeRecent: true,
+    });
     revalidatePath(params.path);
   } catch (error) {}
 }

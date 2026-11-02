@@ -1,0 +1,151 @@
+import { ActivityType } from "@/shared/constants/activity.constants";
+import {
+  ArrowUpDown,
+  BadgeCheck,
+  CircleCheck,
+  FilePlus,
+  FolderPlus,
+  Gift,
+  ListPlus,
+  MessageSquare,
+  Pencil,
+  PlayCircle,
+  ShoppingCart,
+  Star,
+  Trash2,
+  UserPlus,
+} from "lucide-react";
+import { ActivityTypeConfig } from "../types";
+
+/**
+ * Mỗi loại việc: động từ, nhóm (tab), nói về cái gì, icon. Tách khỏi
+ * constants/index để model phía server không kéo theo lucide-react
+ */
+export const ACTIVITY_TYPE_CONFIGS: Record<ActivityType, ActivityTypeConfig> = {
+  [ActivityType.ViewLesson]: {
+    label: "Học bài",
+    group: "learning",
+    target: "lesson",
+    icon: PlayCircle,
+    tone: "default",
+  },
+  [ActivityType.CompleteLesson]: {
+    label: "Hoàn thành bài",
+    group: "learning",
+    target: "lesson",
+    icon: CircleCheck,
+    tone: "success",
+  },
+  [ActivityType.Comment]: {
+    label: "Bình luận ở bài",
+    group: "learning",
+    target: "lesson",
+    icon: MessageSquare,
+    tone: "default",
+  },
+  [ActivityType.RateCourse]: {
+    label: "Đánh giá khoá",
+    group: "learning",
+    target: "course",
+    icon: Star,
+    tone: "default",
+  },
+  [ActivityType.EnrollFree]: {
+    label: "Đăng ký khoá miễn phí",
+    group: "purchase",
+    target: "course",
+    icon: Gift,
+    tone: "success",
+  },
+  [ActivityType.CreateOrder]: {
+    label: "Đặt mua khoá",
+    group: "purchase",
+    target: "course",
+    icon: ShoppingCart,
+    tone: "default",
+  },
+  [ActivityType.PurchaseCourse]: {
+    label: "Đã thanh toán khoá",
+    group: "purchase",
+    target: "course",
+    icon: BadgeCheck,
+    tone: "success",
+  },
+  [ActivityType.SignUp]: {
+    label: "Tạo tài khoản mới",
+    group: "account",
+    target: "none",
+    icon: UserPlus,
+    tone: "success",
+  },
+  [ActivityType.CreateCourse]: {
+    label: "Tạo khoá",
+    group: "content",
+    target: "course",
+    icon: FolderPlus,
+    tone: "default",
+  },
+  [ActivityType.UpdateCourse]: {
+    label: "Sửa khoá",
+    group: "content",
+    target: "course",
+    icon: Pencil,
+    tone: "default",
+  },
+  [ActivityType.DeleteCourse]: {
+    label: "Xoá khoá",
+    group: "content",
+    target: "course",
+    icon: Trash2,
+    tone: "danger",
+  },
+  [ActivityType.CreateLecture]: {
+    label: "Thêm chương",
+    group: "content",
+    target: "lecture",
+    icon: ListPlus,
+    tone: "default",
+  },
+  [ActivityType.UpdateLecture]: {
+    label: "Sửa chương",
+    group: "content",
+    target: "lecture",
+    icon: Pencil,
+    tone: "default",
+  },
+  [ActivityType.DeleteLecture]: {
+    label: "Xoá chương",
+    group: "content",
+    target: "lecture",
+    icon: Trash2,
+    tone: "danger",
+  },
+  [ActivityType.CreateLesson]: {
+    label: "Thêm bài",
+    group: "content",
+    target: "lesson",
+    icon: FilePlus,
+    tone: "default",
+  },
+  [ActivityType.UpdateLesson]: {
+    label: "Sửa bài",
+    group: "content",
+    target: "lesson",
+    icon: Pencil,
+    tone: "default",
+  },
+  [ActivityType.DeleteLesson]: {
+    label: "Xoá bài",
+    group: "content",
+    target: "lesson",
+    icon: Trash2,
+    tone: "danger",
+  },
+  [ActivityType.ReorderOutline]: {
+    label: "Sắp xếp lại nội dung khoá",
+    group: "content",
+    target: "course",
+    icon: ArrowUpDown,
+    tone: "default",
+  },
+};

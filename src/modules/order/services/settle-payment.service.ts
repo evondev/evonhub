@@ -1,6 +1,9 @@
+import { recordActivity } from "@/modules/activity/services/activity.service";
+import { buildOrderActivityDetail } from "@/modules/activity/utils/activity-detail.utils";
 import CourseModel from "@/modules/course/models";
 import { sendOrderApprovedEmail } from "@/modules/email/services/order-email.service";
 import UserModel from "@/modules/user/models";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import {
   OrderPaymentMethod,
   OrderStatus,
@@ -134,6 +137,19 @@ export async function settleSepayPayment(
 
   await grantOrderToUser(approvedOrder);
   await incrementCouponUsage(approvedOrder);
+
+  if (approvedOrder.course) {
+    await recordActivity({
+      userId: approvedOrder.user,
+      type: ActivityType.PurchaseCourse,
+      courseId: approvedOrder.course,
+      detail: buildOrderActivityDetail(
+        approvedOrder.code,
+        approvedOrder.total,
+        "SePay tự duyệt",
+      ),
+    });
+  }
   await notifyOrderApproved(approvedOrder._id);
 
   return { handled: true, message: "Đã duyệt đơn hàng", isApproved: true };

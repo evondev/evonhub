@@ -1,6 +1,8 @@
 "use server";
 
 import { getUserById } from "@/lib/actions/user.action";
+import { recordActivity } from "@/modules/activity/services/activity.service";
+import { buildOrderActivityDetail } from "@/modules/activity/utils/activity-detail.utils";
 import { handleCheckCoupon } from "@/modules/coupon/actions";
 import { calculateCouponDiscount } from "@/modules/coupon/utils";
 import OrderModel from "@/modules/order/models";
@@ -16,6 +18,7 @@ import {
   sendOrderCreatedEmail,
 } from "@/modules/email/services/order-email.service";
 import UserModel from "@/modules/user/models";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import {
   OrderPaymentMethod,
@@ -300,6 +303,11 @@ export async function handleEnrollFree({
       { _id: currentUser._id },
       { $addToSet: { courses: findCourse._id } },
     );
+    await recordActivity({
+      userId: currentUser._id,
+      type: ActivityType.EnrollFree,
+      courseId: findCourse._id,
+    });
 
     return {
       type: "success",
@@ -391,6 +399,15 @@ export async function handleEnrollCourse({
       return {
         error: `Bạn có đơn hàng chưa thanh toán, còn hiệu lực ${remainingTime} nữa. Truy cập vào https://evonhub.dev/order/${existingOrder.code} để thanh toán.`,
       };
+    }
+
+    if (order?.code) {
+      await recordActivity({
+        userId: currentUser._id,
+        type: ActivityType.CreateOrder,
+        courseId,
+        detail: buildOrderActivityDetail(order.code, order.total),
+      });
     }
 
     // Email hướng dẫn thanh toán gửi ngay, không để khách phải chờ email nhắc.

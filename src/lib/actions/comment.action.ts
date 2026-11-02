@@ -1,7 +1,9 @@
 "use server";
 import Comment from "@/database/comment.model";
+import { recordActivity } from "@/modules/activity/services/activity.service";
 import { notifyCommentReplies } from "@/modules/comment/services/comment-notification.service";
 import LessonModel from "@/modules/lesson/models";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import { CommentStatus } from "@/shared/constants/comment.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { canAccessCourseContent, getCurrentUser } from "@/shared/libs/auth";
@@ -86,6 +88,14 @@ export async function createComment({
       parentId: parentCommentId,
       level,
       status,
+    });
+
+    await recordActivity({
+      userId: currentUser._id,
+      type: ActivityType.Comment,
+      courseId: findLesson.courseId,
+      lessonId: findLesson._id,
+      detail: content,
     });
 
     // Bình luận chờ duyệt thì báo lúc được duyệt (notifyApprovedComments)

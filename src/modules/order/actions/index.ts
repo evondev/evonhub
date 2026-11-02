@@ -1,9 +1,15 @@
 "use server";
 
+import {
+  recordActivities,
+  recordActivity,
+} from "@/modules/activity/services/activity.service";
+import { buildOrderActivityDetail } from "@/modules/activity/utils/activity-detail.utils";
 import CouponModel from "@/modules/coupon/models";
 import CourseModel from "@/modules/course/models";
 import { sendOrderApprovedEmail } from "@/modules/email/services/order-email.service";
 import UserModel from "@/modules/user/models";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import {
   OrderPaymentMethod,
   OrderStatus,
@@ -402,6 +408,19 @@ export async function handleUpdateOrder({
       await incrementCouponUsage(updatedOrder);
     }
 
+    if (isNewlyApproved && updatedOrder.course) {
+      await recordActivity({
+        userId: updatedOrder.user,
+        type: ActivityType.PurchaseCourse,
+        courseId: updatedOrder.course,
+        detail: buildOrderActivityDetail(
+          updatedOrder.code,
+          updatedOrder.total,
+          `${currentUser.name || currentUser.username} duyệt tay`,
+        ),
+      });
+    }
+
     if (isNewlyApproved && isManualPaymentOrder(updatedOrder)) {
       await notifyManualOrderApproved(updatedOrder, findUser);
     }
@@ -457,6 +476,16 @@ export async function handleUpdateFreeOrder(): Promise<number | undefined> {
     );
     await Promise.all(
       approvedOrders.map((order) => incrementCouponUsage(order)),
+    );
+    await recordActivities(
+      approvedOrders
+        .filter((order) => order.course)
+        .map((order) => ({
+          userId: order.user,
+          type: ActivityType.PurchaseCourse,
+          courseId: order.course,
+          detail: buildOrderActivityDetail(order.code, order.total, "đơn 0đ"),
+        })),
     );
 
     return approvedOrders.length;
