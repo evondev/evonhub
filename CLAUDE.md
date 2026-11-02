@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Nhánh `learn/nest-api` (chỉ có trên nhánh này)
+
+Chủ repo học backend bằng cách chuyển dần Evonhub sang NestJS + MySQL, chỉ chạy local. Khi làm việc về `api/` hoặc
+`learn/`, đọc @learn/CLAUDE.md và `learn/roadmap.md` trước. Không merge nhánh này vào `master`.
+
 ## Commands
 
 ```bash

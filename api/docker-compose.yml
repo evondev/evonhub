@@ -1,0 +1,24 @@
+# MySQL cho evonhub-api, chỉ chạy ở máy local.
+# Bật: docker compose up -d   ·   Tắt: docker compose down   ·   Xoá sạch dữ liệu: docker compose down -v
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: evonhub-mysql
+    environment:
+      MYSQL_DATABASE: evonhub
+      MYSQL_USER: evonhub
+      MYSQL_PASSWORD: evonhub
+      MYSQL_ROOT_PASSWORD: evonhub-root
+    # 3307 để không đụng MySQL nào đã cài sẵn trên máy ở cổng 3306.
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uevonhub", "-pevonhub"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  mysql-data:

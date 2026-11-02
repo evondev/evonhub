@@ -38,3 +38,9 @@ next-env.d.ts
 
 # Snapshot trạng thái cũ do script scripts/*.mjs ghi ra, chứa Mux asset id
 scripts/*.backup.json
+
+# learn/nest-api: backend NestJS + bài học
+api/node_modules
+api/dist
+learn/labs/*/node_modules
+learn/labs/*/.runs
