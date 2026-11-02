@@ -21,8 +21,13 @@ export function LessonHeader(_props: LessonHeaderProps) {
   const { userId, isSignedIn } = useAuth();
   const isSignedInUser = Boolean(userId && isSignedIn);
   const courseSlug = params.course?.toString() || "";
-  const { courseDetails, completedCount, totalCount, percent } =
-    useCourseProgress(courseSlug);
+  const {
+    courseDetails,
+    completedCount,
+    totalCount,
+    percent,
+    userId: dbUserId,
+  } = useCourseProgress(courseSlug);
   // Khách học thử chưa đăng nhập: không có tiến độ, không đánh giá được
   const hasProgress = isSignedInUser && totalCount > 0;
 
@@ -68,6 +73,8 @@ export function LessonHeader(_props: LessonHeaderProps) {
           <RatingForm
             courseId={courseDetails._id.toString()}
             courseTitle={courseDetails.title}
+            userId={dbUserId}
+            progressPercent={percent}
           />
         )}
         <div className="hidden sm:block">
