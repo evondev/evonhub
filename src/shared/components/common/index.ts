@@ -23,4 +23,5 @@ export * from "./table-actions";
 export * from "./table-pagination";
 export * from "./tone-badge";
 export * from "./truncate-tooltip";
+export * from "./user-avatar";
 export * from "./view-all-link";

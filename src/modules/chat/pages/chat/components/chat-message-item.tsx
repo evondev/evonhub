@@ -1,6 +1,6 @@
 "use client";
 
-import { CommentAvatar } from "@/shared/features/comment/comment-avatar";
+import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { cn } from "@/shared/utils";
 import { memo, useMemo } from "react";
 import { ChatMessageView } from "../../../types";
@@ -95,7 +95,7 @@ function ChatMessageItemBase({
     >
       <div className="w-8 shrink-0">
         {isLastInGroup && (
-          <CommentAvatar
+          <UserAvatar
             name={message.sender.name}
             avatar={message.sender.avatar}
           />

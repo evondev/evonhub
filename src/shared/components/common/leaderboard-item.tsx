@@ -2,6 +2,7 @@ import { formatNumberToK } from "@/lib/utils";
 import { cn } from "@/shared/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { UserAvatar } from "./user-avatar";
 
 export interface LeaderboardItemProps {
   user: {
@@ -41,12 +42,10 @@ export function LeaderboardItem({
       className={cn("group flex items-center gap-3", className)}
     >
       <strong>{index + 1}</strong>
-      <Image
-        src={user.avatar}
-        width={32}
-        height={32}
-        alt={user.username}
-        className="size-8 rounded-xl object-cover"
+      <UserAvatar
+        name={user.username}
+        avatar={user.avatar}
+        className="rounded-xl"
       />
       <span className="text-sm font-medium truncate max-w-[120px]">
         {user.username}

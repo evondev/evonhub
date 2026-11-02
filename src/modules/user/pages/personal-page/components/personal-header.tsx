@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { UserInfoData } from "@/shared/types/user.types";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { PROFILE_EDIT_PATH } from "../../../constants";
 import { formatJoinedMonth, getProfileSocialLinks } from "../../../utils";
-import { ProfileAvatar } from "../../profile-page/components/profile-avatar";
 import { PersonalRankBadge } from "./personal-rank-badge";
 import { ProfileSocialLinks } from "./profile-social-links";
 
@@ -28,11 +28,10 @@ export function PersonalHeader({
 
   return (
     <div className="flex min-w-0 flex-1 gap-4 sm:gap-5">
-      <ProfileAvatar
+      <UserAvatar
         name={displayName}
-        seed={profile.username}
-        src={profile.avatar}
-        className="size-16 sm:size-20"
+        avatar={profile.avatar}
+        className="size-16 text-xl sm:size-20 sm:text-2xl"
       />
       <div className="min-w-0 flex-1">
         <div className="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3">

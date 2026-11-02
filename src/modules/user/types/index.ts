@@ -78,11 +78,6 @@ export interface ProfilePreviewStateLink {
   label: string;
 }
 
-export interface ProfileAvatarTone {
-  background: string;
-  text: string;
-}
-
 export type UpdateMyProfileParams =
   | { section: "public"; values: ProfilePublicFormValues }
   | { section: "socials"; values: ProfileSocialFormValues }

@@ -1,5 +1,4 @@
-import { ToneBadge } from "@/shared/components/common";
-import { CommentAvatar } from "@/shared/features/comment/comment-avatar";
+import { ToneBadge, UserAvatar } from "@/shared/components/common";
 import Link from "next/link";
 import { UserManageRow } from "../../../types/user-manage.types";
 import {
@@ -17,10 +16,10 @@ export function UserIdentity({ user }: UserIdentityProps) {
 
   return (
     <div className="flex min-w-0 items-center gap-3">
-      <CommentAvatar
+      <UserAvatar
         name={user.name}
         avatar={user.avatar}
-        className="size-9 ring-1 ring-border-strong"
+        className="size-9"
       />
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-2">

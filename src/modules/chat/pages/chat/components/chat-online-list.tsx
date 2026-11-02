@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CommentAvatar } from "@/shared/features/comment/comment-avatar";
+import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { CHAT_STACKED_AVATAR_COUNT } from "../../../constants";
 import { ChatSender } from "../../../types";
 import { groupOnlineMembers } from "../../../utils";
@@ -31,7 +31,7 @@ export function ChatOnlineList({ members }: ChatOnlineListProps) {
         <Button className="-ml-2 h-10 max-w-full gap-2.5 rounded-xl px-2 font-normal hover:bg-foreground/5 data-[state=open]:bg-foreground/5">
           <span className="flex -space-x-2">
             {stackedMembers.map((member) => (
-              <CommentAvatar
+              <UserAvatar
                 key={member.userId}
                 name={member.name}
                 avatar={member.avatar}

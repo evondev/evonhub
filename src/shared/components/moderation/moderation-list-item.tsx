@@ -1,6 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { CHECKBOX_HIT_AREA_CLASS_NAME } from "@/shared/constants/moderation.constants";
-import { CommentAvatar } from "@/shared/features/comment/comment-avatar";
+import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { ModerationAction } from "@/shared/types";
 import {
   cn,
@@ -104,10 +104,10 @@ export function ModerationListItem({
           aria-label={`Chọn mục của ${authorName}`}
         />
       </div>
-      <CommentAvatar
+      <UserAvatar
         name={authorName}
         avatar={authorAvatar}
-        className="size-9 ring-1 ring-border-strong"
+        className="size-9"
       />
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
