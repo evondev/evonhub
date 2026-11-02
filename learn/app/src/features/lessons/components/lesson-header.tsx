@@ -24,6 +24,8 @@ export default function LessonHeader({ heading, container, backLink }: LessonHea
 
   return (
     <header className="sticky top-0 z-20 border-b border-border-strong bg-surface">
+      {/* Vạch màu mảnh trên đầu: tím Evonhub nối sang ba sắc của ba nhóm bước. */}
+      <div className="h-1 bg-linear-to-r from-primary via-fuchsia-500 to-teal-500" aria-hidden />
       <div className="mx-auto flex h-14 max-w-[1600px] items-center gap-4 px-4 sm:px-6">
         <Link
           href={backLink.href}

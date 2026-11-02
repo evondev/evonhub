@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, Circle, PanelRightClose } from "lucide-react";
+import { CheckCircle2, Circle, PanelRightClose, Wrench } from "lucide-react";
 import { Button } from "@/components/button";
 import { cn } from "@/utils/cn";
+import { stepToneClasses } from "../constants/step-kind-styles";
 import { useLessonProgress } from "../hooks/use-lesson-progress";
 import { useWorkbench } from "../hooks/use-workbench";
 import AcceptanceRunner from "./acceptance-runner";
@@ -30,7 +31,12 @@ export default function WorkbenchPanel({ stepNumbers }: WorkbenchPanelProps) {
   return (
     <div className="space-y-4 rounded-xl border border-border bg-surface p-4 sm:p-5">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-semibold">Bàn làm việc</p>
+        <p className="flex items-center gap-2.5 text-sm font-semibold">
+          <span className={cn("flex size-8 items-center justify-center rounded-lg", stepToneClasses.lam.cell)}>
+            <Wrench className="size-4" aria-hidden />
+          </span>
+          Bàn làm việc
+        </p>
         <Button
           variant="ghost"
           icon={PanelRightClose}

@@ -16,8 +16,10 @@ function getItemClasses(isSelected: boolean, item: RoadmapItem) {
   return cn(
     "flex min-h-0 w-full items-center justify-start gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-normal",
     isSelected && "bg-secondary font-medium text-foreground hover:bg-secondary hover:text-foreground",
+    // Mốc đang làm nổi lên (P12): nền tím nhạt, khác nền của mục đang chọn.
+    !isSelected && item.status === "dang-lam" && "bg-primary-light text-foreground hover:bg-primary/12 hover:text-foreground",
     !isSelected && item.status === "chua-viet" && "text-muted hover:bg-item-hover hover:text-foreground",
-    !isSelected && item.status !== "chua-viet" && "text-foreground hover:bg-item-hover hover:text-foreground",
+    !isSelected && item.status !== "chua-viet" && item.status !== "dang-lam" && "text-foreground hover:bg-item-hover hover:text-foreground",
   );
 }
 
