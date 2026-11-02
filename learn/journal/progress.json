@@ -1,0 +1,18 @@
+{
+  "lessons": {
+    "01-event-loop": {
+      "steps": {
+        "observe-blocking": {
+          "isDone": true,
+          "updatedAt": "2026-10-29T12:03:17.628Z"
+        },
+        "predict-health": {
+          "isDone": true,
+          "answerId": "wait",
+          "isCorrect": true,
+          "updatedAt": "2026-10-29T12:03:33.784Z"
+        }
+      }
+    }
+  }
+}

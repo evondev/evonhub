@@ -19,3 +19,4 @@ Thử nhanh: `curl -i http://127.0.0.1:4000/api/courses`.
 - `src/common/`: thứ dùng cho mọi request (request id, dạng lỗi chung).
 - `src/<module>/`: mỗi tính năng một module Nest (controller, service).
 - `test/milestone-XX.e2e.ts`: test chấp nhận của từng mốc, dùng `node:test` và `fetch` thật tới server.
+- `lab/reporter.mjs`: reporter để web học (`learn/app`) vẽ danh sách test xanh/đỏ. Chạy tay không cần.

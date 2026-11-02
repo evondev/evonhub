@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+/* Token của Evonhub (src/app/globals.scss ở gốc repo), chỉ giữ bản sáng: app học không có dark mode.
+   ĐỔI THƯƠNG HIỆU: màu nhấn ở --primary, font ở --app-font. */
+:root {
+  color-scheme: light;
+
+  --app-font: var(--font-be-vietnam-pro), ui-sans-serif, system-ui, sans-serif;
+  --code-font: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ===== MÀU NHẤN ===== */
+  --primary: #6c5fe6;
+  --primary-hover: #5f54ca;
+  --primary-foreground: #ffffff;
+  --primary-light: rgb(108 95 230 / 0.08);
+  /* ==================== */
+
+  --background: #f3f4f6;
+  --surface: #ffffff;
+  --foreground: #262626;
+  --muted: #6b7079;
+  --border: #efefef;
+  --border-strong: #e5e7eb;
+  --item-hover: #f3f4f6;
+  --secondary: #e7e8ec;
+  --secondary-hover: #dbdce2;
+  --surface-hover: #f8f8fa;
+  --button-hover-surface: #f1f1f3;
+  --button-hover-page: #e4e4e7;
+  --button-hover: var(--button-hover-page);
+  --ring-focus: rgb(108 95 230 / 0.12);
+  --border-focus: var(--primary);
+
+  /* Màu tô cú pháp cho sugar-high. Trầm, để code không ồn hơn chữ bài học. */
+  --sh-class: #7c3aed;
+  --sh-identifier: #262626;
+  --sh-sign: #6b6b6b;
+  --sh-property: #0e7490;
+  --sh-entity: #0e7490;
+  --sh-jsxliterals: #6d28d9;
+  --sh-string: #047857;
+  --sh-keyword: #be185d;
+  --sh-comment: #6b6b6b;
+
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --font-sans: var(--app-font);
+  --font-mono: var(--code-font);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-light: var(--primary-light);
+
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-item-hover: var(--item-hover);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-button-hover: var(--button-hover);
+
+  --border-color-focus: var(--border-focus);
+  --ring-color-focus: var(--ring-focus);
+}
+
+/* Nút viền rê vào lấy màu theo nền ngay sau nó: trên card trắng nhạt hơn, trên nền trang đậm hơn. */
+.bg-surface * {
+  --button-hover: var(--button-hover-surface);
+}
+.bg-surface .bg-background * {
+  --button-hover: var(--button-hover-page);
+}
+
+/* Thanh cuộn tự ẩn: trong suốt khi đứng yên, hiện mờ khi rê vào vùng cuộn. */
+* {
+  --scrollbar-thumb: transparent;
+}
+*:hover {
+  --scrollbar-thumb: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 9999px;
+}
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  *:hover {
+    scrollbar-color: color-mix(in srgb, var(--foreground) 18%, transparent) transparent;
+  }
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* CodeMirror: dùng chung font code, bỏ viền focus mặc định. */
+.cm-editor {
+  font-size: 13px;
+}
+.cm-editor.cm-focused {
+  outline: none;
+}
+.cm-editor .cm-scroller {
+  font-family: var(--code-font);
+  line-height: 1.6;
+}
+.cm-editor .cm-gutters {
+  border-right: none;
+  background: transparent;
+  color: var(--muted);
+}
+
+/* Không gộp => thành mũi tên, === thành ≡: người học phải thấy đúng ký tự sẽ gõ. */
+.font-mono,
+code,
+pre,
+.cm-editor .cm-content {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}

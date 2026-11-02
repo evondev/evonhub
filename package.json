@@ -11,7 +11,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "learn": "npm --prefix learn/app run dev"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^5.1.6",

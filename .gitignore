@@ -44,3 +44,5 @@ api/node_modules
 api/dist
 learn/labs/*/node_modules
 learn/labs/*/.runs
+learn/app/node_modules
+learn/app/.next
