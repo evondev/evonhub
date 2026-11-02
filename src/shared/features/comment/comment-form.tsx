@@ -19,7 +19,7 @@ import {
 } from "../../../components/ui/form";
 import { Textarea } from "../../../components/ui/textarea";
 import { useUserContext } from "../../../components/user-context";
-import { CommentAvatar } from "./comment-avatar";
+import { UserAvatar } from "@/shared/components/common/user-avatar";
 
 const courseCommentFormSchema = z.object({
   content: z
@@ -86,7 +86,7 @@ export function CommentForm({
       >
         {/* Ô gốc có avatar từ sm; ô trả lời bỏ avatar để ô viết đủ rộng */}
         {!isReply && (
-          <CommentAvatar
+          <UserAvatar
             name={userInfo?.name}
             avatar={userInfo?.avatar}
             className="max-sm:hidden"

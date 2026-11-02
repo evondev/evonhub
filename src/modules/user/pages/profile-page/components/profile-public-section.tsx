@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -17,7 +18,6 @@ import {
   ProfileSaveResult,
 } from "../../../types";
 import { buildPublicProfilePath } from "../../../utils";
-import { ProfileAvatar } from "./profile-avatar";
 import { ProfileField } from "./profile-field";
 import { ProfileFormSection } from "./profile-form-section";
 import { ProfileRow } from "./profile-row";
@@ -64,10 +64,10 @@ export function ProfilePublicSection({
     >
       <ProfileRow label="Ảnh đại diện" isCentered>
         <div className="flex items-center gap-4">
-          <ProfileAvatar
+          <UserAvatar
             name={profile.name}
-            seed={profile.username || profile.email}
-            src={profile.avatar}
+            avatar={profile.avatar}
+            className="size-16 text-xl"
           />
           <div className="flex min-w-0 flex-col items-start gap-1.5">
             <Button

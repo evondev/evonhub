@@ -1,6 +1,6 @@
 import { RatingItemData } from "@/modules/rating/types";
+import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { RatingStars } from "./rating-stars";
-import { TestimonialAvatar } from "./testimonial-avatar";
 
 interface TestimonialCardProps {
   rating: RatingItemData;
@@ -17,7 +17,7 @@ export function TestimonialCard({ rating }: TestimonialCardProps) {
         {rating.content}
       </blockquote>
       <figcaption className="mt-auto flex min-w-0 items-center gap-2.5">
-        <TestimonialAvatar name={authorName} avatar={rating.user?.avatar} />
+        <UserAvatar name={authorName} avatar={rating.user?.avatar} />
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-foreground">
             {authorName}

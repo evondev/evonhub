@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { ToneBadge } from "@/shared/components/common";
+import { ToneBadge, UserAvatar } from "@/shared/components/common";
 import { ActivityType } from "@/shared/constants/activity.constants";
-import { CommentAvatar } from "@/shared/features/comment/comment-avatar";
 import { timeAgo } from "@/shared/utils";
 import Link from "next/link";
 import { ACTIVITY_TYPE_CONFIGS } from "../../../constants/activity-type.constants";
@@ -35,10 +34,10 @@ export function ActivityListItem({
 
   return (
     <li className="flex gap-3 border-b border-border px-4 py-3 last:border-0 sm:px-5">
-      <CommentAvatar
+      <UserAvatar
         name={activity.userName}
         avatar={activity.userAvatar}
-        className="size-9 shrink-0 ring-1 ring-border-strong"
+        className="size-9"
       />
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-2">

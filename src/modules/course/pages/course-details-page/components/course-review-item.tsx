@@ -1,6 +1,6 @@
 import type { RatingItemData } from "@/modules/rating/types";
 import { formatShortDate } from "@/modules/course/utils";
-import Image from "next/image";
+import { UserAvatar } from "@/shared/components/common/user-avatar";
 import CourseRatingStars from "./course-rating-stars";
 
 export interface CourseReviewItemProps {
@@ -9,24 +9,10 @@ export interface CourseReviewItemProps {
 
 export default function CourseReviewItem({ review }: CourseReviewItemProps) {
   const reviewerName = review.user?.name || review.user?.username || "Học viên";
-  const reviewerInitial = reviewerName.charAt(0).toLocaleUpperCase("vi");
 
   return (
     <li className="flex items-start gap-3 px-4 py-4 sm:px-5">
-      {review.user?.avatar && (
-        <Image
-          src={review.user.avatar}
-          alt=""
-          width={32}
-          height={32}
-          className="size-8 shrink-0 rounded-full object-cover ring-1 ring-black/5"
-        />
-      )}
-      {!review.user?.avatar && (
-        <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sm font-semibold text-sky-700 ring-1 ring-sky-200 dark:bg-sky-500/15 dark:text-sky-300 dark:ring-sky-500/30">
-          {reviewerInitial}
-        </span>
-      )}
+      <UserAvatar name={reviewerName} avatar={review.user?.avatar} />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
           <span className="text-sm font-medium text-foreground">

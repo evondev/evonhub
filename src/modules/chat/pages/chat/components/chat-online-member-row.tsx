@@ -1,4 +1,4 @@
-import { CommentAvatar } from "@/shared/features/comment/comment-avatar";
+import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { ChatSender } from "../../../types";
 import { ChatRoleBadge } from "./chat-role-badge";
 
@@ -10,7 +10,7 @@ export function ChatOnlineMemberRow({ member }: ChatOnlineMemberRowProps) {
   return (
     <li className="flex h-10 items-center gap-2.5 rounded-lg px-2 hover:bg-item-hover">
       <span className="relative shrink-0">
-        <CommentAvatar
+        <UserAvatar
           name={member.name}
           avatar={member.avatar}
           className="size-7"

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ToneBadge } from "@/shared/components/common";
-import { CommentAvatar } from "@/shared/features/comment/comment-avatar";
+import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { USER_ROLE_LABELS } from "../../../constants/user-manage.constants";
@@ -34,10 +34,10 @@ export function CourseAccessHeader({
           </ol>
         </nav>
         <div className="mt-1 flex min-w-0 items-center gap-3">
-          <CommentAvatar
+          <UserAvatar
             name={user.name}
             avatar={user.avatar}
-            className="size-12 text-sm ring-1 ring-border-strong"
+            className="size-12 text-lg"
           />
           <div className="min-w-0 flex-1">
             <div className="flex min-w-0 items-center gap-2">

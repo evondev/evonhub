@@ -6,7 +6,7 @@ import { UserRole } from "@/shared/constants/user.constants";
 import { cn } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import { useEffect } from "react";
-import { CommentAvatar } from "./comment-avatar";
+import { UserAvatar } from "@/shared/components/common/user-avatar";
 import CommentReply from "./comment-reply";
 
 interface CommentItemProps {
@@ -56,7 +56,7 @@ const CommentField = ({
   return (
     <li id={comment._id.toString()}>
       <div className={cn("flex gap-3", isPending && "opacity-60")}>
-        <CommentAvatar name={comment.user?.name} avatar={comment.user?.avatar} />
+        <UserAvatar name={comment.user?.name} avatar={comment.user?.avatar} />
         <div className="min-w-0 flex-1">
           {level >= 2 && parentName && (
             <p className="text-xs text-muted sm:hidden">
