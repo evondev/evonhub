@@ -10,7 +10,8 @@ import {
 
 export const partnerLinks: PartnerLink[] = [
   { name: "Mayashare", url: "https://vncreatorpreneur.com/" },
-  { name: "Evondev", url: "https://evondev.com/" },
+  { name: "Evondev", url: "https://evon.dev/" },
+  { name: "TheKP3", url: "https://kp3.agency/" },
 ];
 
 // Lộ trình cho người mới. Khóa cũ đã gỡ, khóa mới chưa có nên để trống: khối

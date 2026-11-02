@@ -3,8 +3,8 @@ import { partnerLinks } from "../constants";
 
 export function PartnerFooter() {
   return (
-    <footer className="border-t border-border pt-4 text-xs text-muted">
-      Đối tác:{" "}
+    <footer className="text-sm text-muted">
+      <span className="font-medium">Đối tác:</span>{" "}
       {partnerLinks.map((partner, index) => (
         <Fragment key={partner.name}>
           {index > 0 && " · "}
@@ -12,7 +12,7 @@ export function PartnerFooter() {
             href={partner.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="underline-offset-4 hover:text-foreground hover:underline"
+            className="font-semibold text-foreground underline-offset-4 hover:text-primary hover:underline"
           >
             {partner.name}
           </a>
