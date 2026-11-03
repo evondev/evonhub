@@ -336,11 +336,24 @@ export interface VideoListItem
   > {
   _id: string;
   duration: number;
+  /** Mô tả dạng chữ thường đã cắt ngắn, cho dạng danh sách; rỗng là chưa có mô tả */
+  excerpt: string;
 }
 
 /** Một dòng của truy vấn danh sách video, kèm link YouTube của bài để lấy thumbnail */
-export interface VideoListRow extends VideoListItem {
+export interface VideoListRow extends Omit<VideoListItem, "excerpt"> {
   iframe?: string;
+  /** Mô tả HTML soạn trong admin */
+  desc?: string;
+}
+
+/** Cách xếp video ở trang danh sách: lưới thẻ, hoặc mỗi video một hàng ngang */
+export type VideoListView = "grid" | "list";
+
+export interface VideoListViewOption {
+  view: VideoListView;
+  label: string;
+  icon: LucideIcon;
 }
 
 /** Video giả của trang xem trước, mang slug danh mục để lọc như server */
@@ -366,6 +379,8 @@ export interface VideoListSearchParams {
   q?: string;
   gia?: string;
   danhmuc?: string;
+  /** "danh-sach" là xếp hàng ngang, không có là lưới */
+  xem?: string;
 }
 
 export interface FetchVideosParams extends VideoListFilters {

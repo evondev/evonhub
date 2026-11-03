@@ -79,6 +79,7 @@ import {
   VideoUpdateData,
 } from "../types";
 import { escapeRegExp, isCourseFree, isCourseOwned } from "../utils";
+import { toVideoExcerpt } from "../utils/video-list.utils";
 
 export async function fetchCourses({
   status,
@@ -878,6 +879,7 @@ export async function fetchVideos({
           salePrice: 1,
           free: 1,
           createdAt: 1,
+          desc: 1,
           duration: {
             $ifNull: [{ $arrayElemAt: ["$lessons.duration", 0] }, 0],
           },
@@ -887,10 +889,13 @@ export async function fetchVideos({
     ]);
 
     // Video chưa có ảnh bìa mà bài là link YouTube: lấy thumbnail của chính video
-    const videos: VideoListItem[] = videoRows.map(({ iframe, ...video }) => ({
-      ...video,
-      image: video.image || getYoutubeThumbnail(iframe || ""),
-    }));
+    const videos: VideoListItem[] = videoRows.map(
+      ({ iframe, desc, ...video }) => ({
+        ...video,
+        image: video.image || getYoutubeThumbnail(iframe || ""),
+        excerpt: toVideoExcerpt(desc || ""),
+      }),
+    );
 
     return parseData(videos);
   } catch (error) {
