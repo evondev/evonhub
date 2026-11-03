@@ -88,6 +88,7 @@ export const COURSE_FIELD_LABELS: Record<string, string> = {
   ctaLink: "link nút kêu gọi",
   seoKeywords: "từ khoá SEO",
   free: "miễn phí",
+  isComingSoon: "sắp ra mắt",
   status: "trạng thái",
 };
 

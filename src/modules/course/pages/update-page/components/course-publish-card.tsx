@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
 import {
   COURSE_FORM_CONTROL_CLASS_NAME,
@@ -22,11 +23,14 @@ export interface CoursePublishCardProps {
   /** Theo đường dẫn đã lưu, không theo ô đang sửa. Không có thì ẩn nút xem trang */
   previewHref?: string;
   isSubmitting: boolean;
+  /** Ô riêng của từng loại, nằm dưới ô trạng thái */
+  children?: ReactNode;
 }
 
 export function CoursePublishCard({
   previewHref,
   isSubmitting,
+  children,
 }: CoursePublishCardProps) {
   const { control } = useFormContext<CourseUpdateFormValues>();
 
@@ -52,6 +56,7 @@ export function CoursePublishCard({
           </CourseField>
         )}
       />
+      {children}
 
       <div className="mt-5 flex flex-col gap-2 border-t border-border pt-5">
         <Button

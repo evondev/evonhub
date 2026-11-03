@@ -110,13 +110,20 @@ export async function logVideoView({
       type: CourseType.Video,
       _destroy: false,
     })
-      .select("price free status")
-      .lean<{ price?: number; free?: boolean; status?: CourseStatus }>();
+      .select("price free status isComingSoon")
+      .lean<{
+        price?: number;
+        free?: boolean;
+        status?: CourseStatus;
+        isComingSoon?: boolean;
+      }>();
 
     if (!video) return;
 
     const isPublicFreeVideo =
-      isCourseFree(video) && video.status === CourseStatus.Approved;
+      isCourseFree(video) &&
+      video.status === CourseStatus.Approved &&
+      !video.isComingSoon;
     const canWatchVideo =
       isPublicFreeVideo || (await canAccessCourseContent(videoId));
 

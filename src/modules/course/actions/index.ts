@@ -308,6 +308,7 @@ export async function handleEnrollFree({
       free: true,
       price: { $lte: 0 },
       status: CourseStatus.Approved,
+      isComingSoon: { $ne: true },
     });
 
     if (!findCourse)
@@ -368,7 +369,7 @@ export async function handleEnrollCourse({
         error: "Khóa học không tồn tại",
       };
 
-    if (findCourse.status !== CourseStatus.Approved)
+    if (findCourse.status !== CourseStatus.Approved || findCourse.isComingSoon)
       return {
         error: "Khóa học chưa được mở bán",
       };
@@ -527,7 +528,9 @@ export async function fetchCoursesManage({
         .limit(limit)
         .skip(skip)
         .sort({ createdAt: -1 })
-        .select("title slug image createdAt status price _id free type"),
+        .select(
+          "title slug image createdAt status price _id free type isComingSoon",
+        ),
       CourseModel.aggregate<StatusCountGroup>(
         buildStatusCountPipeline(baseQuery),
       ),
@@ -729,7 +732,7 @@ export async function fetchVideoUpdateData(
       type: CourseType.Video,
       _destroy: false,
     }).select(
-      "title slug price salePrice intro desc image cta seoKeywords free level status category",
+      "title slug price salePrice intro desc image cta seoKeywords free level status category isComingSoon",
     );
 
     if (!video) return;
@@ -756,14 +759,15 @@ const findVideoBySlug = cache(async (slug: string) => {
     type: CourseType.Video,
     _destroy: false,
   }).select(
-    "title slug desc intro image price salePrice free cta level status seoKeywords",
+    "title slug desc intro image price salePrice free cta level status seoKeywords isComingSoon",
   );
 });
 
 /**
  * Trang xem video lẻ. Người chưa có quyền xem chỉ nhận phần giới thiệu, không
  * nhận video và nội dung. Đang bán là trang công khai; ngừng bán chỉ người đã
- * mua và người quản lý; chờ duyệt, lưu trữ chỉ người quản lý.
+ * mua và người quản lý; chờ duyệt, lưu trữ chỉ người quản lý. Video sắp ra mắt
+ * vẫn công khai nhưng chỉ người quản lý xem được nội dung.
  */
 export async function fetchVideoDetails(
   slug: string,
@@ -793,8 +797,11 @@ export async function fetchVideoDetails(
     if (!lesson) return;
 
     const isFree = isCourseFree(video);
-    // Video miễn phí xem được cả khi chưa đăng nhập, khi đó hasAccess là false
-    const canWatch = isFree || hasAccess;
+    const isComingSoon = Boolean(video.isComingSoon);
+    // Video miễn phí xem được cả khi chưa đăng nhập, khi đó hasAccess là false.
+    // Sắp ra mắt thì hasAccess chỉ còn đúng với người quản lý (isPublicFreeVideo
+    // bỏ qua video sắp ra mắt, cũng không mua được)
+    const canWatch = (isFree && !isComingSoon) || hasAccess;
     const lessonData = canWatch
       ? lesson.toObject()
       : { _id: lesson._id, duration: lesson.duration };
@@ -803,6 +810,7 @@ export async function fetchVideoDetails(
       ...video.toObject(),
       lesson: lessonData,
       isFree,
+      isComingSoon,
       canWatch,
     });
   } catch (error) {
@@ -878,6 +886,7 @@ export async function fetchVideos({
           price: 1,
           salePrice: 1,
           free: 1,
+          isComingSoon: 1,
           createdAt: 1,
           desc: 1,
           duration: {

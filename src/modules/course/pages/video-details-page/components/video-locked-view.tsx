@@ -3,7 +3,7 @@
 import { useCoursePurchase } from "@/modules/course/hooks/use-course-purchase";
 import type { RatingItemData } from "@/modules/rating/types";
 import { sanitizeHtml } from "@/shared/helpers";
-import { Lock } from "lucide-react";
+import { Clock, Lock } from "lucide-react";
 import type { VideoDetailsData } from "../../../types";
 import { getAverageRating } from "../../../utils";
 import CourseReviews from "../../course-details-page/components/course-reviews";
@@ -17,8 +17,9 @@ export interface VideoLockedViewProps {
 }
 
 /**
- * Video trả phí, người xem chưa mua: bố cục như trang bán khóa học. Hai cột từ
- * xl, thẻ mua bên phải dính khi cuộn; màn hẹp thẻ mua nằm ngay dưới tên video
+ * Video trả phí người xem chưa mua, hoặc video sắp ra mắt: bố cục như trang bán
+ * khóa học. Hai cột từ xl, thẻ mua bên phải dính khi cuộn; màn hẹp thẻ mua nằm
+ * ngay dưới tên video
  */
 export function VideoLockedView({ video, reviews }: VideoLockedViewProps) {
   const purchase = useCoursePurchase({
@@ -56,8 +57,14 @@ export function VideoLockedView({ video, reviews }: VideoLockedViewProps) {
           </CourseSection>
         )}
         <p className="flex items-center gap-2 rounded-2xl border border-border bg-surface px-4 py-3 text-sm text-muted">
-          <Lock className="size-4 shrink-0" aria-hidden />
-          Mua video để xem toàn bộ video và nội dung đi kèm.
+          {video.isComingSoon ? (
+            <Clock className="size-4 shrink-0" aria-hidden />
+          ) : (
+            <Lock className="size-4 shrink-0" aria-hidden />
+          )}
+          {video.isComingSoon
+            ? "Video sắp ra mắt, nội dung đang được chuẩn bị."
+            : "Mua video để xem toàn bộ video và nội dung đi kèm."}
         </p>
         <CourseReviews reviews={reviews} ratingAverage={ratingAverage} />
       </div>

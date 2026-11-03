@@ -23,6 +23,8 @@ export interface CourseManageRow {
   isFree: boolean;
   /** Video lẻ: sửa ở trang riêng, không có trang soạn nội dung */
   isVideo?: boolean;
+  /** Video lẻ đã lên danh sách nhưng chưa có nội dung */
+  isComingSoon?: boolean;
   studentCount: number;
   createdAt: Date | string;
 }

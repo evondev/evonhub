@@ -26,6 +26,13 @@ export function CourseIdentity({ course }: CourseIdentityProps) {
       {course.isVideo && (
         <ToneBadge tone="neutral" label="Video" className="shrink-0 py-0.5" />
       )}
+      {course.isComingSoon && (
+        <ToneBadge
+          tone="warning"
+          label="Sắp ra mắt"
+          className="shrink-0 py-0.5"
+        />
+      )}
     </div>
   );
 }

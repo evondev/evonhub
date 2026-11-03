@@ -28,6 +28,7 @@ import {
   CourseUpdateHeader,
 } from "../update-page/components";
 import { VideoBasicInfoSection } from "./components/video-basic-info-section";
+import { VideoComingSoonField } from "./components/video-coming-soon-field";
 
 export interface VideoUpdatePageProps {
   data: VideoUpdateData;
@@ -60,6 +61,7 @@ export function VideoUpdatePage({
       cta: data.cta,
       seoKeywords: data.seoKeywords || "",
       free: data.free,
+      isComingSoon: Boolean(data.isComingSoon),
       video: data.lesson.video || "",
       assetId: data.lesson.assetId || "",
       iframe: data.lesson.iframe || "",
@@ -91,6 +93,7 @@ export function VideoUpdatePage({
           cta: values.cta,
           seoKeywords: values.seoKeywords,
           free: values.free,
+          isComingSoon: values.isComingSoon,
         },
         path: buildVideoUpdateHref(savedSlug),
       });
@@ -158,7 +161,9 @@ export function VideoUpdatePage({
             <CoursePublishCard
               previewHref={buildVideoPublicHref(data.slug)}
               isSubmitting={isSubmitting}
-            />
+            >
+              <VideoComingSoonField />
+            </CoursePublishCard>
           </aside>
         </form>
       </Form>

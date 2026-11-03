@@ -33,6 +33,7 @@ export interface ICourse extends Document {
   createdAt: Date;
   seoKeywords: string;
   free: boolean;
+  isComingSoon?: boolean;
   isPackage: boolean;
   _destroy: boolean;
 }

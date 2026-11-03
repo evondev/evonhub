@@ -66,7 +66,8 @@ export async function getCurrentCourseManager(courseId: string) {
 
 /**
  * Video lẻ miễn phí đang bán: ai cũng xem được, không cần nhận vào user.courses.
- * Cùng định nghĩa miễn phí với isCourseFree: bật cờ free và giá 0
+ * Cùng định nghĩa miễn phí với isCourseFree: bật cờ free và giá 0. Video sắp ra
+ * mắt chưa có nội dung nên không tính
  */
 export async function isPublicFreeVideo(courseId: string): Promise<boolean> {
   if (!isValidObjectId(courseId)) return false;
@@ -79,6 +80,7 @@ export async function isPublicFreeVideo(courseId: string): Promise<boolean> {
     free: true,
     price: { $lte: 0 },
     status: CourseStatus.Approved,
+    isComingSoon: { $ne: true },
     _destroy: false,
   });
 

@@ -21,6 +21,7 @@ export function toCourseManageRow(course: CourseItemData): CourseManageRow {
     price: course.price,
     isFree: isCourseFree(course),
     isVideo: course.type === CourseType.Video,
+    isComingSoon: Boolean(course.isComingSoon),
     studentCount: course.studentCount || 0,
     createdAt: course.createdAt,
   };

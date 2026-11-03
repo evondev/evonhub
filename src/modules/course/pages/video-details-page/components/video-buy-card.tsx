@@ -8,29 +8,34 @@ export interface VideoBuyCardProps {
   purchase: CoursePurchase;
 }
 
-/** Thẻ mua của video trả phí: intro ngắn làm teaser, giá, nút mua */
+/**
+ * Thẻ mua của video chưa xem được: intro ngắn làm teaser, giá, nút mua. Video
+ * sắp ra mắt thay nút mua bằng nút "Sắp ra mắt" bấm không được
+ */
 export function VideoBuyCard({ video, purchase }: VideoBuyCardProps) {
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-surface">
       <CourseBuyMedia title={video.title} intro={video.intro} image={video.image} />
       <div className="flex flex-col gap-4 p-4 sm:p-5">
         <CourseBuyPrice
-          isFree={false}
+          isFree={video.isFree}
           price={video.price}
           salePrice={video.salePrice}
           discount={purchase.discount}
         />
         <CourseBuyButton
           purchase={purchase}
-          isFree={false}
-          isComingSoon={false}
+          isFree={video.isFree}
+          isComingSoon={video.isComingSoon}
           isOwned={false}
           cta={video.cta}
           firstLessonHref=""
           className="w-full"
         />
         <p className="text-pretty text-sm text-muted">
-          Mua một lần, xem lại video và nội dung đi kèm bất cứ lúc nào.
+          {video.isComingSoon
+            ? "Video đang được hoàn thiện, quay lại sau để xem nhé."
+            : "Mua một lần, xem lại video và nội dung đi kèm bất cứ lúc nào."}
         </p>
       </div>
     </div>

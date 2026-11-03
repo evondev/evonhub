@@ -54,6 +54,8 @@ export interface CourseModelProps extends Document {
   _destroy: boolean;
   isMicro?: boolean;
   type?: CourseType;
+  /** Video lẻ chưa có nội dung; bản ghi cũ không có field này */
+  isComingSoon?: boolean;
 }
 
 export interface CourseItemData extends Omit<
@@ -70,6 +72,8 @@ export interface FetchCoursesManageProps {
   limit: number;
   page: number;
   isFree?: boolean;
+  /** Chỉ lấy video lẻ */
+  isVideo?: boolean;
   status?: CourseStatus;
   /** Lọc theo nhiều trạng thái cùng lúc, ưu tiên hơn `status` */
   statuses?: CourseStatus[];
@@ -284,6 +288,7 @@ export interface VideoUpdateData
     | "status"
     | "category"
   > {
+  isComingSoon?: boolean;
   lesson: VideoLessonData;
 }
 
@@ -316,6 +321,8 @@ export interface VideoDetailsData
   _id: string;
   lesson: VideoDetailsLesson;
   isFree: boolean;
+  /** Đã lên danh sách nhưng chưa có nội dung: không xem, không mua được */
+  isComingSoon: boolean;
   /** Video miễn phí, đã mua, hoặc người quản lý */
   canWatch: boolean;
 }
@@ -332,6 +339,7 @@ export interface VideoListItem
     | "price"
     | "salePrice"
     | "free"
+    | "isComingSoon"
     | "createdAt"
   > {
   _id: string;

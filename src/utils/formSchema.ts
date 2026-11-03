@@ -70,6 +70,7 @@ export const updateVideoSchema = updateCourseSchema
     }),
     content: z.string(),
     duration: z.coerce.number().min(0),
+    isComingSoon: z.boolean(),
   });
 export const updateUserSchema = z.object({
   name: z.string().optional(),
