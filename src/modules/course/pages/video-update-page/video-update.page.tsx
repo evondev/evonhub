@@ -9,7 +9,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import type { VideoUpdateData, VideoUpdateFormValues } from "../../types";
+import type {
+  CourseSelectOption,
+  VideoUpdateData,
+  VideoUpdateFormValues,
+} from "../../types";
 import {
   buildVideoPublicHref,
   buildVideoUpdateHref,
@@ -27,13 +31,17 @@ import { VideoBasicInfoSection } from "./components/video-basic-info-section";
 
 export interface VideoUpdatePageProps {
   data: VideoUpdateData;
+  categoryOptions: CourseSelectOption[];
 }
 
 /**
  * Sửa video lẻ trên một trang: thông tin bán lưu vào course, video và nội dung
  * lưu vào bài học duy nhất của nó
  */
-export function VideoUpdatePage({ data }: VideoUpdatePageProps) {
+export function VideoUpdatePage({
+  data,
+  categoryOptions,
+}: VideoUpdatePageProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const form = useForm<VideoUpdateFormValues>({
@@ -46,6 +54,7 @@ export function VideoUpdatePage({ data }: VideoUpdatePageProps) {
       intro: data.intro || "",
       desc: data.desc || "",
       level: data.level,
+      category: data.category?.toString() || "",
       image: data.image,
       status: data.status,
       cta: data.cta,
@@ -77,6 +86,7 @@ export function VideoUpdatePage({ data }: VideoUpdatePageProps) {
           image: values.image,
           desc: values.desc,
           level: values.level,
+          category: values.category || null,
           status: values.status,
           cta: values.cta,
           seoKeywords: values.seoKeywords,
@@ -132,7 +142,7 @@ export function VideoUpdatePage({ data }: VideoUpdatePageProps) {
           className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_320px]"
         >
           <div className="flex min-w-0 flex-col gap-6">
-            <VideoBasicInfoSection />
+            <VideoBasicInfoSection categoryOptions={categoryOptions} />
             <LessonVideoSection />
             <LessonContentSection />
             <CoursePricingSection

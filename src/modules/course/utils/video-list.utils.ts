@@ -11,13 +11,14 @@ import {
 } from "../constants/video-list.constants";
 import { isCourseFree } from "./index";
 
-/** Cùng tên tham số với trang Khóa học: ?q= từ khoá, ?gia=mien-phi */
+/** Cùng tên tham số với trang Khóa học: ?q= từ khoá, ?gia=mien-phi; thêm ?danhmuc=<slug> */
 export function parseVideoListFilters(
   searchParams: VideoListSearchParams,
 ): VideoListFilters {
   return {
     search: (searchParams.q || "").trim(),
     isFree: searchParams.gia === "mien-phi",
+    categorySlug: (searchParams.danhmuc || "").trim(),
   };
 }
 
@@ -29,6 +30,7 @@ export function buildVideoListHref(
 
   if (filters.search) params.set("q", filters.search);
   if (filters.isFree) params.set("gia", "mien-phi");
+  if (filters.categorySlug) params.set("danhmuc", filters.categorySlug);
 
   const queryString = params.toString();
 
@@ -36,7 +38,9 @@ export function buildVideoListHref(
 }
 
 export function hasActiveVideoListFilters(filters: VideoListFilters): boolean {
-  return filters.isFree || Boolean(filters.search);
+  return (
+    filters.isFree || Boolean(filters.search) || Boolean(filters.categorySlug)
+  );
 }
 
 /** Danh sách giả của trang xem trước, lọc giống cách server lọc */
@@ -51,6 +55,9 @@ export function buildPreviewVideoList(
   return PREVIEW_VIDEO_LIST.filter((video) => {
     if (keyword && !video.title.toLowerCase().includes(keyword)) return false;
     if (filters.isFree && !isCourseFree(video)) return false;
+    if (filters.categorySlug && video.categorySlug !== filters.categorySlug) {
+      return false;
+    }
 
     return true;
   });

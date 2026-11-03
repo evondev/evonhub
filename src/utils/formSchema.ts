@@ -55,6 +55,7 @@ export const updateVideoSchema = updateCourseSchema
     image: true,
     desc: true,
     level: true,
+    category: true,
     status: true,
     seoKeywords: true,
     free: true,

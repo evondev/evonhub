@@ -1,7 +1,10 @@
 import { fetchRatingsByCourse } from "@/modules/rating/actions";
 import { notFound } from "next/navigation";
 import { fetchVideoDetails, fetchVideos } from "../../actions";
-import { RELATED_VIDEO_COUNT } from "../../constants/video-list.constants";
+import {
+  RELATED_VIDEO_COUNT,
+  VIDEO_LIST_DEFAULT_FILTERS,
+} from "../../constants/video-list.constants";
 import { incrementCourseViews } from "../../services/course-views.service";
 import { VideoLockedView } from "./components/video-locked-view";
 import { VideoWatchView } from "./components/video-watch-view";
@@ -23,7 +26,10 @@ export async function VideoDetailsPage({ slug }: VideoDetailsPageProps) {
     fetchRatingsByCourse({ courseId: video._id }),
     // Chỉ trang đang xem có khối "Video khác"; lấy dư một để bỏ chính video này
     video.canWatch
-      ? fetchVideos({ search: "", isFree: false, limit: RELATED_VIDEO_COUNT + 1 })
+      ? fetchVideos({
+          ...VIDEO_LIST_DEFAULT_FILTERS,
+          limit: RELATED_VIDEO_COUNT + 1,
+        })
       : undefined,
   ]);
 

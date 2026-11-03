@@ -31,7 +31,6 @@ import {
 export interface CourseUpdatePageProps {
   data: CourseUpdateData;
   slug: string;
-  /** Chưa có nguồn danh mục trong dự án: truyền vào khi đã có */
   categoryOptions?: CourseSelectOption[];
 }
 
@@ -57,6 +56,7 @@ export function CourseUpdatePage({
       cta: data.cta,
       seoKeywords: data.seoKeywords,
       free: data.free,
+      category: data.category?.toString() || "",
     },
   });
   const [infoData, setInfoData] = useImmer<CourseInfoDraft>({
@@ -116,7 +116,7 @@ export function CourseUpdatePage({
           ...values,
           price: parseInt(values.price || "0"),
           salePrice: parseInt(values.salePrice || "0"),
-          category: data.category,
+          category: values.category || null,
           info: {
             requirements: infoData.requirements.filter((item) => item !== ""),
             qa: infoData.qa,

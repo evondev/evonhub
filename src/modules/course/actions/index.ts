@@ -17,6 +17,7 @@ import {
   sendManualOrderPendingExpertEmail,
   sendOrderCreatedEmail,
 } from "@/modules/email/services/order-email.service";
+import CategoryModel from "@/modules/category/models";
 import LectureModel from "@/modules/lecture/models";
 import LessonModel from "@/modules/lesson/models";
 import UserModel from "@/modules/user/models";
@@ -70,6 +71,7 @@ import {
   FetchCoursesParams,
   FetchExploreCoursesParams,
   FetchVideosParams,
+  VideoCategoryOption,
   VideoDetailsData,
   VideoListItem,
   VideoUpdateData,
@@ -721,7 +723,7 @@ export async function fetchVideoUpdateData(
       type: CourseType.Video,
       _destroy: false,
     }).select(
-      "title slug price salePrice intro desc image cta seoKeywords free level status",
+      "title slug price salePrice intro desc image cta seoKeywords free level status category",
     );
 
     if (!video) return;
@@ -806,6 +808,7 @@ export async function fetchVideoDetails(
 export async function fetchVideos({
   search,
   isFree,
+  categorySlug,
   limit,
 }: FetchVideosParams): Promise<VideoListItem[] | undefined> {
   try {
@@ -816,6 +819,17 @@ export async function fetchVideos({
       status: CourseStatus.Approved,
       _destroy: false,
     };
+
+    if (categorySlug) {
+      const category = await CategoryModel.findOne({ slug: categorySlug })
+        .select("_id")
+        .lean<{ _id: Types.ObjectId }>();
+
+      // Link lọc cũ trỏ tới danh mục đã xoá hoặc đổi đường dẫn: không có video nào khớp
+      if (!category) return [];
+
+      matchQuery.category = category._id;
+    }
 
     if (search) {
       matchQuery.title = { $regex: escapeRegExp(search), $options: "i" };
@@ -869,5 +883,41 @@ export async function fetchVideos({
     return parseData(videos);
   } catch (error) {
     console.error("fetchVideos error:", error);
+  }
+}
+
+/** Danh mục đang có video bán, cho hàng chip lọc ở trang danh sách video, xếp theo tên */
+export async function fetchVideoCategories(): Promise<VideoCategoryOption[]> {
+  try {
+    await connectToDatabase();
+
+    const categories = await CourseModel.aggregate<VideoCategoryOption>([
+      {
+        $match: {
+          type: CourseType.Video,
+          status: CourseStatus.Approved,
+          _destroy: false,
+          category: { $ne: null },
+        },
+      },
+      { $group: { _id: "$category" } },
+      {
+        $lookup: {
+          from: CategoryModel.collection.name,
+          localField: "_id",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      { $unwind: "$category" },
+      { $project: { _id: 0, name: "$category.name", slug: "$category.slug" } },
+      { $sort: { name: 1 } },
+    ]);
+
+    return parseData(categories);
+  } catch (error) {
+    console.error("fetchVideoCategories error:", error);
+
+    return [];
   }
 }

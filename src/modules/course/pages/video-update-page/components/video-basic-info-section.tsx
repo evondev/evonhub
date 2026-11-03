@@ -12,12 +12,23 @@ import {
   COURSE_FORM_CONTROL_CLASS_NAME,
   COURSE_LEVEL_OPTIONS,
 } from "../../../constants";
-import type { VideoUpdateFormValues } from "../../../types";
+import type {
+  CourseSelectOption,
+  VideoUpdateFormValues,
+} from "../../../types";
+import { CourseCategorySelect } from "../../update-page/components/course-category-select";
 import { CourseField } from "../../update-page/components/course-field";
 import { CourseFormSection } from "../../update-page/components/course-form-section";
 import { InputWithAddon } from "../../update-page/components/input-with-addon";
 
-export function VideoBasicInfoSection() {
+export interface VideoBasicInfoSectionProps {
+  /** Danh mục quản lý ở /admin/category/manage, rỗng thì ô khoá */
+  categoryOptions: CourseSelectOption[];
+}
+
+export function VideoBasicInfoSection({
+  categoryOptions,
+}: VideoBasicInfoSectionProps) {
   const { control } = useFormContext<VideoUpdateFormValues>();
 
   return (
@@ -61,6 +72,19 @@ export function VideoBasicInfoSection() {
         />
         <FormField
           control={control}
+          name="category"
+          render={({ field }) => (
+            <CourseField label="Danh mục" hint="Người xem lọc video theo mục này">
+              <CourseCategorySelect
+                value={field.value}
+                onChange={field.onChange}
+                options={categoryOptions}
+              />
+            </CourseField>
+          )}
+        />
+        <FormField
+          control={control}
           name="level"
           render={({ field }) => (
             <CourseField label="Trình độ">
@@ -98,11 +122,7 @@ export function VideoBasicInfoSection() {
           control={control}
           name="seoKeywords"
           render={({ field }) => (
-            <CourseField
-              label="Từ khóa SEO"
-              hint="Cách nhau bằng dấu phẩy"
-              className="sm:col-span-2"
-            >
+            <CourseField label="Từ khóa SEO" hint="Cách nhau bằng dấu phẩy">
               <Input className={COURSE_FORM_CONTROL_CLASS_NAME} {...field} />
             </CourseField>
           )}

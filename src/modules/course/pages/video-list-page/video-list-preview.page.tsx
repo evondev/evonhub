@@ -1,5 +1,6 @@
 import { LoadErrorState, PreviewStateSwitcher } from "@/shared/components/common";
 import {
+  PREVIEW_VIDEO_CATEGORIES,
   PREVIEW_VIDEO_LIST_STATE_LINKS,
   VIDEO_LIST_PREVIEW_PATH,
 } from "../../constants/video-list.constants";
@@ -31,7 +32,11 @@ export function VideoListPreviewPage({
         links={PREVIEW_VIDEO_LIST_STATE_LINKS}
         currentState={state}
       />
-      <VideoFilterBar filters={shownFilters} linkBase={linkBase} />
+      <VideoFilterBar
+        filters={shownFilters}
+        linkBase={linkBase}
+        categories={PREVIEW_VIDEO_CATEGORIES}
+      />
       {state === "dang-tai" && <VideoListSkeleton />}
       {state === "loi" && (
         <LoadErrorState title="Chưa tải được danh sách video" />
