@@ -21,10 +21,11 @@ interface ChatPreviewRoomProps {
 export function ChatPreviewRoom({ state }: ChatPreviewRoomProps) {
   const viewer = useMemo(() => buildPreviewViewer(state), [state]);
   const onlineMembers = useMemo(() => buildPreviewOnlineMembers(), []);
-  const { messages, sendMessage, deleteMessage } = usePreviewChat({
-    state,
-    viewer,
-  });
+  const { messages, sendMessage, deleteMessage, reactToMessage } =
+    usePreviewChat({
+      state,
+      viewer,
+    });
   const isBlockedState = state === "chan";
 
   return (
@@ -34,7 +35,9 @@ export function ChatPreviewRoom({ state }: ChatPreviewRoomProps) {
       firstItemIndex={CHAT_FIRST_ITEM_INDEX}
       hasMore={false}
       isLoadingOlder={false}
-      onlineMembers={state === "rong" ? onlineMembers.slice(0, 5) : onlineMembers}
+      onlineMembers={
+        state === "rong" ? onlineMembers.slice(0, 5) : onlineMembers
+      }
       isRealtimeEnabled
       minutesLeft={CHAT_PREVIEW_MINUTES_LEFT}
       className="min-h-0 flex-1"
@@ -43,6 +46,7 @@ export function ChatPreviewRoom({ state }: ChatPreviewRoomProps) {
       onLoadOlder={() => undefined}
       onSend={sendMessage}
       onDeleteMessage={deleteMessage}
+      onReactMessage={reactToMessage}
     />
   );
 }

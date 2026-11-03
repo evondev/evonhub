@@ -16,5 +16,7 @@ export function insertTextAtSelection(
   selectionStart: number,
   selectionEnd: number,
 ): string {
-  return text.slice(0, selectionStart) + insertedText + text.slice(selectionEnd);
+  return (
+    text.slice(0, selectionStart) + insertedText + text.slice(selectionEnd)
+  );
 }

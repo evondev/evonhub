@@ -11,6 +11,7 @@ import {
   ChatMessageItem,
   ChatMessageModelProps,
   ChatPresence,
+  ChatReaction,
   ChatViewer,
   PusherChannelUsers,
 } from "../types";
@@ -32,8 +33,18 @@ export function toChatMessageItem(
       role: message.sender.role,
     },
     content: message.content,
+    reactions: toChatReactions(message.reactions),
     createdAt: new Date(message.createdAt).toISOString(),
   };
+}
+
+export function toChatReactions(
+  reactions: ChatMessageModelProps["reactions"] = [],
+): ChatReaction[] {
+  return reactions.map((reaction) => ({
+    userId: reaction.user.toString(),
+    emoji: reaction.emoji,
+  }));
 }
 
 /** Người đang đăng nhập dưới dạng thành viên chat; null nếu là khách hoặc bị khoá */

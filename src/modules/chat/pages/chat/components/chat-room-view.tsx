@@ -27,6 +27,8 @@ interface ChatRoomViewProps {
   onSend: (content: string) => Promise<string | null>;
   /** Trả về lỗi nếu chưa xoá được */
   onDeleteMessage: (messageId: string) => Promise<string | null>;
+  /** Thả, đổi hoặc gỡ reaction của mình; trả về lỗi nếu chưa được */
+  onReactMessage: (messageId: string, emoji: string) => Promise<string | null>;
 }
 
 /**
@@ -49,6 +51,7 @@ export function ChatRoomView({
   onLoadOlder,
   onSend,
   onDeleteMessage,
+  onReactMessage,
 }: ChatRoomViewProps) {
   const [pendingDelete, setPendingDelete] = useState({
     messageId: "",
@@ -68,6 +71,15 @@ export function ChatRoomView({
       if (deleteError) toast.error(deleteError);
     },
     [onDeleteMessage],
+  );
+
+  const handleReactMessage = useCallback(
+    async (messageId: string, emoji: string) => {
+      const reactError = await onReactMessage(messageId, emoji);
+
+      if (reactError) toast.error(reactError);
+    },
+    [onReactMessage],
   );
 
   function handleCancelDelete() {
@@ -109,6 +121,7 @@ export function ChatRoomView({
         canModerate={viewer.isModerator}
         onLoadOlder={onLoadOlder}
         onDeleteMessage={handleDeleteMessage}
+        onReactMessage={handleReactMessage}
       />
       <ChatComposer
         isRoomEmpty={messages.length === 0}

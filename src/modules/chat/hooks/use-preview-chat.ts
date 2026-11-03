@@ -1,12 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import {
-  chatPreviewMessageSeeds,
-  chatPreviewSenders,
-} from "../constants";
+import { chatPreviewMessageSeeds, chatPreviewSenders } from "../constants";
 import { ChatMessageView, ChatPreviewState, ChatViewer } from "../types";
-import { buildPreviewMessages, createClientId } from "../utils";
+import {
+  applyChatReaction,
+  buildPreviewMessages,
+  createClientId,
+  getNextViewerReaction,
+} from "../utils";
 
 /** Nhịp tin giả đến ở trạng thái "Tin đến liên tục" */
 const PREVIEW_INCOMING_INTERVAL_MS = 3500;
@@ -20,8 +22,8 @@ interface UsePreviewChatParams {
 }
 
 /**
- * Danh sách tin của trang xem trước, chạy hoàn toàn ở trình duyệt: gửi, xoá
- * bấm thử được; trạng thái "tin-moi" tự thêm tin người khác theo nhịp
+ * Danh sách tin của trang xem trước, chạy hoàn toàn ở trình duyệt: gửi, xoá,
+ * thả reaction bấm thử được; trạng thái "tin-moi" tự thêm tin người khác theo nhịp
  */
 export function usePreviewChat({ state, viewer }: UsePreviewChatParams) {
   const [messages, setMessages] = useState<ChatMessageView[]>(() =>
@@ -70,7 +72,9 @@ export function usePreviewChat({ state, viewer }: UsePreviewChatParams) {
         },
       ]);
 
-      await new Promise((resolve) => setTimeout(resolve, PREVIEW_SEND_DELAY_MS));
+      await new Promise((resolve) =>
+        setTimeout(resolve, PREVIEW_SEND_DELAY_MS),
+      );
 
       setMessages((currentMessages) =>
         currentMessages.map((message) =>
@@ -96,5 +100,33 @@ export function usePreviewChat({ state, viewer }: UsePreviewChatParams) {
     [],
   );
 
-  return { messages, sendMessage, deleteMessage };
+  const reactToMessage = useCallback(
+    async (messageId: string, emoji: string): Promise<string | null> => {
+      setMessages((currentMessages) =>
+        currentMessages.map((message) => {
+          if (message._id !== messageId) return message;
+
+          const nextEmoji = getNextViewerReaction(
+            message.reactions,
+            viewer.userId,
+            emoji,
+          );
+
+          return {
+            ...message,
+            reactions: applyChatReaction(
+              message.reactions,
+              viewer.userId,
+              nextEmoji,
+            ),
+          };
+        }),
+      );
+
+      return null;
+    },
+    [viewer.userId],
+  );
+
+  return { messages, sendMessage, deleteMessage, reactToMessage };
 }

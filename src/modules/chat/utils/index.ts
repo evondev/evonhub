@@ -25,6 +25,15 @@ export {
 } from "./chat-message.utils";
 export { toOnlineMembers } from "./chat-presence.utils";
 export {
+  applyChatReaction,
+  describeReactionChip,
+  getNextViewerReaction,
+  getViewerReaction,
+  isChatReactionEmoji,
+  replaceMessageReactions,
+  summarizeChatReactions,
+} from "./chat-reaction.utils";
+export {
   buildPreviewMessages,
   buildPreviewOnlineMembers,
   buildPreviewViewer,

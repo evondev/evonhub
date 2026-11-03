@@ -43,8 +43,8 @@ export function ChatOnlineList({ members }: ChatOnlineListProps) {
             <span className="size-2 shrink-0 rounded-full bg-green-600" />
             {/* Một span chứa cả câu: chữ nằm thẳng trong flex thì bị giãn theo gap */}
             <span className="truncate">
-              {members.length}{" "}
-              <span className="hidden sm:inline">đang </span>online
+              {members.length} <span className="hidden sm:inline">đang </span>
+              online
             </span>
           </span>
         </Button>

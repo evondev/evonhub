@@ -32,7 +32,9 @@ export function ChatRoomSkeleton({
             <Skeleton className="size-8 shrink-0 rounded-full" />
             <div className="flex-1 space-y-2 pt-1">
               <Skeleton className="h-3 w-28 rounded-full" />
-              <Skeleton className={cn("h-3 max-w-md rounded-full", lineWidth)} />
+              <Skeleton
+                className={cn("h-3 max-w-md rounded-full", lineWidth)}
+              />
             </div>
           </div>
         ))}

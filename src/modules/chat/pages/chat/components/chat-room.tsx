@@ -29,15 +29,18 @@ export function ChatRoom({
     isLoadingOlder,
     receiveMessage,
     removeMessage,
+    receiveReactions,
     loadOlderMessages,
     syncMessages,
     sendMessage,
     deleteMessage,
+    reactToMessage,
     clearMessages,
   } = useChatMessages({ viewer, initialMessages, initialHasMore });
   const { onlineMembers, isRealtimeEnabled } = useChatChannel({
     onMessage: receiveMessage,
     onMessageDeleted: removeMessage,
+    onMessageReacted: receiveReactions,
     onSync: syncMessages,
   });
   const minutesLeft = useMinutesUntilMidnight();
@@ -58,6 +61,7 @@ export function ChatRoom({
       onLoadOlder={loadOlderMessages}
       onSend={sendMessage}
       onDeleteMessage={deleteMessage}
+      onReactMessage={reactToMessage}
     />
   );
 }
