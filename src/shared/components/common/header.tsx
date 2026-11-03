@@ -18,11 +18,12 @@ import { usePathname } from "next/navigation";
 import { ModeToggle } from "../../../components/ModeToggle";
 import Notification from "./notification";
 
-// Trang tổng quan, Khóa học, Trò chuyện, Đơn hàng, Quản lý thành viên, Quản lý bình luận không có đầu trang riêng nên tên nằm trên
+// Trang tổng quan, Khóa học, Video, Trò chuyện, Đơn hàng, Quản lý thành viên, Quản lý bình luận không có đầu trang riêng nên tên nằm trên
 // thanh header (là <h1>). Các trang khác tự có tiêu đề, ghi thêm ở đây sẽ bị lặp.
 const HEADER_TITLE_PATHS = [
   "/",
   "/explore",
+  "/videos",
   "/chat",
   "/my-orders",
   "/admin/user/manage",

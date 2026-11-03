@@ -1,6 +1,7 @@
 import {
   Activity,
   BookOpen,
+  Clapperboard,
   CircleUser,
   ClipboardList,
   Compass,
@@ -45,6 +46,14 @@ export const menuLinks: MenuLinkItemProps[] = [
     mobileTitle: "Khóa học",
     icon: <Compass />,
     url: "/explore",
+  },
+  {
+    title: "Video",
+    icon: <Clapperboard />,
+    url: "/videos",
+    // Trang xem một video là /video/<slug>, không bắt đầu bằng /videos
+    activePathPrefix: "/video/",
+    isHideMobileForManager: true,
   },
   {
     title: "Trò chuyện",

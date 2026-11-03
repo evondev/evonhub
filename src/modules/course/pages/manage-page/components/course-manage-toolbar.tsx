@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { FilterTabs, SearchInput } from "@/shared/components/common";
 import { FilterTabItem } from "@/shared/types";
-import { Plus } from "lucide-react";
+import { Clapperboard, Plus } from "lucide-react";
 import Link from "next/link";
 import { RefObject } from "react";
-import { COURSE_ADD_NEW_PATH } from "../../../constants/course-manage.constants";
+import {
+  COURSE_ADD_NEW_PATH,
+  VIDEO_ADD_NEW_PATH,
+} from "../../../constants/course-manage.constants";
 import {
   CourseManageFilters,
   CourseManageTab,
@@ -20,6 +23,8 @@ interface CourseManageToolbarProps {
   searchInputRef: RefObject<HTMLInputElement>;
   /** id của bảng mà tab đang lọc */
   controlsId: string;
+  /** Chỉ admin tạo được video lẻ */
+  canAddVideo: boolean;
 }
 
 /**
@@ -36,6 +41,7 @@ export function CourseManageToolbar({
   onSearch,
   searchInputRef,
   controlsId,
+  canAddVideo,
 }: CourseManageToolbarProps) {
   return (
     <div className="flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:justify-between">
@@ -62,6 +68,19 @@ export function CourseManageToolbar({
           label="Tìm khóa học"
           className="flex-1 2xl:w-72 2xl:flex-none"
         />
+        {canAddVideo && (
+          <Button
+            asChild
+            variant="outline"
+            className="h-11 shrink-0 px-3.5 sm:px-4 md:h-10"
+          >
+            <Link href={VIDEO_ADD_NEW_PATH} aria-label="Thêm video">
+              <Clapperboard className="size-4" />
+              {/* Dưới sm chỉ còn icon để ô tìm còn chỗ */}
+              <span className="hidden sm:inline">Thêm video</span>
+            </Link>
+          </Button>
+        )}
         <Button
           asChild
           variant="primary"

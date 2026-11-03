@@ -17,9 +17,15 @@ import {
   sendManualOrderPendingExpertEmail,
   sendOrderCreatedEmail,
 } from "@/modules/email/services/order-email.service";
+import LectureModel from "@/modules/lecture/models";
+import LessonModel from "@/modules/lesson/models";
 import UserModel from "@/modules/user/models";
 import { ActivityType } from "@/shared/constants/activity.constants";
-import { CourseStatus } from "@/shared/constants/course.constants";
+import {
+  COURSE_ONLY_QUERY,
+  CourseStatus,
+  CourseType,
+} from "@/shared/constants/course.constants";
 import {
   OrderPaymentMethod,
   OrderStatus,
@@ -34,6 +40,7 @@ import {
 import { connectToDatabase } from "@/shared/libs";
 import {
   canAccessCourseContent,
+  getCurrentAdmin,
   getCurrentCourseManager,
   getCurrentStaff,
   getCurrentUser,
@@ -51,6 +58,8 @@ import {
 } from "../types/course-manage.types";
 import {
   CourseItemData,
+  CreateVideoProps,
+  CreateVideoResponse,
   EnrollCourseProps,
   EnrollFreeProps,
   EnrollFreeResponse,
@@ -60,8 +69,12 @@ import {
   FetchCoursesManageProps,
   FetchCoursesParams,
   FetchExploreCoursesParams,
+  FetchVideosParams,
+  VideoDetailsData,
+  VideoListItem,
+  VideoUpdateData,
 } from "../types";
-import { escapeRegExp, isCourseOwned } from "../utils";
+import { escapeRegExp, isCourseFree, isCourseOwned } from "../utils";
 
 export async function fetchCourses({
   status,
@@ -75,7 +88,10 @@ export async function fetchCourses({
   try {
     await connectToDatabase();
     // Khóa đã soft-delete thì không được lọt vào bất kỳ danh sách nào
-    let query: FilterQuery<typeof CourseModel> = { _destroy: false };
+    let query: FilterQuery<typeof CourseModel> = {
+      _destroy: false,
+      ...COURSE_ONLY_QUERY,
+    };
 
     const skip = (page - 1) * limit;
     if (search) {
@@ -138,6 +154,7 @@ export async function fetchExploreCourses({
     const matchQuery: FilterQuery<typeof CourseModel> = {
       _destroy: false,
       status: CourseStatus.Approved,
+      ...COURSE_ONLY_QUERY,
     };
 
     if (search) {
@@ -202,6 +219,7 @@ export async function fetchCoursesIncoming(): Promise<
     const courses = await CourseModel.find({
       status: CourseStatus.Pending,
       _destroy: false,
+      ...COURSE_ONLY_QUERY,
     })
       .select("title slug image level rating price salePrice views free")
       .sort({ createdAt: -1 });
@@ -223,7 +241,7 @@ const findCourseBySlug = cache(async (slug: string, status?: CourseStatus) => {
   }
 
   return CourseModel.findOne(searchQuery).select(
-    "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author minPrice isMicro",
+    "title info desc level views intro image price salePrice status slug cta ctaLink seoKeywords free author minPrice isMicro type",
   );
 });
 
@@ -504,7 +522,7 @@ export async function fetchCoursesManage({
         .limit(limit)
         .skip(skip)
         .sort({ createdAt: -1 })
-        .select("title slug image createdAt status price _id free"),
+        .select("title slug image createdAt status price _id free type"),
       CourseModel.aggregate<StatusCountGroup>(
         buildStatusCountPipeline(baseQuery),
       ),
@@ -596,4 +614,260 @@ export async function getAllCoursesUser(
 
     return courses;
   } catch (error) {}
+}
+
+/**
+ * Tạo video lẻ: một course `type: video` kèm một chương ẩn và một bài học cùng
+ * tên. Người tạo chỉ thấy một form, phần chương và bài do server dựng.
+ */
+export async function createVideo({
+  title,
+  slug,
+}: CreateVideoProps): Promise<CreateVideoResponse> {
+  try {
+    await connectToDatabase();
+    const currentAdmin = await getCurrentAdmin();
+
+    if (!currentAdmin)
+      return {
+        type: "error",
+        message: "Bạn không có quyền thực hiện thao tác này",
+      };
+
+    const isSlugTaken = await CourseModel.exists({ slug });
+
+    if (isSlugTaken)
+      return {
+        type: "error",
+        message: "Đường dẫn này đã tồn tại!",
+      };
+
+    const newVideo = await CourseModel.create({
+      title,
+      slug,
+      type: CourseType.Video,
+      author: currentAdmin._id,
+      _destroy: false,
+    });
+
+    try {
+      const newLecture = await LectureModel.create({
+        title,
+        courseId: newVideo._id,
+        _destroy: false,
+      });
+      const newLesson = await LessonModel.create({
+        title,
+        slug,
+        courseId: newVideo._id,
+        lectureId: newLecture._id,
+        _destroy: false,
+      });
+
+      await Promise.all([
+        LectureModel.updateOne(
+          { _id: newLecture._id },
+          { $push: { lessons: newLesson._id } },
+        ),
+        CourseModel.updateOne(
+          { _id: newVideo._id },
+          { $push: { lecture: newLecture._id } },
+        ),
+      ]);
+    } catch (error) {
+      // Video thiếu chương hoặc bài thì không xem được: xóa phần đã tạo để tạo lại
+      await Promise.all([
+        CourseModel.deleteOne({ _id: newVideo._id }),
+        LectureModel.deleteMany({ courseId: newVideo._id }),
+        LessonModel.deleteMany({ courseId: newVideo._id }),
+      ]);
+      throw error;
+    }
+
+    await recordActivity({
+      userId: currentAdmin._id,
+      type: ActivityType.CreateCourse,
+      courseId: newVideo._id,
+      targetTitle: title,
+      detail: "Video lẻ",
+    });
+
+    return {
+      type: "success",
+      message: "Đã tạo video",
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      type: "error",
+      message: "Chưa tạo được video, thử lại sau",
+    };
+  }
+}
+
+/** Dữ liệu trang sửa video lẻ, chỉ admin đọc được */
+export async function fetchVideoUpdateData(
+  slug: string,
+): Promise<VideoUpdateData | undefined> {
+  try {
+    await connectToDatabase();
+    const currentAdmin = await getCurrentAdmin();
+
+    if (!currentAdmin) return;
+
+    const video = await CourseModel.findOne({
+      slug,
+      type: CourseType.Video,
+      _destroy: false,
+    }).select(
+      "title slug price salePrice intro desc image cta seoKeywords free level status",
+    );
+
+    if (!video) return;
+
+    const lesson = await LessonModel.findOne({
+      courseId: video._id,
+      _destroy: false,
+    }).select("video assetId iframe content duration");
+
+    if (!lesson) return;
+
+    return parseData({ ...video.toObject(), lesson });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// generateMetadata và page trong cùng một request dùng chung một lần đọc
+const findVideoBySlug = cache(async (slug: string) => {
+  await connectToDatabase();
+
+  return CourseModel.findOne({
+    slug,
+    type: CourseType.Video,
+    _destroy: false,
+  }).select(
+    "title slug desc intro image price salePrice free cta level status seoKeywords",
+  );
+});
+
+/**
+ * Trang xem video lẻ. Người chưa có quyền xem chỉ nhận phần giới thiệu, không
+ * nhận video và nội dung. Đang bán là trang công khai; ngừng bán chỉ người đã
+ * mua và người quản lý; chờ duyệt, lưu trữ chỉ người quản lý.
+ */
+export async function fetchVideoDetails(
+  slug: string,
+): Promise<VideoDetailsData | undefined> {
+  try {
+    const video = await findVideoBySlug(slug);
+
+    if (!video) return;
+
+    const videoId = video._id.toString();
+    const hasAccess = await canAccessCourseContent(videoId);
+
+    if (video.status !== CourseStatus.Approved) {
+      const canSeeHiddenVideo =
+        video.status === CourseStatus.Rejected
+          ? hasAccess
+          : Boolean(await getCurrentCourseManager(videoId));
+
+      if (!canSeeHiddenVideo) return;
+    }
+
+    const lesson = await LessonModel.findOne({
+      courseId: video._id,
+      _destroy: false,
+    }).select("video iframe content duration");
+
+    if (!lesson) return;
+
+    const isFree = isCourseFree(video);
+    // Video miễn phí xem được cả khi chưa đăng nhập, khi đó hasAccess là false
+    const canWatch = isFree || hasAccess;
+    const lessonData = canWatch
+      ? lesson.toObject()
+      : { _id: lesson._id, duration: lesson.duration };
+
+    return parseData({
+      ...video.toObject(),
+      lesson: lessonData,
+      isFree,
+      canWatch,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/** Video lẻ đang bán cho trang danh sách, mới nhất trước, kèm thời lượng của bài */
+export async function fetchVideos({
+  search,
+  isFree,
+  limit,
+}: FetchVideosParams): Promise<VideoListItem[] | undefined> {
+  try {
+    await connectToDatabase();
+
+    const matchQuery: FilterQuery<typeof CourseModel> = {
+      type: CourseType.Video,
+      status: CourseStatus.Approved,
+      _destroy: false,
+    };
+
+    if (search) {
+      matchQuery.title = { $regex: escapeRegExp(search), $options: "i" };
+    }
+
+    // Cùng định nghĩa với isCourseFree: bật cờ free và giá 0
+    if (isFree) {
+      matchQuery.free = true;
+      matchQuery.price = { $lte: 0 };
+    }
+
+    const videos = await CourseModel.aggregate<VideoListItem>([
+      { $match: matchQuery },
+      { $sort: { createdAt: -1 } },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: LessonModel.collection.name,
+          let: { videoId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$courseId", "$$videoId"] },
+                _destroy: false,
+              },
+            },
+            { $project: { duration: 1 } },
+            { $limit: 1 },
+          ],
+          as: "lessons",
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          slug: 1,
+          image: 1,
+          level: 1,
+          rating: 1,
+          price: 1,
+          salePrice: 1,
+          free: 1,
+          createdAt: 1,
+          duration: {
+            $ifNull: [{ $arrayElemAt: ["$lessons.duration", 0] }, 0],
+          },
+        },
+      },
+    ]);
+
+    return parseData(videos);
+  } catch (error) {
+    console.error("fetchVideos error:", error);
+  }
 }

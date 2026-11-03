@@ -30,6 +30,11 @@ function isVisibleOnMobile(link: MenuLinkItemProps, role: string) {
     return false;
   if (link.isHideForAdmin && [UserRole.Admin].includes(role as UserRole))
     return false;
+  if (
+    link.isHideMobileForManager &&
+    [UserRole.Expert, UserRole.Admin].includes(role as UserRole)
+  )
+    return false;
 
   return true;
 }

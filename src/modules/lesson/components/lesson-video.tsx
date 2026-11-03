@@ -9,10 +9,17 @@ export interface LessonVideoProps {
   iframeId: string;
   // Gọi liên tục trong 10 giây cuối video, nơi gọi tự lo việc chỉ ghi một lần
   onNearEnd: () => void;
+  /** Trang học tự phát; trang video lẻ chờ người xem bấm */
+  isAutoPlay?: boolean;
 }
 
 // Video sát mép màn ở mobile, bo góc từ lg. Player tự có nút toàn màn hình.
-export function LessonVideo({ videoId, iframeId, onNearEnd }: LessonVideoProps) {
+export function LessonVideo({
+  videoId,
+  iframeId,
+  onNearEnd,
+  isAutoPlay = true,
+}: LessonVideoProps) {
   const handleTimeUpdate = (event: Event) => {
     const player = event.target as HTMLMediaElement | null;
     if (!player?.duration) return;
@@ -28,7 +35,7 @@ export function LessonVideo({ videoId, iframeId, onNearEnd }: LessonVideoProps) 
           streamType="on-demand"
           playbackId={videoId}
           className="block size-full"
-          autoPlay
+          autoPlay={isAutoPlay}
           onTimeUpdate={handleTimeUpdate}
         />
       )}

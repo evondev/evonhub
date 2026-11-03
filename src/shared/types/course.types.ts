@@ -2,6 +2,7 @@ import {
   CourseLabel,
   CourseLevel,
   CourseStatus,
+  CourseType,
 } from "@/shared/constants/course.constants";
 import { LectureItemData } from "@/shared/types";
 import mongoose, { Document, Schema } from "mongoose";
@@ -43,6 +44,7 @@ export interface CourseModelProps extends Document {
   free: boolean;
   isPackage: boolean;
   _destroy: boolean;
+  type?: CourseType;
 }
 
 export interface CourseItemData

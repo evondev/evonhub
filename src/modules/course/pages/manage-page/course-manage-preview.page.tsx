@@ -64,6 +64,7 @@ export function CourseManagePreviewPage({
         isError={state === "loi"}
         isRefreshing={false}
         onRetry={handleRetry}
+        canAddVideo
       />
     </div>
   );

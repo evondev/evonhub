@@ -196,7 +196,7 @@ export function CourseUpdatePage({
           {/* Từ lg dính dưới header nổi (đáy 80px) để nút Lưu luôn trong tầm tay */}
           <aside className="lg:sticky lg:top-24">
             <CoursePublishCard
-              savedSlug={courseSlug}
+              previewHref={`/course/${courseSlug}`}
               isSubmitting={isSubmitting}
             />
           </aside>

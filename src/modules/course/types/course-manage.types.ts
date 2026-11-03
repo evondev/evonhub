@@ -21,6 +21,8 @@ export interface CourseManageRow {
   status: CourseStatus;
   price: number;
   isFree: boolean;
+  /** Video lẻ: sửa ở trang riêng, không có trang soạn nội dung */
+  isVideo?: boolean;
   studentCount: number;
   createdAt: Date | string;
 }

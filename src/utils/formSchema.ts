@@ -39,6 +39,33 @@ export const updateCourseSchema = z.object({
   seoKeywords: z.string().optional(),
   free: z.boolean().optional(),
 });
+export const createVideoSchema = updateCourseSchema.pick({
+  title: true,
+  slug: true,
+});
+// Video lẻ: phần thông tin bán lấy từ form khóa học, phần video và nội dung là của bài học duy nhất
+export const updateVideoSchema = updateCourseSchema
+  .pick({
+    title: true,
+    slug: true,
+    cta: true,
+    price: true,
+    salePrice: true,
+    intro: true,
+    image: true,
+    desc: true,
+    level: true,
+    status: true,
+    seoKeywords: true,
+    free: true,
+  })
+  .extend({
+    video: z.string(),
+    assetId: z.string(),
+    iframe: z.string(),
+    content: z.string(),
+    duration: z.coerce.number().min(0),
+  });
 export const updateUserSchema = z.object({
   name: z.string().optional(),
   email: z.string().email().optional(),

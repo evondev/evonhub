@@ -61,6 +61,8 @@ export const COURSE_MANAGE_DEFAULT_FILTERS: CourseManageFilters = {
 
 export const COURSE_ADD_NEW_PATH = "/admin/course/add-new";
 
+export const VIDEO_ADD_NEW_PATH = "/admin/video/add-new";
+
 /** Khung chờ vẽ chừng này dòng, gần bằng một trang thật */
 export const COURSE_MANAGE_SKELETON_ROW_COUNT = 8;
 

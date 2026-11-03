@@ -10,7 +10,9 @@ import {
 import { LessonItemCutomizeData } from "@/shared/types";
 import { CourseItemData } from "@/shared/types/course.types";
 import { UserItemData } from "@/shared/types/user.types";
+import { CourseType } from "@/shared/constants/course.constants";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export interface LessonNewPageProps {
   searchParams: {
@@ -43,6 +45,9 @@ export default async function LessonNewPage({
     CourseItemData,
     LessonItemCutomizeData | undefined,
   ];
+
+  // Video lẻ xem ở trang riêng; khu học tập, email đơn hàng vẫn dẫn về link bài học
+  if (courseDetails?.type === CourseType.Video) redirect(`/video/${courseSlug}`);
 
   const userCourseIds =
     mongoUser?.courses.map((course) => course._id.toString()) || [];

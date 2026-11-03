@@ -2,8 +2,8 @@ import { fetchCourseBySlug } from "@/modules/course/actions";
 import { incrementCourseViews } from "@/modules/course/services/course-views.service";
 import { fetchLessonDetailsOutline } from "@/modules/lesson/actions";
 import { fetchRatingsByCourse } from "@/modules/rating/actions";
-import { CourseStatus } from "@/shared/constants/course.constants";
-import { notFound } from "next/navigation";
+import { CourseStatus, CourseType } from "@/shared/constants/course.constants";
+import { notFound, redirect } from "next/navigation";
 import { CourseDetailsPageContainer } from "./course-details-page.container";
 
 interface CourseDetailsContentProps {
@@ -17,6 +17,10 @@ export async function CourseDetailsContent({ slug }: CourseDetailsContentProps) 
     fetchLessonDetailsOutline(slug),
     incrementCourseViews(slug),
   ]);
+
+  // Video lẻ có trang riêng, tự xét quyền xem: link cũ hoặc gõ tay /course/<slug>
+  // vẫn tới đúng chỗ, kể cả video ngừng bán mà người xem đã mua
+  if (course?.type === CourseType.Video) redirect(`/video/${slug}`);
 
   const isHiddenFromSale =
     course?.status === CourseStatus.Rejected ||

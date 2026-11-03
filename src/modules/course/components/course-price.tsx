@@ -3,7 +3,8 @@ import { CourseItemData } from "../types";
 import { isCourseFree } from "../utils";
 
 interface CoursePriceProps {
-  course: CourseItemData;
+  /** Khóa học hay video lẻ đều được, chỉ cần giá và cờ miễn phí */
+  course: Pick<CourseItemData, "price" | "salePrice" | "free">;
 }
 
 export function CoursePrice({ course }: CoursePriceProps) {

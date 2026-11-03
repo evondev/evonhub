@@ -16,9 +16,11 @@ import {
 } from "../../utils/course-manage.utils";
 import { CourseManageView } from "./components";
 
-export interface CourseManagePageProps {}
+export interface CourseManagePageProps {
+  canAddVideo: boolean;
+}
 
-export function CourseManagePage(_props: CourseManagePageProps) {
+export function CourseManagePage({ canAddVideo }: CourseManagePageProps) {
   const [filters, setFilters] = useQueryStates({
     search: parseAsString.withDefault(""),
     tab: parseAsStringLiteral(COURSE_MANAGE_TAB_VALUES).withDefault("all"),
@@ -52,6 +54,7 @@ export function CourseManagePage(_props: CourseManagePageProps) {
       isError={!isPending && !data}
       isRefreshing={isPlaceholderData && isFetching}
       onRetry={refetch}
+      canAddVideo={canAddVideo}
     />
   );
 }

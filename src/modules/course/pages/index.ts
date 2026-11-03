@@ -3,3 +3,7 @@ export * from "./course-details-page";
 export * from "./explore-page";
 export * from "./manage-page";
 export * from "./update-page";
+export * from "./video-add-page";
+export * from "./video-update-page";
+export * from "./video-details-page";
+export * from "./video-list-page";

@@ -8,10 +8,14 @@ import { EXPLORE_SEARCH_DEBOUNCE_MS } from "../../../constants";
 interface ExploreSearchInputProps {
   /** Từ khóa đang có trên URL */
   defaultValue: string;
+  placeholder?: string;
 }
 
 /** Gõ dừng một nhịp thì tìm, Enter thì tìm ngay. Đổi từ khóa là về trang 1 */
-export function ExploreSearchInput({ defaultValue }: ExploreSearchInputProps) {
+export function ExploreSearchInput({
+  defaultValue,
+  placeholder = "Tìm khóa học",
+}: ExploreSearchInputProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [keyword, setKeyword] = useState(defaultValue);
@@ -77,8 +81,8 @@ export function ExploreSearchInput({ defaultValue }: ExploreSearchInputProps) {
         type="search"
         value={keyword}
         onChange={handleChange}
-        placeholder="Tìm khóa học"
-        aria-label="Tìm khóa học"
+        placeholder={placeholder}
+        aria-label={placeholder}
         aria-busy={isPending}
         className="h-11 w-full rounded-xl border border-border-strong bg-surface pl-10 pr-3.5 text-base text-foreground outline-none transition-colors placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/15 md:h-10 md:text-sm"
       />

@@ -41,30 +41,56 @@ export function CourseRowMenu({ course }: CourseRowMenuProps) {
         align="end"
         className="flex w-56 flex-col gap-1 rounded-xl border-border bg-surface p-1 text-foreground shadow-lg dark:border-border dark:bg-surface dark:text-foreground"
       >
-        <DropdownMenuItem asChild className={menuItemClassName}>
-          <Link href={buildCourseContentHref(course)}>
-            <ListTree className="size-4 text-muted" />
-            Soạn nội dung
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild className={menuItemClassName}>
-          <Link href={buildCourseUpdateHref(course)}>
-            <Pencil className="size-4 text-muted" />
-            Sửa thông tin
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator className="my-1 bg-border dark:bg-border" />
-        {/* Trang công khai mở tab mới để không rời bảng đang lọc */}
-        <DropdownMenuItem asChild className={menuItemClassName}>
-          <Link
-            href={buildCoursePublicHref(course)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <ExternalLink className="size-4 text-muted" />
-            Xem trang khóa học
-          </Link>
-        </DropdownMenuItem>
+        {/* Video lẻ sửa video, nội dung, giá ở cùng một trang */}
+        {course.isVideo && (
+          <>
+            <DropdownMenuItem asChild className={menuItemClassName}>
+              <Link href={buildCourseUpdateHref(course)}>
+                <Pencil className="size-4 text-muted" />
+                Sửa video
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="my-1 bg-border dark:bg-border" />
+            <DropdownMenuItem asChild className={menuItemClassName}>
+              <Link
+                href={buildCoursePublicHref(course)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ExternalLink className="size-4 text-muted" />
+                Xem trang video
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
+        {!course.isVideo && (
+          <>
+            <DropdownMenuItem asChild className={menuItemClassName}>
+              <Link href={buildCourseContentHref(course)}>
+                <ListTree className="size-4 text-muted" />
+                Soạn nội dung
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild className={menuItemClassName}>
+              <Link href={buildCourseUpdateHref(course)}>
+                <Pencil className="size-4 text-muted" />
+                Sửa thông tin
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="my-1 bg-border dark:bg-border" />
+            {/* Trang công khai mở tab mới để không rời bảng đang lọc */}
+            <DropdownMenuItem asChild className={menuItemClassName}>
+              <Link
+                href={buildCoursePublicHref(course)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ExternalLink className="size-4 text-muted" />
+                Xem trang khóa học
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

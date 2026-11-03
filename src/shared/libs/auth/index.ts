@@ -1,6 +1,10 @@
 import CourseModel from "@/modules/course/models";
 import { canManageCourse } from "@/modules/course/services/course-permission.service";
 import UserModel from "@/modules/user/models";
+import {
+  CourseStatus,
+  CourseType,
+} from "@/shared/constants/course.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { connectToDatabase } from "@/shared/libs/mongoose";
 import { auth } from "@clerk/nextjs/server";
@@ -60,7 +64,31 @@ export async function getCurrentCourseManager(courseId: string) {
   return canManage ? currentUser : null;
 }
 
-/** Đã mua khóa (có trong user.courses) hoặc quản lý được khóa đó */
+/**
+ * Video lẻ miễn phí đang bán: ai cũng xem được, không cần nhận vào user.courses.
+ * Cùng định nghĩa miễn phí với isCourseFree: bật cờ free và giá 0
+ */
+export async function isPublicFreeVideo(courseId: string): Promise<boolean> {
+  if (!isValidObjectId(courseId)) return false;
+
+  await connectToDatabase();
+
+  const freeVideo = await CourseModel.exists({
+    _id: courseId,
+    type: CourseType.Video,
+    free: true,
+    price: { $lte: 0 },
+    status: CourseStatus.Approved,
+    _destroy: false,
+  });
+
+  return Boolean(freeVideo);
+}
+
+/**
+ * Đã mua khóa (có trong user.courses), quản lý được khóa đó, hoặc khóa là video
+ * miễn phí đang bán (để bình luận, ghi lịch sử xem như người đã nhận)
+ */
 export async function canAccessCourseContent(courseId: string) {
   const currentUser = await getCurrentUser();
 
@@ -71,6 +99,8 @@ export async function canAccessCourseContent(courseId: string) {
   );
 
   if (ownedCourseIds.includes(courseId.toString())) return true;
+
+  if (await isPublicFreeVideo(courseId.toString())) return true;
 
   return canManageCourse({
     role: currentUser.role,

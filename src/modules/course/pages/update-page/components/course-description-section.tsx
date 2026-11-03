@@ -6,14 +6,20 @@ import { useFormContext } from "react-hook-form";
 import type { CourseUpdateFormValues } from "../../../types";
 import { CourseFormSection } from "./course-form-section";
 
-export function CourseDescriptionSection() {
+export interface CourseDescriptionSectionProps {
+  description?: string;
+}
+
+export function CourseDescriptionSection({
+  description = "Hiện ở phần giới thiệu trên trang bán khóa học.",
+}: CourseDescriptionSectionProps) {
   const { control } = useFormContext<CourseUpdateFormValues>();
   const { theme } = useTheme();
 
   return (
     <CourseFormSection
       title="Mô tả"
-      description="Hiện ở phần giới thiệu trên trang bán khóa học."
+      description={description}
     >
       <FormField
         control={control}

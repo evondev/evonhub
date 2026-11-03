@@ -1,4 +1,4 @@
-import { CourseStatus } from "@/shared/constants/course.constants";
+import { CourseStatus, CourseType } from "@/shared/constants/course.constants";
 import { FilterTabItem } from "@/shared/types";
 import { formatThoundsand } from "@/shared/utils";
 import { COURSE_MANAGE_TABS } from "../constants/course-manage.constants";
@@ -20,6 +20,7 @@ export function toCourseManageRow(course: CourseItemData): CourseManageRow {
     status: course.status,
     price: course.price,
     isFree: isCourseFree(course),
+    isVideo: course.type === CourseType.Video,
     studentCount: course.studentCount || 0,
     createdAt: course.createdAt,
   };
@@ -42,15 +43,30 @@ export function buildCourseManageTabs(
   }));
 }
 
+export function buildVideoUpdateHref(slug: string): string {
+  return `/admin/video/update?slug=${slug}`;
+}
+
+/** Video lẻ không có trang soạn nội dung: video và nội dung sửa chung một trang */
 export function buildCourseContentHref(course: CourseManageRow): string {
+  if (course.isVideo) return buildVideoUpdateHref(course.slug);
+
   return `/admin/course/content?slug=${course.slug}`;
 }
 
 export function buildCourseUpdateHref(course: CourseManageRow): string {
+  if (course.isVideo) return buildVideoUpdateHref(course.slug);
+
   return `/admin/course/update?slug=${course.slug}`;
 }
 
+export function buildVideoPublicHref(slug: string): string {
+  return `/video/${slug}`;
+}
+
 export function buildCoursePublicHref(course: CourseManageRow): string {
+  if (course.isVideo) return buildVideoPublicHref(course.slug);
+
   return `/course/${course.slug}`;
 }
 

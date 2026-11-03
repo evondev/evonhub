@@ -1,3 +1,4 @@
+import { ToneBadge } from "@/shared/components/common";
 import Link from "next/link";
 import { CourseManageRow } from "../../../types/course-manage.types";
 import { buildCourseContentHref } from "../../../utils/course-manage.utils";
@@ -22,6 +23,9 @@ export function CourseIdentity({ course }: CourseIdentityProps) {
       >
         {course.title}
       </Link>
+      {course.isVideo && (
+        <ToneBadge tone="neutral" label="Video" className="shrink-0 py-0.5" />
+      )}
     </div>
   );
 }
