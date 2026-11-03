@@ -27,7 +27,8 @@ export function VideoListSkeleton({ view }: VideoListSkeletonProps) {
               <div className="flex flex-col gap-2 p-4 sm:p-5">
                 <Skeleton className="h-4 w-11/12 rounded-full" />
                 <Skeleton className="h-4 w-2/3 rounded-full" />
-                <Skeleton className="mt-1 h-3 w-1/3 rounded-full" />
+                <Skeleton className="mt-1 h-3 w-full rounded-full" />
+                <Skeleton className="h-3 w-1/3 rounded-full" />
                 <Skeleton className="mt-3 h-4 w-20 rounded-full" />
               </div>
             </div>

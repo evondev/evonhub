@@ -30,6 +30,11 @@ export function VideoCard({ video, isPriority = false }: VideoCardProps) {
         <h3 className="line-clamp-2 text-base font-semibold text-foreground">
           {video.title}
         </h3>
+        {video.excerpt && (
+          <p className="line-clamp-2 text-pretty text-sm text-muted">
+            {video.excerpt}
+          </p>
+        )}
         <p className="text-xs text-muted">{formatVideoMeta(video)}</p>
         <div className="mt-auto flex min-h-5 items-center justify-between gap-2 pt-2.5 sm:pt-3">
           <CoursePrice course={video} />
