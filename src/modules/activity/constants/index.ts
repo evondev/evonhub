@@ -110,7 +110,8 @@ export const ACTIVITY_SKELETON_ROW_COUNT = 6;
 
 export const ACTIVITY_MANAGE_DEFAULT_FILTERS: ActivityManageFilters = {
   search: "",
-  tab: "all",
+  // Vào trang là xem ai đang học trước
+  tab: "online",
   courseId: "",
   page: 1,
 };
