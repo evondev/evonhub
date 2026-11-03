@@ -1,3 +1,11 @@
+import {
+  StudyStreakCardSkeleton,
+  StudyStreakError,
+  StudyStreakPanel,
+} from "@/modules/leaderboard/components";
+import { PREVIEW_STREAK_STATUSES } from "@/modules/leaderboard/constants/leaderboard-preview.constants";
+import { getDayEndRemainingLabel } from "@/modules/leaderboard/utils";
+import { buildPreviewStudyStreak } from "@/modules/leaderboard/utils/leaderboard-preview.utils";
 import { PreviewStateSwitcher } from "@/shared/components/common";
 import {
   DashboardSkeleton,
@@ -23,6 +31,7 @@ interface DashboardPreviewPageProps {
  */
 export function DashboardPreviewPage({ state }: DashboardPreviewPageProps) {
   const previewCourses = buildPreviewCourses();
+  const todayRemainingLabel = getDayEndRemainingLabel();
 
   return (
     <div className="flex flex-col gap-4">
@@ -52,7 +61,27 @@ export function DashboardPreviewPage({ state }: DashboardPreviewPageProps) {
           catalogCourses={previewCourses}
           firstName={PREVIEW_FIRST_NAME}
           roadmapStepConfigs={PREVIEW_ROADMAP_STEPS}
+          studyStreak={
+            <StudyStreakPanel
+              streak={buildPreviewStudyStreak("risk")}
+              todayRemainingLabel={todayRemainingLabel}
+            />
+          }
         />
+      )}
+      {/* Mọi trạng thái của thẻ chuỗi xếp chồng, vì dashboard chỉ hiện một */}
+      {state === "chuoi-ngay-hoc" && (
+        <div className="flex flex-col gap-4">
+          {PREVIEW_STREAK_STATUSES.map((streakStatus) => (
+            <StudyStreakPanel
+              key={streakStatus}
+              streak={buildPreviewStudyStreak(streakStatus)}
+              todayRemainingLabel={todayRemainingLabel}
+            />
+          ))}
+          <StudyStreakCardSkeleton />
+          <StudyStreakError />
+        </div>
       )}
     </div>
   );

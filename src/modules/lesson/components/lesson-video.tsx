@@ -11,6 +11,8 @@ export interface LessonVideoProps {
   onNearEnd: () => void;
   /** Trang học tự phát; trang video lẻ chờ người xem bấm */
   isAutoPlay?: boolean;
+  /** Mỗi nhịp timeupdate, để đo phút học cho bảng xếp hạng */
+  onPlaybackTick?: (player: HTMLMediaElement) => void;
 }
 
 // Video sát mép màn ở mobile, bo góc từ lg. Player tự có nút toàn màn hình.
@@ -19,10 +21,13 @@ export function LessonVideo({
   iframeId,
   onNearEnd,
   isAutoPlay = true,
+  onPlaybackTick,
 }: LessonVideoProps) {
   const handleTimeUpdate = (event: Event) => {
     const player = event.target as HTMLMediaElement | null;
     if (!player?.duration) return;
+
+    onPlaybackTick?.(player);
 
     const isNearEnd = player.duration - player.currentTime <= NEAR_END_SECONDS;
     if (isNearEnd) onNearEnd();

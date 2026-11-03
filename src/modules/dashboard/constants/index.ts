@@ -150,6 +150,7 @@ export const PREVIEW_COURSE_PROGRESS: PreviewCourseProgress[] = [
 export const PREVIEW_STATE_LINKS: PreviewStateLink[] = [
   { state: "nguoi-moi", label: "Người mới" },
   { state: "hoc-vien", label: "Học viên" },
+  { state: "chuoi-ngay-hoc", label: "Chuỗi ngày học" },
   { state: "khach", label: "Khách" },
   { state: "chua-co-khoa", label: "Chưa mở khóa nào" },
   { state: "dang-tai", label: "Đang tải" },

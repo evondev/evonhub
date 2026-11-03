@@ -1,14 +1,17 @@
 import { formatThoundsand } from "@/shared/utils";
 
 interface PersonalStatsProps {
-  score: number;
+  studyMinutes: number;
   courseCount: number;
 }
 
 /** Một khung, kẻ chia bằng khe 1px lộ nền viền: hai ô cao bằng nhau */
-export function PersonalStats({ score, courseCount }: PersonalStatsProps) {
+export function PersonalStats({
+  studyMinutes,
+  courseCount,
+}: PersonalStatsProps) {
   const statItems = [
-    { label: "Điểm", value: formatThoundsand(score) },
+    { label: "Phút học", value: formatThoundsand(studyMinutes) },
     { label: "Khóa đang học", value: formatThoundsand(courseCount) },
   ];
 

@@ -25,5 +25,5 @@ export interface IUser extends Document {
   _destroy: boolean;
 }
 // Dùng chung model của module. Hai schema cùng tên "User" thì file nào nạp
-// trước thắng (schema cũ thiếu score, socials), và index chỉ khai ở schema của module.
+// trước thắng (schema cũ thiếu socials), và index chỉ khai ở schema của module.
 export { default } from "@/modules/user/models";

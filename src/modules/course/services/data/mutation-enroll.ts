@@ -12,7 +12,6 @@ export function userMutationEnrollCourse() {
         QUERY_KEYS.GET_USER_COURSES,
         QUERY_KEYS.GET_USER_BY_ID,
         QUERY_KEYS.GET_USER_COURSE_CONTINUE,
-        QUERY_KEYS.GET_LEADERBOARD
       );
     },
   });

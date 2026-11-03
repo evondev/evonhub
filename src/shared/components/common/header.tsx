@@ -18,14 +18,19 @@ import { usePathname } from "next/navigation";
 import { ModeToggle } from "../../../components/ModeToggle";
 import Notification from "./notification";
 
-// Trang tổng quan, Khóa học, Video, Trò chuyện, Đơn hàng, Quản lý thành viên, Quản lý bình luận không có đầu trang riêng nên tên nằm trên
+// Đơn hàng chỉ mở từ menu avatar, không nằm trong menuLinks nên ghi tên riêng
+const MY_ORDERS_PATH = "/my-orders";
+const MY_ORDERS_TITLE = "Đơn hàng của tôi";
+
+// Trang tổng quan, Khóa học, Video, Trò chuyện, Xếp hạng, Đơn hàng, Quản lý thành viên, Quản lý bình luận không có đầu trang riêng nên tên nằm trên
 // thanh header (là <h1>). Các trang khác tự có tiêu đề, ghi thêm ở đây sẽ bị lặp.
 const HEADER_TITLE_PATHS = [
   "/",
   "/explore",
   "/videos",
   "/chat",
-  "/my-orders",
+  "/leaderboard",
+  MY_ORDERS_PATH,
   "/admin/user/manage",
   "/admin/comment/manage",
 ];
@@ -37,7 +42,8 @@ export const Header = () => {
     useGlobalStore();
   const pathname = usePathname();
   const headerTitle = HEADER_TITLE_PATHS.includes(pathname)
-    ? menuLinks.find((link) => link.url === pathname)?.title
+    ? (menuLinks.find((link) => link.url === pathname)?.title ??
+      (pathname === MY_ORDERS_PATH ? MY_ORDERS_TITLE : undefined))
     : undefined;
   const isSignedInUser = Boolean(userId && isSignedIn);
 
@@ -105,7 +111,7 @@ export const Header = () => {
             <>
               <Notification />
               <div className="grid size-9 place-items-center">
-                {/* Mobile không có Hồ sơ, Đơn hàng ở thanh dưới nên để trong menu avatar */}
+                {/* Hồ sơ, Đơn hàng chỉ nằm trong menu avatar, sidebar và thanh dưới không lặp lại */}
                 <UserButton appearance={{ elements: { avatarBox: "size-8" } }}>
                   <UserButton.MenuItems>
                     <UserButton.Link
@@ -114,9 +120,9 @@ export const Header = () => {
                       href="/profile"
                     />
                     <UserButton.Link
-                      label="Đơn hàng của tôi"
+                      label={MY_ORDERS_TITLE}
                       labelIcon={<Receipt className="size-4" />}
-                      href="/my-orders"
+                      href={MY_ORDERS_PATH}
                     />
                   </UserButton.MenuItems>
                 </UserButton>

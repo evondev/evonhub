@@ -7,8 +7,6 @@ export type MenuLinkItemProps = {
   /** Sáng cả khi đang ở trang con, vd "/admin/" cho mục Quản lý */
   activePathPrefix?: string;
   isAdmin?: boolean;
-  isAuth?: boolean;
-  isHideMobile?: boolean;
   isExpert?: boolean;
   isExternal?: boolean;
   isNew?: boolean;

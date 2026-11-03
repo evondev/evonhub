@@ -85,10 +85,6 @@ const userSchema = new Schema<UserModelProps>({
     type: Boolean,
     default: false,
   },
-  score: {
-    type: Number,
-    default: 0,
-  },
   // Mốc xem panel thông báo lần cuối: thông báo mới hơn mốc này là chưa đọc
   notificationsSeenAt: {
     type: Date,

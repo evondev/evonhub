@@ -1,5 +1,5 @@
 import { CourseItemData } from "@/modules/course/types";
-import { Suspense } from "react";
+import { ReactNode, Suspense } from "react";
 import { IN_PROGRESS_COURSE_LIMIT } from "../constants";
 import { DashboardCourseProgress, RoadmapStepConfig } from "../types";
 import {
@@ -20,6 +20,10 @@ interface LearnerDashboardProps {
   firstName: string;
   /** Mặc định là ROADMAP_STEPS; trang xem trước truyền lộ trình giả */
   roadmapStepConfigs?: RoadmapStepConfig[];
+  /** Khối "Tuần này" của bảng xếp hạng, đọc riêng trong Suspense; trang xem trước bỏ trống */
+  weekLeaderboard?: ReactNode;
+  /** Thẻ chuỗi ngày học, đọc riêng trong Suspense; trang xem trước bỏ trống */
+  studyStreak?: ReactNode;
 }
 
 export function LearnerDashboard({
@@ -27,6 +31,8 @@ export function LearnerDashboard({
   catalogCourses,
   firstName,
   roadmapStepConfigs,
+  weekLeaderboard,
+  studyStreak,
 }: LearnerDashboardProps) {
   const inProgressCourses = coursesProgress.filter(
     (courseProgress) => courseProgress.progress < 100,
@@ -58,6 +64,8 @@ export function LearnerDashboard({
           roadmapStepCount={roadmapSteps.length}
         />
       )}
+      {studyStreak}
+      {weekLeaderboard}
       {/* Khối đầu trang chỉ nói một khóa; học nhiều khóa thì các khóa kia ở đây */}
       {otherInProgressCourses.length > 0 && (
         <CourseProgressCard

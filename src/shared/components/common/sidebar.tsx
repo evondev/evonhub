@@ -1,6 +1,5 @@
 "use client";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useUserContext } from "@/components/user-context";
 import { CHAT_PATH, menuLinks } from "@/shared/constants/common.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { useLessonDetailsPath } from "@/shared/hooks";
@@ -21,14 +20,12 @@ export interface SidebarProps {
 function isVisibleInSidebar(
   link: MenuLinkItemProps,
   role: UserRole | undefined,
-  isSignedIn: boolean,
 ) {
   const isManager = [UserRole.Admin, UserRole.Expert].includes(
     role as UserRole,
   );
 
   if ((link.isAdmin || link.isExpert) && !isManager) return false;
-  if (link.isAuth && !isSignedIn) return false;
   if (link.isHideForAdmin && role === UserRole.Admin) return false;
 
   return true;
@@ -39,7 +36,6 @@ function isManageLink(link: MenuLinkItemProps) {
 }
 
 export function Sidebar({ role, chatSignal }: SidebarProps) {
-  const { userInfo } = useUserContext();
   const pathname = usePathname();
   const { isLessonPage } = useLessonDetailsPath();
   const { isSidebarCollapsed = false } = useGlobalStore();
@@ -47,7 +43,7 @@ export function Sidebar({ role, chatSignal }: SidebarProps) {
   if (isLessonPage) return null;
 
   const visibleLinks = menuLinks.filter((link) =>
-    isVisibleInSidebar(link, role, Boolean(userInfo?._id)),
+    isVisibleInSidebar(link, role),
   );
   const mainLinks = visibleLinks.filter((link) => !isManageLink(link));
   const manageLinks = visibleLinks.filter(isManageLink);
