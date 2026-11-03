@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { getYoutubeEmbedId } from "@/modules/course/utils";
+import { getYoutubeVideoId } from "@/shared/utils/video-embed.utils";
 import { CourseCover } from "@/shared/components/course";
 import { Play } from "lucide-react";
 import { useState } from "react";
@@ -23,7 +23,7 @@ export default function CourseIntroVideo({
   image,
 }: CourseIntroVideoProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const youtubeId = getYoutubeEmbedId(intro);
+  const youtubeId = getYoutubeVideoId(intro);
   // Khóa chưa có ảnh bìa: lấy ảnh thumbnail của chính video
   const posterImage = image || `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
 

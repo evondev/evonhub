@@ -10,6 +10,7 @@ import {
   MessageSquare,
   MessagesSquare,
   Star,
+  Tags,
   Trophy,
   Users,
 } from "lucide-react";
@@ -96,6 +97,12 @@ export const adminNavLinks: MenuLinkItemProps[] = [
     icon: <LibraryBig />,
     url: "/admin/course/manage",
     isExpert: true,
+  },
+  {
+    title: "Danh mục",
+    icon: <Tags />,
+    url: "/admin/category/manage",
+    isAdmin: true,
   },
   {
     title: "Đánh giá",

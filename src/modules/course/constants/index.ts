@@ -227,6 +227,9 @@ export const COURSE_STATUS_OPTIONS: CourseSelectOption[] = [
   label: COURSE_MANAGE_STATUS_LABELS[status],
 }));
 
+// Giá trị của lựa chọn "Không có danh mục" trong ô chọn, lưu thành không có danh mục
+export const NO_CATEGORY_VALUE = "none";
+
 // Viền đỏ khi FormControl gắn aria-invalid (Input, Select chưa tự có trạng thái lỗi)
 export const COURSE_FORM_CONTROL_CLASS_NAME =
   "aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus:ring-red-500/10";

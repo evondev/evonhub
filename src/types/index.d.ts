@@ -28,9 +28,13 @@ export interface CreateCourseParams {
   path: string;
   author: string;
 }
+export interface CourseUpdateFields extends Partial<Omit<ICourse, "category">> {
+  /** id danh mục từ form; null là gỡ danh mục */
+  category?: string | null;
+}
 export interface UpdateCourseParams {
   slug: string;
-  updateData: Partial<ICourse>;
+  updateData: CourseUpdateFields;
   path?: string;
   courseSlug?: string;
 }

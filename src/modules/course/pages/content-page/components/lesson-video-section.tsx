@@ -1,6 +1,8 @@
 import { FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { isValidEmbedVideoInput } from "@/shared/utils/video-embed.utils";
 import { useFormContext } from "react-hook-form";
+import { EMBED_VIDEO_INVALID_MESSAGE } from "@/shared/constants/lesson.constants";
 import { LESSON_FORM_CONTROL_CLASS_NAME } from "../constants";
 import type { LessonEditorValues } from "../types";
 import { LessonEditorSection } from "./lesson-editor-section";
@@ -12,7 +14,7 @@ export function LessonVideoSection() {
   return (
     <LessonEditorSection
       title="Video"
-      description="Video trên Mux thì điền Playback ID và Asset ID. Video từ nguồn khác thì dán mã iframe."
+      description="Video trên Mux thì điền Playback ID và Asset ID. Không dùng Mux thì dán link YouTube hoặc Google Drive."
     >
       {/* Mỗi ô một hàng: Playback ID dài 44 ký tự, nửa cột thì bị cắt */}
       <div className="flex flex-col gap-5">
@@ -37,12 +39,21 @@ export function LessonVideoSection() {
         <FormField
           control={control}
           name="iframe"
+          // Form bài học không dùng resolver nên kiểm ở đây; form video lẻ kiểm trong updateVideoSchema
+          rules={{
+            validate: (value) =>
+              isValidEmbedVideoInput(value) || EMBED_VIDEO_INVALID_MESSAGE,
+          }}
           render={({ field }) => (
             <LessonField
-              label="Iframe"
-              hint="Dùng khi bài không có video trên Mux"
+              label="Link YouTube / Google Drive"
+              hint="Dán link hoặc mã nhúng. Có Playback ID Mux thì phát video Mux"
             >
-              <Input className={LESSON_FORM_CONTROL_CLASS_NAME} {...field} />
+              <Input
+                className={LESSON_FORM_CONTROL_CLASS_NAME}
+                placeholder="https://www.youtube.com/watch?v=..."
+                {...field}
+              />
             </LessonField>
           )}
         />

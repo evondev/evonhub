@@ -282,6 +282,7 @@ export interface VideoUpdateData
     | "free"
     | "level"
     | "status"
+    | "category"
   > {
   lesson: VideoLessonData;
 }
@@ -337,15 +338,29 @@ export interface VideoListItem
   duration: number;
 }
 
+/** Video giả của trang xem trước, mang slug danh mục để lọc như server */
+export interface PreviewVideoListItem extends VideoListItem {
+  categorySlug: string;
+}
+
+/** Chip danh mục ở trang danh sách video */
+export interface VideoCategoryOption {
+  name: string;
+  slug: string;
+}
+
 /** Bộ lọc trang danh sách video, lưu trên URL */
 export interface VideoListFilters {
   search: string;
   isFree: boolean;
+  /** Rỗng là mọi danh mục */
+  categorySlug: string;
 }
 
 export interface VideoListSearchParams {
   q?: string;
   gia?: string;
+  danhmuc?: string;
 }
 
 export interface FetchVideosParams extends VideoListFilters {

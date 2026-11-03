@@ -1,3 +1,5 @@
+import { EMBED_VIDEO_INVALID_MESSAGE } from "@/shared/constants/lesson.constants";
+import { isValidEmbedVideoInput } from "@/shared/utils/video-embed.utils";
 import { ECourseLevel, ECourseStatus } from "@/types/enums";
 import { z } from "zod";
 
@@ -55,6 +57,7 @@ export const updateVideoSchema = updateCourseSchema
     image: true,
     desc: true,
     level: true,
+    category: true,
     status: true,
     seoKeywords: true,
     free: true,
@@ -62,7 +65,9 @@ export const updateVideoSchema = updateCourseSchema
   .extend({
     video: z.string(),
     assetId: z.string(),
-    iframe: z.string(),
+    iframe: z.string().refine(isValidEmbedVideoInput, {
+      message: EMBED_VIDEO_INVALID_MESSAGE,
+    }),
     content: z.string(),
     duration: z.coerce.number().min(0),
   });

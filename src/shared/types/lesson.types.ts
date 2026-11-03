@@ -72,3 +72,16 @@ export interface LessonLinkData {
   _id: string;
   slug: string;
 }
+
+/** Video nhúng của bài học, tách từ ô "Link YouTube / Google Drive" */
+export interface EmbedVideo {
+  provider: "youtube" | "drive";
+  id: string;
+}
+
+/** Một nhịp phát của trình phát: thẻ video của Mux, hoặc số đọc từ player YouTube */
+export interface PlaybackSnapshot {
+  currentTime: number;
+  duration: number;
+  paused: boolean;
+}

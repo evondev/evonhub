@@ -16,12 +16,13 @@ import type {
   CourseSelectOption,
   CourseUpdateFormValues,
 } from "../../../types";
+import { CourseCategorySelect } from "./course-category-select";
 import { CourseField } from "./course-field";
 import { CourseFormSection } from "./course-form-section";
 import { InputWithAddon } from "./input-with-addon";
 
 export interface CourseBasicInfoSectionProps {
-  /** Chưa có nguồn danh mục: rỗng thì ô khoá, người dùng tự nối dữ liệu */
+  /** Danh mục quản lý ở /admin/category/manage, rỗng thì ô khoá */
   categoryOptions: CourseSelectOption[];
 }
 
@@ -29,7 +30,6 @@ export function CourseBasicInfoSection({
   categoryOptions,
 }: CourseBasicInfoSectionProps) {
   const { control } = useFormContext<CourseUpdateFormValues>();
-  const hasCategories = categoryOptions.length > 0;
 
   return (
     <CourseFormSection
@@ -95,26 +95,11 @@ export function CourseBasicInfoSection({
           name="category"
           render={({ field }) => (
             <CourseField label="Danh mục">
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                disabled={!hasCategories}
-              >
-                <SelectTrigger className={COURSE_FORM_CONTROL_CLASS_NAME}>
-                  <SelectValue
-                    placeholder={
-                      hasCategories ? "Chọn danh mục" : "Chưa có danh mục nào"
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoryOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <CourseCategorySelect
+                value={field.value}
+                onChange={field.onChange}
+                options={categoryOptions}
+              />
             </CourseField>
           )}
         />
