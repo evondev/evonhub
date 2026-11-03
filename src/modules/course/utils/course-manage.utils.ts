@@ -21,6 +21,7 @@ export function toCourseManageRow(course: CourseItemData): CourseManageRow {
     price: course.price,
     isFree: isCourseFree(course),
     isVideo: course.type === CourseType.Video,
+    isComingSoon: Boolean(course.isComingSoon),
     studentCount: course.studentCount || 0,
     createdAt: course.createdAt,
   };
@@ -88,6 +89,7 @@ export function filterPreviewCourses(
     if (keyword && !course.title.toLowerCase().includes(keyword)) return false;
     if (status && course.status !== status) return false;
     if (filters.isFree && !course.isFree) return false;
+    if (filters.isVideo && !course.isVideo) return false;
 
     return true;
   });

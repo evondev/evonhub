@@ -8,6 +8,7 @@ import {
   Gift,
   ListPlus,
   MessageSquare,
+  MonitorPlay,
   Pencil,
   PlayCircle,
   ShoppingCart,
@@ -28,6 +29,15 @@ export const ACTIVITY_TYPE_CONFIGS: Record<ActivityType, ActivityTypeConfig> = {
     target: "lesson",
     icon: PlayCircle,
     tone: "default",
+    isSession: true,
+  },
+  [ActivityType.ViewVideo]: {
+    label: "Xem video",
+    group: "learning",
+    target: "course",
+    icon: MonitorPlay,
+    tone: "default",
+    isSession: true,
   },
   [ActivityType.CompleteLesson]: {
     label: "Hoàn thành bài",

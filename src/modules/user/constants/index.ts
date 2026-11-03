@@ -71,9 +71,6 @@ export const PROFILE_RESERVED_USERNAMES: string[] = [
 /** Trang xem trước: gõ username này rồi Lưu để thấy lỗi trùng ("evondev" thì thấy lỗi tên dành riêng) */
 export const PREVIEW_TAKEN_USERNAME = "phuongthao_frontend_mentor";
 
-/** Đường dẫn trang công khai, dùng cho nút đầu trang và gợi ý dưới ô username */
-export const PROFILE_PUBLIC_PATH = "/user-profile";
-
 /** Trang tự sửa hồ sơ, nút "Sửa hồ sơ" ở trang công khai dẫn về đây */
 export const PROFILE_EDIT_PATH = "/profile";
 

@@ -3,6 +3,7 @@
 import { useUserContext } from "@/components/user-context";
 import { useQueryUserCourseProgress } from "@/modules/user/services";
 import { handleGetLastUrl } from "@/shared/helpers";
+import { ImageOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { BadgeProgress, ProgressBar } from "../common";
@@ -42,15 +43,21 @@ export function CourseItemResume({
       className="p-2 rounded-xl flex-wrap lg:flex-nowrap bgDarkMode flex items-center gap-3 lg:gap-5 relative overflow-clip borderDarkModeHover group hover:border-primary transition-all"
     >
       <div className="relative w-[100px] shrink-0">
-        <Image
-          src={image}
-          priority
-          alt={title}
-          width={600}
-          height={360}
-          className="w-full aspect-square object-cover rounded-xl transition-all"
-          sizes="300px"
-        ></Image>
+        {image ? (
+          <Image
+            src={image}
+            priority
+            alt={title}
+            width={600}
+            height={360}
+            className="w-full aspect-square object-cover rounded-xl transition-all"
+            sizes="300px"
+          ></Image>
+        ) : (
+          <div className="grid w-full aspect-square place-items-center rounded-xl bg-foreground/5 text-muted">
+            <ImageOff className="size-5" />
+          </div>
+        )}
         <div className="absolute inset-0 bg-black bg-opacity-20 rounded-xl"></div>
         <div className="size-8 flex items-center justify-center rounded-full bg-primary text-white absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:scale-125 transition-all shadow-lg">
           <IconPlay className="size-5" />

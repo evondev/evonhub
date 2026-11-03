@@ -45,6 +45,7 @@ const editableCourseFields: (keyof ICourse)[] = [
   "ctaLink",
   "seoKeywords",
   "free",
+  "isComingSoon",
 ];
 
 function isCourseStatus(value: unknown): value is ECourseStatus {

@@ -1,6 +1,7 @@
 "use server";
 import { recordActivity } from "@/modules/activity/services/activity.service";
 import RatingModel from "@/modules/rating/models";
+import { hasRatingAccess } from "@/modules/rating/services/rating-access.service";
 import { ActivityType } from "@/shared/constants/activity.constants";
 import { getCurrentUser } from "@/shared/libs/auth";
 import { revalidatePath } from "next/cache";
@@ -45,11 +46,12 @@ export default async function createRating({
       return { message: "Nội dung đánh giá không hợp lệ" };
     }
 
-    const ownedCourseIds: string[] = (currentUser.courses || []).map(
-      (ownedCourseId: unknown) => String(ownedCourseId),
+    const canAccessCourse = await hasRatingAccess(
+      currentUser,
+      String(courseId || ""),
     );
 
-    if (!courseId || !ownedCourseIds.includes(String(courseId))) {
+    if (!canAccessCourse) {
       return { message: "Bạn cần mua khóa học trước khi đánh giá" };
     }
 

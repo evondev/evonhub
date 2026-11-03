@@ -8,6 +8,7 @@ import { VideoCard } from "../../video-list-page/components/video-card";
 import { VideoComments } from "./video-comments";
 import { VideoDetailsHeader } from "./video-details-header";
 import { VideoPlayer } from "./video-player";
+import { VideoRatingButton } from "./video-rating-button";
 
 export interface VideoWatchViewProps {
   video: VideoDetailsData;
@@ -45,7 +46,13 @@ export function VideoWatchView({
             <LessonNotes html={lessonContent} />
           </CourseSection>
         )}
-        <CourseReviews reviews={reviews} ratingAverage={ratingAverage} />
+        <CourseReviews
+          reviews={reviews}
+          ratingAverage={ratingAverage}
+          action={
+            <VideoRatingButton videoId={video._id} videoTitle={video.title} />
+          }
+        />
         <VideoComments lessonId={video.lesson._id} slug={video.slug} />
         {relatedVideos.length > 0 && (
           <CourseSection title="Video khác">

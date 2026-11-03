@@ -27,6 +27,13 @@ export function getActivityTypesByGroup(group: ActivityGroup): ActivityType[] {
   );
 }
 
+/** Các loại việc có nhịp, để tìm người đang học */
+export function getSessionActivityTypes(): ActivityType[] {
+  return Object.values(ActivityType).filter(
+    (type) => ACTIVITY_TYPE_CONFIGS[type].isSession,
+  );
+}
+
 /** Tab là một nhóm việc; chuỗi lạ từ client thì không */
 export function isActivityGroupTab(tab: unknown): tab is ActivityGroup {
   return ACTIVITY_GROUPS.includes(tab as ActivityGroup);
@@ -115,7 +122,7 @@ export function buildActivityManageTabs(
 
 /** Phiên học còn nhịp trong ACTIVITY_ONLINE_WINDOW_MS, cùng mốc với tab "Đang học" */
 export function isActivityOnline(activity: ActivityRow): boolean {
-  if (activity.type !== ActivityType.ViewLesson) return false;
+  if (!ACTIVITY_TYPE_CONFIGS[activity.type].isSession) return false;
 
   const elapsedMs = Date.now() - new Date(activity.lastSeenAt).getTime();
 
@@ -131,7 +138,7 @@ export function formatActivityDuration(activity: ActivityRow): string {
   const hours = Math.floor(durationMinutes / 60);
   const minutes = durationMinutes % 60;
 
-  if (durationMinutes < 1) return "vừa mở bài";
+  if (durationMinutes < 1) return "vừa mở";
 
   if (hours === 0) return `học ${minutes} phút`;
 

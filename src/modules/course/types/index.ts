@@ -54,6 +54,8 @@ export interface CourseModelProps extends Document {
   _destroy: boolean;
   isMicro?: boolean;
   type?: CourseType;
+  /** Video lẻ chưa có nội dung; bản ghi cũ không có field này */
+  isComingSoon?: boolean;
 }
 
 export interface CourseItemData extends Omit<
@@ -70,6 +72,8 @@ export interface FetchCoursesManageProps {
   limit: number;
   page: number;
   isFree?: boolean;
+  /** Chỉ lấy video lẻ */
+  isVideo?: boolean;
   status?: CourseStatus;
   /** Lọc theo nhiều trạng thái cùng lúc, ưu tiên hơn `status` */
   statuses?: CourseStatus[];
@@ -284,6 +288,7 @@ export interface VideoUpdateData
     | "status"
     | "category"
   > {
+  isComingSoon?: boolean;
   lesson: VideoLessonData;
 }
 
@@ -316,6 +321,8 @@ export interface VideoDetailsData
   _id: string;
   lesson: VideoDetailsLesson;
   isFree: boolean;
+  /** Đã lên danh sách nhưng chưa có nội dung: không xem, không mua được */
+  isComingSoon: boolean;
   /** Video miễn phí, đã mua, hoặc người quản lý */
   canWatch: boolean;
 }
@@ -332,10 +339,29 @@ export interface VideoListItem
     | "price"
     | "salePrice"
     | "free"
+    | "isComingSoon"
     | "createdAt"
   > {
   _id: string;
   duration: number;
+  /** Mô tả dạng chữ thường đã cắt ngắn, cho dạng danh sách; rỗng là chưa có mô tả */
+  excerpt: string;
+}
+
+/** Một dòng của truy vấn danh sách video, kèm link YouTube của bài để lấy thumbnail */
+export interface VideoListRow extends Omit<VideoListItem, "excerpt"> {
+  iframe?: string;
+  /** Mô tả HTML soạn trong admin */
+  desc?: string;
+}
+
+/** Cách xếp video ở trang danh sách: lưới thẻ, hoặc mỗi video một hàng ngang */
+export type VideoListView = "grid" | "list";
+
+export interface VideoListViewOption {
+  view: VideoListView;
+  label: string;
+  icon: LucideIcon;
 }
 
 /** Video giả của trang xem trước, mang slug danh mục để lọc như server */
@@ -361,6 +387,8 @@ export interface VideoListSearchParams {
   q?: string;
   gia?: string;
   danhmuc?: string;
+  /** "danh-sach" là xếp hàng ngang, không có là lưới */
+  xem?: string;
 }
 
 export interface FetchVideosParams extends VideoListFilters {

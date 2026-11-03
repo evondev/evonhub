@@ -19,6 +19,9 @@ export enum UserPermission {
   DELETE_CATEGORY = "delete:category",
   CREATE_REACTION = "create:reaction",
 }
+/** Trang công khai của một người: /user-profile/<username> */
+export const PROFILE_PUBLIC_PATH = "/user-profile";
+
 export enum UserRole {
   Admin = "ADMIN",
   Expert = "EXPERT",

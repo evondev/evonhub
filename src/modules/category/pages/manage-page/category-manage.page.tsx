@@ -12,7 +12,7 @@ import {
   CategoryManageItem,
 } from "../../types";
 import { formatCategoryUsage, isCategoryInUse } from "../../utils";
-import { CategoryFormDialog } from "./components/category-form-dialog";
+import { CategoryFormDialog } from "../../components";
 import { CategoryList } from "./components/category-list";
 
 export interface CategoryManagePageProps {

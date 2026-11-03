@@ -23,6 +23,8 @@ export interface ConfirmDialogProps {
 // Hộp xác nhận việc nguy hiểm: icon đỏ cùng hàng tiêu đề, nút xác nhận nền đỏ mờ ở cuối.
 // Việc không nguy hiểm (tone "neutral"): icon xám, nút xác nhận primary.
 // Mở ra tiêu điểm rơi vào nút Huỷ để Enter không xác nhận nhầm.
+// Căn giữa bằng inset-0 m-auto chứ không translate -50%: keyframe của
+// tailwindcss-animate ghi đè transform nên hộp sẽ trượt chéo khi mở.
 export function ConfirmDialog({
   isOpen,
   icon: Icon,
@@ -52,7 +54,7 @@ export function ConfirmDialog({
             event.preventDefault();
             cancelButtonRef.current?.focus();
           }}
-          className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-surface p-6 shadow-lg outline-none data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:duration-100 data-[state=open]:duration-150 data-[state=closed]:ease-in data-[state=open]:ease-out motion-reduce:data-[state=closed]:zoom-out-100 motion-reduce:data-[state=open]:zoom-in-100"
+          className="fixed inset-0 z-50 m-auto h-fit w-[calc(100%-2rem)] max-w-md rounded-2xl border border-border bg-surface p-6 shadow-lg outline-none data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-bottom-4 data-[state=open]:slide-in-from-bottom-4 data-[state=closed]:duration-100 data-[state=open]:duration-200 data-[state=closed]:ease-in data-[state=open]:ease-out motion-reduce:data-[state=closed]:slide-out-to-bottom-0 motion-reduce:data-[state=open]:slide-in-from-bottom-0"
         >
           {/* Lưới hai cột: icon và tiêu đề cùng hàng; thân dưới sm trải hết bề rộng, từ sm thẳng mép tiêu đề */}
           <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4">

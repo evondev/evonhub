@@ -88,6 +88,7 @@ export const COURSE_FIELD_LABELS: Record<string, string> = {
   ctaLink: "link nút kêu gọi",
   seoKeywords: "từ khoá SEO",
   free: "miễn phí",
+  isComingSoon: "sắp ra mắt",
   status: "trạng thái",
 };
 
@@ -109,7 +110,8 @@ export const ACTIVITY_SKELETON_ROW_COUNT = 6;
 
 export const ACTIVITY_MANAGE_DEFAULT_FILTERS: ActivityManageFilters = {
   search: "",
-  tab: "all",
+  // Vào trang là xem ai đang học trước
+  tab: "online",
   courseId: "",
   page: 1,
 };

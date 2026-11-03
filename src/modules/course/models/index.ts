@@ -130,6 +130,11 @@ const courseSchema = new Schema<CourseModelProps>({
     type: Boolean,
     default: true,
   },
+  // Video lẻ đã lên danh sách nhưng chưa có nội dung: chưa xem, chưa mua được
+  isComingSoon: {
+    type: Boolean,
+    default: false,
+  },
   // Khóa cũ không có field này là khóa học; không đặt default để khỏi phải migrate
   type: {
     type: String,

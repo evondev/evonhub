@@ -35,6 +35,8 @@ export interface SaveCategoryParams {
 export interface CategoryActionResponse {
   type: "success" | "error";
   message: string;
+  /** Lưu thành công thì có, để form khóa học, video chọn luôn danh mục vừa tạo */
+  category?: CategoryOption;
 }
 
 /** Hộp thêm / sửa: có category là đang sửa danh mục đó, không có là thêm mới */

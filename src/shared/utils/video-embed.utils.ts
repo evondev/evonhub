@@ -27,6 +27,13 @@ export function getYoutubeVideoId(input: string): string {
   return "";
 }
 
+/** Ảnh thumbnail YouTube của link (480x360), rỗng khi không phải link YouTube */
+export function getYoutubeThumbnail(input: string): string {
+  const youtubeId = getYoutubeVideoId(input);
+
+  return youtubeId ? `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg` : "";
+}
+
 /**
  * Ô "Link YouTube / Google Drive" của bài học: nhận link hoặc mã iframe.
  * Không phải YouTube thì hiểu là Google Drive như trước đây, kể cả khi chỉ dán id

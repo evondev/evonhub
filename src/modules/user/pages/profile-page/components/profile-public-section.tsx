@@ -5,11 +5,11 @@ import { FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UserAvatar } from "@/shared/components/common/user-avatar";
+import { buildPublicProfilePath } from "@/shared/helpers/url.helper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
   PROFILE_BIO_MAX_LENGTH,
-  PROFILE_PUBLIC_PATH,
   profilePublicSchema,
 } from "../../../constants";
 import {
@@ -17,7 +17,6 @@ import {
   ProfilePublicFormValues,
   ProfileSaveResult,
 } from "../../../types";
-import { buildPublicProfilePath } from "../../../utils";
 import { ProfileField } from "./profile-field";
 import { ProfileFormSection } from "./profile-form-section";
 import { ProfileRow } from "./profile-row";
@@ -50,10 +49,7 @@ export function ProfilePublicSection({
   const savedUsername = form.formState.defaultValues?.username ?? "";
   const isUsernameChanged = usernameValue.trim() !== savedUsername;
   const bioLength = form.watch("bio").length;
-  const publicPath = buildPublicProfilePath(
-    PROFILE_PUBLIC_PATH,
-    usernameValue || "…",
-  );
+  const publicPath = buildPublicProfilePath(usernameValue || "…");
 
   return (
     <ProfileFormSection

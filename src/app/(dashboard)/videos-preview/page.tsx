@@ -4,7 +4,10 @@ import type {
   VideoListPreviewState,
   VideoListSearchParams,
 } from "@/modules/course/types";
-import { parseVideoListFilters } from "@/modules/course/utils/video-list.utils";
+import {
+  parseVideoListFilters,
+  parseVideoListView,
+} from "@/modules/course/utils/video-list.utils";
 import { notFound } from "next/navigation";
 
 interface VideoListPreviewRouteProps {
@@ -25,6 +28,7 @@ export default function VideoListPreviewRoute({
     <VideoListPreviewPage
       state={state}
       filters={parseVideoListFilters(searchParams)}
+      view={parseVideoListView(searchParams)}
     />
   );
 }

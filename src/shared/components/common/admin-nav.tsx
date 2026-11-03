@@ -25,6 +25,9 @@ export function AdminNav({ role }: AdminNavProps) {
   const visibleLinks = adminNavLinks.filter((link) =>
     isVisibleForRole(link, role),
   );
+  // Tab ẩn vẫn tính là trang danh sách: vào bằng URL vẫn có thanh tab để đi
+  // sang trang khác, chỉ là không có tab nào sáng
+  const navLinks = visibleLinks.filter((link) => !link.isHiddenInNav);
 
   // Trang con (thêm, sửa, soạn nội dung) có nút quay lại riêng: thanh tab chỉ
   // hiện ở trang danh sách cho đỡ chật
@@ -38,7 +41,7 @@ export function AdminNav({ role }: AdminNavProps) {
       <ul // Nằm trên nền trang xám: --border gần trùng nền, kẻ bằng foreground/10
         className="flex w-max min-w-full items-center gap-1 border-b border-foreground/10"
       >
-        {visibleLinks.map((link) => {
+        {navLinks.map((link) => {
           const isActive = link.url === pathname;
 
           return (

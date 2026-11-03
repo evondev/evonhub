@@ -9,7 +9,11 @@ import {
   LEARNABLE_COURSE_STATUSES,
 } from "@/shared/constants/course.constants";
 import { UserRole, UserStatus } from "@/shared/constants/user.constants";
-import { parseData, readFacetCount } from "@/shared/helpers";
+import {
+  buildPublicProfilePath,
+  parseData,
+  readFacetCount,
+} from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import {
   getCurrentAdmin,
@@ -23,7 +27,6 @@ import { auth } from "@clerk/nextjs/server";
 import { FilterQuery, isValidObjectId, Types } from "mongoose";
 import { revalidatePath } from "next/cache";
 import {
-  PROFILE_PUBLIC_PATH,
   PROFILE_SAVE_ERROR_MESSAGE,
   PROFILE_USERNAME_RESERVED_MESSAGE,
   PROFILE_USERNAME_TAKEN_MESSAGE,
@@ -618,7 +621,7 @@ export async function updateMyProfile(
     await UserModel.updateOne({ clerkId: userId }, { $set: updateData });
 
     revalidatePath("/profile");
-    revalidatePath(`${PROFILE_PUBLIC_PATH}/${currentUser.username}`);
+    revalidatePath(buildPublicProfilePath(currentUser.username));
 
     return { isSuccess: true };
   } catch (error) {

@@ -2,10 +2,10 @@
 import { useUserContext } from "@/components/user-context";
 import { useQueryUserCourseProgress } from "@/modules/user/services";
 import { ProgressBar } from "@/shared/components/common";
+import { CourseCover } from "@/shared/components/course";
 import { cn } from "@/shared/utils";
 import { formatThoundsand } from "@/utils";
 import { Star } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { CourseItemData } from "../types";
 import { formatRating, getAverageRating, isCourseFree } from "../utils";
@@ -40,16 +40,13 @@ export function CourseItem({
       href={navigateURL}
       className="group flex min-w-0 overflow-hidden rounded-2xl border border-border bg-surface outline-none transition-colors hover:border-border-strong sm:flex-col"
     >
-      <Image
-        src={data.image}
-        alt=""
-        width={600}
-        height={338}
+      <CourseCover
+        image={data.image}
         sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 112px"
-        className="w-28 shrink-0 object-cover sm:aspect-video sm:w-full"
+        className="w-28 shrink-0 sm:aspect-video sm:w-full"
       />
       <div className="flex min-w-0 flex-1 flex-col p-4">
-        <h3 className="line-clamp-2 text-pretty text-sm font-semibold text-foreground sm:text-base">
+        <h3 className="line-clamp-2 text-sm font-semibold text-foreground sm:text-base">
           {data.title}
         </h3>
         {url && (

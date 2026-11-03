@@ -30,6 +30,7 @@ export function getCoursesManageOptions({
       props.page,
       props.search,
       props.isFree,
+      props.isVideo,
       props.limit,
       props.shouldFilterEnrolled,
     ],

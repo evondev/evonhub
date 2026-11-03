@@ -21,7 +21,7 @@ export function ExploreCourseCard({ course }: ExploreCourseCardProps) {
         className="m-3 aspect-video w-32 shrink-0 self-start rounded-lg sm:m-0 sm:w-full sm:rounded-none"
       />
       <div className="flex min-w-0 flex-1 flex-col gap-1.5 py-3 pr-3 sm:gap-2 sm:p-5">
-        <h3 className="line-clamp-2 text-pretty text-base font-semibold text-foreground">
+        <h3 className="line-clamp-2 text-base font-semibold text-foreground">
           {course.title}
         </h3>
         <p className="text-xs text-muted">{formatCourseMeta(course)}</p>

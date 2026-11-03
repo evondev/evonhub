@@ -2,6 +2,7 @@
 export enum ActivityType {
   // Học tập
   ViewLesson = "VIEW_LESSON",
+  ViewVideo = "VIEW_VIDEO",
   CompleteLesson = "COMPLETE_LESSON",
   Comment = "COMMENT",
   RateCourse = "RATE_COURSE",

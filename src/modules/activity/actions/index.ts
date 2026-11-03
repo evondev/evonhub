@@ -1,9 +1,11 @@
 "use server";
 
 import CourseModel from "@/modules/course/models";
+import { isCourseFree } from "@/modules/course/utils";
 import LessonModel from "@/modules/lesson/models";
 import UserModel from "@/modules/user/models";
 import { ActivityType } from "@/shared/constants/activity.constants";
+import { CourseStatus, CourseType } from "@/shared/constants/course.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import {
@@ -26,11 +28,13 @@ import {
   FetchActivitiesResult,
   ActivityTypeCountGroup,
   LogLessonViewParams,
+  LogVideoViewParams,
   OnlineActivityGroup,
 } from "../types";
 import {
   buildActivityTabCounts,
   getActivityTypesByGroup,
+  getSessionActivityTypes,
   isActivityGroupTab,
 } from "../utils";
 
@@ -84,12 +88,66 @@ export async function logLessonView({
   }
 }
 
+/**
+ * Nhịp từ trang video lẻ: ghi (hoặc nối phiên) "đang xem video này". Chỉ ghi
+ * video người đó xem được thật: video miễn phí đang bán, hoặc đã mua hay quản lý.
+ */
+export async function logVideoView({
+  videoId,
+}: LogVideoViewParams): Promise<void> {
+  try {
+    // Chỉ nhận chuỗi id, chặn client gửi object toán tử Mongo như { $ne: null }
+    if (typeof videoId !== "string" || !isValidObjectId(videoId)) return;
+
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) return;
+
+    await connectToDatabase();
+
+    const video = await CourseModel.findOne({
+      _id: videoId,
+      type: CourseType.Video,
+      _destroy: false,
+    })
+      .select("price free status isComingSoon")
+      .lean<{
+        price?: number;
+        free?: boolean;
+        status?: CourseStatus;
+        isComingSoon?: boolean;
+      }>();
+
+    if (!video) return;
+
+    const isPublicFreeVideo =
+      isCourseFree(video) &&
+      video.status === CourseStatus.Approved &&
+      !video.isComingSoon;
+    const canWatchVideo =
+      isPublicFreeVideo || (await canAccessCourseContent(videoId));
+
+    if (!canWatchVideo) return;
+
+    await recordActivity({
+      userId: currentUser._id,
+      type: ActivityType.ViewVideo,
+      courseId: videoId,
+      shouldMergeRecent: true,
+    });
+  } catch (error) {
+    console.log("error:", error);
+  }
+}
+
 /** Từ khoá tìm người (tên, username, email) và khoá đang lọc, chung cho mọi tab */
 async function buildActivityScopeQuery({
   search,
   courseId,
 }: Pick<FetchActivitiesParams, "search" | "courseId">): Promise<ActivityQuery> {
-  const query: ActivityQuery = {};
+  // Chỉ lấy loại việc bản build này biết: DB dùng chung với bản mới hơn có thể
+  // có loại lạ, ACTIVITY_TYPE_CONFIGS[type] sẽ undefined và làm sập trang
+  const query: ActivityQuery = { type: { $in: Object.values(ActivityType) } };
   const keyword = typeof search === "string" ? search.trim() : "";
 
   if (keyword) {
@@ -130,7 +188,7 @@ async function findOnlineActivityIds(
     {
       $match: {
         ...scopeQuery,
-        type: ActivityType.ViewLesson,
+        type: { $in: getSessionActivityTypes() },
         lastSeenAt: { $gte: onlineSince },
       },
     },

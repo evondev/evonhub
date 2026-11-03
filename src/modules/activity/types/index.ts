@@ -25,6 +25,10 @@ export interface LogLessonViewParams {
   courseId: string;
 }
 
+export interface LogVideoViewParams {
+  videoId: string;
+}
+
 export interface RecordActivityParams {
   userId: unknown;
   type: ActivityType;
@@ -54,6 +58,11 @@ export interface ActivityTypeConfig {
   target: ActivityTarget;
   icon: LucideIcon;
   tone: ActivityIconTone;
+  /**
+   * Việc có nhịp (học bài, xem video): tính vào tab "Đang học" và hiện thời
+   * gian của phiên
+   */
+  isSession?: boolean;
 }
 
 export type ActivityManageTab = "all" | "online" | ActivityGroup;

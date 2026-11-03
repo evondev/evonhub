@@ -1,13 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/utils";
 
-interface CourseFreeChipProps {
+interface CourseFilterChipProps {
+  label: string;
   isActive: boolean;
   onToggle: () => void;
 }
 
-/** Chip bật/tắt "Miễn phí": chưa chọn là viên mờ, chọn rồi tô màu nhấn */
-export function CourseFreeChip({ isActive, onToggle }: CourseFreeChipProps) {
+/** Chip bật/tắt một bộ lọc ("Miễn phí", "Video"): chưa chọn là viên mờ, chọn rồi tô màu nhấn */
+export function CourseFilterChip({
+  label,
+  isActive,
+  onToggle,
+}: CourseFilterChipProps) {
   return (
     <Button
       variant="ghost"
@@ -21,7 +26,7 @@ export function CourseFreeChip({ isActive, onToggle }: CourseFreeChipProps) {
           "bg-foreground/5 text-foreground/70 hover:bg-foreground/10 hover:text-foreground",
       )}
     >
-      Miễn phí
+      {label}
     </Button>
   );
 }

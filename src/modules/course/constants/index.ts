@@ -230,12 +230,18 @@ export const COURSE_STATUS_OPTIONS: CourseSelectOption[] = [
 // Giá trị của lựa chọn "Không có danh mục" trong ô chọn, lưu thành không có danh mục
 export const NO_CATEGORY_VALUE = "none";
 
+// Lựa chọn "Tạo danh mục mới" cuối ô chọn: mở hộp tạo nhanh chứ không phải một danh mục
+export const CREATE_CATEGORY_VALUE = "create";
+
 // Viền đỏ khi FormControl gắn aria-invalid (Input, Select chưa tự có trạng thái lỗi)
 export const COURSE_FORM_CONTROL_CLASS_NAME =
   "aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus:ring-red-500/10";
 
 export const COURSE_IMAGE_HINT =
   "Ảnh 16:9, hiện ở thẻ khóa học và đầu trang bán";
+
+// Ảnh bìa có sẵn trong public/, chỉ gán khi người sửa bấm "Dùng ảnh mặc định"
+export const DEFAULT_COURSE_IMAGE = "/default.jpg";
 
 // ----- Chỉ dùng cho trang xem trước ở dev (/course-update-preview) -----
 // Dữ liệu giả: tiêu đề dài nhất đang có, đủ yêu cầu, kết quả, Q/A

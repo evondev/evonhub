@@ -1,6 +1,6 @@
 "use client";
 
-import { PROFILE_PUBLIC_PATH } from "../../../constants";
+import { buildPublicProfilePath } from "@/shared/helpers/url.helper";
 import {
   ProfileData,
   ProfilePayoutFormValues,
@@ -8,7 +8,6 @@ import {
   ProfileSaveResult,
   ProfileSocialFormValues,
 } from "../../../types";
-import { buildPublicProfilePath } from "../../../utils";
 import { ProfileHeader } from "./profile-header";
 import { ProfilePayoutSection } from "./profile-payout-section";
 import { ProfilePublicSection } from "./profile-public-section";
@@ -39,10 +38,7 @@ export function ProfileView({
   onSavePayout,
   onManageAccount,
 }: ProfileViewProps) {
-  const publicPath = buildPublicProfilePath(
-    PROFILE_PUBLIC_PATH,
-    profile.username,
-  );
+  const publicPath = buildPublicProfilePath(profile.username);
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 sm:gap-6">

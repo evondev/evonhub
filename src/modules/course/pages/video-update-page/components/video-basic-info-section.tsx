@@ -7,11 +7,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AiTitleSuggest } from "@/shared/components/ai-suggest";
 import { useFormContext } from "react-hook-form";
 import {
   COURSE_FORM_CONTROL_CLASS_NAME,
   COURSE_LEVEL_OPTIONS,
 } from "../../../constants";
+import { useVideoAiContext } from "../../../hooks/use-video-ai-context";
 import type {
   CourseSelectOption,
   VideoUpdateFormValues,
@@ -29,7 +31,12 @@ export interface VideoBasicInfoSectionProps {
 export function VideoBasicInfoSection({
   categoryOptions,
 }: VideoBasicInfoSectionProps) {
-  const { control } = useFormContext<VideoUpdateFormValues>();
+  const { control, setValue } = useFormContext<VideoUpdateFormValues>();
+  const aiContext = useVideoAiContext(categoryOptions);
+
+  function handleSelectTitle(title: string) {
+    setValue("title", title, { shouldDirty: true, shouldValidate: true });
+  }
 
   return (
     <CourseFormSection
@@ -51,6 +58,12 @@ export function VideoBasicInfoSection({
               label="Tiêu đề"
               hint="Tối thiểu 10 ký tự"
               isRequired
+              labelAction={
+                <AiTitleSuggest
+                  context={aiContext}
+                  onSelect={handleSelectTitle}
+                />
+              }
               className="sm:col-span-2"
             >
               <Input className={COURSE_FORM_CONTROL_CLASS_NAME} {...field} />

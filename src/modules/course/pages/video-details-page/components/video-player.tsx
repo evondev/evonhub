@@ -1,6 +1,7 @@
 "use client";
 
 import { useUserContext } from "@/components/user-context";
+import { useTrackVideoActivity } from "@/modules/activity/hooks";
 import { useTrackWatchTime } from "@/modules/leaderboard/hooks";
 import { LessonVideo } from "@/modules/lesson/components";
 import { useMutationCompleteLesson } from "@/shared/data";
@@ -21,6 +22,7 @@ export function VideoPlayer({ videoId, lesson }: VideoPlayerProps) {
   const userId = userInfo?._id || "";
   const playbackId = lesson.video || "";
   const embedVideo = parseEmbedVideo(lesson.iframe);
+  useTrackVideoActivity({ videoId, isEnabled: !!userId });
   const { handlePlaybackTick } = useTrackWatchTime({
     lessonId: lesson._id,
     courseId: videoId,

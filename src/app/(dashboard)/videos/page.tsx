@@ -1,6 +1,9 @@
 import { VideoListPage } from "@/modules/course/pages";
 import type { VideoListSearchParams } from "@/modules/course/types";
-import { parseVideoListFilters } from "@/modules/course/utils/video-list.utils";
+import {
+  parseVideoListFilters,
+  parseVideoListView,
+} from "@/modules/course/utils/video-list.utils";
 import { Metadata } from "next";
 
 interface VideoListRouteProps {
@@ -13,5 +16,10 @@ export const metadata: Metadata = {
 };
 
 export default function VideoListRoute({ searchParams }: VideoListRouteProps) {
-  return <VideoListPage filters={parseVideoListFilters(searchParams)} />;
+  return (
+    <VideoListPage
+      filters={parseVideoListFilters(searchParams)}
+      view={parseVideoListView(searchParams)}
+    />
+  );
 }

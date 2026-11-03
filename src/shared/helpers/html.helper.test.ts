@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { escapeHtml, sanitizeHtml } from "./html.helper";
+import { escapeHtml, htmlToPlainText, sanitizeHtml } from "./html.helper";
 
 describe("sanitizeHtml", () => {
   it("giữ định dạng của nội dung bài", () => {
@@ -23,6 +23,26 @@ describe("escapeHtml", () => {
   it("biến thẻ thành chữ", () => {
     expect(escapeHtml('<b>"Tên"</b>')).toBe(
       "&lt;b&gt;&quot;Tên&quot;&lt;/b&gt;",
+    );
+  });
+});
+
+describe("htmlToPlainText", () => {
+  it("bỏ thẻ, đoạn liền nhau cách bằng một khoảng trắng", () => {
+    expect(htmlToPlainText("<p>Một</p><p><strong>Hai</strong>\n ba</p>")).toBe(
+      "Một Hai ba",
+    );
+  });
+
+  it("giải mã entity TinyMCE lưu kèm", () => {
+    expect(
+      htmlToPlainText("<p>Trong kh&oacute;a học n&agrave;y&nbsp;m&igrave;nh</p>"),
+    ).toBe("Trong khóa học này mình");
+  });
+
+  it("giữ ký tự đặc biệt người viết gõ ra, không giải mã hai lần", () => {
+    expect(htmlToPlainText("<p>a &lt; b &amp;&amp; &amp;lt;tag&amp;gt;</p>")).toBe(
+      "a < b && &lt;tag&gt;",
     );
   });
 });

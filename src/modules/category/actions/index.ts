@@ -147,6 +147,8 @@ export async function saveCategory({
       return { type: "error", message: CATEGORY_SLUG_TAKEN_MESSAGE };
     }
 
+    let savedCategoryId = categoryId;
+
     if (categoryId) {
       const updatedCategory = await CategoryModel.findByIdAndUpdate(
         categoryId,
@@ -162,7 +164,12 @@ export async function saveCategory({
     }
 
     if (!categoryId) {
-      await CategoryModel.create({ name: categoryName, slug: categorySlug });
+      const createdCategory = await CategoryModel.create({
+        name: categoryName,
+        slug: categorySlug,
+      });
+
+      savedCategoryId = createdCategory._id.toString();
     }
 
     revalidatePath(CATEGORY_MANAGE_PATH);
@@ -170,6 +177,7 @@ export async function saveCategory({
     return {
       type: "success",
       message: categoryId ? "Đã lưu danh mục" : "Đã thêm danh mục",
+      category: { value: savedCategoryId || "", label: categoryName },
     };
   } catch (error) {
     console.log(error);

@@ -4,10 +4,15 @@ import {
   PREVIEW_VIDEO_LIST_STATE_LINKS,
   VIDEO_LIST_PREVIEW_PATH,
 } from "../../constants/video-list.constants";
-import type { VideoListFilters, VideoListPreviewState } from "../../types";
+import type {
+  VideoListFilters,
+  VideoListPreviewState,
+  VideoListView,
+} from "../../types";
 import {
   buildPreviewVideoList,
   getPreviewVideoListFilters,
+  withVideoListView,
 } from "../../utils/video-list.utils";
 import { VideoFilterBar } from "./components/video-filter-bar";
 import { VideoListResults } from "./components/video-list-results";
@@ -16,14 +21,19 @@ import { VideoListSkeleton } from "./components/video-list-skeleton";
 interface VideoListPreviewPageProps {
   state: VideoListPreviewState;
   filters: VideoListFilters;
+  view: VideoListView;
 }
 
 /** Trang xem trước danh sách video bằng video giả. Không đọc DB, route chỉ mở ở dev */
 export function VideoListPreviewPage({
   state,
   filters,
+  view,
 }: VideoListPreviewPageProps) {
-  const linkBase = { basePath: VIDEO_LIST_PREVIEW_PATH, fixedParams: { tt: state } };
+  const linkBase = withVideoListView(
+    { basePath: VIDEO_LIST_PREVIEW_PATH, fixedParams: { tt: state } },
+    view,
+  );
   const shownFilters = getPreviewVideoListFilters(state, filters);
 
   return (
@@ -36,8 +46,9 @@ export function VideoListPreviewPage({
         filters={shownFilters}
         linkBase={linkBase}
         categories={PREVIEW_VIDEO_CATEGORIES}
+        view={view}
       />
-      {state === "dang-tai" && <VideoListSkeleton />}
+      {state === "dang-tai" && <VideoListSkeleton view={view} />}
       {state === "loi" && (
         <LoadErrorState title="Chưa tải được danh sách video" />
       )}
@@ -46,6 +57,7 @@ export function VideoListPreviewPage({
           videos={buildPreviewVideoList(state, shownFilters)}
           filters={shownFilters}
           linkBase={linkBase}
+          view={view}
         />
       )}
     </div>
