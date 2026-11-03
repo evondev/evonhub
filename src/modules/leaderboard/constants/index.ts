@@ -183,6 +183,23 @@ export const RANK_MEDAL_CLASS_NAMES: Record<number, string> = {
   3: "bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300",
 };
 
+/**
+ * Viền avatar theo bậc, lấy màu từ ảnh huy hiệu cùng bậc. Từ bậc 6 có ánh sáng
+ * tỏa ra, bậc cao nhất viền cầu vồng xoay chậm
+ */
+export const TIER_FRAME_CLASS_NAMES: Record<number, string> = {
+  1: "bg-gradient-to-br from-amber-500 to-orange-800",
+  2: "bg-gradient-to-br from-sky-300 to-blue-500",
+  3: "bg-gradient-to-br from-violet-400 to-purple-600",
+  4: "bg-gradient-to-br from-orange-400 to-red-500",
+  5: "bg-gradient-to-br from-pink-400 via-rose-500 to-amber-400",
+  6: "bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-500 shadow-[0_0_10px_rgba(251,191,36,0.45)]",
+  7: "bg-gradient-to-br from-yellow-200 via-amber-400 to-purple-500 shadow-[0_0_12px_rgba(251,191,36,0.5)]",
+  8: "bg-gradient-to-br from-amber-300 via-fuchsia-500 to-purple-700 shadow-[0_0_14px_rgba(217,70,239,0.5)]",
+  9: "bg-gradient-to-br from-fuchsia-400 via-violet-600 to-amber-300 shadow-[0_0_16px_rgba(192,38,211,0.55)]",
+  10: "animate-[spin_6s_linear_infinite] bg-[conic-gradient(#22d3ee,#e879f9,#fbbf24,#a78bfa,#22d3ee)] shadow-[0_0_18px_rgba(232,121,249,0.6)] motion-reduce:animate-none",
+};
+
 export const WEEKDAY_LABELS: string[] = [
   "CN",
   "T2",

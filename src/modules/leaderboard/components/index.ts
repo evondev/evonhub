@@ -5,5 +5,6 @@ export { StudyStreakCard } from "./study-streak-card";
 export { StudyStreakCardSkeleton } from "./study-streak-card-skeleton";
 export { StudyStreakError } from "./study-streak-error";
 export { StudyStreakPanel } from "./study-streak-panel";
+export { TierAvatarFrame } from "./tier-avatar-frame";
 export { WeekLeaderboardStrip } from "./week-leaderboard-strip";
 export { WeekLeaderboardStripSkeleton } from "./week-leaderboard-strip-skeleton";

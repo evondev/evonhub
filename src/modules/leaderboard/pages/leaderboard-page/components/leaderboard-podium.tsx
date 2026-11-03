@@ -1,7 +1,7 @@
 import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { RankMedal } from "../../../components/rank-medal";
 import { StudyMinutesText } from "../../../components/study-minutes-text";
-import { TierBadge } from "../../../components/tier-badge";
+import { TierAvatarFrame } from "../../../components/tier-avatar-frame";
 import { LeaderboardEntry } from "../../../types";
 
 interface LeaderboardPodiumProps {
@@ -25,18 +25,13 @@ export function LeaderboardPodium({ entries }: LeaderboardPodiumProps) {
           className="flex min-w-0 flex-col items-center gap-2 bg-surface px-2 py-5 text-center sm:px-4"
         >
           <RankMedal rank={entry.rank} />
-          {/* Huy hiệu bậc đè góc avatar, như dòng bảng có huy hiệu cạnh tên */}
-          <span className="relative">
+          <TierAvatarFrame level={entry.tierLevel} className="mb-1.5">
             <UserAvatar
               name={entry.name}
               avatar={entry.avatar}
               className="size-12 text-lg sm:size-14"
             />
-            <TierBadge
-              level={entry.tierLevel}
-              className="absolute -bottom-1 -right-2 size-7"
-            />
-          </span>
+          </TierAvatarFrame>
           <p
             className="w-full truncate text-sm font-medium text-foreground"
             title={entry.name}
