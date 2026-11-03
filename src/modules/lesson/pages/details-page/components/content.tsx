@@ -11,7 +11,8 @@ import {
 } from "@/modules/lesson/services";
 import { useMutationCompleteLesson } from "@/shared/data";
 import { LessonItemCutomizeData } from "@/shared/types";
-import { cn, extractDriveId } from "@/shared/utils";
+import { cn } from "@/shared/utils";
+import { parseEmbedVideo } from "@/shared/utils/video-embed.utils";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import { LessonBar } from "./lesson-bar";
@@ -54,14 +55,15 @@ export function LessonContent({
   const { percent } = useCourseProgress(courseSlug);
   useTrackLessonActivity({ lessonId, courseId, isEnabled: !!userId });
 
-  const iframeId = extractDriveId(lessonDetails?.iframe || "");
+  const embedVideo = parseEmbedVideo(lessonDetails?.iframe);
   const videoId = lessonDetails?.video || "";
-  const hasVideo = !!(videoId || iframeId);
+  const hasVideo = !!(videoId || embedVideo);
   const { handlePlaybackTick } = useTrackWatchTime({
     lessonId,
     courseId,
     isEnabled: !!userId && canAccessContent,
-    isIframe: !videoId && !!iframeId,
+    // YouTube đọc được giờ phát như Mux; chỉ Drive phải tính theo thời gian tab hiện
+    isIframe: !videoId && embedVideo?.provider === "drive",
   });
 
   const lessonIndex =
@@ -105,7 +107,7 @@ export function LessonContent({
       {hasVideo && (
         <LessonVideo
           videoId={videoId}
-          iframeId={iframeId || ""}
+          embedVideo={embedVideo}
           onNearEnd={handleVideoNearEnd}
           onPlaybackTick={handlePlaybackTick}
         />

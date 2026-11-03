@@ -244,13 +244,6 @@ export function getCurriculumStats(
   };
 }
 
-/** Link YouTube dạng `watch?v=` hoặc `youtu.be/` → id để nhúng */
-export function getYoutubeEmbedId(intro: string): string {
-  if (intro.includes("v=")) return intro.split("v=")[1]?.split("&")[0] || "";
-
-  return intro.split("/").at(-1) || "";
-}
-
 export function getLessonPreviewHref(courseSlug: string, lessonId: string) {
   return `/${courseSlug}/lesson?id=${lessonId}&isPreview=true`;
 }

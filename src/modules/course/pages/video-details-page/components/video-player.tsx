@@ -4,7 +4,7 @@ import { useUserContext } from "@/components/user-context";
 import { useTrackWatchTime } from "@/modules/leaderboard/hooks";
 import { LessonVideo } from "@/modules/lesson/components";
 import { useMutationCompleteLesson } from "@/shared/data";
-import { extractDriveId } from "@/shared/utils";
+import { parseEmbedVideo } from "@/shared/utils/video-embed.utils";
 import { useRef } from "react";
 import type { VideoDetailsLesson } from "../../../types";
 
@@ -20,12 +20,13 @@ export function VideoPlayer({ videoId, lesson }: VideoPlayerProps) {
   const hasRecordedRef = useRef(false);
   const userId = userInfo?._id || "";
   const playbackId = lesson.video || "";
-  const iframeId = extractDriveId(lesson.iframe || "") || "";
+  const embedVideo = parseEmbedVideo(lesson.iframe);
   const { handlePlaybackTick } = useTrackWatchTime({
     lessonId: lesson._id,
     courseId: videoId,
     isEnabled: !!userId,
-    isIframe: !playbackId && !!iframeId,
+    // YouTube đọc được giờ phát như Mux; chỉ Drive phải tính theo thời gian tab hiện
+    isIframe: !playbackId && embedVideo?.provider === "drive",
   });
 
   async function handleVideoNearEnd() {
@@ -40,7 +41,7 @@ export function VideoPlayer({ videoId, lesson }: VideoPlayerProps) {
     });
   }
 
-  if (!playbackId && !iframeId) {
+  if (!playbackId && !embedVideo) {
     return (
       <div className="grid aspect-video w-full place-items-center rounded-2xl bg-foreground/5 px-4 text-center text-sm text-muted">
         Video đang được cập nhật
@@ -53,7 +54,7 @@ export function VideoPlayer({ videoId, lesson }: VideoPlayerProps) {
     <div className="overflow-hidden rounded-2xl">
       <LessonVideo
         videoId={playbackId}
-        iframeId={iframeId}
+        embedVideo={embedVideo}
         onNearEnd={handleVideoNearEnd}
         onPlaybackTick={handlePlaybackTick}
         isAutoPlay={false}

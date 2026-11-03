@@ -1,5 +1,6 @@
 "use client";
 
+import type { PlaybackSnapshot } from "@/shared/types";
 import { useCallback, useEffect, useRef } from "react";
 import { recordWatchProgress } from "../actions";
 import {
@@ -26,8 +27,8 @@ interface PlaybackTick {
 }
 
 interface WatchTimeTracker {
-  /** Gắn vào timeupdate của trình phát */
-  handlePlaybackTick: (player: HTMLMediaElement) => void;
+  /** Gắn vào mỗi nhịp phát: timeupdate của Mux, nhịp đọc giờ phát của YouTube */
+  handlePlaybackTick: (player: PlaybackSnapshot) => void;
 }
 
 function isPageVisible() {
@@ -110,7 +111,7 @@ export function useTrackWatchTime({
     };
   }, [lessonId, courseId, isEnabled, isIframe]);
 
-  const handlePlaybackTick = useCallback((player: HTMLMediaElement) => {
+  const handlePlaybackTick = useCallback((player: PlaybackSnapshot) => {
     const now = performance.now();
     const lastTick = lastTickRef.current;
 
