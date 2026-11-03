@@ -16,6 +16,18 @@ export type MenuLinkItemProps = {
   isHideForAdmin?: boolean;
   isFree?: boolean;
 };
+/** Tín hiệu sống trên một mục menu, vd phòng chat đang có người, có tin chưa đọc */
+export interface MenuLinkSignal {
+  /** Số người đang ở đó, 0 thì không hiện */
+  count: number;
+  /** Có cái mới chưa xem */
+  hasUnread: boolean;
+  /** Đang có hoạt động ngay lúc này: chấm xanh nhấp nháy */
+  isLive: boolean;
+  /** Câu mô tả cho tooltip và screen reader */
+  description: string;
+}
+
 export type StatusBadgeVariant =
   | "success"
   | "error"

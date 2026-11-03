@@ -1,11 +1,11 @@
 "use client";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useUserContext } from "@/components/user-context";
-import { menuLinks } from "@/shared/constants/common.constants";
+import { CHAT_PATH, menuLinks } from "@/shared/constants/common.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { ProductLogo } from "@/shared/components/product-logo";
-import { MenuLinkItemProps } from "@/shared/types";
+import { MenuLinkItemProps, MenuLinkSignal } from "@/shared/types";
 import { cn, isMenuLinkActive } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import Link from "next/link";
@@ -14,6 +14,8 @@ import { MenuLink } from "./menu-link";
 
 export interface SidebarProps {
   role?: UserRole;
+  /** Phòng chat có người, có tin chưa đọc: hiện ở mục Trò chuyện */
+  chatSignal?: MenuLinkSignal | null;
 }
 
 function isVisibleInSidebar(
@@ -36,7 +38,7 @@ function isManageLink(link: MenuLinkItemProps) {
   return Boolean(link.isAdmin || link.isExpert);
 }
 
-export function Sidebar({ role }: SidebarProps) {
+export function Sidebar({ role, chatSignal }: SidebarProps) {
   const { userInfo } = useUserContext();
   const pathname = usePathname();
   const { isLessonPage } = useLessonDetailsPath();
@@ -93,6 +95,7 @@ export function Sidebar({ role }: SidebarProps) {
                   link={link}
                   isActive={isMenuLinkActive(link, pathname)}
                   isCollapsed={isSidebarCollapsed}
+                  signal={link.url === CHAT_PATH ? chatSignal : null}
                 />
               </li>
             ))}

@@ -17,6 +17,8 @@ import { BadgeTone, MenuLinkItemProps, StatusBadgeVariant } from "../types";
 
 export const ADMIN_HOME_PATH = "/admin";
 
+export const CHAT_PATH = "/chat";
+
 // Trang chi tiết khóa học: /course/[slug]
 export const COURSE_DETAILS_PATH_PREFIX = "/course/";
 
@@ -48,7 +50,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     title: "Trò chuyện",
     mobileTitle: "Chat",
     icon: <MessagesSquare />,
-    url: "/chat",
+    url: CHAT_PATH,
   },
   // {
   //   title: "Săn mã giảm giá",

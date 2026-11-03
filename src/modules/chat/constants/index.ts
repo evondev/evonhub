@@ -28,6 +28,31 @@ export const CHAT_EVENTS = {
   MESSAGE_DELETED: "message:deleted",
 } as const;
 
+/**
+ * Kênh public cho mục Trò chuyện trên menu: ai cũng nghe được kể cả khách, nên
+ * chỉ gửi mốc giờ, không gửi nội dung hay tên người gửi. Không dùng presence
+ * vì người đang ở trang khác sẽ bị tính là đang trong phòng.
+ */
+export const CHAT_ACTIVITY_CHANNEL_NAME = "chat-activity";
+
+export const CHAT_ACTIVITY_EVENT = "activity";
+
+/** Số người trong phòng hỏi lại theo nhịp này, chỉ khi tab đang mở */
+export const CHAT_ACTIVITY_POLL_INTERVAL_MS = 60_000;
+
+/** Server giữ kết quả trong khoảng này: nhiều tab cùng hỏi chỉ tốn một lần gọi Pusher và DB */
+export const CHAT_ACTIVITY_CACHE_SECONDS = 30;
+
+/** Tin gần nhất trong khoảng này thì phòng đang sôi nổi, chấm trên menu nhấp nháy */
+export const CHAT_LIVELY_WINDOW_MS = 5 * 60 * 1000;
+
+/** Mốc đã xem phòng chat, lưu theo từng người trên trình duyệt */
+export const CHAT_LAST_SEEN_STORAGE_KEY_PREFIX = "chat-last-seen-at";
+
+/** Đã tắt bong bóng "Admin đang online" trong phiên này */
+export const CHAT_HOST_BUBBLE_DISMISSED_STORAGE_KEY =
+  "chat-host-bubble-dismissed";
+
 /** Link trong tin: http(s)://… hoặc www.… */
 export const CHAT_LINK_PATTERN = /\bhttps?:\/\/[^\s<>"]+|\bwww\.[^\s<>"]+/gi;
 
@@ -87,5 +112,5 @@ export {
   chatPreviewSenders,
   chatPreviewVisitors,
 } from "./chat-preview.constants";
-export { chatRoleLabels } from "./chat-role.constants";
+export { CHAT_HOST_ROLES, chatRoleLabels } from "./chat-role.constants";
 export { bannedTerms, bannedTermsWithDiacritics } from "./profanity.constants";

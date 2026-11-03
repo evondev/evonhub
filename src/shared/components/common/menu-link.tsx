@@ -3,14 +3,18 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { MenuLinkItemProps } from "@/shared/types";
+import { MenuLinkItemProps, MenuLinkSignal } from "@/shared/types";
 import { cn } from "@/shared/utils";
 import Link from "next/link";
+import { MenuLinkSignalBadge } from "./menu-link-signal-badge";
+import { MenuLinkSignalDot } from "./menu-link-signal-dot";
 
 interface MenuLinkProps {
   link: MenuLinkItemProps;
   isActive: boolean;
   isCollapsed: boolean;
+  /** Tín hiệu sống của mục, vd phòng chat đang có người */
+  signal?: MenuLinkSignal | null;
 }
 
 function getMenuLinkBadge(link: MenuLinkItemProps) {
@@ -21,8 +25,21 @@ function getMenuLinkBadge(link: MenuLinkItemProps) {
   return "";
 }
 
-export function MenuLink({ link, isActive, isCollapsed }: MenuLinkProps) {
+/** Thu gọn thì aria-label thay chữ trong link nên phải nói cả tín hiệu */
+function getCollapsedLabel(link: MenuLinkItemProps, signalDescription: string) {
+  if (!signalDescription) return link.title;
+
+  return `${link.title}, ${signalDescription}`;
+}
+
+export function MenuLink({
+  link,
+  isActive,
+  isCollapsed,
+  signal,
+}: MenuLinkProps) {
   const badge = getMenuLinkBadge(link);
+  const signalDescription = signal?.description || "";
 
   return (
     // Tooltip chỉ bật lúc thu gọn: lúc mở thì tên đã nằm ngay cạnh icon.
@@ -35,18 +52,30 @@ export function MenuLink({ link, isActive, isCollapsed }: MenuLinkProps) {
           target={link.isExternal ? "_blank" : "_self"}
           href={link.url}
           aria-current={isActive ? "page" : undefined}
-          aria-label={isCollapsed ? link.title : undefined}
+          aria-label={
+            isCollapsed ? getCollapsedLabel(link, signalDescription) : undefined
+          }
           className={cn(
             "flex h-11 w-full items-center gap-3 whitespace-nowrap rounded-xl px-[11px] text-sm font-normal text-foreground/80 outline-none transition-colors",
             !isActive && "hover:bg-item-hover hover:text-foreground",
             isActive && "bg-item-active font-medium text-foreground",
+            signal?.hasUnread && "font-medium text-foreground",
           )}
         >
           <span
             aria-hidden="true"
-            className="flex size-[18px] shrink-0 items-center justify-center [&>svg]:size-[18px]"
+            className="relative flex size-[18px] shrink-0 items-center justify-center [&>svg]:size-[18px]"
           >
             {link.icon}
+            {/* Thu gọn thì không còn chỗ cho số người: chỉ còn chấm ở góc icon */}
+            {signal && isCollapsed && (
+              <MenuLinkSignalDot
+                isUnread={signal.hasUnread}
+                isPinging={signal.isLive}
+                hasRing
+                className="absolute -right-1 -top-1"
+              />
+            )}
           </span>
           <span
             className={cn(
@@ -55,6 +84,9 @@ export function MenuLink({ link, isActive, isCollapsed }: MenuLinkProps) {
             )}
           >
             {link.title}
+            {signalDescription && (
+              <span className="sr-only">, {signalDescription}</span>
+            )}
           </span>
           {badge && (
             <span
@@ -67,6 +99,9 @@ export function MenuLink({ link, isActive, isCollapsed }: MenuLinkProps) {
               {badge}
             </span>
           )}
+          {signal && (
+            <MenuLinkSignalBadge signal={signal} isCollapsed={isCollapsed} />
+          )}
         </Link>
       </TooltipTrigger>
       <TooltipContent
@@ -75,6 +110,11 @@ export function MenuLink({ link, isActive, isCollapsed }: MenuLinkProps) {
         className="rounded-lg border-0 bg-foreground px-2.5 py-1.5 text-xs font-medium text-surface shadow-none dark:border-0 dark:bg-foreground dark:text-background"
       >
         {link.title}
+        {signalDescription && (
+          <span className="block font-normal opacity-70">
+            {signalDescription}
+          </span>
+        )}
       </TooltipContent>
     </Tooltip>
   );
