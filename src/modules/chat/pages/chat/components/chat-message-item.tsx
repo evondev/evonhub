@@ -1,7 +1,9 @@
 "use client";
 
 import { UserAvatar } from "@/shared/components/common/user-avatar";
+import { buildPublicProfilePath } from "@/shared/helpers/url.helper";
 import { cn } from "@/shared/utils";
+import Link from "next/link";
 import { memo, useMemo } from "react";
 import { ChatMessageView } from "../../../types";
 import { formatChatTime, parseMessageSegments } from "../../../utils";
@@ -24,6 +26,7 @@ interface ChatMessageItemProps {
 /**
  * Một bong bóng tin. Tin mình bên phải nền màu nhấn, không tên, không avatar;
  * tin người khác bên trái, tên trên tin đầu chuỗi, avatar cạnh tin cuối chuỗi.
+ * Bấm tên hoặc avatar mở trang công khai của người gửi.
  * Khoảng cách là padding vì Virtuoso đo chiều cao từng item.
  */
 function ChatMessageItemBase({
@@ -38,6 +41,8 @@ function ChatMessageItemBase({
     () => parseMessageSegments(message.content),
     [message.content],
   );
+  const senderName = message.sender.name || message.sender.username;
+  const profilePath = buildPublicProfilePath(message.sender.username);
   // Tin đang gửi chưa có _id trên server nên chưa xoá được
   const isDeletable = !message.isPending && (isOwnMessage || canModerate);
 
@@ -95,18 +100,27 @@ function ChatMessageItemBase({
     >
       <div className="w-8 shrink-0">
         {isLastInGroup && (
-          <UserAvatar
-            name={message.sender.name}
-            avatar={message.sender.avatar}
-          />
+          <Link
+            href={profilePath}
+            aria-label={`Xem trang của ${senderName}`}
+            className="block rounded-full transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            <UserAvatar
+              name={message.sender.name}
+              avatar={message.sender.avatar}
+            />
+          </Link>
         )}
       </div>
       <div className="min-w-0 max-w-[80%] sm:max-w-[70%]">
         {isFirstInGroup && (
           <div className="mb-1 flex min-w-0 items-center gap-1.5 px-1">
-            <span className="min-w-0 truncate text-xs font-medium text-muted">
-              {message.sender.name || message.sender.username}
-            </span>
+            <Link
+              href={profilePath}
+              className="min-w-0 truncate rounded text-xs font-medium text-muted hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              {senderName}
+            </Link>
             <ChatRoleBadge role={message.sender.role} />
           </div>
         )}
@@ -116,7 +130,7 @@ function ChatMessageItemBase({
           </p>
           {isDeletable && (
             <ChatMessageMenu
-              ariaLabel={`Thao tác với tin của ${message.sender.name}`}
+              ariaLabel={`Thao tác với tin của ${senderName}`}
               align="start"
               onDelete={handleDelete}
             />

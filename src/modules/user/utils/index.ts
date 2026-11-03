@@ -15,10 +15,6 @@ import {
   ProfileSocialLink,
 } from "../types";
 
-export function buildPublicProfilePath(basePath: string, username: string) {
-  return `${basePath}/${username.trim()}`;
-}
-
 /** Trang xem trước không ghi gì: chờ một nhịp để thấy nút đang lưu */
 export function simulatePreviewSave(delayMs: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, delayMs));
