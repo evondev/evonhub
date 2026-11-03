@@ -33,8 +33,9 @@ export function CourseManagePreviewPage({
     search: state === "rong" ? COURSE_MANAGE_PREVIEW_EMPTY_KEYWORD : "",
   });
   const matchedCourses = filterPreviewCourses(PREVIEW_MANAGED_COURSES, filters);
-  const hasNarrowingFilters = Boolean(filters.search) || filters.isFree;
-  // Không tìm, không lọc miễn phí thì giả như đang xem cả danh sách thật
+  const hasNarrowingFilters =
+    Boolean(filters.search) || filters.isFree || filters.isVideo;
+  // Không tìm, không lọc miễn phí, video thì giả như đang xem cả danh sách thật
   const tabCounts = hasNarrowingFilters
     ? countPreviewCourseTabs(PREVIEW_MANAGED_COURSES, filters)
     : COURSE_MANAGE_PREVIEW_TAB_COUNTS;

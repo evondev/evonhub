@@ -56,6 +56,7 @@ export const COURSE_MANAGE_DEFAULT_FILTERS: CourseManageFilters = {
   search: "",
   tab: "all",
   isFree: false,
+  isVideo: false,
   page: 1,
 };
 

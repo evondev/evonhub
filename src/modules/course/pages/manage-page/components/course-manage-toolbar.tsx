@@ -12,13 +12,14 @@ import {
   CourseManageFilters,
   CourseManageTab,
 } from "../../../types/course-manage.types";
-import { CourseFreeChip } from "./course-free-chip";
+import { CourseFilterChip } from "./course-filter-chip";
 
 interface CourseManageToolbarProps {
   filters: CourseManageFilters;
   tabs: FilterTabItem<CourseManageTab>[];
   onTabChange: (tab: CourseManageTab) => void;
   onFreeToggle: () => void;
+  onVideoToggle: () => void;
   onSearch: (keyword: string) => void;
   searchInputRef: RefObject<HTMLInputElement>;
   /** id của bảng mà tab đang lọc */
@@ -28,7 +29,7 @@ interface CourseManageToolbarProps {
 }
 
 /**
- * Tab trạng thái và chip "Miễn phí" bên trái, ô tìm và nút thêm bên phải. Từ 2xl
+ * Tab trạng thái và chip "Miễn phí", "Video" bên trái, ô tìm và nút thêm bên phải. Từ 2xl
  * một hàng (bốn tab có số cần ~540px, hẹp hơn thì tab bị bóp xuống dòng); hẹp
  * hơn thì lọc một hàng, ô tìm một hàng. Dưới sm ô tìm lên đầu, tab thành nút
  * "Trạng thái:"
@@ -38,6 +39,7 @@ export function CourseManageToolbar({
   tabs,
   onTabChange,
   onFreeToggle,
+  onVideoToggle,
   onSearch,
   searchInputRef,
   controlsId,
@@ -57,7 +59,16 @@ export function CourseManageToolbar({
           aria-hidden="true"
           className="mx-1 hidden h-5 w-px bg-foreground/10 sm:block"
         />
-        <CourseFreeChip isActive={filters.isFree} onToggle={onFreeToggle} />
+        <CourseFilterChip
+          label="Miễn phí"
+          isActive={filters.isFree}
+          onToggle={onFreeToggle}
+        />
+        <CourseFilterChip
+          label="Video"
+          isActive={filters.isVideo}
+          onToggle={onVideoToggle}
+        />
       </div>
       <div className="order-first flex items-center gap-2 sm:order-none">
         <SearchInput

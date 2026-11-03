@@ -89,6 +89,7 @@ export function filterPreviewCourses(
     if (keyword && !course.title.toLowerCase().includes(keyword)) return false;
     if (status && course.status !== status) return false;
     if (filters.isFree && !course.isFree) return false;
+    if (filters.isVideo && !course.isVideo) return false;
 
     return true;
   });

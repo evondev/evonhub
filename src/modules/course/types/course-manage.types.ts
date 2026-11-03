@@ -9,6 +9,8 @@ export interface CourseManageFilters {
   search: string;
   tab: CourseManageTab;
   isFree: boolean;
+  /** Chỉ hiện video lẻ */
+  isVideo: boolean;
   page: number;
 }
 
@@ -29,7 +31,7 @@ export interface CourseManageRow {
   createdAt: Date | string;
 }
 
-/** Số khoá học của từng tab, đã áp từ khoá và lọc miễn phí */
+/** Số khoá học của từng tab, đã áp từ khoá, lọc miễn phí và lọc video */
 export type CourseManageTabCounts = Record<CourseManageTab, number>;
 
 export interface CourseManageResult {

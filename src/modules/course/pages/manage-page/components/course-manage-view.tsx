@@ -49,6 +49,10 @@ export function CourseManageView({
     onFiltersChange({ isFree: !filters.isFree, page: 1 });
   }
 
+  function handleVideoToggle() {
+    onFiltersChange({ isVideo: !filters.isVideo, page: 1 });
+  }
+
   function handleSearch(search: string) {
     if (search === filters.search) return;
 
@@ -74,6 +78,7 @@ export function CourseManageView({
         tabs={buildCourseManageTabs(result?.tabCounts)}
         onTabChange={handleTabChange}
         onFreeToggle={handleFreeToggle}
+        onVideoToggle={handleVideoToggle}
         onSearch={handleSearch}
         searchInputRef={searchInputRef}
         controlsId={courseTableId}

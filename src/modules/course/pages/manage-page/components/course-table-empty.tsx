@@ -17,7 +17,7 @@ export function CourseTableEmpty({
   onClearFilters,
 }: CourseTableEmptyProps) {
   const hasKeyword = Boolean(filters.search);
-  const hasOtherFilters = filters.tab !== "all" || filters.isFree;
+  const hasOtherFilters = filters.tab !== "all" || filters.isFree || filters.isVideo;
 
   return (
     <p className="px-4 py-6 text-center text-sm text-pretty text-muted">

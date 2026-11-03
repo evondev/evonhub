@@ -488,6 +488,7 @@ export async function handleEnrollCourse({
 
 export async function fetchCoursesManage({
   isFree = false,
+  isVideo = false,
   search,
   limit = 10,
   page,
@@ -498,7 +499,7 @@ export async function fetchCoursesManage({
 
     if (!currentStaff) return;
 
-    // Từ khoá, lọc miễn phí và quyền expert áp cho cả số đếm của từng tab;
+    // Từ khoá, lọc miễn phí, lọc video và quyền expert áp cho cả số đếm của từng tab;
     // trạng thái chỉ áp cho danh sách
     const baseQuery: FilterQuery<typeof CourseModel> = {};
     const skip = (page - 1) * limit;
@@ -512,6 +513,8 @@ export async function fetchCoursesManage({
       baseQuery.free = true;
       baseQuery.price = { $lte: 0 };
     }
+
+    if (isVideo) baseQuery.type = CourseType.Video;
 
     // ObjectId tường minh: baseQuery còn dùng cho $match, nơi không tự ép kiểu như find()
     if (currentStaff.role !== UserRole.Admin) {

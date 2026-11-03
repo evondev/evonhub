@@ -25,6 +25,7 @@ export function CourseManagePage({ canAddVideo }: CourseManagePageProps) {
     search: parseAsString.withDefault(""),
     tab: parseAsStringLiteral(COURSE_MANAGE_TAB_VALUES).withDefault("all"),
     isFree: parseAsBoolean.withDefault(false),
+    isVideo: parseAsBoolean.withDefault(false),
     page: parseAsInteger.withDefault(1),
   });
 
@@ -34,6 +35,7 @@ export function CourseManagePage({ canAddVideo }: CourseManagePageProps) {
       page: filters.page,
       limit: ITEMS_PER_PAGE,
       isFree: filters.isFree,
+      isVideo: filters.isVideo,
       status: getCourseManageStatus(filters.tab),
     });
 
