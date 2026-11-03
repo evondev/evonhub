@@ -393,8 +393,10 @@ async function findFirstLessons(
     _destroy: false,
   })
     .sort({ order: 1 })
-    .select("_id slug")
-    .lean<{ _id: Types.ObjectId; slug: string }[]>();
+    .select("_id slug title duration")
+    .lean<
+      { _id: Types.ObjectId; slug: string; title: string; duration?: number }[]
+    >();
 
   // Thứ tự trong mảng lessons đã theo order: vị trí nhỏ hơn là bài đứng trước
   const lessonRankById = new Map(
@@ -413,7 +415,12 @@ async function findFirstLessons(
 
       const firstLesson = lessons[Math.min(...lessonRanks)];
 
-      return { _id: firstLesson._id.toString(), slug: firstLesson.slug };
+      return {
+        _id: firstLesson._id.toString(),
+        slug: firstLesson.slug,
+        title: firstLesson.title,
+        duration: firstLesson.duration || 0,
+      };
     }
 
     return null;

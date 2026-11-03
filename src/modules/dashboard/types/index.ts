@@ -4,6 +4,9 @@ import { LucideIcon } from "lucide-react";
 export interface DashboardLessonLink {
   _id: string;
   slug: string;
+  /** Tên và số phút của bài sẽ học tiếp. Chưa có dữ liệu thì hero chỉ ghi số bài */
+  title?: string;
+  duration?: number;
 }
 
 export interface DashboardCourseProgress {
@@ -13,6 +16,16 @@ export interface DashboardCourseProgress {
   progress: number;
   current: number;
   total: number;
+}
+
+/** Bài mà nút "Học tiếp" ở hero sẽ mở */
+export interface ResumeLessonSummary {
+  /** Là bài đầu tiên của khóa: chưa mở bài nào trên trình duyệt này */
+  isFirstLesson: boolean;
+  title?: string;
+  /** Số phút */
+  duration?: number;
+  isLoading: boolean;
 }
 
 export interface PartnerLink {
@@ -74,10 +87,13 @@ export interface PreviewCourseProgress {
   slug: string;
   current: number;
   total: number;
+  lessonTitle?: string;
+  lessonDuration?: number;
 }
 
 export type DashboardPreviewState =
   | "hoc-vien"
+  | "tuan-moi"
   | "chuoi-ngay-hoc"
   | "nguoi-moi"
   | "khach"

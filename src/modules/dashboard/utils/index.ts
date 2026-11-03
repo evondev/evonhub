@@ -2,6 +2,7 @@ import { CourseItemData } from "@/modules/course/types";
 import { formatRating } from "@/modules/course/utils";
 import { RatingItemData } from "@/modules/rating/types";
 import { formatCompactCount } from "@/shared/helpers";
+import { cn } from "@/shared/utils";
 import {
   PREVIEW_COURSE_PROGRESS,
   PREVIEW_COURSES,
@@ -159,11 +160,57 @@ export function buildPreviewCoursesProgress(
     return [
       {
         course,
-        lesson: { _id: "", slug: "" },
+        lesson: {
+          _id: "",
+          slug: "",
+          title: sample.lessonTitle,
+          duration: sample.lessonDuration,
+        },
         progress: Math.round((sample.current / sample.total) * 100),
         current: sample.current,
         total: sample.total,
       },
     ];
   });
+}
+
+/** Dòng dưới thanh tiến độ ở hero: còn mấy bài, sắp xong thì nói thẳng */
+export function getLearnerHeroStatusText(current: number, total: number) {
+  if (total === 0) return "Khóa chưa có bài học nào";
+
+  if (current === 0) return "Chưa bắt đầu, vào học bài đầu tiên";
+
+  const remainingCount = Math.max(total - current, 1);
+
+  if (remainingCount === 1) return "Còn 1 bài là hoàn thành khóa";
+
+  return `Còn ${remainingCount} bài`;
+}
+
+/**
+ * Dòng nhỏ trên tên bài ở hero. Nút "Học tiếp" mở bài đang học dở (hay bài
+ * đầu), không phải bài kế tiếp, nên không gọi là "bài tiếp theo"
+ */
+export function getResumeLessonLabel(
+  isFirstLesson: boolean,
+  duration?: number,
+) {
+  const label = isFirstLesson ? "Bài đầu tiên" : "Bài đang học";
+
+  if (!duration) return label;
+
+  return `${label} · ${duration} phút`;
+}
+
+/**
+ * Hàng video ngắn: điện thoại cuộn ngang đủ mọi thẻ, sm và lg lưới 2×2, xl một hàng 3,
+ * 2xl một hàng 4. Thẻ thứ 5, 6 chỉ có ở hàng cuộn
+ */
+export function getVideoRailItemClassName(index: number) {
+  return cn(
+    "grid w-[260px] shrink-0 snap-start",
+    index < 4 && "sm:w-auto",
+    index === 3 && "xl:hidden 2xl:grid",
+    index >= 4 && "sm:hidden",
+  );
 }

@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { CoursePrice, CourseRating } from "../../../components";
-import type { VideoListItem } from "../../../types";
-import { buildVideoPublicHref } from "../../../utils/course-manage.utils";
-import { formatVideoMeta } from "../../../utils/video-list.utils";
+import { CoursePrice } from "./course-price";
+import { CourseRating } from "./course-rating";
+import type { VideoListItem } from "../types";
+import { buildVideoPublicHref } from "../utils/course-manage.utils";
+import { formatVideoMeta } from "../utils/video-list.utils";
 import { VideoCover } from "./video-cover";
 
 interface VideoCardProps {
@@ -27,7 +28,7 @@ export function VideoCard({ video, isPriority = false }: VideoCardProps) {
         sizes="(min-width: 1600px) 25vw, (min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
       />
       <div className="flex min-w-0 flex-1 flex-col gap-1.5 p-4 sm:gap-2 sm:p-5">
-        <h3 className="line-clamp-2 text-base font-semibold text-foreground">
+        <h3 className="line-clamp-2 text-pretty text-base font-semibold text-foreground">
           {video.title}
         </h3>
         {video.excerpt && (

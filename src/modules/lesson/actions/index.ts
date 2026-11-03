@@ -24,6 +24,7 @@ import {
 import { Types } from "mongoose";
 import { revalidatePath } from "next/cache";
 import LessonModel from "../models";
+import { LessonSummary } from "../types";
 
 export async function getLessonById(
   lessonId: string
@@ -71,6 +72,38 @@ export async function getLessonById(
     console.log(error);
   }
 }
+/**
+ * Tên và số phút của một bài. Tên bài đã công khai ở đề cương khóa nên không
+ * cần kiểm quyền; không trả nội dung bài
+ */
+export async function fetchLessonSummary(
+  lessonId: string,
+): Promise<LessonSummary | null> {
+  try {
+    if (typeof lessonId !== "string" || !Types.ObjectId.isValid(lessonId)) {
+      return null;
+    }
+
+    await connectToDatabase();
+
+    const lesson = await LessonModel.findOne({ _id: lessonId, _destroy: false })
+      .select("_id title duration")
+      .lean<{ _id: Types.ObjectId; title: string; duration?: number }>();
+
+    if (!lesson) return null;
+
+    return {
+      _id: lesson._id.toString(),
+      title: lesson.title,
+      duration: lesson.duration || 0,
+    };
+  } catch (error) {
+    console.log(error);
+
+    return null;
+  }
+}
+
 export async function getLessonPreview(
   lessonId: string
 ): Promise<LessonItemCutomizeData | undefined> {

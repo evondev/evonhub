@@ -1,5 +1,5 @@
 import { CourseItemData } from "@/modules/course/types";
-import { Suspense } from "react";
+import { ReactNode, Suspense } from "react";
 import { RoadmapStepConfig } from "../types";
 import {
   buildCatalogStats,
@@ -19,12 +19,15 @@ interface OutsiderDashboardProps {
   catalogCourses: CourseItemData[];
   /** Mặc định là ROADMAP_STEPS; trang xem trước truyền lộ trình giả */
   roadmapStepConfigs?: RoadmapStepConfig[];
+  /** Panel "Tuần này" (chuỗi ngày học + hạng tuần); chỉ admin chưa có khóa mới truyền vào */
+  weekProgress?: ReactNode;
 }
 
 export function OutsiderDashboard({
   firstName,
   catalogCourses,
   roadmapStepConfigs,
+  weekProgress,
 }: OutsiderDashboardProps) {
   const stats = buildCatalogStats(catalogCourses);
   const roadmapSteps = buildRoadmapSteps(
@@ -42,6 +45,7 @@ export function OutsiderDashboard({
         hasRoadmap={hasRoadmap}
         hasCourses={catalogCourses.length > 0}
       />
+      {weekProgress}
       {hasRoadmap && <RoadmapSection steps={roadmapSteps} />}
       <CourseCatalogSection courses={catalogCourses} />
       <Suspense fallback={null}>

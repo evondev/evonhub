@@ -2,12 +2,15 @@ import { cn } from "@/shared/utils";
 import { Check, Flame, Hourglass, PartyPopper, RotateCcw } from "lucide-react";
 import { STREAK_STATUS_CLASS_NAMES } from "../constants";
 import { StreakStatus } from "../types";
+import { getStreakStatusText } from "../utils";
 
 interface StreakStatusNoteProps {
   status: StreakStatus;
   current: number;
   /** "còn 2 giờ 20 phút", chỉ dùng khi hôm nay chưa học */
   todayRemainingLabel: string;
+  /** Thay câu mặc định của trạng thái, giữ màu và icon */
+  message?: string;
   className?: string;
 }
 
@@ -16,8 +19,12 @@ export function StreakStatusNote({
   status,
   current,
   todayRemainingLabel,
+  message,
   className,
 }: StreakStatusNoteProps) {
+  const text =
+    message || getStreakStatusText(status, current, todayRemainingLabel);
+
   return (
     <p
       className={cn(
@@ -33,14 +40,7 @@ export function StreakStatusNote({
         <PartyPopper className="mt-0.5 size-4 shrink-0" />
       )}
       {status === "broken" && <RotateCcw className="mt-0.5 size-4 shrink-0" />}
-      <span className="text-pretty">
-        {status === "new" && "Học ít nhất 1 phút mỗi ngày để bắt đầu chuỗi"}
-        {status === "risk" &&
-          `Hôm nay chưa học, ${todayRemainingLabel} để giữ chuỗi`}
-        {status === "kept" && "Đã giữ chuỗi hôm nay. Mai gặp lại"}
-        {status === "record" && `Kỷ lục mới: ${current} ngày liên tiếp`}
-        {status === "broken" && "Chuỗi đã dừng. Học hôm nay để bắt đầu lại"}
-      </span>
+      <span className="text-pretty">{text}</span>
     </p>
   );
 }

@@ -73,10 +73,19 @@
     scrollbar-gutter: stable;
   }
   // Trang chat: khung chat cao vừa viewport, chỉ danh sách tin cuộn. Khoá cuộn
-  // của trang để kéo trong khung không kéo cả trang, cũng không hiện thanh cuộn
-  html:has([data-chat-room]),
-  html:has([data-chat-room]) body {
-    overflow: hidden;
+  // của trang để kéo trong khung không kéo cả trang, cũng không hiện thanh cuộn.
+  // Chỉ khoá trên máy có chuột: iOS vẫn đẩy trang lên khi bàn phím mở dù đã
+  // overflow hidden, rời trang chat thì trang mới bị lệch, kéo lên không về
+  // được đầu mà lại kích hoạt kéo-để-tải-lại. Màn cảm ứng không cần khoá vì
+  // khung đã vừa khít viewport, chỉ chặn hiệu ứng kéo dãn của trang.
+  @media (hover: hover) and (pointer: fine) {
+    html:has([data-chat-room]),
+    html:has([data-chat-room]) body {
+      overflow: hidden;
+    }
+  }
+  html:has([data-chat-room]) {
+    overscroll-behavior-y: none;
   }
   // Khung chat đã tự chừa chỗ cho thanh dưới (CHAT_FRAME_HEIGHT_CLASS_NAME),
   // phần đệm đáy của wrapper chỉ làm trang dài hơn viewport 64px

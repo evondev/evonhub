@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { CoursePrice, CourseRating } from "../../../components";
+import { CoursePrice, CourseRating, VideoCover } from "../../../components";
 import type { VideoListItem } from "../../../types";
 import { buildVideoPublicHref } from "../../../utils/course-manage.utils";
 import { formatVideoMeta } from "../../../utils/video-list.utils";
-import { VideoCover } from "./video-cover";
 
 interface VideoRowProps {
   video: VideoListItem;

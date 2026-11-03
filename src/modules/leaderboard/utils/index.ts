@@ -12,7 +12,11 @@ export {
   shiftDayKey,
   toStudyMinutes,
 } from "./study-period.utils";
-export { buildStudyStreak, getStreakStatus } from "./study-streak.utils";
+export {
+  buildStudyStreak,
+  getStreakStatus,
+  getStreakStatusText,
+} from "./study-streak.utils";
 export {
   formatStudyDuration,
   getStudyTier,

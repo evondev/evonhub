@@ -1,23 +1,24 @@
 import { getUserById } from "@/lib/actions/user.action";
 import { fetchCourses } from "@/modules/course/actions";
 import {
-  StudyStreakCard,
-  StudyStreakCardSkeleton,
-  WeekLeaderboardStrip,
-  WeekLeaderboardStripSkeleton,
+  WeekProgressPanel,
+  WeekProgressSkeleton,
 } from "@/modules/leaderboard/components";
 import { isLeaderboardParticipant } from "@/modules/leaderboard/utils";
 import { fetchUserCoursesContinue } from "@/modules/user/actions";
 import { CourseStatus } from "@/shared/constants/course.constants";
+import { UserRole } from "@/shared/constants/user.constants";
 import { UserItemData } from "@/shared/types/user.types";
 import { currentUser } from "@clerk/nextjs/server";
 import { Suspense } from "react";
 import { CATALOG_COURSE_LIMIT, LEARNER_COURSE_FETCH_LIMIT } from "../constants";
 import { DashboardCourseProgress } from "../types";
 import { getFirstName } from "../utils";
+import { DashboardVideoSection } from "./dashboard-video-section";
 import { LearnerDashboard } from "./learner-dashboard";
 import { LearnerErrorDashboard } from "./learner-error-dashboard";
 import { OutsiderDashboard } from "./outsider-dashboard";
+import { VideoRailSkeleton } from "./video-rail-skeleton";
 
 interface LearnerOverviewProps {
   clerkUserId: string;
@@ -60,11 +61,26 @@ export async function LearnerOverview({ clerkUserId }: LearnerOverviewProps) {
     return <LearnerErrorDashboard />;
   }
 
+  // Expert không được ghi phút học nên không có panel "Tuần này". Admin cũng
+  // không được ghi phút nhưng vẫn thấy panel để xem UI như người học.
+  const canSeeLeaderboard =
+    isLeaderboardParticipant(user.role) || user.role === UserRole.Admin;
+  const weekProgress = canSeeLeaderboard ? (
+    <Suspense fallback={<WeekProgressSkeleton />}>
+      <WeekProgressPanel userId={String(user._id)} />
+    </Suspense>
+  ) : undefined;
+
   if (continueData.courses.length === 0) {
+    // Người học chưa có khóa thì chưa cần panel này; admin thường không mua
+    // khóa nên vẫn cho thấy
+    const isAdmin = user.role === UserRole.Admin;
+
     return (
       <OutsiderDashboard
         firstName={firstName}
         catalogCourses={catalogCourses}
+        weekProgress={isAdmin ? weekProgress : undefined}
       />
     );
   }
@@ -84,26 +100,17 @@ export async function LearnerOverview({ clerkUserId }: LearnerOverviewProps) {
     },
   );
 
-  // Admin, expert không được ghi phút học nên không có khối "Tuần này" và chuỗi ngày học
-  const isParticipant = isLeaderboardParticipant(user.role);
-  const weekLeaderboard = isParticipant ? (
-    <Suspense fallback={<WeekLeaderboardStripSkeleton />}>
-      <WeekLeaderboardStrip userId={String(user._id)} />
-    </Suspense>
-  ) : undefined;
-  const studyStreak = isParticipant ? (
-    <Suspense fallback={<StudyStreakCardSkeleton />}>
-      <StudyStreakCard userId={String(user._id)} />
-    </Suspense>
-  ) : undefined;
-
   return (
     <LearnerDashboard
       coursesProgress={coursesProgress}
       catalogCourses={catalogCourses}
       firstName={firstName}
-      weekLeaderboard={weekLeaderboard}
-      studyStreak={studyStreak}
+      weekProgress={weekProgress}
+      videoSection={
+        <Suspense fallback={<VideoRailSkeleton />}>
+          <DashboardVideoSection />
+        </Suspense>
+      }
     />
   );
 }

@@ -12,7 +12,7 @@ import {
   buildVideoListHref,
   hasActiveVideoListFilters,
 } from "../../../utils/video-list.utils";
-import { VideoCard } from "./video-card";
+import { VideoCard } from "../../../components";
 import { VideoListEmpty } from "./video-list-empty";
 import { VideoRow } from "./video-row";
 
