@@ -100,7 +100,7 @@ const atMinutesAgo = (minutes: number) => ({
 
 /**
  * Nhật ký giả, mới nhất trước, đủ mọi loại việc: ba người đang học (Vy vừa
- * chuyển bài nên bài trước không còn "đang học"), bình luận, đánh giá, mua
+ * chuyển bài nên bài trước không còn "đang học"), một người đang xem video lẻ, bình luận, đánh giá, mua
  * khoá ba kiểu duyệt, tài khoản mới, admin / chuyên gia sửa nội dung, tên dài,
  * bài đã xoá, người dùng đã xoá
  */
@@ -201,6 +201,17 @@ export const PREVIEW_ACTIVITIES: ActivityRow[] = [
     courseHref: "",
     detail: "",
     ...atMinutesAgo(17),
+  },
+  {
+    id: "a10b",
+    type: ActivityType.ViewVideo,
+    ...previewUsers.ha,
+    targetTitle: "Tối ưu ảnh với next/image trong 10 phút",
+    courseTitle: "Tối ưu ảnh với next/image trong 10 phút",
+    courseHref: "/course/toi-uu-anh-next-image",
+    detail: "",
+    startedAt: minutesAgo(12),
+    lastSeenAt: minutesAgo(2),
   },
   {
     id: "a11",

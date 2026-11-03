@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ToneBadge, UserAvatar } from "@/shared/components/common";
-import { ActivityType } from "@/shared/constants/activity.constants";
 import { timeAgo } from "@/shared/utils";
 import Link from "next/link";
 import { ACTIVITY_TYPE_CONFIGS } from "../../../constants/activity-type.constants";
@@ -26,9 +25,8 @@ export function ActivityListItem({
   activity,
   onSelectUser,
 }: ActivityListItemProps) {
-  const { target } = ACTIVITY_TYPE_CONFIGS[activity.type];
+  const { target, isSession } = ACTIVITY_TYPE_CONFIGS[activity.type];
   const isOnline = isActivityOnline(activity);
-  const isViewLesson = activity.type === ActivityType.ViewLesson;
   // Việc nhắm vào bài hay chương thì ghi khoá ở dòng dưới; nhắm vào khoá thì tên khoá đã ở trên
   const hasCourseContext = target === "lesson" || target === "lecture";
 
@@ -84,7 +82,12 @@ export function ActivityListItem({
               </Link>
             )}
             {!activity.courseHref && activity.courseTitle}
-            {isViewLesson && <> · {formatActivityDuration(activity)}</>}
+            {isSession && <> · {formatActivityDuration(activity)}</>}
+          </p>
+        )}
+        {!hasCourseContext && isSession && (
+          <p className="mt-0.5 text-xs text-muted">
+            {formatActivityDuration(activity)}
           </p>
         )}
         {activity.detail && (
