@@ -157,8 +157,9 @@ export const PREVIEW_COURSE_PROGRESS: PreviewCourseProgress[] = [
     slug: "preview-vibe-coding",
     current: 13,
     total: 42,
-    lessonTitle: "Bài 14 · Viết prompt để AI dựng form đăng ký có kiểm lỗi",
-    lessonDuration: 18,
+    // Bài đầu tiên của khóa: trang xem trước không có localStorage bài học dở
+    lessonTitle: "Bài 1 · Cài công cụ và tạo dự án đầu tiên với AI",
+    lessonDuration: 9,
   },
   { slug: "preview-typescript", current: 0, total: 36 },
 ];

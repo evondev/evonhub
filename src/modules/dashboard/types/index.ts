@@ -18,6 +18,16 @@ export interface DashboardCourseProgress {
   total: number;
 }
 
+/** Bài mà nút "Học tiếp" ở hero sẽ mở */
+export interface ResumeLessonSummary {
+  /** Là bài đầu tiên của khóa: chưa mở bài nào trên trình duyệt này */
+  isFirstLesson: boolean;
+  title?: string;
+  /** Số phút */
+  duration?: number;
+  isLoading: boolean;
+}
+
 export interface PartnerLink {
   name: string;
   url: string;

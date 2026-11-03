@@ -187,11 +187,19 @@ export function getLearnerHeroStatusText(current: number, total: number) {
   return `Còn ${remainingCount} bài`;
 }
 
-/** Dòng nhỏ trên tên bài tiếp theo: có số phút thì kèm vào */
-export function getNextLessonLabel(duration?: number) {
-  if (!duration) return "Bài tiếp theo";
+/**
+ * Dòng nhỏ trên tên bài ở hero. Nút "Học tiếp" mở bài đang học dở (hay bài
+ * đầu), không phải bài kế tiếp, nên không gọi là "bài tiếp theo"
+ */
+export function getResumeLessonLabel(
+  isFirstLesson: boolean,
+  duration?: number,
+) {
+  const label = isFirstLesson ? "Bài đầu tiên" : "Bài đang học";
 
-  return `Bài tiếp theo · ${duration} phút`;
+  if (!duration) return label;
+
+  return `${label} · ${duration} phút`;
 }
 
 /**

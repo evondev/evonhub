@@ -3,11 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/shared/components/common";
 import { CourseCover } from "@/shared/components/course";
+import Skeleton from "@/shared/components/skeleton";
 import { useResumeLessonUrl } from "@/shared/hooks";
 import { Play } from "lucide-react";
 import Link from "next/link";
+import { useResumeLessonSummary } from "../hooks/use-resume-lesson-summary";
 import { DashboardCourseProgress } from "../types";
-import { getLearnerHeroStatusText, getNextLessonLabel } from "../utils";
+import { getLearnerHeroStatusText, getResumeLessonLabel } from "../utils";
 
 interface LearnerHeroProps {
   courseProgress: DashboardCourseProgress;
@@ -29,11 +31,11 @@ export function LearnerHero({
 }: LearnerHeroProps) {
   const { course, lesson, progress, current, total } = courseProgress;
   const lessonUrl = useResumeLessonUrl(course.slug, lesson);
+  const resumeLesson = useResumeLessonSummary(course.slug, lesson);
   const greeting = firstName
     ? `Chào ${firstName}, học tiếp nhé`
     : "Học tiếp nhé";
   const statusText = getLearnerHeroStatusText(current, total);
-  const nextLessonNumber = Math.min(current + 1, total);
   const isNotStarted = current === 0;
 
   return (
@@ -68,12 +70,25 @@ export function LearnerHero({
         </div>
         <div className="flex min-w-0 flex-col gap-3 rounded-xl bg-item-hover p-4 sm:flex-row sm:items-center">
           <div className="min-w-0 flex-1">
-            <p className="text-xs text-muted">
-              {getNextLessonLabel(lesson?.duration)}
-            </p>
-            <p className="mt-0.5 line-clamp-2 text-sm font-semibold text-foreground">
-              {lesson?.title || `Bài ${nextLessonNumber}`}
-            </p>
+            {resumeLesson.isLoading && (
+              <div aria-busy="true" className="space-y-2 py-0.5">
+                <Skeleton className="h-3 w-24 rounded-full" />
+                <Skeleton className="h-4 w-3/5 rounded-full" />
+              </div>
+            )}
+            {!resumeLesson.isLoading && (
+              <>
+                <p className="text-xs text-muted">
+                  {getResumeLessonLabel(
+                    resumeLesson.isFirstLesson,
+                    resumeLesson.duration,
+                  )}
+                </p>
+                <p className="mt-0.5 line-clamp-2 text-sm font-semibold text-foreground">
+                  {resumeLesson.title || "Mở lại bài bạn đang học"}
+                </p>
+              </>
+            )}
           </div>
           <Button asChild variant="primary" className="shrink-0">
             <Link href={lessonUrl}>

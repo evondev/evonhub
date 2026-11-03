@@ -17,6 +17,9 @@ export interface CountByCourse {
 export interface FirstLessonLink {
   _id: string;
   slug: string;
+  title: string;
+  /** Số phút */
+  duration: number;
 }
 
 /** Khóa đang học, cùng chỉ số với bài đầu tiên và tiến độ của từng khóa */
