@@ -5,6 +5,7 @@ import {
   ClipboardList,
   Compass,
   Home,
+  Languages,
   LayoutGrid,
   LibraryBig,
   MessageSquare,
@@ -19,6 +20,9 @@ import { BadgeTone, MenuLinkItemProps, StatusBadgeVariant } from "../types";
 export const ADMIN_HOME_PATH = "/admin";
 
 export const CHAT_PATH = "/chat";
+
+// Trang luyện nói tiếng Anh, mở ở tab mới từ sidebar
+export const SPEAK_NOW_URL = "https://speaknowenglish.org";
 
 // Trang chi tiết khóa học: /course/[slug]
 export const COURSE_DETAILS_PATH_PREFIX = "/course/";
@@ -59,6 +63,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     title: "Xếp hạng",
     icon: <Trophy />,
     url: "/leaderboard",
+    section: "community",
     // Admin, expert không lên bảng: thanh dưới của họ chừa chỗ cho Quản lý
     isHideMobileForManager: true,
   },
@@ -67,6 +72,16 @@ export const menuLinks: MenuLinkItemProps[] = [
     mobileTitle: "Chat",
     icon: <MessagesSquare />,
     url: CHAT_PATH,
+    section: "community",
+  },
+  {
+    title: "Học tiếng Anh",
+    icon: <Languages />,
+    url: SPEAK_NOW_URL,
+    isExternal: true,
+    section: "external",
+    // Thanh dưới đã đủ 6 mục, thêm nữa thì nhãn bị cắt hết
+    isHideOnMobile: true,
   },
   // {
   //   title: "Săn mã giảm giá",

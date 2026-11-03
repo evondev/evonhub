@@ -5,6 +5,7 @@ import {
 } from "@/components/ui/tooltip";
 import { MenuLinkItemProps, MenuLinkSignal } from "@/shared/types";
 import { cn } from "@/shared/utils";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { MenuLinkSignalBadge } from "./menu-link-signal-badge";
 import { MenuLinkSignalDot } from "./menu-link-signal-dot";
@@ -27,9 +28,11 @@ function getMenuLinkBadge(link: MenuLinkItemProps) {
 
 /** Thu gọn thì aria-label thay chữ trong link nên phải nói cả tín hiệu */
 function getCollapsedLabel(link: MenuLinkItemProps, signalDescription: string) {
-  if (!signalDescription) return link.title;
+  const title = link.isExternal ? `${link.title} (mở tab mới)` : link.title;
 
-  return `${link.title}, ${signalDescription}`;
+  if (!signalDescription) return title;
+
+  return `${title}, ${signalDescription}`;
 }
 
 export function MenuLink({
@@ -50,6 +53,7 @@ export function MenuLink({
             40px, icon 18px cách mép 11px là nằm đúng tâm ô nền. */}
         <Link
           target={link.isExternal ? "_blank" : "_self"}
+          rel={link.isExternal ? "noopener noreferrer" : undefined}
           href={link.url}
           aria-current={isActive ? "page" : undefined}
           aria-label={
@@ -84,10 +88,21 @@ export function MenuLink({
             )}
           >
             {link.title}
+            {link.isExternal && <span className="sr-only"> (mở tab mới)</span>}
             {signalDescription && (
               <span className="sr-only">, {signalDescription}</span>
             )}
           </span>
+          {/* Link ra trang khác: mũi tên báo trước là mở tab mới */}
+          {link.isExternal && (
+            <ArrowUpRight
+              aria-hidden="true"
+              className={cn(
+                "size-4 shrink-0 text-muted transition-opacity duration-150 motion-reduce:transition-none",
+                isCollapsed && "opacity-0",
+              )}
+            />
+          )}
           {badge && (
             <span
               className={cn(

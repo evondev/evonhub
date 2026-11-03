@@ -1,15 +1,19 @@
 "use client";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { CHAT_PATH, menuLinks } from "@/shared/constants/common.constants";
+import { menuLinks } from "@/shared/constants/common.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { ProductLogo } from "@/shared/components/product-logo";
-import { MenuLinkItemProps, MenuLinkSignal } from "@/shared/types";
-import { cn, isMenuLinkActive } from "@/shared/utils";
+import {
+  MenuLinkItemProps,
+  MenuLinkSection,
+  MenuLinkSignal,
+} from "@/shared/types";
+import { cn } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MenuLink } from "./menu-link";
+import { SidebarLinkList } from "./sidebar-link-list";
 
 export interface SidebarProps {
   role?: UserRole;
@@ -35,6 +39,10 @@ function isManageLink(link: MenuLinkItemProps) {
   return Boolean(link.isAdmin || link.isExpert);
 }
 
+function isLinkInSection(link: MenuLinkItemProps, section: MenuLinkSection) {
+  return !isManageLink(link) && (link.section || "learn") === section;
+}
+
 export function Sidebar({ role, chatSignal }: SidebarProps) {
   const pathname = usePathname();
   const { isLessonPage } = useLessonDetailsPath();
@@ -45,8 +53,15 @@ export function Sidebar({ role, chatSignal }: SidebarProps) {
   const visibleLinks = menuLinks.filter((link) =>
     isVisibleInSidebar(link, role),
   );
-  const mainLinks = visibleLinks.filter((link) => !isManageLink(link));
-  const manageLinks = visibleLinks.filter(isManageLink);
+  // Nhóm trên cùng theo thứ tự: học, cộng đồng, quản lý; trang ngoài ghim ở đáy
+  const linkGroups = [
+    visibleLinks.filter((link) => isLinkInSection(link, "learn")),
+    visibleLinks.filter((link) => isLinkInSection(link, "community")),
+    visibleLinks.filter(isManageLink),
+  ].filter((links) => links.length > 0);
+  const externalLinks = visibleLinks.filter((link) =>
+    isLinkInSection(link, "external"),
+  );
 
   return (
     <aside
@@ -84,34 +99,27 @@ export function Sidebar({ role, chatSignal }: SidebarProps) {
             isSidebarCollapsed && "[scrollbar-width:none]",
           )}
         >
-          <ul className="flex flex-col gap-1.5">
-            {mainLinks.map((link) => (
-              <li key={link.url}>
-                <MenuLink
-                  link={link}
-                  isActive={isMenuLinkActive(link, pathname)}
-                  isCollapsed={isSidebarCollapsed}
-                  signal={link.url === CHAT_PATH ? chatSignal : null}
-                />
-              </li>
-            ))}
-          </ul>
+          {linkGroups.map((links, index) => (
+            <div
+              key={links[0].url}
+              className={cn(index > 0 && "mt-3 border-t border-border pt-3")}
+            >
+              <SidebarLinkList
+                links={links}
+                pathname={pathname}
+                isCollapsed={isSidebarCollapsed}
+                chatSignal={chatSignal}
+              />
+            </div>
+          ))}
 
-          {manageLinks.length > 0 && (
-            // Khu quản lý chỉ còn một mục, tên đã nói rõ: đường kẻ tách khỏi
-            // nhóm học tập là đủ, không cần nhãn nhóm
-            <div className="mt-3 border-t border-border pt-3">
-              <ul className="flex flex-col gap-1.5">
-                {manageLinks.map((link) => (
-                  <li key={link.url}>
-                    <MenuLink
-                      link={link}
-                      isActive={isMenuLinkActive(link, pathname)}
-                      isCollapsed={isSidebarCollapsed}
-                    />
-                  </li>
-                ))}
-              </ul>
+          {externalLinks.length > 0 && (
+            <div className="mt-auto border-t border-border pt-3">
+              <SidebarLinkList
+                links={externalLinks}
+                pathname={pathname}
+                isCollapsed={isSidebarCollapsed}
+              />
             </div>
           )}
         </nav>
