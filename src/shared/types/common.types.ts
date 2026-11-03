@@ -13,6 +13,8 @@ export type MenuLinkItemProps = {
   /** Sáng cả khi đang ở trang con, vd "/admin/" cho mục Quản lý */
   activePathPrefix?: string;
   section?: MenuLinkSection;
+  /** Màu riêng cho chữ, icon của mục (mã hex), vd mục dẫn sang sản phẩm khác */
+  accentColor?: string;
   isAdmin?: boolean;
   isExpert?: boolean;
   isExternal?: boolean;

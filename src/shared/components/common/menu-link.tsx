@@ -55,6 +55,8 @@ export function MenuLink({
           target={link.isExternal ? "_blank" : "_self"}
           rel={link.isExternal ? "noopener noreferrer" : undefined}
           href={link.url}
+          // Màu riêng đè cả màu chữ lúc rê: mục giữ màu của nó
+          style={link.accentColor ? { color: link.accentColor } : undefined}
           aria-current={isActive ? "page" : undefined}
           aria-label={
             isCollapsed ? getCollapsedLabel(link, signalDescription) : undefined
@@ -98,7 +100,8 @@ export function MenuLink({
             <ArrowUpRight
               aria-hidden="true"
               className={cn(
-                "size-4 shrink-0 text-muted transition-opacity duration-150 motion-reduce:transition-none",
+                "size-4 shrink-0 transition-opacity duration-150 motion-reduce:transition-none",
+                !link.accentColor && "text-muted",
                 isCollapsed && "opacity-0",
               )}
             />

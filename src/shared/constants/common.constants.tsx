@@ -24,6 +24,9 @@ export const CHAT_PATH = "/chat";
 // Trang luyện nói tiếng Anh, mở ở tab mới từ sidebar
 export const SPEAK_NOW_URL = "https://speaknowenglish.org";
 
+// Màu thương hiệu của Speak Now English, tô mục của nó trên sidebar
+export const SPEAK_NOW_COLOR = "#FA5D18";
+
 // Trang chi tiết khóa học: /course/[slug]
 export const COURSE_DETAILS_PATH_PREFIX = "/course/";
 
@@ -80,6 +83,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: SPEAK_NOW_URL,
     isExternal: true,
     section: "external",
+    accentColor: SPEAK_NOW_COLOR,
     // Thanh dưới đã đủ 6 mục, thêm nữa thì nhãn bị cắt hết
     isHideOnMobile: true,
   },
