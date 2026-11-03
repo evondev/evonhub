@@ -28,6 +28,7 @@ import {
   CourseUpdateHeader,
 } from "../update-page/components";
 import { VideoBasicInfoSection } from "./components/video-basic-info-section";
+import { VideoDescriptionAiAction } from "./components/video-description-ai-action";
 import { VideoComingSoonField } from "./components/video-coming-soon-field";
 
 export interface VideoUpdatePageProps {
@@ -153,7 +154,12 @@ export function VideoUpdatePage({
               freeDescription="Ai cũng xem được, không cần đăng nhập hay mua."
             />
             <CourseMediaSection />
-            <CourseDescriptionSection description="Lời giới thiệu ngắn cho người chưa mua, hiện cạnh video giới thiệu." />
+            <CourseDescriptionSection
+              description="Lời giới thiệu ngắn cho người chưa mua, hiện cạnh video giới thiệu."
+              action={
+                <VideoDescriptionAiAction categoryOptions={categoryOptions} />
+              }
+            />
           </div>
 
           {/* Từ lg dính dưới header nổi (đáy 80px) để nút Lưu luôn trong tầm tay */}

@@ -8,10 +8,13 @@ import { CourseFormSection } from "./course-form-section";
 
 export interface CourseDescriptionSectionProps {
   description?: string;
+  /** Nút ở góc phải header section (ví dụ viết bằng AI) */
+  action?: React.ReactNode;
 }
 
 export function CourseDescriptionSection({
   description = "Hiện ở phần giới thiệu trên trang bán khóa học.",
+  action,
 }: CourseDescriptionSectionProps) {
   const { control } = useFormContext<CourseUpdateFormValues>();
   const { theme } = useTheme();
@@ -20,6 +23,7 @@ export function CourseDescriptionSection({
     <CourseFormSection
       title="Mô tả"
       description={description}
+      action={action}
     >
       <FormField
         control={control}
