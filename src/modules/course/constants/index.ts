@@ -237,6 +237,9 @@ export const COURSE_FORM_CONTROL_CLASS_NAME =
 export const COURSE_IMAGE_HINT =
   "Ảnh 16:9, hiện ở thẻ khóa học và đầu trang bán";
 
+// Ảnh bìa có sẵn trong public/, chỉ gán khi người sửa bấm "Dùng ảnh mặc định"
+export const DEFAULT_COURSE_IMAGE = "/default.jpg";
+
 // ----- Chỉ dùng cho trang xem trước ở dev (/course-update-preview) -----
 // Dữ liệu giả: tiêu đề dài nhất đang có, đủ yêu cầu, kết quả, Q/A
 const PREVIEW_COURSE_UPDATE_FILLED: CourseUpdateData = {

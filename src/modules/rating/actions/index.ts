@@ -28,6 +28,7 @@ import {
 import { escapeRegExp } from "lodash";
 import { FilterQuery, isValidObjectId, Types } from "mongoose";
 import RatingModel from "../models";
+import { hasRatingAccess } from "../services/rating-access.service";
 import {
   MAX_RATINGS_PER_PAGE,
   MAX_RATINGS_PER_UPDATE,
@@ -70,8 +71,8 @@ interface FetchCanRateCourseParams {
 }
 
 /**
- * User đang đăng nhập gửi được đánh giá cho khóa này không: đã mua và chưa có
- * đánh giá nào, kể cả đang chờ duyệt hay bị từ chối, giống điều kiện của
+ * User đang đăng nhập gửi được đánh giá cho khóa này không: đã mua (hoặc khóa
+ * miễn phí) và chưa có đánh giá nào, kể cả đang chờ duyệt hay bị từ chối, giống điều kiện của
  * createRating. Lỗi thì coi như không, để không nhắc nhầm.
  */
 export async function fetchCanRateCourse({
@@ -82,11 +83,9 @@ export async function fetchCanRateCourse({
 
     if (!currentUser || !isValidObjectId(courseId)) return false;
 
-    const ownedCourseIds: string[] = (currentUser.courses || []).map(
-      (ownedCourseId: unknown) => String(ownedCourseId),
-    );
+    const canAccessCourse = await hasRatingAccess(currentUser, courseId);
 
-    if (!ownedCourseIds.includes(courseId)) return false;
+    if (!canAccessCourse) return false;
 
     const existingRating = await RatingModel.exists({
       user: currentUser._id,

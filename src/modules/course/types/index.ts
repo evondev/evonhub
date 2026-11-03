@@ -338,6 +338,11 @@ export interface VideoListItem
   duration: number;
 }
 
+/** Một dòng của truy vấn danh sách video, kèm link YouTube của bài để lấy thumbnail */
+export interface VideoListRow extends VideoListItem {
+  iframe?: string;
+}
+
 /** Video giả của trang xem trước, mang slug danh mục để lọc như server */
 export interface PreviewVideoListItem extends VideoListItem {
   categorySlug: string;

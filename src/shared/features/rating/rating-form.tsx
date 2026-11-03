@@ -50,6 +50,8 @@ export interface RatingFormProps {
   userId: string;
   /** Tiến độ học (%) để tự mở hộp đánh giá khi đủ ngưỡng */
   progressPercent: number;
+  /** Gọi tên thứ được đánh giá trong nút và hộp: "khóa học", "video" */
+  subjectLabel?: string;
 }
 
 function getReactionOptionClassName(isSelected: boolean) {
@@ -74,6 +76,7 @@ export function RatingForm({
   courseTitle,
   userId,
   progressPercent,
+  subjectLabel = "khóa học",
 }: RatingFormProps) {
   const queryClient = useQueryClient();
   const [rating, setRating] = useState(DEFAULT_RATING);
@@ -100,7 +103,7 @@ export function RatingForm({
 
   async function onSubmit(values: z.infer<typeof ratingSchema>) {
     if (rating < 1 || rating > 5) {
-      toast.error("Vui lòng chọn mức đánh giá cho khóa học");
+      toast.error(`Vui lòng chọn mức đánh giá cho ${subjectLabel}`);
       return;
     }
     setIsSubmitting(true);
@@ -115,7 +118,7 @@ export function RatingForm({
         toast.error(response.message);
         return;
       }
-      toast.success("Cám ơn bạn đã đánh giá khóa học!");
+      toast.success(`Cám ơn bạn đã đánh giá ${subjectLabel}!`);
       form.reset();
       setRating(DEFAULT_RATING);
       queryClient.invalidateQueries({
@@ -134,7 +137,7 @@ export function RatingForm({
       <DialogTrigger asChild>
         <Button
           variant={canRate ? "primary" : "outline"}
-          title="Đánh giá khóa học"
+          title={`Đánh giá ${subjectLabel}`}
           className={getTriggerClassName(canRate)}
         >
           <Star
@@ -143,7 +146,7 @@ export function RatingForm({
               canRate && "fill-amber-300 text-amber-300",
             )}
           />
-          <span className="max-md:sr-only">Đánh giá khóa học</span>
+          <span className="max-md:sr-only">Đánh giá {subjectLabel}</span>
         </Button>
       </DialogTrigger>
       {/* Neo đỉnh, không căn giữa dọc. Có ô nhập nên bấm ra ngoài không đóng */}
@@ -153,7 +156,7 @@ export function RatingForm({
       >
         <DialogHeader className="pr-10 text-left">
           <DialogTitle className="text-lg font-semibold text-foreground">
-            Đánh giá khóa học
+            Đánh giá {subjectLabel}
           </DialogTitle>
           {courseTitle && (
             <DialogDescription className="mt-2 text-pretty text-sm/6 text-muted">
@@ -170,7 +173,7 @@ export function RatingForm({
           >
             <fieldset>
               <legend className="text-sm font-medium text-foreground">
-                Bạn thấy khóa học thế nào?
+                Bạn thấy {subjectLabel} thế nào?
               </legend>
               <div className="mt-3 grid grid-cols-5 gap-2">
                 {reactions.map((reaction) => (

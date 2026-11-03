@@ -7,11 +7,14 @@ import CourseSection from "./course-section";
 export interface CourseReviewsProps {
   reviews: RatingItemData[];
   ratingAverage: number;
+  /** Nút cạnh điểm trung bình, ví dụ nút đánh giá ở trang xem video */
+  action?: React.ReactNode;
 }
 
 export default function CourseReviews({
   reviews,
   ratingAverage,
+  action,
 }: CourseReviewsProps) {
   const ratingSummary = reviews.length > 0 && (
     <span className="inline-flex shrink-0 items-center gap-1.5 text-sm text-muted">
@@ -26,7 +29,15 @@ export default function CourseReviews({
   );
 
   return (
-    <CourseSection title="Đánh giá" action={ratingSummary}>
+    <CourseSection
+      title="Đánh giá"
+      action={
+        <div className="flex shrink-0 items-center gap-3">
+          {ratingSummary}
+          {action}
+        </div>
+      }
+    >
       {reviews.length === 0 && (
         <div className="rounded-2xl border border-border bg-surface px-5 py-10 text-center text-sm text-muted">
           Chưa có đánh giá nào

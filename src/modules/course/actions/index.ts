@@ -39,6 +39,7 @@ import {
   toStatusCountMap,
 } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
+import { getYoutubeThumbnail } from "@/shared/utils/video-embed.utils";
 import {
   canAccessCourseContent,
   getCurrentAdmin,
@@ -74,6 +75,7 @@ import {
   VideoCategoryOption,
   VideoDetailsData,
   VideoListItem,
+  VideoListRow,
   VideoUpdateData,
 } from "../types";
 import { escapeRegExp, isCourseFree, isCourseOwned } from "../utils";
@@ -648,6 +650,9 @@ export async function createVideo({
       title,
       slug,
       type: CourseType.Video,
+      // Để trống chứ không lấy ảnh mặc định của schema: video YouTube thường có
+      // ảnh riêng, người sửa tự chọn ảnh hoặc bấm dùng ảnh mặc định
+      image: "",
       author: currentAdmin._id,
       _destroy: false,
     });
@@ -841,7 +846,7 @@ export async function fetchVideos({
       matchQuery.price = { $lte: 0 };
     }
 
-    const videos = await CourseModel.aggregate<VideoListItem>([
+    const videoRows = await CourseModel.aggregate<VideoListRow>([
       { $match: matchQuery },
       { $sort: { createdAt: -1 } },
       { $limit: limit },
@@ -856,7 +861,7 @@ export async function fetchVideos({
                 _destroy: false,
               },
             },
-            { $project: { duration: 1 } },
+            { $project: { duration: 1, iframe: 1 } },
             { $limit: 1 },
           ],
           as: "lessons",
@@ -876,9 +881,16 @@ export async function fetchVideos({
           duration: {
             $ifNull: [{ $arrayElemAt: ["$lessons.duration", 0] }, 0],
           },
+          iframe: { $arrayElemAt: ["$lessons.iframe", 0] },
         },
       },
     ]);
+
+    // Video chưa có ảnh bìa mà bài là link YouTube: lấy thumbnail của chính video
+    const videos: VideoListItem[] = videoRows.map(({ iframe, ...video }) => ({
+      ...video,
+      image: video.image || getYoutubeThumbnail(iframe || ""),
+    }));
 
     return parseData(videos);
   } catch (error) {
