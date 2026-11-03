@@ -121,7 +121,7 @@ export function FilterTabs<TValue extends string>({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="w-fit gap-1.5 whitespace-nowrap px-3 hover:bg-surface data-[state=open]:border-primary data-[state=open]:ring-2 data-[state=open]:ring-primary/15"
+              className="h-11 w-fit gap-1.5 whitespace-nowrap px-3 hover:bg-surface md:h-10 data-[state=open]:border-primary data-[state=open]:ring-2 data-[state=open]:ring-primary/15"
             >
               <span className="text-muted">Trạng thái:</span>
               <span className="font-medium text-foreground">

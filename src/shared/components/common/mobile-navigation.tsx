@@ -1,17 +1,21 @@
 "use client";
 import { cn } from "@/lib/utils";
 import {
+  CHAT_PATH,
   COURSE_DETAILS_PATH_PREFIX,
   menuLinks,
 } from "@/shared/constants/common.constants";
 import { UserRole } from "@/shared/constants/user.constants";
-import { MenuLinkItemProps } from "@/shared/types";
+import { MenuLinkItemProps, MenuLinkSignal } from "@/shared/types";
 import { isMenuLinkActive } from "@/shared/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { MenuLinkSignalDot } from "./menu-link-signal-dot";
 
 interface MobileNavigationProps {
   role: string;
+  /** Thanh dưới chật, chỉ hiện chấm ở góc icon Chat, không hiện số người */
+  chatSignal?: MenuLinkSignal | null;
 }
 
 function isVisibleOnMobile(link: MenuLinkItemProps, role: string) {
@@ -26,11 +30,16 @@ function isVisibleOnMobile(link: MenuLinkItemProps, role: string) {
     return false;
   if (link.isHideForAdmin && [UserRole.Admin].includes(role as UserRole))
     return false;
+  if (
+    link.isHideMobileForManager &&
+    [UserRole.Expert, UserRole.Admin].includes(role as UserRole)
+  )
+    return false;
 
   return true;
 }
 
-export function MobileNavigation({ role }: MobileNavigationProps) {
+export function MobileNavigation({ role, chatSignal }: MobileNavigationProps) {
   const pathname = usePathname();
   const visibleLinks = menuLinks.filter((link) =>
     isVisibleOnMobile(link, role),
@@ -49,6 +58,7 @@ export function MobileNavigation({ role }: MobileNavigationProps) {
     >
       {visibleLinks.map((link) => {
         const isActive = isMenuLinkActive(link, pathname);
+        const signal = link.url === CHAT_PATH ? chatSignal : null;
 
         return (
           <Link
@@ -62,8 +72,16 @@ export function MobileNavigation({ role }: MobileNavigationProps) {
               !isActive && "text-muted",
             )}
           >
-            <span className="flex size-5 items-center justify-center [&>svg]:size-5">
+            <span className="relative flex size-5 items-center justify-center [&>svg]:size-5">
               {link.icon}
+              {signal && (
+                <MenuLinkSignalDot
+                  isUnread={signal.hasUnread}
+                  isPinging={signal.isLive}
+                  hasRing
+                  className="absolute -right-1 -top-0.5"
+                />
+              )}
             </span>
             <span
               className={cn(
@@ -72,6 +90,9 @@ export function MobileNavigation({ role }: MobileNavigationProps) {
               )}
             >
               {link.mobileTitle || link.title}
+              {signal?.description && (
+                <span className="sr-only">, {signal.description}</span>
+              )}
             </span>
           </Link>
         );

@@ -1,7 +1,14 @@
 export {
-  insertTextAtSelection,
-  resizeComposer,
-} from "./chat-composer.utils";
+  describeChatActivity,
+  dismissChatHostBubble,
+  getTodayLastMessageTime,
+  hasUnreadChat,
+  isChatHostBubbleDismissed,
+  isChatLively,
+  readChatLastSeenAt,
+  saveChatLastSeenAt,
+} from "./chat-activity.utils";
+export { insertTextAtSelection, resizeComposer } from "./chat-composer.utils";
 export {
   formatChatTime,
   getMinutesUntilMidnight,

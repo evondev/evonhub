@@ -1,6 +1,7 @@
 import {
   Activity,
   BookOpen,
+  Clapperboard,
   CircleUser,
   ClipboardList,
   Compass,
@@ -16,6 +17,8 @@ import {
 import { BadgeTone, MenuLinkItemProps, StatusBadgeVariant } from "../types";
 
 export const ADMIN_HOME_PATH = "/admin";
+
+export const CHAT_PATH = "/chat";
 
 // Trang chi tiết khóa học: /course/[slug]
 export const COURSE_DETAILS_PATH_PREFIX = "/course/";
@@ -45,10 +48,18 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: "/explore",
   },
   {
+    title: "Video",
+    icon: <Clapperboard />,
+    url: "/videos",
+    // Trang xem một video là /video/<slug>, không bắt đầu bằng /videos
+    activePathPrefix: "/video/",
+    isHideMobileForManager: true,
+  },
+  {
     title: "Trò chuyện",
     mobileTitle: "Chat",
     icon: <MessagesSquare />,
-    url: "/chat",
+    url: CHAT_PATH,
   },
   // {
   //   title: "Săn mã giảm giá",

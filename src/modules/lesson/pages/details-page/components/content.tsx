@@ -2,6 +2,7 @@
 
 import { useUserContext } from "@/components/user-context";
 import { useTrackLessonActivity } from "@/modules/activity/hooks";
+import { LessonVideo } from "@/modules/lesson/components";
 import { useCourseProgress } from "@/modules/lesson/hooks";
 import {
   useQueryLessonDetailsOutline,
@@ -14,7 +15,6 @@ import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import { LessonBar } from "./lesson-bar";
 import { LessonTabs } from "./lesson-tabs";
-import { LessonVideo } from "./lesson-video";
 
 // Pháo hoa chỉ hiện khi học xong 100%: tải canvas-confetti lúc đó thôi
 const Fireworks = dynamic(() => import("@/shared/components/common/fireworks"), {

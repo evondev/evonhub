@@ -23,6 +23,7 @@ export interface CourseManageViewProps {
   /** Đã có dòng trên màn, đang tải trang/bộ lọc mới */
   isRefreshing: boolean;
   onRetry: () => void;
+  canAddVideo: boolean;
 }
 
 const courseTableId = "course-manage-table";
@@ -36,6 +37,7 @@ export function CourseManageView({
   isError,
   isRefreshing,
   onRetry,
+  canAddVideo,
 }: CourseManageViewProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,6 +77,7 @@ export function CourseManageView({
         onSearch={handleSearch}
         searchInputRef={searchInputRef}
         controlsId={courseTableId}
+        canAddVideo={canAddVideo}
       />
       {isLoading && <CourseTableSkeleton />}
       {!isLoading && isError && (

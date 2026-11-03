@@ -9,7 +9,15 @@ import { CourseField } from "./course-field";
 import { CourseFormSection } from "./course-form-section";
 import { InputWithAddon } from "./input-with-addon";
 
-export function CoursePricingSection() {
+export interface CoursePricingSectionProps {
+  freeLabel?: string;
+  freeDescription?: string;
+}
+
+export function CoursePricingSection({
+  freeLabel = "Khóa học miễn phí",
+  freeDescription = "Học viên vào học không cần mua, trang bán ghi Miễn phí thay cho giá.",
+}: CoursePricingSectionProps) {
   const { control } = useFormContext<CourseUpdateFormValues>();
   const [price, salePrice, isFree] = useWatch({
     control,
@@ -39,10 +47,10 @@ export function CoursePricingSection() {
               />
               <span className="flex flex-col gap-0.5">
                 <span className="text-sm font-medium text-foreground">
-                  Khóa học miễn phí
+                  {freeLabel}
                 </span>
                 <span className="text-pretty text-sm text-muted">
-                  Học viên vào học không cần mua, trang bán ghi Miễn phí thay cho giá.
+                  {freeDescription}
                 </span>
               </span>
             </label>

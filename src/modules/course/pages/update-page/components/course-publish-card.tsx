@@ -19,13 +19,13 @@ import { CourseField } from "./course-field";
 import { CourseFormSection } from "./course-form-section";
 
 export interface CoursePublishCardProps {
-  /** Đường dẫn đã lưu: xem trước theo bản đang chạy, không theo ô đang sửa */
-  savedSlug: string;
+  /** Theo đường dẫn đã lưu, không theo ô đang sửa. Không có thì ẩn nút xem trang */
+  previewHref?: string;
   isSubmitting: boolean;
 }
 
 export function CoursePublishCard({
-  savedSlug,
+  previewHref,
   isSubmitting,
 }: CoursePublishCardProps) {
   const { control } = useFormContext<CourseUpdateFormValues>();
@@ -63,12 +63,14 @@ export function CoursePublishCard({
         >
           Lưu thay đổi
         </Button>
-        <Button asChild variant="outline" className="h-11 w-full md:h-10">
-          <Link href={`/course/${savedSlug}`} target="_blank">
-            <ExternalLink className="size-4 shrink-0" aria-hidden />
-            Xem trang bán
-          </Link>
-        </Button>
+        {previewHref && (
+          <Button asChild variant="outline" className="h-11 w-full md:h-10">
+            <Link href={previewHref} target="_blank">
+              <ExternalLink className="size-4 shrink-0" aria-hidden />
+              Xem trang bán
+            </Link>
+          </Button>
+        )}
       </div>
     </CourseFormSection>
   );

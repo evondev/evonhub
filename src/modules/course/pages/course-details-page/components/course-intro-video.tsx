@@ -54,7 +54,7 @@ export default function CourseIntroVideo({
         sizes="(min-width: 1280px) 360px, 100vw"
       />
       <span className="absolute inset-0 grid place-items-center bg-black/20 transition-colors group-hover:bg-black/30">
-        <span className="grid size-14 place-items-center rounded-full bg-white/90 text-black shadow-lg transition-transform group-hover:scale-105">
+        <span className="grid size-14 place-items-center rounded-full bg-white/90 text-black shadow-lg transition-colors group-hover:bg-white">
           <Play className="ml-0.5 size-6 fill-current" />
         </span>
       </span>

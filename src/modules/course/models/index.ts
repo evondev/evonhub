@@ -2,6 +2,7 @@ import {
   CourseLabel,
   CourseLevel,
   CourseStatus,
+  CourseType,
 } from "@/shared/constants/course.constants";
 import mongoose, { models, Schema } from "mongoose";
 import { CourseModelProps } from "../types";
@@ -128,6 +129,11 @@ const courseSchema = new Schema<CourseModelProps>({
   isMicro: {
     type: Boolean,
     default: true,
+  },
+  // Khóa cũ không có field này là khóa học; không đặt default để khỏi phải migrate
+  type: {
+    type: String,
+    enum: Object.values(CourseType),
   },
 });
 // trang chi tiết, trang học, enroll đều tìm khóa theo slug

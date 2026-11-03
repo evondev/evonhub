@@ -1,3 +1,4 @@
+export { useChatActivity } from "./use-chat-activity";
 export { useChatChannel } from "./use-chat-channel";
 export { useChatMessages } from "./use-chat-messages";
 export { useMidnightReset } from "./use-midnight-reset";

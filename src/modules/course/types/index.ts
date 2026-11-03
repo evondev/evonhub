@@ -2,11 +2,16 @@ import {
   CourseLabel,
   CourseLevel,
   CourseStatus,
+  CourseType,
 } from "@/shared/constants/course.constants";
 import { LectureItemData } from "@/shared/types";
 import type { LucideIcon } from "lucide-react";
 import { ECourseLevel, ECourseStatus } from "@/types/enums";
-import { updateCourseSchema } from "@/utils/formSchema";
+import {
+  createVideoSchema,
+  updateCourseSchema,
+  updateVideoSchema,
+} from "@/utils/formSchema";
 import mongoose, { Document, Schema } from "mongoose";
 import { z } from "zod";
 
@@ -48,6 +53,7 @@ export interface CourseModelProps extends Document {
   isPackage: boolean;
   _destroy: boolean;
   isMicro?: boolean;
+  type?: CourseType;
 }
 
 export interface CourseItemData extends Omit<
@@ -239,3 +245,125 @@ export interface CourseUpdateData
 }
 
 export type CourseUpdatePreviewState = "du-lieu" | "rong";
+
+export interface CreateVideoProps {
+  title: string;
+  slug: string;
+}
+
+export interface CreateVideoResponse {
+  type: "success" | "error";
+  message: string;
+}
+
+/** Bài học duy nhất của video lẻ: chứa video và nội dung đi kèm */
+export interface VideoLessonData {
+  _id: string;
+  video: string;
+  assetId: string;
+  iframe: string;
+  content: string;
+  duration: number;
+}
+
+/** Dữ liệu trang sửa video lẻ: thông tin bán của course và bài học của nó */
+export interface VideoUpdateData
+  extends Pick<
+    CourseUpdateData,
+    | "title"
+    | "slug"
+    | "price"
+    | "salePrice"
+    | "intro"
+    | "desc"
+    | "image"
+    | "cta"
+    | "seoKeywords"
+    | "free"
+    | "level"
+    | "status"
+  > {
+  lesson: VideoLessonData;
+}
+
+/** Bài của video lẻ ở trang xem: chưa có quyền xem thì không có video, nội dung */
+export interface VideoDetailsLesson {
+  _id: string;
+  duration: number;
+  video?: string;
+  iframe?: string;
+  content?: string;
+}
+
+/** Dữ liệu trang xem video lẻ */
+export interface VideoDetailsData
+  extends Pick<
+    CourseModelProps,
+    | "title"
+    | "slug"
+    | "desc"
+    | "intro"
+    | "image"
+    | "price"
+    | "salePrice"
+    | "free"
+    | "cta"
+    | "level"
+    | "status"
+    | "seoKeywords"
+  > {
+  _id: string;
+  lesson: VideoDetailsLesson;
+  isFree: boolean;
+  /** Video miễn phí, đã mua, hoặc người quản lý */
+  canWatch: boolean;
+}
+
+/** Một thẻ ở trang danh sách video: thông tin bán của course, thời lượng của bài */
+export interface VideoListItem
+  extends Pick<
+    CourseModelProps,
+    | "title"
+    | "slug"
+    | "image"
+    | "level"
+    | "rating"
+    | "price"
+    | "salePrice"
+    | "free"
+    | "createdAt"
+  > {
+  _id: string;
+  duration: number;
+}
+
+/** Bộ lọc trang danh sách video, lưu trên URL */
+export interface VideoListFilters {
+  search: string;
+  isFree: boolean;
+}
+
+export interface VideoListSearchParams {
+  q?: string;
+  gia?: string;
+}
+
+export interface FetchVideosParams extends VideoListFilters {
+  limit: number;
+}
+
+export type VideoListPreviewState =
+  | "du-lieu"
+  | "khong-ket-qua"
+  | "chua-co-video"
+  | "dang-tai"
+  | "loi";
+
+export interface VideoListPreviewStateLink {
+  state: VideoListPreviewState;
+  label: string;
+}
+
+export type VideoUpdateFormValues = z.infer<typeof updateVideoSchema>;
+
+export type VideoCreateFormValues = z.infer<typeof createVideoSchema>;
