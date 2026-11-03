@@ -20,8 +20,9 @@ interface LearnerHeroProps {
 }
 
 /**
- * Thẻ trắng có ảnh bìa khóa: ảnh làm thẻ nổi, không cần mảng màu brand. Màn
- * rất rộng thì ảnh bên trái, còn lại ảnh thành dải trên đầu thẻ
+ * Thẻ trắng có ảnh bìa khóa: ảnh làm thẻ nổi, không cần mảng màu brand. Từ
+ * laptop 1366px ảnh bên trái, nhỏ hơn thì ảnh thành dải trên đầu thẻ. Từ 1360
+ * tới 1600 cột chữ hẹp nên tiêu đề và padding nhỏ một bậc
  */
 export function LearnerHero({
   courseProgress,
@@ -39,17 +40,19 @@ export function LearnerHero({
   const isNotStarted = current === 0;
 
   return (
-    <section className="grid min-w-0 grid-cols-1 overflow-hidden rounded-2xl border border-border bg-surface 2xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+    <section className="grid min-w-0 grid-cols-1 overflow-hidden rounded-2xl border border-border bg-surface min-[1360px]:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
       <CourseCover
         image={course.image}
         isPriority
         sizes="(min-width: 1536px) 40vw, (min-width: 1280px) 50vw, 100vw"
-        className="aspect-[5/2] w-full 2xl:aspect-auto 2xl:h-full"
+        // Dưới 1360px ảnh là dải 5:2 trên đầu, cao tối đa 224px; từ laptop
+        // 1366, 1440 trở lên ảnh nằm bên trái, cao bằng thẻ
+        className="aspect-[5/2] max-h-56 w-full min-[1360px]:aspect-auto min-[1360px]:h-full min-[1360px]:max-h-none"
       />
-      <div className="flex min-w-0 flex-col justify-between gap-6 p-5 sm:p-8">
+      <div className="flex min-w-0 flex-col justify-between gap-6 p-5 sm:p-8 min-[1360px]:p-6 2xl:p-8">
         <div className="min-w-0">
           <p className="text-sm font-medium text-muted">{greeting}</p>
-          <h2 className="mt-1 text-balance font-display text-2xl font-bold text-foreground sm:text-3xl">
+          <h2 className="mt-1 text-balance font-display text-2xl font-bold text-foreground sm:text-3xl min-[1360px]:text-2xl 2xl:text-3xl">
             {course.title}
           </h2>
           <div className="mt-4 flex items-center gap-3">

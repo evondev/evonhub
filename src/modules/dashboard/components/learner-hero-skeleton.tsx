@@ -4,9 +4,9 @@ import { SkeletonBar } from "./skeleton-bar";
 /** Cùng khung với LearnerHero: ảnh bìa, lời chào, tên khóa, tiến độ, bài tiếp theo */
 export function LearnerHeroSkeleton() {
   return (
-    <section className="grid min-w-0 grid-cols-1 overflow-hidden rounded-2xl border border-border bg-surface 2xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-      <Skeleton className="aspect-[5/2] w-full rounded-none 2xl:aspect-auto 2xl:h-full" />
-      <div className="flex min-w-0 flex-col justify-between gap-6 p-5 sm:p-8">
+    <section className="grid min-w-0 grid-cols-1 overflow-hidden rounded-2xl border border-border bg-surface min-[1360px]:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+      <Skeleton className="aspect-[5/2] max-h-56 w-full rounded-none min-[1360px]:aspect-auto min-[1360px]:h-full min-[1360px]:max-h-none" />
+      <div className="flex min-w-0 flex-col justify-between gap-6 p-5 sm:p-8 min-[1360px]:p-6 2xl:p-8">
         <div className="min-w-0">
           <SkeletonBar className="h-3.5 w-36" />
           <div className="mt-3 space-y-3">
