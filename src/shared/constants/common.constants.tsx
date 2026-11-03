@@ -115,18 +115,21 @@ export const adminNavLinks: MenuLinkItemProps[] = [
     icon: <Star />,
     url: "/admin/rating/manage",
     isExpert: true,
+    isHiddenInNav: true,
   },
   {
     title: "Bình luận",
     icon: <MessageSquare />,
     url: "/admin/comment/manage",
     isExpert: true,
+    isHiddenInNav: true,
   },
   {
     title: "Thành viên",
     icon: <Users />,
     url: "/admin/user/manage",
     isAdmin: true,
+    isHiddenInNav: true,
   },
   // {
   //   title: "Coupon",

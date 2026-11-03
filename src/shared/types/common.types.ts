@@ -15,6 +15,8 @@ export type MenuLinkItemProps = {
   /** Ẩn khỏi thanh dưới với admin, expert: họ có thêm mục Quản lý, đủ 6 mục là chật */
   isHideMobileForManager?: boolean;
   isFree?: boolean;
+  /** Không hiện tab trên thanh quản lý, trang vẫn vào bằng URL */
+  isHiddenInNav?: boolean;
 };
 /** Tín hiệu sống trên một mục menu, vd phòng chat đang có người, có tin chưa đọc */
 export interface MenuLinkSignal {
