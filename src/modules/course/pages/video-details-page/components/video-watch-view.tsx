@@ -4,7 +4,7 @@ import type { VideoDetailsData, VideoListItem } from "../../../types";
 import { getAverageRating } from "../../../utils";
 import CourseReviews from "../../course-details-page/components/course-reviews";
 import CourseSection from "../../course-details-page/components/course-section";
-import { VideoCard } from "../../video-list-page/components/video-card";
+import { VideoCard } from "../../../components";
 import { VideoComments } from "./video-comments";
 import { VideoDetailsHeader } from "./video-details-header";
 import { VideoPlayer } from "./video-player";

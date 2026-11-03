@@ -19,18 +19,15 @@ interface OutsiderDashboardProps {
   catalogCourses: CourseItemData[];
   /** Mặc định là ROADMAP_STEPS; trang xem trước truyền lộ trình giả */
   roadmapStepConfigs?: RoadmapStepConfig[];
-  /** Khối "Tuần này" của bảng xếp hạng; chỉ admin chưa có khóa mới truyền vào */
-  weekLeaderboard?: ReactNode;
-  /** Thẻ chuỗi ngày học; chỉ admin chưa có khóa mới truyền vào */
-  studyStreak?: ReactNode;
+  /** Panel "Tuần này" (chuỗi ngày học + hạng tuần); chỉ admin chưa có khóa mới truyền vào */
+  weekProgress?: ReactNode;
 }
 
 export function OutsiderDashboard({
   firstName,
   catalogCourses,
   roadmapStepConfigs,
-  weekLeaderboard,
-  studyStreak,
+  weekProgress,
 }: OutsiderDashboardProps) {
   const stats = buildCatalogStats(catalogCourses);
   const roadmapSteps = buildRoadmapSteps(
@@ -48,8 +45,7 @@ export function OutsiderDashboard({
         hasRoadmap={hasRoadmap}
         hasCourses={catalogCourses.length > 0}
       />
-      {studyStreak}
-      {weekLeaderboard}
+      {weekProgress}
       {hasRoadmap && <RoadmapSection steps={roadmapSteps} />}
       <CourseCatalogSection courses={catalogCourses} />
       <Suspense fallback={null}>

@@ -68,3 +68,22 @@ export function getStreakStatus(streak: StudyStreak): StreakStatus {
 
   return "kept";
 }
+
+/** Câu của thẻ chuỗi theo trạng thái; todayRemainingLabel là "còn 2 giờ 20 phút" */
+export function getStreakStatusText(
+  status: StreakStatus,
+  current: number,
+  todayRemainingLabel: string,
+): string {
+  if (status === "new") return "Học ít nhất 1 phút mỗi ngày để bắt đầu chuỗi";
+
+  if (status === "risk") {
+    return `Hôm nay chưa học, ${todayRemainingLabel} để giữ chuỗi`;
+  }
+
+  if (status === "kept") return "Đã giữ chuỗi hôm nay. Mai gặp lại";
+
+  if (status === "record") return `Kỷ lục mới: ${current} ngày liên tiếp`;
+
+  return "Chuỗi đã dừng. Học hôm nay để bắt đầu lại";
+}

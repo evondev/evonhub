@@ -5,13 +5,16 @@ interface WeekStandingTextProps {
   standing: LeaderboardStanding;
 }
 
-/** Hai dòng của khối "Tuần này": phút và hạng, rồi khoảng cách tới người trên */
+/**
+ * Hai dòng của panel "Tuần này": phút và hạng, rồi khoảng cách tới người trên.
+ * Panel đã có tiêu đề "Tuần này" nên dòng đầu không nhắc lại
+ */
 export function WeekStandingText({ standing }: WeekStandingTextProps) {
   if (standing.rank === 0) {
     return (
       <>
         <p className="text-base font-semibold text-foreground">
-          Tuần này bạn chưa có phút học nào
+          Chưa có phút học nào tuần này
         </p>
         <p className="mt-0.5 text-sm text-muted">{LEADERBOARD_EMPTY_HINT}</p>
       </>
@@ -21,7 +24,7 @@ export function WeekStandingText({ standing }: WeekStandingTextProps) {
   return (
     <>
       <p className="text-base font-semibold text-foreground">
-        Tuần này: <span className="tabular-nums">{standing.minutes} phút</span>{" "}
+        <span className="tabular-nums">{standing.minutes} phút</span>{" "}
         <span className="text-muted">·</span> hạng{" "}
         <span className="tabular-nums">#{standing.rank}</span>
       </p>

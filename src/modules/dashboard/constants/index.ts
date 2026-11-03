@@ -56,6 +56,15 @@ export const CATALOG_COURSE_LIMIT = 20;
 // Khối Khóa học: một khóa lớn và tối đa ngần này khóa trong danh sách bên cạnh
 export const CATALOG_LIST_LIMIT = 4;
 
+// Khối "Video ngắn": điện thoại cuộn ngang đủ 6 thẻ, máy tính hiện 3 hay 4
+export const DASHBOARD_VIDEO_LIMIT = 6;
+
+export const VIDEO_RAIL_SUBTITLE =
+  "Mỗi video một chủ đề, có video xem miễn phí";
+
+// Khung chờ của hàng video: đủ 2×2 ở sm, một hàng ở lg, 2xl
+export const VIDEO_RAIL_SKELETON_COUNT = 4;
+
 // Khối "Học viên nói gì": chỉ đánh giá 5 sao, lấy ngần này cái mới nhất
 export const TESTIMONIAL_FETCH_LIMIT = 12;
 
@@ -144,16 +153,24 @@ export const PREVIEW_ROADMAP_STEPS: RoadmapStepConfig[] = [
 
 export const PREVIEW_COURSE_PROGRESS: PreviewCourseProgress[] = [
   { slug: "preview-ai-cho-nguoi-moi", current: 18, total: 18 },
-  { slug: "preview-vibe-coding", current: 13, total: 42 },
+  {
+    slug: "preview-vibe-coding",
+    current: 13,
+    total: 42,
+    lessonTitle: "Bài 14 · Viết prompt để AI dựng form đăng ký có kiểm lỗi",
+    lessonDuration: 18,
+  },
+  { slug: "preview-typescript", current: 0, total: 36 },
 ];
 
 export const PREVIEW_STATE_LINKS: PreviewStateLink[] = [
   { state: "nguoi-moi", label: "Người mới" },
   { state: "hoc-vien", label: "Học viên" },
-  { state: "chuoi-ngay-hoc", label: "Chuỗi ngày học" },
+  { state: "tuan-moi", label: "Tuần mới" },
+  { state: "chuoi-ngay-hoc", label: "Panel" },
   { state: "khach", label: "Khách" },
-  { state: "chua-co-khoa", label: "Chưa mở khóa nào" },
+  { state: "chua-co-khoa", label: "Chưa mua" },
   { state: "dang-tai", label: "Đang tải" },
-  { state: "dang-tai-khach", label: "Đang tải (khách)" },
+  { state: "dang-tai-khach", label: "Tải (khách)" },
   { state: "loi", label: "Lỗi" },
 ];

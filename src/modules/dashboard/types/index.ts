@@ -4,6 +4,9 @@ import { LucideIcon } from "lucide-react";
 export interface DashboardLessonLink {
   _id: string;
   slug: string;
+  /** Tên và số phút của bài sẽ học tiếp. Chưa có dữ liệu thì hero chỉ ghi số bài */
+  title?: string;
+  duration?: number;
 }
 
 export interface DashboardCourseProgress {
@@ -74,10 +77,13 @@ export interface PreviewCourseProgress {
   slug: string;
   current: number;
   total: number;
+  lessonTitle?: string;
+  lessonDuration?: number;
 }
 
 export type DashboardPreviewState =
   | "hoc-vien"
+  | "tuan-moi"
   | "chuoi-ngay-hoc"
   | "nguoi-moi"
   | "khach"

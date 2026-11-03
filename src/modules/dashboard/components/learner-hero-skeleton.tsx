@@ -1,24 +1,31 @@
-import { BandSkeletonBar } from "./band-skeleton-bar";
+import Skeleton from "@/shared/components/skeleton";
+import { SkeletonBar } from "./skeleton-bar";
 
-/** Cùng khung với LearnerHero: lời chào, tên khóa, nút Học tiếp, ô tiến độ */
+/** Cùng khung với LearnerHero: ảnh bìa, lời chào, tên khóa, tiến độ, bài tiếp theo */
 export function LearnerHeroSkeleton() {
   return (
-    <section className="grid gap-6 rounded-2xl bg-brand-band bg-gradient-to-br from-brand-band to-brand-band-end p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] lg:items-center">
-      <div className="min-w-0">
-        <BandSkeletonBar className="h-3.5 w-36" />
-        <div className="mt-3 space-y-3">
-          <BandSkeletonBar className="h-6 w-4/5 sm:h-7" />
-          <BandSkeletonBar className="h-6 w-1/2 sm:h-7" />
+    <section className="grid min-w-0 grid-cols-1 overflow-hidden rounded-2xl border border-border bg-surface 2xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+      <Skeleton className="aspect-[5/2] w-full rounded-none 2xl:aspect-auto 2xl:h-full" />
+      <div className="flex min-w-0 flex-col justify-between gap-6 p-5 sm:p-8">
+        <div className="min-w-0">
+          <SkeletonBar className="h-3.5 w-36" />
+          <div className="mt-3 space-y-3">
+            <SkeletonBar className="h-6 w-4/5 sm:h-7" />
+            <SkeletonBar className="h-6 w-1/2 sm:h-7" />
+          </div>
+          <div className="mt-4 flex items-center gap-3">
+            <SkeletonBar className="h-2 flex-1" />
+            <SkeletonBar className="h-3.5 w-16" />
+          </div>
+          <SkeletonBar className="mt-3 h-3.5 w-48" />
         </div>
-        <BandSkeletonBar className="mt-4 h-3.5 w-48" />
-        <BandSkeletonBar className="mt-5 h-10 w-28 rounded-xl" />
-      </div>
-      <div className="min-w-0 rounded-xl bg-black/15 p-4 ring-1 ring-white/15">
-        <div className="flex items-center justify-between">
-          <BandSkeletonBar className="h-3.5 w-14" />
-          <BandSkeletonBar className="h-3.5 w-20" />
+        <div className="flex items-center gap-3 rounded-xl bg-item-hover p-4">
+          <div className="min-w-0 flex-1 space-y-2">
+            <SkeletonBar className="w-24" />
+            <SkeletonBar className="h-3.5 w-3/5" />
+          </div>
+          <Skeleton className="h-10 w-28 shrink-0 rounded-xl" />
         </div>
-        <BandSkeletonBar className="mt-3 h-2 w-full" />
       </div>
     </section>
   );

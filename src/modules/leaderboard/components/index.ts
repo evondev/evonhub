@@ -1,10 +1,8 @@
 export { LeaderboardRetryButton } from "./leaderboard-retry-button";
 export { RankMedal } from "./rank-medal";
 export { StudyMinutesText } from "./study-minutes-text";
-export { StudyStreakCard } from "./study-streak-card";
-export { StudyStreakCardSkeleton } from "./study-streak-card-skeleton";
-export { StudyStreakError } from "./study-streak-error";
-export { StudyStreakPanel } from "./study-streak-panel";
 export { TierAvatarFrame } from "./tier-avatar-frame";
-export { WeekLeaderboardStrip } from "./week-leaderboard-strip";
-export { WeekLeaderboardStripSkeleton } from "./week-leaderboard-strip-skeleton";
+export { WeekProgressError } from "./week-progress-error";
+export { WeekProgressPanel } from "./week-progress-panel";
+export { WeekProgressSkeleton } from "./week-progress-skeleton";
+export { WeekProgressView } from "./week-progress-view";

@@ -1,11 +1,15 @@
+import { PREVIEW_VIDEO_LIST } from "@/modules/course/constants/video-list.constants";
 import {
-  StudyStreakCardSkeleton,
-  StudyStreakError,
-  StudyStreakPanel,
+  WeekProgressError,
+  WeekProgressSkeleton,
+  WeekProgressView,
 } from "@/modules/leaderboard/components";
 import { PREVIEW_STREAK_STATUSES } from "@/modules/leaderboard/constants/leaderboard-preview.constants";
 import { getDayEndRemainingLabel } from "@/modules/leaderboard/utils";
-import { buildPreviewStudyStreak } from "@/modules/leaderboard/utils/leaderboard-preview.utils";
+import {
+  buildPreviewStudyStreak,
+  buildPreviewWeekSummary,
+} from "@/modules/leaderboard/utils/leaderboard-preview.utils";
 import { PreviewStateSwitcher } from "@/shared/components/common";
 import {
   DashboardSkeleton,
@@ -13,7 +17,9 @@ import {
   LearnerErrorDashboard,
   OutsiderDashboard,
 } from "../components";
+import { VideoRailSection } from "../components/video-rail-section";
 import {
+  DASHBOARD_VIDEO_LIMIT,
   PREVIEW_FIRST_NAME,
   PREVIEW_ROADMAP_STEPS,
   PREVIEW_STATE_LINKS,
@@ -32,6 +38,7 @@ interface DashboardPreviewPageProps {
 export function DashboardPreviewPage({ state }: DashboardPreviewPageProps) {
   const previewCourses = buildPreviewCourses();
   const todayRemainingLabel = getDayEndRemainingLabel();
+  const previewVideos = PREVIEW_VIDEO_LIST.slice(0, DASHBOARD_VIDEO_LIMIT);
 
   return (
     <div className="flex flex-col gap-4">
@@ -61,28 +68,50 @@ export function DashboardPreviewPage({ state }: DashboardPreviewPageProps) {
           catalogCourses={previewCourses}
           firstName={PREVIEW_FIRST_NAME}
           roadmapStepConfigs={PREVIEW_ROADMAP_STEPS}
-          studyStreak={
-            <StudyStreakPanel
+          weekProgress={
+            <WeekProgressView
               streak={buildPreviewStudyStreak("risk")}
+              summary={buildPreviewWeekSummary(true)}
               todayRemainingLabel={todayRemainingLabel}
             />
           }
+          videoSection={<VideoRailSection videos={previewVideos} />}
         />
       )}
-      {/* Mọi trạng thái của thẻ chuỗi xếp chồng, vì dashboard chỉ hiện một */}
+      {/* Chưa từng học, tuần này chưa có phút, chưa có video nào */}
+      {state === "tuan-moi" && (
+        <LearnerDashboard
+          coursesProgress={buildPreviewCoursesProgress(previewCourses)}
+          catalogCourses={previewCourses}
+          firstName={PREVIEW_FIRST_NAME}
+          roadmapStepConfigs={PREVIEW_ROADMAP_STEPS}
+          weekProgress={
+            <WeekProgressView
+              streak={buildPreviewStudyStreak("new")}
+              summary={buildPreviewWeekSummary(false)}
+              todayRemainingLabel={todayRemainingLabel}
+            />
+          }
+          videoSection={<VideoRailSection videos={[]} />}
+        />
+      )}
+      {/* Mọi trạng thái của panel "Tuần này", vì dashboard chỉ hiện một. Màn
+          rộng panel rộng 360px như cạnh hero, màn vừa giãn hết hàng */}
       {state === "chuoi-ngay-hoc" && (
-        <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[repeat(auto-fill,minmax(320px,360px))]">
           {PREVIEW_STREAK_STATUSES.map((streakStatus) => (
-            <StudyStreakPanel
+            <WeekProgressView
               key={streakStatus}
               streak={buildPreviewStudyStreak(streakStatus)}
+              summary={buildPreviewWeekSummary(streakStatus !== "new")}
               todayRemainingLabel={todayRemainingLabel}
             />
           ))}
-          <StudyStreakCardSkeleton />
-          <StudyStreakError />
+          <WeekProgressSkeleton />
+          <WeekProgressError />
         </div>
       )}
+      {state === "chuoi-ngay-hoc" && <VideoRailSection />}
     </div>
   );
 }

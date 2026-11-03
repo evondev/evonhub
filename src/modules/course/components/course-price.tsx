@@ -19,12 +19,12 @@ export function CoursePrice({ course }: CoursePriceProps) {
   const hasOriginalPrice = course.salePrice > course.price;
 
   return (
-    <span className="flex items-baseline gap-1.5">
-      <span className="text-sm font-semibold tabular-nums text-foreground">
+    <span className="flex flex-wrap items-baseline gap-x-1.5">
+      <span className="whitespace-nowrap text-sm font-semibold tabular-nums text-foreground">
         {formatThoundsand(course.price)} đ
       </span>
       {hasOriginalPrice && (
-        <span className="hidden text-xs text-muted line-through sm:inline">
+        <span className="hidden whitespace-nowrap text-xs text-muted line-through sm:inline">
           {formatThoundsand(course.salePrice)} đ
         </span>
       )}

@@ -1,7 +1,7 @@
 import { CourseCover } from "@/shared/components/course";
 import { cn } from "@/shared/utils";
-import type { VideoListItem } from "../../../types";
-import { formatDurationMinutes, isCourseFree } from "../../../utils";
+import type { VideoListItem } from "../types";
+import { formatDurationMinutes, isCourseFree } from "../utils";
 
 interface VideoCoverProps {
   video: VideoListItem;

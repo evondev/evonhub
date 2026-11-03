@@ -6,7 +6,7 @@ import {
   PREVIEW_VIEWER_TOTAL_HOURS,
   PREVIEW_VIEWER_WEEK_MINUTES,
 } from "../constants/leaderboard-preview.constants";
-import { STREAK_DAY_COUNT } from "../constants";
+import { DASHBOARD_TOP_COUNT, STREAK_DAY_COUNT } from "../constants";
 import {
   LeaderboardData,
   LeaderboardEntry,
@@ -14,6 +14,7 @@ import {
   LeaderboardStanding,
   StreakStatus,
   StudyStreak,
+  WeekLeaderboardSummary,
 } from "../types";
 import {
   buildRecentStudyDayKeys,
@@ -142,5 +143,17 @@ export function buildPreviewLeaderboardData(
     standing,
     studyDays: isGuest ? [] : studyDays,
     tierProgress: isGuest ? null : tierProgress,
+  };
+}
+
+/** Panel "Tuần này" giả cho trang xem trước dashboard: có hạng hay chưa có phút */
+export function buildPreviewWeekSummary(
+  isRanked: boolean,
+): WeekLeaderboardSummary {
+  const standing = buildPreviewStanding(isRanked ? "du-lieu" : "chua-co-phut");
+
+  return {
+    standing: standing || { rank: 0, minutes: 0 },
+    topEntries: buildPreviewEntries(0).slice(0, DASHBOARD_TOP_COUNT),
   };
 }

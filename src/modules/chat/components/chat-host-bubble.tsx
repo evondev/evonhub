@@ -38,6 +38,8 @@ export function ChatHostBubble({ host }: ChatHostBubbleProps) {
 
   if (isDismissed) return null;
 
+  // Rê dùng item-active chứ không item-hover: item-hover trùng màu nền trang
+  // ngay sau bong bóng nổi, rê vào trông như không có gì xảy ra
   return (
     // Mobile: nằm trên thanh điều hướng dưới (64px) và vùng an toàn của iPhone.
     // Đổi admin thì key đổi, cả cụm gắn lại và nảy lại để học viên để ý
@@ -48,7 +50,7 @@ export function ChatHostBubble({ host }: ChatHostBubbleProps) {
       <Link
         href={CHAT_PATH}
         aria-label={`${hostName} đang online, vào phòng trò chuyện`}
-        className="flex items-center gap-3 rounded-full border border-border bg-surface py-1.5 pl-1.5 pr-3 shadow-popover outline-none transition-colors hover:bg-item-hover focus-visible:ring-2 focus-visible:ring-primary sm:pr-4"
+        className="flex items-center gap-3 rounded-full border border-border bg-surface py-1.5 pl-1.5 pr-3 shadow-popover outline-none transition-colors hover:bg-item-active focus-visible:ring-2 focus-visible:ring-primary sm:pr-4"
       >
         <span className="relative shrink-0">
           <UserAvatar
@@ -81,7 +83,7 @@ export function ChatHostBubble({ host }: ChatHostBubbleProps) {
       <Button
         aria-label="Ẩn lời mời vào chat"
         onClick={handleDismiss}
-        className="absolute -left-1.5 -top-1.5 size-6 rounded-full border border-border bg-surface p-0 text-muted shadow-popover hover:bg-item-hover hover:text-foreground lg:opacity-0 lg:focus-visible:opacity-100 lg:group-hover:opacity-100"
+        className="absolute -left-1.5 -top-1.5 size-6 rounded-full border border-border bg-surface p-0 text-muted shadow-popover hover:bg-item-active hover:text-foreground lg:opacity-0 lg:focus-visible:opacity-100 lg:group-hover:opacity-100"
       >
         <X className="size-3.5" />
       </Button>

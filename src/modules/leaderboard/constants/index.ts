@@ -176,6 +176,11 @@ export const LEADERBOARD_PERIOD_TABS: LeaderboardPeriodTab[] = [
 /** Nối sau emptyText: lối đi tiếp khi chưa có phút */
 export const LEADERBOARD_EMPTY_HINT = "Xem một bài là có tên trên bảng.";
 
+// Panel "Tuần này" lúc chưa từng học và tuần này chưa có phút: một câu cho cả
+// chuỗi ngày lẫn bảng xếp hạng, thay vì hai khối cùng báo trống
+export const WEEK_PROGRESS_EMPTY_MESSAGE =
+  "Tuần này chưa có phút học nào. Học 1 phút để bắt đầu chuỗi và có tên trên bảng xếp hạng";
+
 /** Màu huy chương top 3: vàng, bạc, đồng. Hạng khác không có huy chương */
 export const RANK_MEDAL_CLASS_NAMES: Record<number, string> = {
   1: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
