@@ -138,7 +138,9 @@ async function buildActivityScopeQuery({
   search,
   courseId,
 }: Pick<FetchActivitiesParams, "search" | "courseId">): Promise<ActivityQuery> {
-  const query: ActivityQuery = {};
+  // Chỉ lấy loại việc bản build này biết: DB dùng chung với bản mới hơn có thể
+  // có loại lạ, ACTIVITY_TYPE_CONFIGS[type] sẽ undefined và làm sập trang
+  const query: ActivityQuery = { type: { $in: Object.values(ActivityType) } };
   const keyword = typeof search === "string" ? search.trim() : "";
 
   if (keyword) {
