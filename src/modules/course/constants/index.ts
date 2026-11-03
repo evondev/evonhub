@@ -230,6 +230,9 @@ export const COURSE_STATUS_OPTIONS: CourseSelectOption[] = [
 // Giá trị của lựa chọn "Không có danh mục" trong ô chọn, lưu thành không có danh mục
 export const NO_CATEGORY_VALUE = "none";
 
+// Lựa chọn "Tạo danh mục mới" cuối ô chọn: mở hộp tạo nhanh chứ không phải một danh mục
+export const CREATE_CATEGORY_VALUE = "create";
+
 // Viền đỏ khi FormControl gắn aria-invalid (Input, Select chưa tự có trạng thái lỗi)
 export const COURSE_FORM_CONTROL_CLASS_NAME =
   "aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus:ring-red-500/10";

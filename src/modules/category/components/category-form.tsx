@@ -13,8 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { categoryFormSchema } from "../../../schemas";
-import { CategoryFormValues, CategoryManageItem } from "../../../types";
+import { categoryFormSchema } from "../schemas";
+import { CategoryFormValues, CategoryManageItem } from "../types";
 
 interface CategoryFormProps {
   category?: CategoryManageItem;
@@ -43,10 +43,17 @@ export function CategoryForm({
     },
   });
 
+  // Hộp này có thể mở từ trong form khóa học, video: portal chỉ tách DOM, sự kiện
+  // submit của React vẫn nổi lên form ngoài và lưu luôn form đó nếu không chặn
+  function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
+    event.stopPropagation();
+    form.handleSubmit(onSubmit)(event);
+  }
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={handleSubmit}
         autoComplete="off"
         className="flex flex-col gap-5"
       >
