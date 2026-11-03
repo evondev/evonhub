@@ -78,6 +78,7 @@ export interface PreviewCourseProgress {
 
 export type DashboardPreviewState =
   | "hoc-vien"
+  | "chuoi-ngay-hoc"
   | "nguoi-moi"
   | "khach"
   | "chua-co-khoa"

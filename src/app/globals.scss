@@ -38,6 +38,9 @@
     --primary-strong: 95 84 202;
     /* Bóng lớp nổi nhỏ (select, dropdown, popover): bằng shadow-lg ở nền sáng */
     --elevation-popover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    /* Thanh tab chuyển cách xem: rãnh chìm, ô đang chọn nổi như phím bấm */
+    --shadow-segment-track: inset 0 0 0 1px rgb(0 0 0 / 0.05), inset 0 1px 2px rgb(0 0 0 / 0.04);
+    --shadow-segment-thumb: 0 0 0 1px rgb(0 0 0 / 0.04), 0 1px 2px rgb(0 0 0 / 0.06), 0 2px 6px -2px rgb(0 0 0 / 0.08);
   }
   .dark {
     --primary: 151 141 248; /* #978df8 */
@@ -57,6 +60,9 @@
     --primary-strong: 151 141 248;
     /* Bóng 10% trên nền gần đen không thấy; thứ tách lớp nổi là viền + nền sáng hơn */
     --elevation-popover: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+    /* Bóng đen khó thấy trên nền tối: ô nổi nhờ viền sáng và vệt sáng mép trên */
+    --shadow-segment-track: inset 0 0 0 1px var(--border), inset 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-segment-thumb: 0 0 0 1px var(--border-strong), inset 0 1px 0 rgb(255 255 255 / 0.06), 0 1px 2px rgb(0 0 0 / 0.5);
   }
   ::selection {
     @apply text-white bg-primary;

@@ -1,9 +1,17 @@
 import { getUserById } from "@/lib/actions/user.action";
 import { fetchCourses } from "@/modules/course/actions";
+import {
+  StudyStreakCard,
+  StudyStreakCardSkeleton,
+  WeekLeaderboardStrip,
+  WeekLeaderboardStripSkeleton,
+} from "@/modules/leaderboard/components";
+import { isLeaderboardParticipant } from "@/modules/leaderboard/utils";
 import { fetchUserCoursesContinue } from "@/modules/user/actions";
 import { CourseStatus } from "@/shared/constants/course.constants";
 import { UserItemData } from "@/shared/types/user.types";
 import { currentUser } from "@clerk/nextjs/server";
+import { Suspense } from "react";
 import { CATALOG_COURSE_LIMIT, LEARNER_COURSE_FETCH_LIMIT } from "../constants";
 import { DashboardCourseProgress } from "../types";
 import { getFirstName } from "../utils";
@@ -76,11 +84,26 @@ export async function LearnerOverview({ clerkUserId }: LearnerOverviewProps) {
     },
   );
 
+  // Admin, expert không được ghi phút học nên không có khối "Tuần này" và chuỗi ngày học
+  const isParticipant = isLeaderboardParticipant(user.role);
+  const weekLeaderboard = isParticipant ? (
+    <Suspense fallback={<WeekLeaderboardStripSkeleton />}>
+      <WeekLeaderboardStrip userId={String(user._id)} />
+    </Suspense>
+  ) : undefined;
+  const studyStreak = isParticipant ? (
+    <Suspense fallback={<StudyStreakCardSkeleton />}>
+      <StudyStreakCard userId={String(user._id)} />
+    </Suspense>
+  ) : undefined;
+
   return (
     <LearnerDashboard
       coursesProgress={coursesProgress}
       catalogCourses={catalogCourses}
       firstName={firstName}
+      weekLeaderboard={weekLeaderboard}
+      studyStreak={studyStreak}
     />
   );
 }

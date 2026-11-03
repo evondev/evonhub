@@ -2,6 +2,7 @@
 
 import { useUserContext } from "@/components/user-context";
 import { useTrackLessonActivity } from "@/modules/activity/hooks";
+import { useTrackWatchTime } from "@/modules/leaderboard/hooks";
 import { LessonVideo } from "@/modules/lesson/components";
 import { useCourseProgress } from "@/modules/lesson/hooks";
 import {
@@ -53,6 +54,16 @@ export function LessonContent({
   const { percent } = useCourseProgress(courseSlug);
   useTrackLessonActivity({ lessonId, courseId, isEnabled: !!userId });
 
+  const iframeId = extractDriveId(lessonDetails?.iframe || "");
+  const videoId = lessonDetails?.video || "";
+  const hasVideo = !!(videoId || iframeId);
+  const { handlePlaybackTick } = useTrackWatchTime({
+    lessonId,
+    courseId,
+    isEnabled: !!userId && canAccessContent,
+    isIframe: !videoId && !!iframeId,
+  });
+
   const lessonIndex =
     lessonList?.findIndex((lesson) => lesson._id.toString() === lessonId) || 0;
   const nextLessonId = lessonList?.[lessonIndex + 1]?._id?.toString();
@@ -60,10 +71,6 @@ export function LessonContent({
   const chapterTitle = lectures?.find((lecture) =>
     lecture.lessons.some((lesson) => lesson._id.toString() === lessonId),
   )?.title;
-
-  const iframeId = extractDriveId(lessonDetails?.iframe || "");
-  const videoId = lessonDetails?.video || "";
-  const hasVideo = !!(videoId || iframeId);
 
   const handleVideoNearEnd = async () => {
     await mutateCompleteLesson.mutateAsync({
@@ -100,6 +107,7 @@ export function LessonContent({
           videoId={videoId}
           iframeId={iframeId || ""}
           onNearEnd={handleVideoNearEnd}
+          onPlaybackTick={handlePlaybackTick}
         />
       )}
 

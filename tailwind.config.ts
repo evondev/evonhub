@@ -42,6 +42,8 @@ const config: Config = {
       },
       boxShadow: {
         popover: "var(--elevation-popover)",
+        "segment-track": "var(--shadow-segment-track)",
+        "segment-thumb": "var(--shadow-segment-thumb)",
       },
       fontFamily: {
         display: ["var(--font-display)", "sans-serif"],

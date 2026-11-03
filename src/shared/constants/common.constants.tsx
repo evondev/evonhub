@@ -2,7 +2,6 @@ import {
   Activity,
   BookOpen,
   Clapperboard,
-  CircleUser,
   ClipboardList,
   Compass,
   Home,
@@ -10,8 +9,8 @@ import {
   LibraryBig,
   MessageSquare,
   MessagesSquare,
-  Receipt,
   Star,
+  Trophy,
   Users,
 } from "lucide-react";
 import { BadgeTone, MenuLinkItemProps, StatusBadgeVariant } from "../types";
@@ -56,6 +55,13 @@ export const menuLinks: MenuLinkItemProps[] = [
     isHideMobileForManager: true,
   },
   {
+    title: "Xếp hạng",
+    icon: <Trophy />,
+    url: "/leaderboard",
+    // Admin, expert không lên bảng: thanh dưới của họ chừa chỗ cho Quản lý
+    isHideMobileForManager: true,
+  },
+  {
     title: "Trò chuyện",
     mobileTitle: "Chat",
     icon: <MessagesSquare />,
@@ -74,21 +80,6 @@ export const menuLinks: MenuLinkItemProps[] = [
     url: ADMIN_HOME_PATH,
     activePathPrefix: "/admin/",
     isExpert: true,
-  },
-  {
-    title: "Đơn hàng của tôi",
-    mobileTitle: "Đơn hàng",
-    icon: <Receipt />,
-    url: "/my-orders",
-    isAuth: true,
-    // Mobile: nằm trong menu avatar trên header, thanh dưới chừa chỗ cho Chat
-    isHideMobile: true,
-  },
-  {
-    title: "Hồ sơ",
-    icon: <CircleUser />,
-    url: "/profile",
-    isHideMobile: true,
   },
 ];
 

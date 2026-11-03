@@ -27,7 +27,6 @@ export interface UserModelProps extends Document {
     bankNumber: string;
     bankBranch: string;
   };
-  score: number;
   notificationsSeenAt?: Date;
   _destroy: boolean;
   socials: {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useUserContext } from "@/components/user-context";
+import { useTrackWatchTime } from "@/modules/leaderboard/hooks";
 import { LessonVideo } from "@/modules/lesson/components";
 import { useMutationCompleteLesson } from "@/shared/data";
 import { extractDriveId } from "@/shared/utils";
@@ -20,6 +21,12 @@ export function VideoPlayer({ videoId, lesson }: VideoPlayerProps) {
   const userId = userInfo?._id || "";
   const playbackId = lesson.video || "";
   const iframeId = extractDriveId(lesson.iframe || "") || "";
+  const { handlePlaybackTick } = useTrackWatchTime({
+    lessonId: lesson._id,
+    courseId: videoId,
+    isEnabled: !!userId,
+    isIframe: !playbackId && !!iframeId,
+  });
 
   async function handleVideoNearEnd() {
     if (!userId || hasRecordedRef.current) return;
@@ -48,6 +55,7 @@ export function VideoPlayer({ videoId, lesson }: VideoPlayerProps) {
         videoId={playbackId}
         iframeId={iframeId}
         onNearEnd={handleVideoNearEnd}
+        onPlaybackTick={handlePlaybackTick}
         isAutoPlay={false}
       />
     </div>

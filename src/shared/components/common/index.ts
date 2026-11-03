@@ -7,7 +7,6 @@ export * from "./email-text";
 export * from "./filter-tabs";
 export * from "./header";
 export * from "./label-status";
-export * from "./leaderboard-item";
 export * from "./load-error-state";
 export * from "./main";
 export * from "./mobile-navigation";

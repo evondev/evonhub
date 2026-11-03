@@ -19,8 +19,6 @@ interface MobileNavigationProps {
 }
 
 function isVisibleOnMobile(link: MenuLinkItemProps, role: string) {
-  if (link.isHideMobile || (link.isAuth && role === UserRole.Admin))
-    return false;
   if (link.isAdmin && ![UserRole.Admin].includes(role as UserRole))
     return false;
   if (

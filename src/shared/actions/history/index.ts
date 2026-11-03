@@ -2,8 +2,6 @@
 
 import { recordActivity } from "@/modules/activity/services/activity.service";
 import LessonModel from "@/modules/lesson/models";
-import ScoreModel from "@/modules/score/models";
-import UserModel from "@/modules/user/models";
 import { ActivityType } from "@/shared/constants/activity.constants";
 import { connectToDatabase } from "@/shared/libs";
 import { canAccessCourseContent, getCurrentUser } from "@/shared/libs/auth";
@@ -18,8 +16,9 @@ interface HandleCompleteLessonProps {
 }
 
 /**
- * Đánh dấu / bỏ đánh dấu học xong một bài, kèm cộng / trừ điểm bảng xếp hạng.
- * Chỉ tính bài thuộc khóa đã mua hoặc quản lý (bài học thử không cộng điểm).
+ * Đánh dấu / bỏ đánh dấu học xong một bài, để tính tiến độ khóa. Bảng xếp hạng
+ * không tính ở đây: điểm là số phút xem thật (modules/leaderboard).
+ * Chỉ tính bài thuộc khóa đã mua hoặc quản lý.
  */
 export async function handleCompleteLesson({
   lessonId,
@@ -54,7 +53,6 @@ export async function handleCompleteLesson({
       user: userId,
       course: courseId,
     });
-    const existScore = await ScoreModel.findOne({ user: userId });
 
     if (!existHistory) {
       await HistoryModel.create({
@@ -68,19 +66,6 @@ export async function handleCompleteLesson({
         courseId,
         lessonId,
       });
-      await UserModel.findByIdAndUpdate(userId, {
-        $inc: { score: 10 },
-      });
-      if (!existScore) {
-        await ScoreModel.create({
-          user: userId,
-          score: 10,
-        });
-      } else {
-        await ScoreModel.findByIdAndUpdate(existScore._id, {
-          $inc: { score: 10 },
-        });
-      }
 
       return true;
     } else if (!isSingleton) {
@@ -89,14 +74,6 @@ export async function handleCompleteLesson({
         user: userId,
         course: courseId,
       });
-      if (existScore && existScore.score >= 10) {
-        await UserModel.findByIdAndUpdate(userId, {
-          $inc: { score: -10 },
-        });
-        await ScoreModel.findByIdAndUpdate(existScore._id, {
-          $inc: { score: -10 },
-        });
-      }
 
       return false;
     }

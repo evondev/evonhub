@@ -1,4 +1,4 @@
-import { fetchUserLeaderboardRank } from "@/modules/score/actions";
+import { getUserStudyStanding } from "@/modules/leaderboard/services/leaderboard.service";
 import { getCurrentUser } from "@/shared/libs/auth";
 import { notFound } from "next/navigation";
 import { fetchPublicUserCourses } from "../../actions";
@@ -25,11 +25,14 @@ export async function UserPersonalPage({ username }: UserPersonalPageProps) {
 
   if (!profile || !courses) return <PersonalPageError />;
 
-  const rank = await fetchUserLeaderboardRank({ userId: profile._id });
+  // Hạng và phút theo bảng "Tất cả": hồ sơ nói cả quá trình, không riêng tuần này
+  const studyStanding = await getUserStudyStanding(profile._id, "all").catch(
+    () => ({ rank: 0, minutes: 0 }),
+  );
   const displayName = profile.name || profile.username;
   const isOwner = String(currentUser?._id) === String(profile._id);
-  // Chưa có điểm, chưa học khóa nào: khối "Đang học" đã nói, bỏ hàng số 0
-  const hasStats = profile.score > 0 || courses.length > 0;
+  // Chưa có phút học, chưa học khóa nào: khối "Đang học" đã nói, bỏ hàng số 0
+  const hasStats = studyStanding.minutes > 0 || courses.length > 0;
 
   return (
     <div className="flex flex-col gap-8">
@@ -37,11 +40,14 @@ export async function UserPersonalPage({ username }: UserPersonalPageProps) {
         <PersonalHeader
           profile={profile}
           displayName={displayName}
-          rank={rank || 0}
+          rank={studyStanding.rank}
           isOwner={isOwner}
         />
         {hasStats && (
-          <PersonalStats score={profile.score} courseCount={courses.length} />
+          <PersonalStats
+            studyMinutes={studyStanding.minutes}
+            courseCount={courses.length}
+          />
         )}
       </header>
       <PersonalCourses courses={courses} displayName={displayName} />
