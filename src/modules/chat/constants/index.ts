@@ -26,6 +26,7 @@ export const CHAT_CHANNEL_NAME = "presence-chat";
 export const CHAT_EVENTS = {
   MESSAGE_NEW: "message:new",
   MESSAGE_DELETED: "message:deleted",
+  MESSAGE_REACTED: "message:reacted",
 } as const;
 
 /**
@@ -103,8 +104,14 @@ export const CHAT_RATE_LIMIT_MESSAGE = "Bạn gửi hơi nhanh, chờ một chú
 export const CHAT_SEND_ERROR_MESSAGE = "Chưa gửi được, thử lại sau ít giây";
 export const CHAT_DELETE_ERROR_MESSAGE = "Chưa xoá được tin nhắn";
 export const CHAT_FORBIDDEN_MESSAGE = "Bạn không có quyền làm việc này";
+export const CHAT_REACTION_ERROR_MESSAGE = "Chưa thả được cảm xúc, thử lại sau";
+export const CHAT_MESSAGE_GONE_MESSAGE = "Tin nhắn này không còn nữa";
 
 export { chatEmojis } from "./chat-emoji.constants";
+export {
+  CHAT_REACTION_EMOJI_SYMBOLS,
+  chatReactionEmojis,
+} from "./chat-reaction.constants";
 export { chatConversationStarters } from "./chat-starter.constants";
 export {
   CHAT_PREVIEW_STATE_LINKS,

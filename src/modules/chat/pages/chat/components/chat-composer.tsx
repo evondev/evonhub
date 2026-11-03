@@ -138,7 +138,9 @@ export function ChatComposer({
 
   return (
     <div className="shrink-0 px-3 pb-3 sm:px-4 sm:pb-4">
-      {isRoomEmpty && <ChatConversationStarters onSelect={handleStarterSelect} />}
+      {isRoomEmpty && (
+        <ChatConversationStarters onSelect={handleStarterSelect} />
+      )}
       <form
         onSubmit={handleSubmit}
         className={cn(

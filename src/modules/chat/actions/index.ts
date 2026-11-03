@@ -2,7 +2,7 @@
 
 import { connectToDatabase } from "@/shared/libs";
 import { pusherServer } from "@/shared/libs/pusher";
-import { FilterQuery, isValidObjectId } from "mongoose";
+import { FilterQuery, isValidObjectId, Types } from "mongoose";
 import { unstable_cache } from "next/cache";
 import {
   CHAT_ACTIVITY_CACHE_SECONDS,
@@ -12,8 +12,10 @@ import {
   CHAT_DELETE_ERROR_MESSAGE,
   CHAT_EVENTS,
   CHAT_FORBIDDEN_MESSAGE,
+  CHAT_MESSAGE_GONE_MESSAGE,
   CHAT_PAGE_SIZE,
   CHAT_RATE_LIMIT_MESSAGE,
+  CHAT_REACTION_ERROR_MESSAGE,
   CHAT_SEND_ERROR_MESSAGE,
   CHAT_SEND_INTERVAL_MS,
   CHAT_SIGN_IN_REQUIRED_MESSAGE,
@@ -25,22 +27,26 @@ import {
   getChatViewer,
   getLatestChatMessageAt,
   toChatMessageItem,
+  toChatReactions,
 } from "../services";
 import {
   ChatActivity,
   ChatActivityEventPayload,
   ChatMessageDeletedPayload,
   ChatMessageModelProps,
+  ChatMessageReactedPayload,
   DeleteChatMessageResult,
   FetchChatMessagesParams,
   FetchChatMessagesResult,
   SendChatMessageParams,
   SendChatMessageResult,
+  SetChatReactionResult,
 } from "../types";
 import {
   getChatContentError,
   getNextVietnamMidnight,
   getVietnamStartOfDay,
+  isChatReactionEmoji,
 } from "../utils";
 
 const CLIENT_ID_MAX_LENGTH = 64;
@@ -249,5 +255,75 @@ export async function deleteChatMessage(
     console.log("deleteChatMessage error:", error);
 
     return { isDeleted: false, error: CHAT_DELETE_ERROR_MESSAGE };
+  }
+}
+
+/**
+ * Đặt reaction của mình trên một tin: emoji trong bộ cố định để thả (thay
+ * reaction cũ nếu có), null để gỡ. Gửi trạng thái muốn có chứ không gửi
+ * "bật/tắt", nên bấm lặp hay mạng gửi lại cũng ra cùng kết quả
+ */
+export async function setChatReaction(
+  messageId: string,
+  emoji: string | null,
+): Promise<SetChatReactionResult> {
+  try {
+    const viewer = await getChatViewer();
+
+    if (!viewer) return { error: CHAT_SIGN_IN_REQUIRED_MESSAGE };
+
+    if (
+      typeof messageId !== "string" ||
+      !isValidObjectId(messageId) ||
+      (emoji !== null && !isChatReactionEmoji(emoji))
+    ) {
+      return { error: CHAT_REACTION_ERROR_MESSAGE };
+    }
+
+    await connectToDatabase();
+
+    const viewerObjectId = new Types.ObjectId(viewer.userId);
+    // Bỏ reaction cũ của mình rồi nối emoji mới trong cùng một lần ghi, hai
+    // tab bấm cùng lúc cũng không ra hai reaction. Pipeline không qua bước
+    // cast của Mongoose nên id phải là ObjectId sẵn
+    const reactionUpdate = emoji
+      ? [
+          {
+            $set: {
+              reactions: {
+                $concatArrays: [
+                  {
+                    $filter: {
+                      input: { $ifNull: ["$reactions", []] },
+                      cond: { $ne: ["$$this.user", viewerObjectId] },
+                    },
+                  },
+                  [{ user: viewerObjectId, emoji }],
+                ],
+              },
+            },
+          },
+        ]
+      : { $pull: { reactions: { user: viewerObjectId } } };
+    const updatedMessage = await ChatMessageModel.findOneAndUpdate(
+      { _id: messageId, createdAt: { $gte: getVietnamStartOfDay() } },
+      reactionUpdate,
+      { new: true, projection: { reactions: 1 } },
+    ).lean<Pick<ChatMessageModelProps, "reactions">>();
+
+    if (!updatedMessage) return { error: CHAT_MESSAGE_GONE_MESSAGE };
+
+    const reactions = toChatReactions(updatedMessage.reactions);
+    const payload: ChatMessageReactedPayload = { messageId, reactions };
+
+    await pusherServer
+      ?.trigger(CHAT_CHANNEL_NAME, CHAT_EVENTS.MESSAGE_REACTED, payload)
+      .catch((error: unknown) => console.log("Pusher trigger error:", error));
+
+    return { reactions };
+  } catch (error) {
+    console.log("setChatReaction error:", error);
+
+    return { error: CHAT_REACTION_ERROR_MESSAGE };
   }
 }

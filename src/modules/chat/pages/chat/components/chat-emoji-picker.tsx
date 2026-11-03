@@ -16,7 +16,10 @@ interface ChatEmojiPickerProps {
 }
 
 /** Bảng emoji hay dùng; chọn xong vẫn mở để chèn liền vài cái */
-export function ChatEmojiPicker({ isDisabled, onSelect }: ChatEmojiPickerProps) {
+export function ChatEmojiPicker({
+  isDisabled,
+  onSelect,
+}: ChatEmojiPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (

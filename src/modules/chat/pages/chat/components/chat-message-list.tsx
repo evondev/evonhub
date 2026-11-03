@@ -27,6 +27,7 @@ interface ChatMessageListProps {
   canModerate: boolean;
   onLoadOlder: () => void;
   onDeleteMessage: (messageId: string, isOwnMessage: boolean) => void;
+  onReactMessage: (messageId: string, emoji: string) => void;
 }
 
 /**
@@ -42,6 +43,7 @@ export function ChatMessageList({
   canModerate,
   onLoadOlder,
   onDeleteMessage,
+  onReactMessage,
 }: ChatMessageListProps) {
   const virtuosoRef = useRef<VirtuosoHandle>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
@@ -108,9 +110,7 @@ export function ChatMessageList({
         }}
         alignToBottom
         atBottomThreshold={AT_BOTTOM_THRESHOLD_PX}
-        followOutput={(isBottomReached) =>
-          isBottomReached ? "smooth" : false
-        }
+        followOutput={(isBottomReached) => (isBottomReached ? "smooth" : false)}
         atBottomStateChange={handleAtBottomStateChange}
         startReached={handleStartReached}
         computeItemKey={(_, message) => message.clientId}
@@ -128,8 +128,10 @@ export function ChatMessageList({
                 !isContinuationMessage(message, messages[position + 1])
               }
               isOwnMessage={message.sender.userId === viewerId}
+              viewerId={viewerId}
               canModerate={canModerate}
               onDelete={onDeleteMessage}
+              onReact={onReactMessage}
             />
           );
         }}

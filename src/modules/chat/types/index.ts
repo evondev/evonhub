@@ -23,8 +23,27 @@ export interface ChatMessageModelProps {
     role?: UserRole;
   };
   content: string;
+  /** Mỗi người tối đa một reaction trên một tin. Tin cũ chưa có field này */
+  reactions?: {
+    user: Types.ObjectId;
+    emoji: string;
+  }[];
   createdAt: Date;
   expireAt: Date;
+}
+
+/** Một người thả một emoji trong bộ cố định lên tin */
+export interface ChatReaction {
+  userId: string;
+  emoji: string;
+}
+
+/** Một chip dưới bong bóng: emoji, số người thả, mình có thả không */
+export interface ChatReactionSummary {
+  emoji: string;
+  label: string;
+  count: number;
+  hasViewerReacted: boolean;
 }
 
 /** Tin đã qua server, gửi xuống client và qua Pusher */
@@ -33,6 +52,8 @@ export interface ChatMessageItem {
   clientId: string;
   sender: ChatSender;
   content: string;
+  /** Tin đang gửi chưa có */
+  reactions?: ChatReaction[];
   createdAt: string;
 }
 
@@ -75,6 +96,18 @@ export interface DeleteChatMessageResult {
 
 export interface ChatMessageDeletedPayload {
   messageId: string;
+}
+
+export interface SetChatReactionResult {
+  /** Danh sách reaction mới của tin sau khi server ghi */
+  reactions?: ChatReaction[];
+  error?: string;
+}
+
+/** Gửi qua Pusher mỗi lần ai đó thả hoặc gỡ reaction: cả danh sách, không gửi phần đổi */
+export interface ChatMessageReactedPayload {
+  messageId: string;
+  reactions: ChatReaction[];
 }
 
 /** Admin đang ở trong phòng, hiện trên bong bóng mời vào chat */
@@ -131,6 +164,7 @@ export interface PusherPresenceMember {
 export interface UseChatChannelHandlers {
   onMessage: (message: ChatMessageItem) => void;
   onMessageDeleted: (messageId: string) => void;
+  onMessageReacted: (payload: ChatMessageReactedPayload) => void;
   /** Vừa vào kênh hoặc nối lại sau khi rớt mạng: lấy bù tin bị lỡ */
   onSync: () => void;
 }

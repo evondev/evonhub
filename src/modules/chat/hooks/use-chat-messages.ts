@@ -5,22 +5,29 @@ import {
   deleteChatMessage,
   fetchChatMessages,
   sendChatMessage,
+  setChatReaction,
 } from "../actions";
 import {
   CHAT_DELETE_ERROR_MESSAGE,
   CHAT_FIRST_ITEM_INDEX,
+  CHAT_REACTION_ERROR_MESSAGE,
   CHAT_SEND_ERROR_MESSAGE,
 } from "../constants";
 import {
   ChatFeedState,
   ChatMessageItem,
+  ChatMessageReactedPayload,
   ChatMessageView,
+  ChatReaction,
   UseChatMessagesParams,
 } from "../types";
 import {
+  applyChatReaction,
   createClientId,
   getLatestConfirmedMessageId,
+  getNextViewerReaction,
   mergeIncomingMessages,
+  replaceMessageReactions,
 } from "../utils";
 
 const EMPTY_FEED: ChatFeedState = {
@@ -31,7 +38,8 @@ const EMPTY_FEED: ChatFeedState = {
 
 /**
  * Giữ danh sách tin của phòng chat: gửi lạc quan (hiện ngay, server trả về thì
- * thay), chèn trang tin cũ lên đầu, lấy bù tin bị lỡ, gỡ tin bị xoá.
+ * thay), chèn trang tin cũ lên đầu, lấy bù tin bị lỡ, gỡ tin bị xoá, thả
+ * reaction.
  */
 export function useChatMessages({
   viewer,
@@ -74,6 +82,26 @@ export function useChatMessages({
       ),
     }));
   }, []);
+
+  const updateReactions = useCallback(
+    (messageId: string, reactions: ChatReaction[]) => {
+      setFeed((currentFeed) => ({
+        ...currentFeed,
+        messages: replaceMessageReactions(
+          currentFeed.messages,
+          messageId,
+          reactions,
+        ),
+      }));
+    },
+    [],
+  );
+
+  const receiveReactions = useCallback(
+    (payload: ChatMessageReactedPayload) =>
+      updateReactions(payload.messageId, payload.reactions),
+    [updateReactions],
+  );
 
   const removePendingMessage = useCallback((clientId: string) => {
     setFeed((currentFeed) => ({
@@ -203,6 +231,44 @@ export function useChatMessages({
     [removeMessage],
   );
 
+  /**
+   * Thả, đổi hoặc gỡ reaction: hiện ngay trên màn rồi mới gọi server. Server
+   * trả danh sách mới thì lấy theo server, lỗi thì trả về như cũ và trả về lỗi
+   */
+  const reactToMessage = useCallback(
+    async (messageId: string, emoji: string): Promise<string | null> => {
+      const targetMessage = feedRef.current.messages.find(
+        (message) => message._id === messageId,
+      );
+
+      if (!targetMessage) return null;
+
+      const previousReactions = targetMessage.reactions ?? [];
+      const nextEmoji = getNextViewerReaction(
+        previousReactions,
+        viewer.userId,
+        emoji,
+      );
+
+      updateReactions(
+        messageId,
+        applyChatReaction(previousReactions, viewer.userId, nextEmoji),
+      );
+
+      const result = await setChatReaction(messageId, nextEmoji);
+
+      if (result.reactions) {
+        updateReactions(messageId, result.reactions);
+        return null;
+      }
+
+      updateReactions(messageId, previousReactions);
+
+      return result.error || CHAT_REACTION_ERROR_MESSAGE;
+    },
+    [viewer.userId, updateReactions],
+  );
+
   /** Sang ngày mới: tin hôm qua đã hết hạn trên server */
   const clearMessages = useCallback(() => setFeed(EMPTY_FEED), []);
 
@@ -211,10 +277,12 @@ export function useChatMessages({
     isLoadingOlder,
     receiveMessage,
     removeMessage,
+    receiveReactions,
     loadOlderMessages,
     syncMessages,
     sendMessage,
     deleteMessage,
+    reactToMessage,
     clearMessages,
   };
 }

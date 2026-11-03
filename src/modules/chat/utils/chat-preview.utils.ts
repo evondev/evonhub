@@ -13,7 +13,9 @@ import {
 import { toVietnamTimeToday } from "./chat-date.utils";
 
 /** Tin giả của trang xem trước, giờ đặt vào hôm nay theo giờ Việt Nam */
-export function buildPreviewMessages(now: Date = new Date()): ChatMessageView[] {
+export function buildPreviewMessages(
+  now: Date = new Date(),
+): ChatMessageView[] {
   return chatPreviewMessageSeeds.map((seed, index) => ({
     _id: `preview-message-${index}`,
     clientId: `preview-client-${index}`,

@@ -109,7 +109,11 @@ describe("parseMessageSegments", () => {
 
   it("thêm https cho link bắt đầu bằng www", () => {
     expect(parseMessageSegments("www.google.com")).toEqual([
-      { type: "link", value: "www.google.com", href: "https://www.google.com/" },
+      {
+        type: "link",
+        value: "www.google.com",
+        href: "https://www.google.com/",
+      },
     ]);
   });
 

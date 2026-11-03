@@ -117,6 +117,18 @@
   }
 }
 @layer components {
+  // Bong bóng tin mình: gradient gắn theo viewport (fixed) chứ không theo từng
+  // bong bóng, nên tin ở đáy màn hình màu cam, cuộn lên đầu thì ngả xanh. iOS
+  // Safari bỏ qua fixed, mỗi bong bóng tự có gradient riêng. Ba điểm màu đều
+  // đủ 4.5:1 với chữ trắng (nền sáng) và chữ primary-foreground (nền tối)
+  .chat-own-bubble {
+    background-color: rgb(var(--primary));
+    background-image: linear-gradient(to bottom, #2563eb, #6c5fe6, #c2410c);
+    background-attachment: fixed;
+  }
+  .dark .chat-own-bubble {
+    background-image: linear-gradient(to bottom, #8ab8ff, #978df8, #ffa36b);
+  }
   .shadow-main,
   .focus-primary:focus {
     box-shadow: 0 0 0 3px rgb(151, 141, 248, 0.25);

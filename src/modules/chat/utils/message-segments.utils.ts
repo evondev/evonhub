@@ -6,7 +6,9 @@ const TRAILING_PUNCTUATION_PATTERN = /[.,!?;:)\]}'"]+$/;
 
 /** Chỉ nhận http/https; javascript:, data:… trả null để hiện như chữ thường */
 function toSafeHref(link: string): string | null {
-  const linkWithProtocol = /^https?:\/\//i.test(link) ? link : `https://${link}`;
+  const linkWithProtocol = /^https?:\/\//i.test(link)
+    ? link
+    : `https://${link}`;
 
   try {
     const url = new URL(linkWithProtocol);
@@ -41,7 +43,10 @@ export function parseMessageSegments(content: string): ChatMessageSegment[] {
     const matchIndex = match.index ?? 0;
     const trailingPunctuation =
       match[0].match(TRAILING_PUNCTUATION_PATTERN)?.[0] ?? "";
-    const link = match[0].slice(0, match[0].length - trailingPunctuation.length);
+    const link = match[0].slice(
+      0,
+      match[0].length - trailingPunctuation.length,
+    );
     const href = toSafeHref(link);
 
     appendText(segments, content.slice(cursor, matchIndex));

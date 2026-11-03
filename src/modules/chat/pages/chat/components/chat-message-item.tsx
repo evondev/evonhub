@@ -6,9 +6,15 @@ import { cn } from "@/shared/utils";
 import Link from "next/link";
 import { memo, useMemo } from "react";
 import { ChatMessageView } from "../../../types";
-import { formatChatTime, parseMessageSegments } from "../../../utils";
+import {
+  formatChatTime,
+  getViewerReaction,
+  parseMessageSegments,
+  summarizeChatReactions,
+} from "../../../utils";
 import { ChatMessageContent } from "./chat-message-content";
 import { ChatMessageMenu } from "./chat-message-menu";
+import { ChatMessageReactions } from "./chat-message-reactions";
 import { ChatRoleBadge } from "./chat-role-badge";
 
 interface ChatMessageItemProps {
@@ -18,15 +24,19 @@ interface ChatMessageItemProps {
   /** Tin cuối của chuỗi: hiện avatar và giờ */
   isLastInGroup: boolean;
   isOwnMessage: boolean;
+  viewerId: string;
   /** Admin/Expert: xoá được tin của người khác */
   canModerate: boolean;
   onDelete: (messageId: string, isOwnMessage: boolean) => void;
+  onReact: (messageId: string, emoji: string) => void;
 }
 
 /**
- * Một bong bóng tin. Tin mình bên phải nền màu nhấn, không tên, không avatar;
+ * Một bong bóng tin. Tin mình bên phải nền gradient theo vị trí trên màn hình
+ * (`.chat-own-bubble` trong globals.scss), không tên, không avatar;
  * tin người khác bên trái, tên trên tin đầu chuỗi, avatar cạnh tin cuối chuỗi.
- * Bấm tên hoặc avatar mở trang công khai của người gửi.
+ * Bấm tên hoặc avatar mở trang công khai của người gửi. Reaction hiện thành
+ * chip dưới bong bóng.
  * Khoảng cách là padding vì Virtuoso đo chiều cao từng item.
  */
 function ChatMessageItemBase({
@@ -34,8 +44,10 @@ function ChatMessageItemBase({
   isFirstInGroup,
   isLastInGroup,
   isOwnMessage,
+  viewerId,
   canModerate,
   onDelete,
+  onReact,
 }: ChatMessageItemProps) {
   const segments = useMemo(
     () => parseMessageSegments(message.content),
@@ -43,12 +55,43 @@ function ChatMessageItemBase({
   );
   const senderName = message.sender.name || message.sender.username;
   const profilePath = buildPublicProfilePath(message.sender.username);
-  // Tin đang gửi chưa có _id trên server nên chưa xoá được
-  const isDeletable = !message.isPending && (isOwnMessage || canModerate);
+  const reactionSummaries = useMemo(
+    () => summarizeChatReactions(message.reactions, viewerId),
+    [message.reactions, viewerId],
+  );
+  const viewerReaction = getViewerReaction(message.reactions, viewerId);
+  const canDelete = isOwnMessage || canModerate;
 
   function handleDelete() {
     onDelete(message._id, isOwnMessage);
   }
+
+  function handleReact(emoji: string) {
+    onReact(message._id, emoji);
+  }
+
+  // Tin đang gửi chưa có _id trên server nên chưa thả reaction hay xoá được
+  const menu = !message.isPending && (
+    <ChatMessageMenu
+      ariaLabel={
+        isOwnMessage
+          ? "Thao tác với tin của bạn"
+          : `Thao tác với tin của ${senderName}`
+      }
+      align={isOwnMessage ? "end" : "start"}
+      viewerReaction={viewerReaction}
+      canDelete={canDelete}
+      onReact={handleReact}
+      onDelete={handleDelete}
+    />
+  );
+  const reactionChips = (
+    <ChatMessageReactions
+      summaries={reactionSummaries}
+      isOwnMessage={isOwnMessage}
+      onReact={handleReact}
+    />
+  );
 
   const timeLine = isLastInGroup && (
     <time
@@ -73,17 +116,12 @@ function ChatMessageItemBase({
       >
         <div className="max-w-[80%] sm:max-w-[70%]">
           <div className="flex items-center justify-end gap-1">
-            {isDeletable && (
-              <ChatMessageMenu
-                ariaLabel="Thao tác với tin của bạn"
-                align="end"
-                onDelete={handleDelete}
-              />
-            )}
-            <p className="w-fit min-w-0 max-w-full whitespace-pre-wrap rounded-2xl bg-primary px-3.5 py-2 text-[15px] leading-6 text-primary-foreground [overflow-wrap:anywhere]">
+            {menu}
+            <p className="w-fit min-w-0 max-w-full whitespace-pre-wrap chat-own-bubble rounded-2xl px-3.5 py-2 text-[15px] leading-6 text-primary-foreground [overflow-wrap:anywhere]">
               <ChatMessageContent segments={segments} isOnPrimary />
             </p>
           </div>
+          {reactionChips}
           {timeLine}
         </div>
       </div>
@@ -128,14 +166,9 @@ function ChatMessageItemBase({
           <p className="w-fit min-w-0 max-w-full whitespace-pre-wrap rounded-2xl bg-background px-3.5 py-2 text-[15px] leading-6 text-foreground [overflow-wrap:anywhere] dark:bg-white/[0.06]">
             <ChatMessageContent segments={segments} isOnPrimary={false} />
           </p>
-          {isDeletable && (
-            <ChatMessageMenu
-              ariaLabel={`Thao tác với tin của ${senderName}`}
-              align="start"
-              onDelete={handleDelete}
-            />
-          )}
+          {menu}
         </div>
+        {reactionChips}
         {timeLine}
       </div>
     </div>

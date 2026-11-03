@@ -1,6 +1,9 @@
 import { UserRole } from "@/shared/constants/user.constants";
 import { model, models, Schema } from "mongoose";
-import { CHAT_MESSAGE_MAX_LENGTH } from "../constants";
+import {
+  CHAT_MESSAGE_MAX_LENGTH,
+  CHAT_REACTION_EMOJI_SYMBOLS,
+} from "../constants";
 import { ChatMessageModelProps } from "../types";
 
 const chatMessageSchema = new Schema<ChatMessageModelProps>({
@@ -36,6 +39,24 @@ const chatMessageSchema = new Schema<ChatMessageModelProps>({
     type: String,
     required: true,
     maxlength: CHAT_MESSAGE_MAX_LENGTH,
+  },
+  reactions: {
+    type: [
+      {
+        _id: false,
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        emoji: {
+          type: String,
+          enum: CHAT_REACTION_EMOJI_SYMBOLS,
+          required: true,
+        },
+      },
+    ],
+    default: [],
   },
   createdAt: {
     type: Date,

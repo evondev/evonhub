@@ -14,14 +14,15 @@ import {
 import {
   ChatMessageDeletedPayload,
   ChatMessageItem,
+  ChatMessageReactedPayload,
   ChatSender,
   UseChatChannelHandlers,
 } from "../types";
 import { toOnlineMembers } from "../utils";
 
 /**
- * Nối vào presence channel của phòng chat: nhận tin mới, tin bị xoá và danh
- * sách người online. Chưa cấu hình Pusher thì hỏi tin mới theo nhịp thay thế.
+ * Nối vào presence channel của phòng chat: nhận tin mới, tin bị xoá, reaction
+ * và danh sách người online. Chưa cấu hình Pusher thì hỏi tin mới theo nhịp thay thế.
  */
 export function useChatChannel(handlers: UseChatChannelHandlers) {
   const [onlineMembers, setOnlineMembers] = useState<ChatSender[]>([]);
@@ -72,6 +73,11 @@ export function useChatChannel(handlers: UseChatChannelHandlers) {
         CHAT_EVENTS.MESSAGE_DELETED,
         (payload: ChatMessageDeletedPayload) =>
           handlersRef.current.onMessageDeleted(payload.messageId),
+      );
+      channel.bind(
+        CHAT_EVENTS.MESSAGE_REACTED,
+        (payload: ChatMessageReactedPayload) =>
+          handlersRef.current.onMessageReacted(payload),
       );
     });
 
