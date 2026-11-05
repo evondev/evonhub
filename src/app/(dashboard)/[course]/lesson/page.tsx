@@ -1,6 +1,7 @@
 import { NotFoundState } from "@/shared/components/not-found";
 import { getUserById } from "@/lib/actions/user.action";
 import { fetchCourseBySlug } from "@/modules/course/actions";
+import { recordStudySession } from "@/modules/course/services/course-study.service";
 import { getLessonById } from "@/modules/lesson/actions";
 import {
   DetailsPageLayout,
@@ -67,6 +68,9 @@ export default async function LessonNewPage({
     isLessonInCourse && !isOwnedCourse && lessonDetails?.trial === true;
 
   if (!isOwnedCourse && !isPreviewLesson) return <NotFoundState />;
+
+  // Chỉ tính khi đã qua kiểm tra quyền; mỗi người một lượt mỗi khóa mỗi ngày
+  await recordStudySession(courseId);
 
   return (
     <LessonQueryHydration

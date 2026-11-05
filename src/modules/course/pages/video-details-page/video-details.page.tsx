@@ -5,6 +5,7 @@ import {
   RELATED_VIDEO_COUNT,
   VIDEO_LIST_DEFAULT_FILTERS,
 } from "../../constants/video-list.constants";
+import { recordStudySession } from "../../services/course-study.service";
 import { incrementCourseViews } from "../../services/course-views.service";
 import { VideoLockedView } from "./components/video-locked-view";
 import { VideoWatchView } from "./components/video-watch-view";
@@ -31,6 +32,8 @@ export async function VideoDetailsPage({ slug }: VideoDetailsPageProps) {
           limit: RELATED_VIDEO_COUNT + 1,
         })
       : undefined,
+    // Xem được video mới là vào học; trang khóa video chỉ tính lượt xem
+    video.canWatch ? recordStudySession(video._id) : undefined,
   ]);
 
   if (video.canWatch) {

@@ -48,14 +48,14 @@ export const Header = () => {
   const isSignedInUser = Boolean(userId && isSignedIn);
 
   return (
-    // Lớp ngoài trong suốt; ::before là dải nền trang phủ khe phía trên thanh tới
-    // giữa thanh, để nội dung cuộn lên không lộ ra giữa mép màn hình và thanh
-    // header nổi, còn hai góc bo dưới vẫn thấy nội dung đi qua.
+    // Lớp ngoài trong suốt; ::before là dải nền trang phủ từ mép màn hình tới đáy
+    // thanh (lề 16px + thanh 64px), để nội dung cuộn lên không lộ ra ở khe phía
+    // trên lẫn bốn góc bo của thanh header nổi
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-40 transition-[left] duration-200 ease-out motion-reduce:transition-none",
         !isLessonPage &&
-          "lg:pl-6 lg:pr-4 lg:pt-4 lg:before:absolute lg:before:inset-x-0 lg:before:top-0 lg:before:h-12 lg:before:bg-background",
+          "lg:pl-6 lg:pr-4 lg:pt-4 lg:before:absolute lg:before:inset-x-0 lg:before:top-0 lg:before:h-20 lg:before:bg-background",
         !isLessonPage && isSidebarCollapsed && "lg:left-20",
         !isLessonPage && !isSidebarCollapsed && "lg:left-[272px]",
       )}

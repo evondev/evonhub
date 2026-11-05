@@ -25,6 +25,7 @@ export function FeaturedCourseCard({
     >
       <CourseCover
         image={course.image}
+        studyCount={course.studyCount}
         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
         className="aspect-video w-full shrink-0 sm:aspect-auto sm:min-h-64 sm:w-1/2"
       />

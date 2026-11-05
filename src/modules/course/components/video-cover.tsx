@@ -8,6 +8,8 @@ interface VideoCoverProps {
   sizes: string;
   isPriority: boolean;
   className?: string;
+  /** Ảnh hẹp, góc dưới đã có thời lượng thì ẩn lượt học để khỏi đè nhau */
+  studyCountClassName?: string;
 }
 
 /**
@@ -19,6 +21,7 @@ export function VideoCover({
   sizes,
   isPriority,
   className,
+  studyCountClassName,
 }: VideoCoverProps) {
   const isFree = isCourseFree(video);
   const isComingSoon = Boolean(video.isComingSoon);
@@ -29,6 +32,8 @@ export function VideoCover({
         image={video.image}
         isPriority={isPriority}
         sizes={sizes}
+        studyCount={video.studyCount}
+        studyCountClassName={studyCountClassName}
         className="aspect-video w-full"
       />
       {(isComingSoon || isFree) && (

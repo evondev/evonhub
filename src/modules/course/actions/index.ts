@@ -119,7 +119,7 @@ export async function fetchCourses({
     }
 
     const courses: CourseItemData[] = await CourseModel.find(query)
-      .select("title slug image level rating price salePrice views free")
+      .select("title slug image level rating price salePrice views studyCount free")
       .limit(limit)
       .skip(skip)
       .sort({ createdAt: -1 });
@@ -198,6 +198,7 @@ export async function fetchExploreCourses({
                 price: 1,
                 salePrice: 1,
                 views: 1,
+                studyCount: 1,
                 free: 1,
               },
             },
@@ -226,7 +227,7 @@ export async function fetchCoursesIncoming(): Promise<
       _destroy: false,
       ...COURSE_ONLY_QUERY,
     })
-      .select("title slug image level rating price salePrice views free")
+      .select("title slug image level rating price salePrice views studyCount free")
       .sort({ createdAt: -1 });
     return parseData(courses);
   } catch (error) {}
@@ -891,6 +892,7 @@ export async function fetchVideos({
           free: 1,
           isComingSoon: 1,
           createdAt: 1,
+          studyCount: 1,
           desc: 1,
           duration: {
             $ifNull: [{ $arrayElemAt: ["$lessons.duration", 0] }, 0],

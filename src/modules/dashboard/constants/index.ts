@@ -102,6 +102,7 @@ export const PREVIEW_COURSES: PreviewCourseSeed[] = [
     free: true,
     rating: [5, 5, 4],
     views: 12_480,
+    studyCount: 3_120,
   },
   {
     slug: "preview-vibe-coding",
@@ -115,6 +116,7 @@ export const PREVIEW_COURSES: PreviewCourseSeed[] = [
     free: false,
     rating: [5, 5, 5, 5],
     views: 38_216,
+    studyCount: 9_554,
   },
   {
     slug: "preview-typescript",
@@ -126,6 +128,7 @@ export const PREVIEW_COURSES: PreviewCourseSeed[] = [
     free: false,
     rating: [],
     views: 0,
+    studyCount: 0,
   },
 ];
 

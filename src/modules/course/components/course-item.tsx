@@ -42,6 +42,7 @@ export function CourseItem({
     >
       <CourseCover
         image={data.image}
+        studyCount={data.studyCount}
         sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 112px"
         className="w-28 shrink-0 sm:aspect-video sm:w-full"
       />
