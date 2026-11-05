@@ -96,7 +96,8 @@ export function FilterTabs<TValue extends string>({
               tabIndex={isSelected ? 0 : -1}
               onClick={() => onChange(tab.value)}
               className={cn(
-                "h-9 gap-1.5 rounded-lg border px-3 font-medium",
+                // nowrap + shrink-0: thiếu chỗ thì hàng tab xuống dòng, không bóp gãy chữ trong tab
+                "h-9 shrink-0 gap-1.5 whitespace-nowrap rounded-lg border px-3 font-medium",
                 isSelected &&
                   // Tab nằm trên nền trang xám: --item-active gần trùng nền, nên tô đậm hơn
                   "border-transparent bg-foreground/[0.08] text-foreground hover:bg-foreground/[0.08] hover:text-foreground",

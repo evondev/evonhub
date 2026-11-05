@@ -27,7 +27,8 @@ interface ModerationToolbarProps<TTab extends string> {
 }
 
 /**
- * Tab trạng thái bên trái, ô tìm và lọc khoá bên phải. Từ xl một hàng;
+ * Tab trạng thái bên trái, ô tìm và lọc khoá bên phải. Từ xl một hàng nếu vừa,
+ * không vừa thì ô tìm xuống hàng;
  * hẹp hơn thì tab một hàng, ô tìm một hàng. Dưới sm ô tìm lên đầu, dưới là
  * nút "Trạng thái:" và "Khoá học"
  */
@@ -47,7 +48,9 @@ export function ModerationToolbar<TTab extends string>({
   collapseTabsBelow,
 }: ModerationToolbarProps<TTab>) {
   return (
-    <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+    // xl:flex-wrap: tab nhiều (như nhật ký hoạt động) mà không vừa chung hàng với ô tìm
+    // thì ô tìm xuống hàng dưới, không bóp tab
+    <div className="flex flex-col gap-3 xl:flex-row xl:flex-wrap xl:items-center xl:justify-between">
       {/* flex-wrap: màn hẹp mà hai nút không vừa thì nút khoá học xuống hàng, không bóp chữ */}
       <div className="flex flex-wrap items-center gap-2">
         <FilterTabs
