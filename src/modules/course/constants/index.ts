@@ -75,6 +75,7 @@ export const PREVIEW_EXPLORE_COURSES: PreviewExploreCourseSeed[] = [
     free: true,
     rating: [5, 5, 4],
     views: 12_480,
+    studyCount: 3_120,
   },
   {
     slug: "preview-vibe-coding",
@@ -87,6 +88,7 @@ export const PREVIEW_EXPLORE_COURSES: PreviewExploreCourseSeed[] = [
     free: false,
     rating: [5, 5, 5, 5],
     views: 38_216,
+    studyCount: 9_554,
   },
   {
     slug: "preview-prompt-cho-lap-trinh-vien",
@@ -99,6 +101,7 @@ export const PREVIEW_EXPLORE_COURSES: PreviewExploreCourseSeed[] = [
     free: false,
     rating: [],
     views: 0,
+    studyCount: 0,
   },
   {
     slug: "preview-bao-mat-web",
@@ -110,6 +113,7 @@ export const PREVIEW_EXPLORE_COURSES: PreviewExploreCourseSeed[] = [
     free: false,
     rating: [],
     views: 1_204,
+    studyCount: 301,
   },
   {
     slug: "preview-typescript-co-ban",
@@ -121,6 +125,7 @@ export const PREVIEW_EXPLORE_COURSES: PreviewExploreCourseSeed[] = [
     free: true,
     rating: [5, 4, 5, 4, 4, 5, 4],
     views: 90_617,
+    studyCount: 22_654,
   },
   {
     slug: "preview-len-production",
@@ -132,6 +137,7 @@ export const PREVIEW_EXPLORE_COURSES: PreviewExploreCourseSeed[] = [
     free: false,
     rating: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4],
     views: 5_320,
+    studyCount: 1_330,
   },
   {
     slug: "preview-nextjs-pro",
@@ -143,6 +149,7 @@ export const PREVIEW_EXPLORE_COURSES: PreviewExploreCourseSeed[] = [
     free: false,
     rating: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4],
     views: 120_791,
+    studyCount: 30_197,
   },
   {
     slug: "preview-viet-test",
@@ -154,6 +161,7 @@ export const PREVIEW_EXPLORE_COURSES: PreviewExploreCourseSeed[] = [
     free: false,
     rating: [5, 5],
     views: 860,
+    studyCount: 215,
   },
   {
     slug: "preview-git-github",
@@ -165,6 +173,7 @@ export const PREVIEW_EXPLORE_COURSES: PreviewExploreCourseSeed[] = [
     free: true,
     rating: [],
     views: 310,
+    studyCount: 77,
   },
 ];
 

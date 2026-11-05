@@ -88,7 +88,7 @@ export async function fetchUserCourses({
       clerkId,
     }).populate({
       path: "courses",
-      select: "title slug image rating level price salePrice views free",
+      select: "title slug image rating level price salePrice views studyCount free",
       // Khóa đã ngừng bán vẫn phải hiện ở khu vực học tập của người đã mua,
       // nhưng khóa đã soft-delete thì không
       match: { status: { $in: LEARNABLE_COURSE_STATUSES }, _destroy: false },
@@ -139,7 +139,7 @@ export async function fetchPublicUserCourses({
       .select("courses")
       .populate({
         path: "courses",
-        select: "title slug image rating level price salePrice views free",
+        select: "title slug image rating level price salePrice views studyCount free",
         match: { status: CourseStatus.Approved, _destroy: false },
       });
     const courses: CourseItemData[] = user?.courses || [];
@@ -448,7 +448,7 @@ export async function fetchUserCoursesContinue({
       .select("courses")
       .populate({
         path: "courses",
-        select: "title slug image rating level price salePrice views free",
+        select: "title slug image rating level price salePrice views studyCount free",
         // Khóa đã ngừng bán vẫn phải hiện ở mục học tiếp, nhưng khóa đã
         // soft-delete thì không
         match: { status: { $in: LEARNABLE_COURSE_STATUSES }, _destroy: false },

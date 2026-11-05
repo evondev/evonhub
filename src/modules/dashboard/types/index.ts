@@ -81,6 +81,7 @@ export interface PreviewCourseSeed {
   free: boolean;
   rating: number[];
   views: number;
+  studyCount: number;
 }
 
 export interface PreviewCourseProgress {

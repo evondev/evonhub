@@ -25,6 +25,8 @@ export function VideoRow({ video, isPriority = false }: VideoRowProps) {
         video={video}
         isPriority={isPriority}
         sizes="(min-width: 640px) 224px, 128px"
+        // Ảnh 128px không đủ chỗ cho cả lượt học lẫn thời lượng
+        studyCountClassName="max-sm:hidden"
         className="w-32 shrink-0 self-start rounded-lg sm:w-56"
       />
       <div className="flex min-w-0 flex-1 flex-col gap-1 sm:gap-1.5">

@@ -96,6 +96,12 @@ const courseSchema = new Schema<CourseModelProps>({
     type: Number,
     default: 0,
   },
+  // Lượt học: mỗi người tính tối đa một lượt mỗi ngày khi vào học (xem
+  // recordStudySession). Khác views là lượt mở trang chi tiết
+  studyCount: {
+    type: Number,
+    default: 0,
+  },
   cta: {
     type: String,
     default: "Mua ngay",

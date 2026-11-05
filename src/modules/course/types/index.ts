@@ -44,6 +44,8 @@ export interface CourseModelProps extends Document {
   lecture: Schema.Types.ObjectId[];
   author: Schema.Types.ObjectId;
   views: number;
+  /** Lượt học; aggregate, lean trên bản ghi cũ không có field này */
+  studyCount?: number;
   cta: string;
   ctaLink: string;
   createdAt: Date;
@@ -182,6 +184,7 @@ export interface PreviewExploreCourseSeed {
   free: boolean;
   rating: number[];
   views: number;
+  studyCount: number;
 }
 
 export interface CourseCurriculumStats {
@@ -341,6 +344,7 @@ export interface VideoListItem
     | "free"
     | "isComingSoon"
     | "createdAt"
+    | "studyCount"
   > {
   _id: string;
   duration: number;
@@ -410,3 +414,12 @@ export interface VideoListPreviewStateLink {
 export type VideoUpdateFormValues = z.infer<typeof updateVideoSchema>;
 
 export type VideoCreateFormValues = z.infer<typeof createVideoSchema>;
+
+/** Một người đã được tính lượt học của một khóa trong một ngày */
+export interface StudySessionModelProps extends Document {
+  user: Schema.Types.ObjectId;
+  course: Schema.Types.ObjectId;
+  /** Ngày theo giờ Việt Nam, dạng YYYY-MM-DD */
+  day: string;
+  createdAt: Date;
+}

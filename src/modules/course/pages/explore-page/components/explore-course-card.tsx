@@ -17,6 +17,7 @@ export function ExploreCourseCard({ course }: ExploreCourseCardProps) {
     >
       <CourseCover
         image={course.image}
+        studyCount={course.studyCount}
         sizes="(min-width: 1536px) 25vw, (min-width: 1280px) 33vw, (min-width: 640px) 50vw, 128px"
         className="m-3 aspect-video w-32 shrink-0 self-start rounded-lg sm:m-0 sm:w-full sm:rounded-none"
       />
