@@ -84,6 +84,7 @@ function buildPreviewStanding(
 function buildPreviewEntries(viewerTierLevel: number): LeaderboardEntry[] {
   const otherEntries = PREVIEW_LEADERBOARD_PEOPLE.map((person, index) => ({
     userId: `preview-${index + 1}`,
+    username: "",
     name: person.name,
     avatar: person.avatar,
     minutes: person.minutes,

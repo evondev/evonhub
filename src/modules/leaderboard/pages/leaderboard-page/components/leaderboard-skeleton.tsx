@@ -50,8 +50,9 @@ export function LeaderboardSkeleton() {
             className="flex flex-col items-center gap-2 bg-surface px-2 py-5"
           >
             <Skeleton className="size-7 rounded-full" />
-            <Skeleton className="size-12 rounded-full sm:size-14" />
+            <Skeleton className="mb-4 size-12 rounded-full sm:mb-5 sm:size-14" />
             <Skeleton className="h-3 w-3/4 rounded-full" />
+            <Skeleton className="h-4 w-2/3 rounded-full" />
             <Skeleton className="h-3 w-1/2 rounded-full" />
           </div>
         ))}

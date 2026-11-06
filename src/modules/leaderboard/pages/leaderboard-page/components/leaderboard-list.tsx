@@ -64,6 +64,7 @@ export function LeaderboardList({
             <LeaderboardRow
               key={entry.userId}
               rank={entry.rank}
+              username={entry.username}
               name={entry.name}
               avatar={entry.avatar}
               minutes={entry.minutes}
@@ -81,6 +82,7 @@ export function LeaderboardList({
               </li>
               <LeaderboardRow
                 rank={standing.rank}
+                username={viewer.username}
                 name={viewer.name}
                 avatar={viewer.avatar}
                 minutes={standing.minutes}

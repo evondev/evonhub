@@ -156,6 +156,7 @@ export const LEADERBOARD_PERIOD_TABS: LeaderboardPeriodTab[] = [
     label: "Tuần này",
     meTitle: "Tuần này của bạn",
     participantLabel: "học viên có phút tuần này",
+    rankTitleSuffix: "tuần",
     emptyText: "Tuần này bạn chưa có phút học nào.",
   },
   {
@@ -163,6 +164,7 @@ export const LEADERBOARD_PERIOD_TABS: LeaderboardPeriodTab[] = [
     label: "Tháng này",
     meTitle: "Tháng này của bạn",
     participantLabel: "học viên có phút tháng này",
+    rankTitleSuffix: "tháng",
     emptyText: "Tháng này bạn chưa có phút học nào.",
   },
   {
@@ -170,6 +172,7 @@ export const LEADERBOARD_PERIOD_TABS: LeaderboardPeriodTab[] = [
     label: "Tất cả",
     meTitle: "Từ trước tới nay",
     participantLabel: "học viên có phút học",
+    rankTitleSuffix: "mọi thời",
     emptyText: "Bạn chưa có phút học nào.",
   },
 ];
@@ -187,6 +190,16 @@ export const RANK_MEDAL_CLASS_NAMES: Record<number, string> = {
   1: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
   2: "bg-zinc-100 text-zinc-600 dark:bg-white/10 dark:text-zinc-300",
   3: "bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300",
+};
+
+/**
+ * Danh hiệu top 3 của kỳ đang xem, nối với đuôi kỳ: "Dẫn đầu tuần". Khác bậc:
+ * bậc theo tổng giờ từ trước tới nay, danh hiệu theo hạng trong kỳ
+ */
+export const RANK_TITLES: Record<number, string> = {
+  1: "Dẫn đầu",
+  2: "Á quân",
+  3: "Hạng ba",
 };
 
 /**
