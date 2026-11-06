@@ -16,6 +16,7 @@ export async function LeaderboardContent({ period }: LeaderboardContentProps) {
     currentUser && isLeaderboardParticipant(currentUser.role)
       ? {
           userId: String(currentUser._id),
+          username: currentUser.username || "",
           name: currentUser.name || currentUser.username || "",
           avatar: currentUser.avatar || "",
         }

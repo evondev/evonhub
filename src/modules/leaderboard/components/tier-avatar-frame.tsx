@@ -7,6 +7,8 @@ interface TierAvatarFrameProps {
   level: number;
   children: ReactNode;
   className?: string;
+  /** Cỡ và vị trí huy hiệu gắn ở mép dưới; avatar to thì huy hiệu to theo */
+  badgeClassName?: string;
 }
 
 /**
@@ -17,6 +19,7 @@ export function TierAvatarFrame({
   level,
   children,
   className,
+  badgeClassName,
 }: TierAvatarFrameProps) {
   const frameClassName = TIER_FRAME_CLASS_NAMES[level];
 
@@ -39,7 +42,10 @@ export function TierAvatarFrame({
       </span>
       <TierBadge
         level={level}
-        className="absolute -bottom-2.5 left-1/2 size-6 -translate-x-1/2"
+        className={cn(
+          "absolute -bottom-2.5 left-1/2 size-6 -translate-x-1/2",
+          badgeClassName,
+        )}
       />
     </span>
   );

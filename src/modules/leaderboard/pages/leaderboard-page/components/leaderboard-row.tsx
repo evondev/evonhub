@@ -1,11 +1,13 @@
 import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { cn } from "@/shared/utils";
+import { LeaderboardProfileLink } from "../../../components/leaderboard-profile-link";
 import { StudyMinutesText } from "../../../components/study-minutes-text";
 import { TierBadge } from "../../../components/tier-badge";
 import { getStudyTierByLevel } from "../../../utils";
 
 interface LeaderboardRowProps {
   rank: number;
+  username: string;
   name: string;
   avatar: string;
   minutes: number;
@@ -13,9 +15,10 @@ interface LeaderboardRowProps {
   isMe: boolean;
 }
 
-/** Dòng chỉ để đọc: không link, không nút, nên không có nền rê */
+/** Avatar và tên dẫn tới trang công khai; cả dòng không bấm được nên không có nền rê */
 export function LeaderboardRow({
   rank,
+  username,
   name,
   avatar,
   minutes,
@@ -41,14 +44,25 @@ export function LeaderboardRow({
       >
         {rank}
       </span>
-      <UserAvatar name={name} avatar={avatar} />
+      <LeaderboardProfileLink
+        username={username}
+        isDuplicate
+        className="shrink-0 rounded-full"
+      >
+        <UserAvatar name={name} avatar={avatar} />
+      </LeaderboardProfileLink>
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-2">
           <p
             className="min-w-0 truncate text-sm font-medium text-foreground"
             title={name}
           >
-            {name}
+            <LeaderboardProfileLink
+              username={username}
+              className="hover:underline hover:underline-offset-2"
+            >
+              {name}
+            </LeaderboardProfileLink>
           </p>
           {isMe && (
             <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground">

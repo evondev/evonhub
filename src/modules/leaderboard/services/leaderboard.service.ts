@@ -121,6 +121,7 @@ async function buildEntries(
 
     entries.push({
       userId: row.userId,
+      username: user?.username || "",
       name: getDisplayName(user),
       avatar: user?.avatar || "",
       minutes: toStudyMinutes(row.seconds),

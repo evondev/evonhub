@@ -17,6 +17,8 @@ export const PREVIEW_LEADERBOARD_STATE_LINKS: LeaderboardPreviewStateLink[] = [
 
 export const PREVIEW_VIEWER: LeaderboardViewer = {
   userId: "preview-viewer",
+  // Trang xem trước không có người thật: để rỗng cho tên, avatar không thành link 404
+  username: "",
   name: "Trần Anh Tuấn",
   avatar: "https://randomuser.me/api/portraits/men/52.jpg",
 };

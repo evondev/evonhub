@@ -51,7 +51,8 @@ const HOUR_SECONDS = 60 * 60;
 
 /**
  * Mười bậc theo tổng giờ học từ trước tới nay, chỉ tăng không giảm. Bậc đầu
- * nhận ngay phút đầu tiên. Mốc giờ là ước lượng ban đầu, chỉnh theo dữ liệu thật.
+ * nhận ngay phút đầu tiên. Mốc đã hạ cho vừa nhịp học hiện tại (người học
+ * chăm nhất khoảng 1,5 giờ mỗi tuần): bậc 2 trong tuần đầu, bậc cao nhất hơn một năm.
  */
 export const STUDY_TIERS: StudyTier[] = [
   {
@@ -63,55 +64,55 @@ export const STUDY_TIERS: StudyTier[] = [
   {
     level: 2,
     name: "Băng tinh",
-    minSeconds: 3 * HOUR_SECONDS,
+    minSeconds: 1 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-2.png",
   },
   {
     level: 3,
     name: "Tinh tú",
-    minSeconds: 8 * HOUR_SECONDS,
+    minSeconds: 3 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-3.png",
   },
   {
     level: 4,
     name: "Nhiệt huyết",
-    minSeconds: 15 * HOUR_SECONDS,
+    minSeconds: 6 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-4.png",
   },
   {
     level: 5,
     name: "Đam mê",
-    minSeconds: 25 * HOUR_SECONDS,
+    minSeconds: 10 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-5.png",
   },
   {
     level: 6,
     name: "Vương miện",
-    minSeconds: 40 * HOUR_SECONDS,
+    minSeconds: 15 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-6.png",
   },
   {
     level: 7,
     name: "Chiến cúp",
-    minSeconds: 60 * HOUR_SECONDS,
+    minSeconds: 25 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-7.png",
   },
   {
     level: 8,
     name: "Kim cương",
-    minSeconds: 90 * HOUR_SECONDS,
+    minSeconds: 40 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-8.png",
   },
   {
     level: 9,
     name: "Thạch anh",
-    minSeconds: 130 * HOUR_SECONDS,
+    minSeconds: 60 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-9.png",
   },
   {
     level: 10,
     name: "Huyền thoại",
-    minSeconds: 180 * HOUR_SECONDS,
+    minSeconds: 100 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-10.png",
   },
 ];
@@ -155,6 +156,7 @@ export const LEADERBOARD_PERIOD_TABS: LeaderboardPeriodTab[] = [
     label: "Tuần này",
     meTitle: "Tuần này của bạn",
     participantLabel: "học viên có phút tuần này",
+    rankTitleSuffix: "tuần",
     emptyText: "Tuần này bạn chưa có phút học nào.",
   },
   {
@@ -162,6 +164,7 @@ export const LEADERBOARD_PERIOD_TABS: LeaderboardPeriodTab[] = [
     label: "Tháng này",
     meTitle: "Tháng này của bạn",
     participantLabel: "học viên có phút tháng này",
+    rankTitleSuffix: "tháng",
     emptyText: "Tháng này bạn chưa có phút học nào.",
   },
   {
@@ -169,6 +172,7 @@ export const LEADERBOARD_PERIOD_TABS: LeaderboardPeriodTab[] = [
     label: "Tất cả",
     meTitle: "Từ trước tới nay",
     participantLabel: "học viên có phút học",
+    rankTitleSuffix: "mọi thời",
     emptyText: "Bạn chưa có phút học nào.",
   },
 ];
@@ -186,6 +190,16 @@ export const RANK_MEDAL_CLASS_NAMES: Record<number, string> = {
   1: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
   2: "bg-zinc-100 text-zinc-600 dark:bg-white/10 dark:text-zinc-300",
   3: "bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300",
+};
+
+/**
+ * Danh hiệu top 3 của kỳ đang xem, nối với đuôi kỳ: "Dẫn đầu tuần". Khác bậc:
+ * bậc theo tổng giờ từ trước tới nay, danh hiệu theo hạng trong kỳ
+ */
+export const RANK_TITLES: Record<number, string> = {
+  1: "Dẫn đầu",
+  2: "Á quân",
+  3: "Hạng ba",
 };
 
 /**

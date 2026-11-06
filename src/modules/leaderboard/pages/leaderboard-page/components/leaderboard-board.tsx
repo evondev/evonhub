@@ -50,7 +50,10 @@ export function LeaderboardBoard({
       )}
       {data.entries.length > 0 && (
         <>
-          <LeaderboardPodium entries={podiumEntries} />
+          <LeaderboardPodium
+            entries={podiumEntries}
+            rankTitleSuffix={periodTab.rankTitleSuffix}
+          />
           <LeaderboardList
             entries={data.entries.slice(PODIUM_SIZE)}
             podiumCount={podiumEntries.length}

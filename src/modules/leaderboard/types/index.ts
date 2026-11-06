@@ -11,10 +11,14 @@ export interface LeaderboardPeriodTab {
   participantLabel: string;
   /** Thẻ của bạn khi chưa có phút nào trong kỳ */
   emptyText: string;
+  /** Đuôi danh hiệu top 3: "Dẫn đầu tuần" */
+  rankTitleSuffix: string;
 }
 
 export interface LeaderboardViewer {
   userId: string;
+  /** Rỗng thì tên, avatar không thành link trang công khai */
+  username: string;
   name: string;
   avatar: string;
 }
@@ -63,6 +67,8 @@ export interface WatchableLesson {
 
 export interface LeaderboardEntry {
   userId: string;
+  /** Rỗng (user đã xoá) thì tên, avatar không thành link trang công khai */
+  username: string;
   name: string;
   avatar: string;
   minutes: number;

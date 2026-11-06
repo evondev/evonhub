@@ -27,17 +27,17 @@ describe("bậc học theo tổng giờ", () => {
   });
 
   it("đúng mốc là lên bậc", () => {
-    expect(getStudyTier(3 * HOUR_SECONDS - 1)?.level).toBe(1);
-    expect(getStudyTier(3 * HOUR_SECONDS)?.level).toBe(2);
+    expect(getStudyTier(HOUR_SECONDS - 1)?.level).toBe(1);
+    expect(getStudyTier(HOUR_SECONDS)?.level).toBe(2);
     expect(getStudyTier(500 * HOUR_SECONDS)?.level).toBe(10);
   });
 
   it("tiến độ tính trong khoảng từ bậc hiện tại tới bậc kế", () => {
-    // 27 giờ 40 phút: bậc 5 (25 giờ), bậc 6 ở 40 giờ
+    // 27 giờ 40 phút: bậc 7 (25 giờ), bậc 8 ở 40 giờ
     const progress = getTierProgress(27 * HOUR_SECONDS + 40 * 60);
 
-    expect(progress.tier?.level).toBe(5);
-    expect(progress.nextTier?.level).toBe(6);
+    expect(progress.tier?.level).toBe(7);
+    expect(progress.nextTier?.level).toBe(8);
     expect(progress.percent).toBe(17);
     expect(formatStudyDuration(progress.remainingSeconds, true)).toBe(
       "12 giờ 20 phút",
