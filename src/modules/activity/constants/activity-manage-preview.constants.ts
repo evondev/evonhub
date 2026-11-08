@@ -1,4 +1,5 @@
 import { ActivityType } from "@/shared/constants/activity.constants";
+import { PROFILE_PUBLIC_PATH } from "@/shared/constants/user.constants";
 import { CourseFilterOption, PreviewStateLink } from "@/shared/types";
 import { ActivityRow } from "../types";
 import { ACTIVITY_DELETED_LABELS } from ".";
@@ -54,41 +55,48 @@ const previewUsers = {
     userEmail: "vy.tran@gmail.com",
     userAvatar: portrait("women", 44),
     userRoleLabel: "",
+    userProfileHref: `${PROFILE_PUBLIC_PATH}/vytran`,
   },
   hoang: {
     userName: "Nguyễn Văn Hoàng",
     userEmail: "hoangnv.dev@gmail.com",
     userAvatar: portrait("men", 32),
     userRoleLabel: "",
+    userProfileHref: `${PROFILE_PUBLIC_PATH}/hoangnv`,
   },
   khoi: {
     userName: "Lê Hoàng Phương Nguyễn Minh Khôi",
     userEmail: "khoi.lehoangphuong.nguyenminh@outlook.com",
     userRoleLabel: "",
+    userProfileHref: `${PROFILE_PUBLIC_PATH}/khoinguyen`,
   },
   bao: {
     userName: "Phạm Quốc Bảo",
     userEmail: "baopq@gmail.com",
     userAvatar: portrait("men", 75),
     userRoleLabel: "",
+    userProfileHref: `${PROFILE_PUBLIC_PATH}/baopq`,
   },
   ha: {
     userName: "Đỗ Thu Hà",
     userEmail: "thuha.do@yahoo.com",
     userAvatar: portrait("women", 12),
     userRoleLabel: "",
+    userProfileHref: `${PROFILE_PUBLIC_PATH}/thuhado`,
   },
   admin: {
     userName: "Evondev",
     userEmail: "admin@evonhub.dev",
     userAvatar: portrait("men", 1),
     userRoleLabel: "Admin",
+    userProfileHref: `${PROFILE_PUBLIC_PATH}/evondev`,
   },
   expert: {
     userName: "Minh Tuấn",
     userEmail: "tuan.expert@gmail.com",
     userAvatar: portrait("men", 8),
     userRoleLabel: "Chuyên gia",
+    userProfileHref: `${PROFILE_PUBLIC_PATH}/minhtuan`,
   },
 };
 
@@ -303,6 +311,7 @@ export const PREVIEW_ACTIVITIES: ActivityRow[] = [
     userName: ACTIVITY_DELETED_LABELS.user,
     userEmail: "",
     userRoleLabel: "",
+    userProfileHref: "",
     targetTitle: "Bài 1: Giới thiệu khoá học",
     ...previewCourse(3, "javascript-co-ban-den-nang-cao"),
     detail: "",

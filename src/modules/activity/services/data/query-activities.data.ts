@@ -29,6 +29,8 @@ export function getActivitiesOptions({
       params.search,
       params.tab,
       params.courseId,
+      params.from,
+      params.to,
     ],
   });
 }

@@ -73,6 +73,10 @@ export interface ActivityManageFilters {
   tab: ActivityManageTab;
   /** Rỗng là mọi khoá */
   courseId: string;
+  /** Ngày đầu, dạng YYYY-MM-DD theo giờ Việt Nam; rỗng là không chặn đầu */
+  from: string;
+  /** Ngày cuối (tính cả ngày này), dạng YYYY-MM-DD; rỗng là không chặn cuối */
+  to: string;
   page: number;
 }
 
@@ -80,8 +84,33 @@ export interface FetchActivitiesParams {
   search?: string;
   tab?: ActivityManageTab;
   courseId?: string;
+  from?: string;
+  to?: string;
   page?: number;
   limit?: number;
+}
+
+/** Khoảng ngày của bộ lọc, dạng YYYY-MM-DD; hai chuỗi rỗng là mọi ngày */
+export interface ActivityDateRange {
+  from: string;
+  to: string;
+}
+
+/** Điều kiện lastSeenAt của bộ lọc ngày; $lt là 0 giờ ngày sau ngày cuối */
+export interface ActivityDateRangeQuery {
+  $gte?: Date;
+  $lt?: Date;
+}
+
+export type ActivityDatePresetKey =
+  "today" | "yesterday" | "last7Days" | "last30Days";
+
+/** Một lựa chọn nhanh của bộ lọc ngày */
+export interface ActivityDatePreset {
+  key: ActivityDatePresetKey;
+  label: string;
+  from: string;
+  to: string;
 }
 
 export interface ActivityUserData {
@@ -154,12 +183,15 @@ export interface ActivityRow {
   courseTitle: string;
   /** Trang giới thiệu khoá; rỗng khi khoá đã bị xoá */
   courseHref: string;
+  /** Trang công khai của người làm; rỗng khi người đó đã bị xoá */
+  userProfileHref: string;
   detail: string;
   startedAt: string;
   lastSeenAt: string;
 }
 
-export type ActivityManagePreviewState = "du-lieu" | "rong" | "dang-tai" | "loi";
+export type ActivityManagePreviewState =
+  "du-lieu" | "rong" | "dang-tai" | "loi";
 
 export interface ActivityManageResult {
   activities: ActivityRow[];

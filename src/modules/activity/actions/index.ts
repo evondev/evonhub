@@ -32,6 +32,7 @@ import {
   OnlineActivityGroup,
 } from "../types";
 import {
+  buildActivityDateRangeQuery,
   buildActivityTabCounts,
   getActivityTypesByGroup,
   getSessionActivityTypes,
@@ -140,11 +141,19 @@ export async function logVideoView({
   }
 }
 
-/** Từ khoá tìm người (tên, username, email) và khoá đang lọc, chung cho mọi tab */
+/**
+ * Từ khoá tìm người (tên, username, email), khoá và khoảng ngày đang lọc, chung
+ * cho mọi tab
+ */
 async function buildActivityScopeQuery({
   search,
   courseId,
-}: Pick<FetchActivitiesParams, "search" | "courseId">): Promise<ActivityQuery> {
+  from,
+  to,
+}: Pick<
+  FetchActivitiesParams,
+  "search" | "courseId" | "from" | "to"
+>): Promise<ActivityQuery> {
   // Chỉ lấy loại việc bản build này biết: DB dùng chung với bản mới hơn có thể
   // có loại lạ, ACTIVITY_TYPE_CONFIGS[type] sẽ undefined và làm sập trang
   const query: ActivityQuery = { type: { $in: Object.values(ActivityType) } };
@@ -173,6 +182,11 @@ async function buildActivityScopeQuery({
       : { $in: [] };
   }
 
+  // Lọc theo nhịp gần nhất, cùng mốc với cột giờ và thứ tự của danh sách
+  const dateRangeQuery = buildActivityDateRangeQuery(from, to);
+
+  if (dateRangeQuery) query.lastSeenAt = dateRangeQuery;
+
   return query;
 }
 
@@ -186,10 +200,16 @@ async function findOnlineActivityIds(
   const onlineSince = new Date(Date.now() - ACTIVITY_ONLINE_WINDOW_MS);
   const onlineGroups = await ActivityModel.aggregate<OnlineActivityGroup>([
     {
+      // $and thay vì trải scopeQuery: scopeQuery có thể đã có lastSeenAt của bộ
+      // lọc ngày, ghi đè thì mất điều kiện đó
       $match: {
-        ...scopeQuery,
-        type: { $in: getSessionActivityTypes() },
-        lastSeenAt: { $gte: onlineSince },
+        $and: [
+          scopeQuery,
+          {
+            type: { $in: getSessionActivityTypes() },
+            lastSeenAt: { $gte: onlineSince },
+          },
+        ],
       },
     },
     { $sort: { lastSeenAt: -1 } },
@@ -211,6 +231,8 @@ export async function fetchActivities({
   search,
   tab,
   courseId,
+  from,
+  to,
   page = 1,
   limit = 10,
 }: FetchActivitiesParams): Promise<FetchActivitiesResult | undefined> {
@@ -228,7 +250,12 @@ export async function fetchActivities({
     const safePage = Math.max(Math.floor(Number(page)) || 1, 1);
     const skip = (safePage - 1) * safeLimit;
 
-    const scopeQuery = await buildActivityScopeQuery({ search, courseId });
+    const scopeQuery = await buildActivityScopeQuery({
+      search,
+      courseId,
+      from,
+      to,
+    });
     // Một $group đếm theo loại việc cho mọi tab nhóm, thay vì mỗi tab một count
     const [typeCountGroups, onlineActivityIds] = await Promise.all([
       ActivityModel.aggregate<ActivityTypeCountGroup>([

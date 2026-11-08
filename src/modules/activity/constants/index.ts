@@ -1,6 +1,7 @@
 import { UserRole } from "@/shared/constants/user.constants";
 import { FilterTabItem } from "@/shared/types";
 import {
+  ActivityDatePresetKey,
   ActivityGroup,
   ActivityManageFilters,
   ActivityManageTab,
@@ -108,10 +109,34 @@ export const LESSON_FIELD_LABELS: Record<string, string> = {
 
 export const ACTIVITY_SKELETON_ROW_COUNT = 6;
 
+/** Ngày trên URL của bộ lọc ngày */
+export const ACTIVITY_DATE_FORMAT = "YYYY-MM-DD";
+
+/**
+ * Ngày của bộ lọc tính theo giờ Việt Nam (không có giờ mùa hè), dù server chạy
+ * UTC: 0 giờ ngày 08/11 ở VN là 17 giờ ngày 07/11 UTC
+ */
+export const ACTIVITY_TIMEZONE_OFFSET = "+07:00";
+
+/** Lựa chọn bỏ lọc ngày trong menu */
+export const ACTIVITY_DATE_ALL_LABEL = "Tất cả thời gian";
+
+export const ACTIVITY_DATE_PRESET_LABELS: Record<
+  ActivityDatePresetKey,
+  string
+> = {
+  today: "Hôm nay",
+  yesterday: "Hôm qua",
+  last7Days: "7 ngày qua",
+  last30Days: "30 ngày qua",
+};
+
 export const ACTIVITY_MANAGE_DEFAULT_FILTERS: ActivityManageFilters = {
   search: "",
   // Vào trang là xem ai đang học trước
   tab: "online",
   courseId: "",
+  from: "",
+  to: "",
   page: 1,
 };

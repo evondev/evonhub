@@ -1,5 +1,6 @@
 import { ActivityType } from "@/shared/constants/activity.constants";
 import { COURSE_DETAILS_PATH_PREFIX } from "@/shared/constants/common.constants";
+import { PROFILE_PUBLIC_PATH } from "@/shared/constants/user.constants";
 import { FilterTabItem } from "@/shared/types";
 import dayjs from "dayjs";
 import {
@@ -19,6 +20,16 @@ import {
   ActivityRow,
   ActivityTypeCountGroup,
 } from "../types";
+import { isInActivityDateRange } from "./activity-date.utils";
+
+export {
+  buildActivityDatePresets,
+  buildActivityDateRangeQuery,
+  findActivityDatePreset,
+  formatActivityDateRangeLabel,
+  isActivityDateString,
+  isInActivityDateRange,
+} from "./activity-date.utils";
 
 /** Các loại việc thuộc một nhóm, để lọc theo tab */
 export function getActivityTypesByGroup(group: ActivityGroup): ActivityType[] {
@@ -80,6 +91,9 @@ export function toActivityRow(activity: ActivityItemData): ActivityRow {
     courseTitle: activity.course?.title || ACTIVITY_DELETED_LABELS.course,
     courseHref: activity.course
       ? `${COURSE_DETAILS_PATH_PREFIX}${activity.course.slug}`
+      : "",
+    userProfileHref: activity.user?.username
+      ? `${PROFILE_PUBLIC_PATH}/${encodeURIComponent(activity.user.username)}`
       : "",
     detail: activity.detail || "",
     startedAt: activity.createdAt,
@@ -164,8 +178,13 @@ export function filterPreviewActivities(
       activity.userName.toLowerCase().includes(keyword) ||
       activity.userEmail.toLowerCase().includes(keyword);
     const isCourseMatch = !courseTitle || activity.courseTitle === courseTitle;
+    const isDateMatch = isInActivityDateRange(
+      activity.lastSeenAt,
+      filters.from,
+      filters.to,
+    );
 
-    return isKeywordMatch && isCourseMatch;
+    return isKeywordMatch && isCourseMatch && isDateMatch;
   });
 
   if (isActivityGroupTab(filters.tab)) {

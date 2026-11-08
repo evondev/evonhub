@@ -32,11 +32,30 @@ export function ActivityListItem({
 
   return (
     <li className="flex gap-3 border-b border-border px-4 py-3 last:border-0 sm:px-5">
-      <UserAvatar
-        name={activity.userName}
-        avatar={activity.userAvatar}
-        className="size-9"
-      />
+      {activity.userProfileHref && (
+        // Tab mới: giữ nguyên bộ lọc và chỗ đang xem trong nhật ký
+        <Link
+          href={activity.userProfileHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={`Xem trang cá nhân của ${activity.userName}`}
+          aria-label={`Xem trang cá nhân của ${activity.userName}`}
+          className="h-fit shrink-0 rounded-full transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        >
+          <UserAvatar
+            name={activity.userName}
+            avatar={activity.userAvatar}
+            className="size-9"
+          />
+        </Link>
+      )}
+      {!activity.userProfileHref && (
+        <UserAvatar
+          name={activity.userName}
+          avatar={activity.userAvatar}
+          className="size-9"
+        />
+      )}
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-2">
           {activity.userEmail && (
