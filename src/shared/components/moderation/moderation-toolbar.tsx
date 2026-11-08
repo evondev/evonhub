@@ -4,7 +4,7 @@ import {
   FilterTabItem,
   FilterTabsBreakpoint,
 } from "@/shared/types";
-import { RefObject } from "react";
+import { ReactNode, RefObject } from "react";
 import { CourseFilter } from "./course-filter";
 
 interface ModerationToolbarProps<TTab extends string> {
@@ -24,6 +24,11 @@ interface ModerationToolbarProps<TTab extends string> {
   controlsId: string;
   /** Hàng nhiều tab thì thu thành nút chọn từ "xl" */
   collapseTabsBelow?: FilterTabsBreakpoint;
+  /**
+   * Bộ lọc thêm đứng trước nút khoá học (như lọc ngày). Gọi hai lần như nút khoá
+   * học: một bản cho dưới sm, một bản từ sm, className lo ẩn bản không dùng
+   */
+  renderExtraFilter?: (className: string) => ReactNode;
 }
 
 /**
@@ -46,6 +51,7 @@ export function ModerationToolbar<TTab extends string>({
   searchInputRef,
   controlsId,
   collapseTabsBelow,
+  renderExtraFilter,
 }: ModerationToolbarProps<TTab>) {
   return (
     // xl:flex-wrap: tab nhiều (như nhật ký hoạt động) mà không vừa chung hàng với ô tìm
@@ -60,6 +66,7 @@ export function ModerationToolbar<TTab extends string>({
           controlsId={controlsId}
           collapseBelow={collapseTabsBelow}
         />
+        {renderExtraFilter?.("sm:hidden")}
         <CourseFilter
           courses={courses}
           value={courseId}
@@ -76,6 +83,7 @@ export function ModerationToolbar<TTab extends string>({
           label={searchLabel}
           className="flex-1 xl:w-72 xl:flex-none"
         />
+        {renderExtraFilter?.("hidden sm:inline-flex")}
         <CourseFilter
           courses={courses}
           value={courseId}

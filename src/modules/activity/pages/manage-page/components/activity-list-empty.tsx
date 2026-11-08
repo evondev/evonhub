@@ -19,6 +19,7 @@ export function ActivityListEmpty({
 }: ActivityListEmptyProps) {
   const hasKeyword = Boolean(filters.search);
   const hasCourseFilter = Boolean(filters.courseId);
+  const hasDateFilter = Boolean(filters.from || filters.to);
   const isOnlineTab = filters.tab === "online";
   const isGroupTab = isActivityGroupTab(filters.tab);
 
@@ -35,13 +36,20 @@ export function ActivityListEmpty({
       )}
       {!hasKeyword && isOnlineTab && <>Lúc này chưa có ai đang học. </>}
       {!hasKeyword && isGroupTab && <>Chưa có hoạt động nào ở mục này. </>}
-      {!hasKeyword && !isOnlineTab && !isGroupTab && hasCourseFilter && (
-        <>Khoá này chưa có hoạt động nào. </>
+      {!hasKeyword && !isOnlineTab && !isGroupTab && hasDateFilter && (
+        <>Không có hoạt động nào trong thời gian này. </>
       )}
-      {!hasKeyword && !isOnlineTab && !isGroupTab && !hasCourseFilter && (
-        <>Chưa có hoạt động nào.</>
-      )}
-      {(hasKeyword || hasCourseFilter) && (
+      {!hasKeyword &&
+        !isOnlineTab &&
+        !isGroupTab &&
+        !hasDateFilter &&
+        hasCourseFilter && <>Khoá này chưa có hoạt động nào. </>}
+      {!hasKeyword &&
+        !isOnlineTab &&
+        !isGroupTab &&
+        !hasDateFilter &&
+        !hasCourseFilter && <>Chưa có hoạt động nào.</>}
+      {(hasKeyword || hasCourseFilter || hasDateFilter) && (
         <Button
           variant="ghost"
           onClick={onClearFilters}

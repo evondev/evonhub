@@ -21,6 +21,10 @@ export const ADMIN_HOME_PATH = "/admin";
 
 export const CHAT_PATH = "/chat";
 
+// Tạm tắt Trò chuyện: ẩn khỏi menu, /chat trả 404, layout thôi hỏi phòng chat.
+// Bật lại thì đổi thành true
+export const IS_CHAT_ENABLED = false;
+
 // Trang luyện nói tiếng Anh, mở ở tab mới từ sidebar
 export const SPEAK_NOW_URL = "https://speaknowenglish.org";
 
@@ -35,6 +39,14 @@ export enum CommonStatus {
   Approved = "approved",
   Rejected = "rejected",
 }
+
+const chatMenuLink: MenuLinkItemProps = {
+  title: "Trò chuyện",
+  mobileTitle: "Chat",
+  icon: <MessagesSquare />,
+  url: CHAT_PATH,
+  section: "community",
+};
 
 export const menuLinks: MenuLinkItemProps[] = [
   {
@@ -70,13 +82,7 @@ export const menuLinks: MenuLinkItemProps[] = [
     // Admin, expert không lên bảng: thanh dưới của họ chừa chỗ cho Quản lý
     isHideMobileForManager: true,
   },
-  {
-    title: "Trò chuyện",
-    mobileTitle: "Chat",
-    icon: <MessagesSquare />,
-    url: CHAT_PATH,
-    section: "community",
-  },
+  ...(IS_CHAT_ENABLED ? [chatMenuLink] : []),
   {
     title: "Học tiếng Anh",
     icon: <Languages />,

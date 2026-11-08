@@ -11,7 +11,10 @@ import { Header } from "@/shared/components/common/header";
 import { Main } from "@/shared/components/common/main";
 import { Sidebar } from "@/shared/components/common/sidebar";
 import { MobileNavigation } from "@/shared/components/common/mobile-navigation";
-import { CHAT_PATH } from "@/shared/constants/common.constants";
+import {
+  CHAT_PATH,
+  IS_CHAT_ENABLED,
+} from "@/shared/constants/common.constants";
 import { UserStatus } from "@/shared/constants/user.constants";
 import { useLessonDetailsPath } from "@/shared/hooks/use-lesson-details-path";
 import { cn } from "@/shared/utils";
@@ -39,11 +42,11 @@ export default function DashboardLayout({
   const { isLessonPage } = useLessonDetailsPath();
   const pathname = usePathname();
   // Gọi một lần ở đây cho cả sidebar lẫn thanh dưới: hai nơi tự gọi thì hỏi
-  // server gấp đôi. Trang học không có menu nên tắt
+  // server gấp đôi. Trang học không có menu nên tắt; chat đang tạm tắt cũng vậy
   const { menuSignal: chatSignal, host: chatHost } = useChatActivity({
     userId: userInfo?._id ? String(userInfo._id) : "",
     isOnChatPage: pathname === CHAT_PATH,
-    isEnabled: !isLessonPage,
+    isEnabled: IS_CHAT_ENABLED && !isLessonPage,
   });
   // Admin không cần lời mời vào phòng của chính mình
   const isChatHostViewer = CHAT_HOST_ROLES.includes(userInfo?.role || "");
@@ -76,7 +79,9 @@ export default function DashboardLayout({
               chatSignal={chatSignal}
             />
           )}
-          {chatHost && !isChatHostViewer && <ChatHostBubble host={chatHost} />}
+          {IS_CHAT_ENABLED && chatHost && !isChatHostViewer && (
+            <ChatHostBubble host={chatHost} />
+          )}
         </section>
       </Main>
     </>

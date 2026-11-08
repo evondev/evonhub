@@ -28,6 +28,8 @@ export function ActivityManagePage(_props: ActivityManagePageProps) {
     courseId: parseAsString.withDefault(
       ACTIVITY_MANAGE_DEFAULT_FILTERS.courseId,
     ),
+    from: parseAsString.withDefault(ACTIVITY_MANAGE_DEFAULT_FILTERS.from),
+    to: parseAsString.withDefault(ACTIVITY_MANAGE_DEFAULT_FILTERS.to),
     page: parseAsInteger.withDefault(ACTIVITY_MANAGE_DEFAULT_FILTERS.page),
   });
   const { userInfo } = useUserContext();
@@ -37,6 +39,8 @@ export function ActivityManagePage(_props: ActivityManagePageProps) {
       search: filters.search,
       tab: filters.tab,
       courseId: filters.courseId,
+      from: filters.from,
+      to: filters.to,
       page: filters.page,
       limit: ITEMS_PER_PAGE,
     });

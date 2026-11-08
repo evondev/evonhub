@@ -11,14 +11,8 @@ import {
   PREVIEW_ACTIVITIES,
   PREVIEW_ACTIVITY_COURSES,
 } from "../../constants/activity-manage-preview.constants";
-import {
-  ActivityManageFilters,
-  ActivityManagePreviewState,
-} from "../../types";
-import {
-  countPreviewActivityTabs,
-  filterPreviewActivities,
-} from "../../utils";
+import { ActivityManageFilters, ActivityManagePreviewState } from "../../types";
+import { countPreviewActivityTabs, filterPreviewActivities } from "../../utils";
 import { ActivityManageView } from "./components";
 
 interface ActivityManagePreviewPageProps {
@@ -49,7 +43,9 @@ export function ActivityManagePreviewPage({
     previewCourseTitleById,
   );
   // Chưa tìm, chưa lọc thì giả như đang xem cả nhật ký thật, để thấy phân trang
-  const hasNarrowingFilters = Boolean(filters.search || filters.courseId);
+  const hasNarrowingFilters = Boolean(
+    filters.search || filters.courseId || filters.from || filters.to,
+  );
   const tabCounts = {
     ...previewTabCounts,
     all: hasNarrowingFilters

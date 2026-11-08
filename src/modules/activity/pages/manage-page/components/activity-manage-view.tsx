@@ -6,11 +6,13 @@ import { CourseFilterOption } from "@/shared/types";
 import { useRef } from "react";
 import { ACTIVITY_MANAGE_DEFAULT_FILTERS } from "../../../constants";
 import {
+  ActivityDateRange,
   ActivityManageFilters,
   ActivityManageResult,
   ActivityManageTab,
 } from "../../../types";
 import { buildActivityManageTabs } from "../../../utils";
+import { ActivityDateFilter } from "./activity-date-filter";
 import { ActivityList } from "./activity-list";
 import { ActivityListSkeleton } from "./activity-list-skeleton";
 
@@ -50,6 +52,10 @@ export function ActivityManageView({
     onFiltersChange({ courseId, page: 1 });
   }
 
+  function handleDateRangeChange({ from, to }: ActivityDateRange) {
+    onFiltersChange({ from, to, page: 1 });
+  }
+
   function handleSearch(search: string) {
     if (search === filters.search) return;
 
@@ -66,11 +72,13 @@ export function ActivityManageView({
     window.scrollTo({ top: 0 });
   }
 
-  // Gỡ từ khoá và khoá học, giữ tab đang xem
+  // Gỡ từ khoá, khoá học và ngày, giữ tab đang xem
   function handleClearFilters() {
     onFiltersChange({
       search: ACTIVITY_MANAGE_DEFAULT_FILTERS.search,
       courseId: ACTIVITY_MANAGE_DEFAULT_FILTERS.courseId,
+      from: ACTIVITY_MANAGE_DEFAULT_FILTERS.from,
+      to: ACTIVITY_MANAGE_DEFAULT_FILTERS.to,
       page: 1,
     });
     searchInputRef.current?.focus();
@@ -92,6 +100,14 @@ export function ActivityManageView({
         searchInputRef={searchInputRef}
         controlsId={activityListId}
         collapseTabsBelow="xl"
+        renderExtraFilter={(className) => (
+          <ActivityDateFilter
+            from={filters.from}
+            to={filters.to}
+            onChange={handleDateRangeChange}
+            className={className}
+          />
+        )}
       />
       {isLoading && <ActivityListSkeleton />}
       {!isLoading && isError && (
