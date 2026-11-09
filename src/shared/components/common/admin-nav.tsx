@@ -50,10 +50,11 @@ export function AdminNav({ role }: AdminNavProps) {
                 href={link.url}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "-mb-px flex h-10 items-center gap-2 whitespace-nowrap border-b-2 px-3 text-sm outline-none transition-colors focus-visible:rounded-lg focus-visible:ring-2 focus-visible:ring-primary/30",
+                  "-mb-px flex h-10 items-center gap-2 whitespace-nowrap border-b-2 px-3 text-sm outline-none transition-colors",
                   isActive && "border-foreground font-medium text-foreground",
                   !isActive &&
-                    "border-transparent text-foreground/70 hover:text-foreground",
+                    // Không có vòng focus: tab bằng bàn phím thì chữ đậm lên như hover
+                    "border-transparent text-foreground/70 hover:text-foreground focus-visible:text-foreground",
                 )}
               >
                 <span
