@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { commonPath } from "@/constants";
+import { FeedbackPrompt } from "@/modules/feedback/components";
 import { ProductLogo } from "@/shared/components/product-logo";
 import { menuLinks } from "@/shared/constants/common.constants";
 import { useLessonDetailsPath } from "@/shared/hooks";
@@ -83,6 +84,9 @@ export const Header = () => {
               {!isSidebarCollapsed && <PanelLeftClose className="size-4" />}
             </Button>
           )}
+          {/* Từ lg nằm ngay sau nút thu gọn sidebar; dưới lg không có nút đó nên
+              đứng sau logo */}
+          {isSignedInUser && <FeedbackPrompt className="max-lg:order-last" />}
           <Link
             href="/"
             scroll={false}

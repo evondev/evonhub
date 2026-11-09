@@ -9,6 +9,7 @@ import {
   LayoutGrid,
   LibraryBig,
   MessageSquare,
+  MessageSquareHeart,
   MessagesSquare,
   Star,
   Tags,
@@ -128,6 +129,12 @@ export const adminNavLinks: MenuLinkItemProps[] = [
     icon: <ClipboardList />,
     url: "/admin/order/manage",
     isExpert: true,
+  },
+  {
+    title: "Góp ý",
+    icon: <MessageSquareHeart />,
+    url: "/admin/feedback/manage",
+    isAdmin: true,
   },
   {
     title: "Danh mục",
