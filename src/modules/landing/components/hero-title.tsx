@@ -18,7 +18,9 @@ export function HeroTitle() {
         className="inline-block pb-1 motion-safe:animate-blur-in"
         style={{ animationDelay: `${accentDelayMs}ms` }}
       >
-        <span className="text-gradient-brand">{accentText}</span>
+        <span className="text-gradient-brand [filter:drop-shadow(0_0_28px_rgb(167_139_250/0.55))]">
+          {accentText}
+        </span>
       </span>
     </h1>
   );

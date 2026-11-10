@@ -72,3 +72,33 @@ export interface CodeToken {
   text: string;
   kind: CodeTokenKind;
 }
+
+/** Các nhịp của màn diễn "AI gõ, bạn soát, bạn sửa" trong editor hero */
+export type ReviewDemoPhase =
+  "typing" | "reviewing" | "flagged" | "fixing" | "done";
+
+/** Trạng thái editor tại một thời điểm của màn diễn */
+export interface ReviewDemoFrame {
+  phase: ReviewDemoPhase;
+  /** Số ký tự AI đã gõ, tính trên toàn bộ đoạn code */
+  typedCharCount: number;
+  /** 0 → 1: thanh soát chạy từ dòng đầu tới dòng lỗi */
+  scanProgress: number;
+  /** Số ký tự của dòng sửa đã gõ */
+  fixedCharCount: number;
+}
+
+export interface ReviewDemoMessage {
+  icon: LucideIcon;
+  title: string;
+  text: string;
+  className: string;
+}
+
+/** Kiểu một dòng code trong editor màn diễn */
+export type ReviewDemoLineTone = "normal" | "flagged" | "removed" | "added";
+
+export interface ReviewDemoPhaseStyle {
+  label: string;
+  className: string;
+}

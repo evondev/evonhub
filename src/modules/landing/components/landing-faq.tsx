@@ -32,7 +32,7 @@ export function LandingFaq() {
             href={FACEBOOK_SUPPORT_URL}
             target="_blank"
             rel="noreferrer"
-            className="font-medium text-primary hover:underline"
+            className="font-medium text-violet-300 hover:underline"
           >
             Nhắn evondev qua Facebook
           </a>

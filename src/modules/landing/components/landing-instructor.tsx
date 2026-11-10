@@ -7,6 +7,7 @@ import {
   instructorStats,
   LANDING_CONTAINER_CLASS_NAME,
   LANDING_SECTION_CLASS_NAME,
+  NEON_GHOST_BUTTON_CLASS_NAME,
 } from "../constants";
 import { InstructorStatCard } from "./instructor-stat-card";
 import { LandingSectionHeading } from "./landing-section-heading";
@@ -28,14 +29,17 @@ export function LandingInstructor() {
           mutedTitle="mọi người hay gọi là evondev."
           description={INSTRUCTOR_BIO}
         />
-        <Button asChild variant="outline" className="self-start rounded-full">
+        <Button
+          asChild
+          className={cn(NEON_GHOST_BUTTON_CLASS_NAME, "self-start")}
+        >
           <a href={EVONDEV_URL} target="_blank" rel="noreferrer">
             Xem hành trình ở evon.dev
             <ArrowUpRight className="size-4" />
           </a>
         </Button>
       </div>
-      <div className="reveal-on-scroll grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-border bg-border">
+      <div className="faded-grid reveal-on-scroll grid grid-cols-2">
         {instructorStats.map((stat) => (
           <InstructorStatCard key={stat.label} stat={stat} />
         ))}

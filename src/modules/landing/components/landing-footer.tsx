@@ -12,7 +12,7 @@ export function LandingFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border">
+    <footer className="border-t border-white/[0.08]">
       <div
         className={cn(
           LANDING_CONTAINER_CLASS_NAME,
@@ -45,7 +45,7 @@ export function LandingFooter() {
           </div>
         ))}
       </div>
-      <div className="border-t border-border">
+      <div className="border-t border-white/[0.08]">
         <p
           className={cn(
             LANDING_CONTAINER_CLASS_NAME,

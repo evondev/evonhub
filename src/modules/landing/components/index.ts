@@ -6,6 +6,7 @@ export { LandingHero } from "./landing-hero";
 export { LandingInstructor } from "./landing-instructor";
 export { LandingLayout } from "./landing-layout";
 export { LandingPurchaseSteps } from "./landing-purchase-steps";
+export { LandingShowcase } from "./landing-showcase";
 export { LandingStats } from "./landing-stats";
 export { LandingTechMarquee } from "./landing-tech-marquee";
 export { LandingTestimonials } from "./landing-testimonials";

@@ -88,6 +88,20 @@ const config: Config = {
           to: { opacity: "1", transform: "none" },
         },
         // Vệt sáng lướt qua chữ (dùng với class text-shine)
+        "caret-blink": {
+          "0%, 49%": { opacity: "1" },
+          "50%, 100%": { opacity: "0" },
+        },
+        // Tia sáng chạy dọc đường nối các bước (phần tử rộng 1/4 đường)
+        "beam-travel": {
+          from: { transform: "translateX(-100%)" },
+          to: { transform: "translateX(400%)" },
+        },
+        // Ô sáng trong lưới CTA cuối landing sáng tím lên rồi tắt
+        "pixel-twinkle": {
+          "0%, 100%": { backgroundColor: "rgb(255 255 255 / 0.03)" },
+          "50%": { backgroundColor: "rgb(167 139 250 / 0.14)" },
+        },
         shine: {
           "0%": { backgroundPosition: "150% 0" },
           "60%, 100%": { backgroundPosition: "-50% 0" },
@@ -102,6 +116,9 @@ const config: Config = {
         "hero-rise": "hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
         "line-in": "line-in 0.4s ease-out both",
         shine: "shine 4s ease-in-out infinite",
+        "caret-blink": "caret-blink 1s step-end infinite",
+        "beam-travel": "beam-travel 3.5s ease-in-out infinite",
+        "pixel-twinkle": "pixel-twinkle 6s ease-in-out infinite",
       },
     },
   },

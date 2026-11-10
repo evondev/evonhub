@@ -1,10 +1,17 @@
 import { CatalogStats, CourseItemData } from "@/modules/course/types";
+import { RatingItemData } from "@/modules/rating/types";
 import { cn } from "@/shared/utils";
 import {
   HERO_TITLE_ACCENT,
   HERO_TITLE_LEAD,
   HERO_WORD_DELAY_MS,
   heroHighlights,
+  TESTIMONIAL_MIN_ROW_LENGTH,
+  CTA_LIT_PIXEL_MODULO,
+  CTA_LIT_PIXEL_STEP,
+  CTA_LIT_PIXEL_THRESHOLD,
+  ctaPixelTwinkleDelayClassNames,
+  TESTIMONIAL_SINGLE_ROW_MAX,
 } from "../constants";
 import {
   CodeToken,
@@ -136,5 +143,50 @@ export function getCodeTokenClassName(tokenKind: CodeTokenKind): string {
     tokenKind === "tag" && "text-sky-300",
     tokenKind === "attribute" && "text-amber-200",
     tokenKind === "danger" && "rounded bg-rose-500/20 text-rose-300",
+  );
+}
+
+/** Lặp lại danh sách cho tới khi đủ minLength phần tử (hàng trôi ngang phủ kín màn) */
+function repeatToLength<Item>(items: Item[], minLength: number): Item[] {
+  if (items.length === 0) return [];
+
+  const repeatedItems = [...items];
+
+  while (repeatedItems.length < minLength) repeatedItems.push(...items);
+
+  return repeatedItems;
+}
+
+/**
+ * Chia đánh giá thành hai hàng trôi ngang ngược chiều (ít quá thì một hàng),
+ * mỗi hàng lặp lại cho đủ card phủ hết bề ngang
+ */
+export function buildTestimonialRows(
+  ratings: RatingItemData[],
+): RatingItemData[][] {
+  if (ratings.length <= TESTIMONIAL_SINGLE_ROW_MAX) {
+    return [repeatToLength(ratings, TESTIMONIAL_MIN_ROW_LENGTH)];
+  }
+
+  const middleIndex = Math.ceil(ratings.length / 2);
+
+  return [ratings.slice(0, middleIndex), ratings.slice(middleIndex)].map(
+    (rowRatings) => repeatToLength(rowRatings, TESTIMONIAL_MIN_ROW_LENGTH),
+  );
+}
+
+/** Ô sáng sẵn trong lưới CTA (rải đều mà trông như ngẫu nhiên, server và client khớp), mỗi ô nhấp nháy lệch nhịp */
+export function getCtaPixelClassName(pixelIndex: number): string {
+  const isLitPixel =
+    (pixelIndex * CTA_LIT_PIXEL_STEP) % CTA_LIT_PIXEL_MODULO <
+    CTA_LIT_PIXEL_THRESHOLD;
+
+  return cn(
+    isLitPixel &&
+      "motion-safe:animate-pixel-twinkle motion-reduce:bg-white/[0.04]",
+    isLitPixel &&
+      ctaPixelTwinkleDelayClassNames[
+        pixelIndex % ctaPixelTwinkleDelayClassNames.length
+      ],
   );
 }

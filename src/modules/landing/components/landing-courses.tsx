@@ -9,6 +9,7 @@ import {
   LANDING_COURSE_SHOWCASE_LIMIT,
   LANDING_SECTION_CLASS_NAME,
   LANDING_SECTION_IDS,
+  NEON_GHOST_BUTTON_CLASS_NAME,
 } from "../constants";
 import { sortCoursesByStudyCount } from "../utils";
 import { LandingSectionHeading } from "./landing-section-heading";
@@ -39,8 +40,10 @@ export function LandingCourses({ courses }: LandingCoursesProps) {
         />
         <Button
           asChild
-          variant="outline"
-          className="shrink-0 self-start rounded-full sm:self-auto"
+          className={cn(
+            NEON_GHOST_BUTTON_CLASS_NAME,
+            "shrink-0 self-start sm:self-auto",
+          )}
         >
           <Link href="/explore">
             Xem tất cả khóa học

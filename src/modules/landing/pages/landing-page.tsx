@@ -10,6 +10,7 @@ import {
   LandingHero,
   LandingInstructor,
   LandingPurchaseSteps,
+  LandingShowcase,
   LandingStats,
   LandingTechMarquee,
   LandingTestimonials,
@@ -29,9 +30,13 @@ export async function LandingPage() {
 
   return (
     <>
-      <LandingHero newestCourse={courses[0]} stats={stats} />
+      <LandingHero
+        newestCourse={courses[0]}
+        freeCourseCount={stats.freeCourseCount}
+      />
       <LandingTechMarquee />
       <LandingStats statItems={buildLandingStatItems(stats)} />
+      <LandingShowcase stats={stats} />
       <LandingFeatures />
       <LandingCourses courses={courses} />
       <LandingInstructor />

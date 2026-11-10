@@ -1,12 +1,11 @@
 import { RatingItemData } from "@/modules/rating/types";
 import { UserAvatar } from "@/shared/components/common/user-avatar";
-import { Star } from "lucide-react";
 
 interface LandingTestimonialCardProps {
   rating: RatingItemData;
 }
 
-/** Một đánh giá thật của học viên, cao theo độ dài nội dung (lưới so le) */
+/** Một đánh giá thật của học viên trong hàng trôi ngang: người viết trên, lời dưới */
 export function LandingTestimonialCard({
   rating,
 }: LandingTestimonialCardProps) {
@@ -14,18 +13,7 @@ export function LandingTestimonialCard({
   const courseTitle = rating.course?.title;
 
   return (
-    <figure className="reveal-on-scroll mb-4 flex break-inside-avoid flex-col gap-4 rounded-2xl border border-border bg-surface p-5 sm:p-6">
-      <div className="flex gap-0.5" aria-label={`${rating.rating} trên 5 sao`}>
-        {Array.from({ length: rating.rating }, (_, starIndex) => (
-          <Star
-            key={starIndex}
-            className="size-4 fill-amber-500 text-amber-500"
-          />
-        ))}
-      </div>
-      <blockquote className="text-pretty text-sm leading-6 text-foreground">
-        {rating.content}
-      </blockquote>
+    <figure className="flex w-[19rem] shrink-0 flex-col gap-5 rounded-2xl bg-gradient-to-b from-white/[0.05] to-white/[0.01] p-6 ring-1 ring-inset ring-white/10 transition-shadow duration-300 hover:shadow-[0_0_0_1px_rgb(167_139_250/0.35),0_16px_50px_-20px_rgb(139_92_246/0.7)] sm:w-[24rem] sm:p-7">
       <figcaption className="flex min-w-0 items-center gap-3">
         <UserAvatar name={authorName} avatar={rating.user?.avatar} />
         <div className="min-w-0">
@@ -37,6 +25,9 @@ export function LandingTestimonialCard({
           )}
         </div>
       </figcaption>
+      <blockquote className="line-clamp-4 text-pretty text-sm leading-6 text-foreground/80">
+        {rating.content}
+      </blockquote>
     </figure>
   );
 }

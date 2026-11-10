@@ -8,7 +8,7 @@ import {
 import { LandingFeatureCard } from "./landing-feature-card";
 import { LandingSectionHeading } from "./landing-section-heading";
 
-/** Cách học ở EvonHub: lưới sáu ô kẻ đường tóc */
+/** Cách học ở EvonHub: lưới sáu ô kẻ đường mờ, vệt sáng theo con trỏ */
 export function LandingFeatures() {
   return (
     <section
@@ -21,7 +21,7 @@ export function LandingFeatures() {
         mutedTitle="Học tới lúc tự làm được."
         isCentered
       />
-      <div className="reveal-on-scroll mt-12 grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="faded-grid reveal-on-scroll mt-12 grid sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
         {landingFeatures.map((feature) => (
           <LandingFeatureCard key={feature.title} feature={feature} />
         ))}

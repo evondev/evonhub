@@ -19,7 +19,7 @@ export function LandingStats({ statItems }: LandingStatsProps) {
     >
       <div
         className={cn(
-          "reveal-on-scroll grid grid-cols-1 gap-px overflow-hidden rounded-3xl border border-border bg-border",
+          "faded-grid reveal-on-scroll grid grid-cols-1",
           getStatsGridClassName(statItems.length),
         )}
       >

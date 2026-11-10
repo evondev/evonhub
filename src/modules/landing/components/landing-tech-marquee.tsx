@@ -25,7 +25,7 @@ export function LandingTechMarquee() {
               {techStackItems.map((techName) => (
                 <li
                   key={techName}
-                  className="whitespace-nowrap rounded-full border border-border-strong bg-surface px-4 py-2 text-sm font-medium text-foreground"
+                  className="whitespace-nowrap rounded-full bg-white/[0.03] px-4 py-2 font-mono text-sm text-muted ring-1 ring-inset ring-white/10"
                 >
                   {techName}
                 </li>
