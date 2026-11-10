@@ -11,7 +11,7 @@ interface FeedbackListItemProps {
   onDelete: (feedback: FeedbackRow) => void;
 }
 
-/** Ai gửi · bao lâu trước · khoá học muốn có · tính năng muốn có */
+/** Ai gửi · bao lâu trước · khoá học, tiếng Anh giao tiếp, tính năng muốn có */
 export function FeedbackListItem({
   feedback,
   onDelete,
@@ -66,6 +66,12 @@ export function FeedbackListItem({
             <FeedbackAnswer
               label="Khoá học muốn có"
               content={feedback.courseWish}
+            />
+          )}
+          {feedback.englishAnswer && (
+            <FeedbackAnswer
+              label="Tiếng Anh giao tiếp"
+              content={feedback.englishAnswer}
             />
           )}
           {feedback.featureWish && (

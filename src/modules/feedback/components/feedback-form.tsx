@@ -9,7 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -18,18 +18,19 @@ import { createFeedback } from "../actions";
 import { FEEDBACK_TEXT_MAX_LENGTH } from "../constants";
 import { feedbackFormSchema } from "../schemas";
 import { FeedbackFormValues } from "../types";
+import { FeedbackEnglishField } from "./feedback-english-field";
 
 interface FeedbackFormProps {
   onSubmitted: () => void;
   onCancel: () => void;
 }
 
-const textareaClassName =
-  "mt-2 block min-h-24 resize-y border-border-strong bg-surface px-3 py-2.5 text-base font-normal !leading-6 text-foreground placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/15 md:text-sm";
+const inputClassName =
+  "mt-2 border-border-strong bg-surface px-3 text-base font-normal text-foreground placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/15 md:text-sm";
 
 const labelClassName = "text-sm font-medium text-foreground";
 
-/** Hai ô: khoá học muốn học, tính năng muốn có. Điền một ô là gửi được */
+/** Khoá học muốn học, tiếng Anh giao tiếp, tính năng muốn có. Trả lời một câu là gửi được */
 export function FeedbackForm({ onSubmitted, onCancel }: FeedbackFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<FeedbackFormValues>({
@@ -37,6 +38,7 @@ export function FeedbackForm({ onSubmitted, onCancel }: FeedbackFormProps) {
     defaultValues: {
       courseWish: "",
       featureWish: "",
+      wantsEnglish: undefined,
     },
   });
 
@@ -74,16 +76,26 @@ export function FeedbackForm({ onSubmitted, onCancel }: FeedbackFormProps) {
                 Bạn muốn học khoá gì tiếp theo?
               </FormLabel>
               <FormControl>
-                <Textarea
+                <Input
                   {...field}
-                  rows={3}
                   maxLength={FEEDBACK_TEXT_MAX_LENGTH}
-                  placeholder="Ví dụ: NestJS từ cơ bản, Docker cho dev frontend, làm dự án thực tế với AI…"
-                  className={textareaClassName}
+                  placeholder="Ví dụ: NestJS, Docker, làm dự án với AI…"
+                  className={inputClassName}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="wantsEnglish"
+          render={({ field }) => (
+            <FeedbackEnglishField
+              value={field.value}
+              onChange={field.onChange}
+            />
           )}
         />
 
@@ -96,12 +108,11 @@ export function FeedbackForm({ onSubmitted, onCancel }: FeedbackFormProps) {
                 Bạn muốn EvonHub có thêm tính năng gì?
               </FormLabel>
               <FormControl>
-                <Textarea
+                <Input
                   {...field}
-                  rows={3}
                   maxLength={FEEDBACK_TEXT_MAX_LENGTH}
-                  placeholder="Ví dụ: ghi chú ngay trong bài học, bài tập sau mỗi chương…"
-                  className={textareaClassName}
+                  placeholder="Ví dụ: ghi chú trong bài học, bài tập cuối chương…"
+                  className={inputClassName}
                 />
               </FormControl>
               <FormMessage />
