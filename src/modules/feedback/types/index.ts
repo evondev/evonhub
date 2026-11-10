@@ -6,6 +6,8 @@ export interface FeedbackModelProps extends Document {
   courseWish: string;
   /** Tính năng người dùng muốn có */
   featureWish: string;
+  /** Nghĩ sao về các khoá học AI / vibe coding */
+  aiCourseOpinion: string;
   /** Muốn cải thiện tiếng Anh giao tiếp không; bỏ trống là không trả lời */
   wantsEnglish?: boolean;
   createdAt: Date;
@@ -14,6 +16,7 @@ export interface FeedbackModelProps extends Document {
 export interface FeedbackFormValues {
   courseWish: string;
   featureWish: string;
+  aiCourseOpinion: string;
   wantsEnglish?: boolean;
 }
 
@@ -51,6 +54,7 @@ export interface FeedbackItemData {
   } | null;
   courseWish: string;
   featureWish: string;
+  aiCourseOpinion?: string;
   wantsEnglish?: boolean;
   createdAt: string;
 }
@@ -72,6 +76,7 @@ export interface FeedbackRow {
   userProfileHref: string;
   courseWish: string;
   featureWish: string;
+  aiCourseOpinion: string;
   /** Câu trả lời tiếng Anh giao tiếp đã dịch ra chữ, rỗng khi không trả lời */
   englishAnswer: string;
   createdAt: string;
