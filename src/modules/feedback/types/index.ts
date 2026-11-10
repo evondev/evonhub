@@ -6,12 +6,23 @@ export interface FeedbackModelProps extends Document {
   courseWish: string;
   /** Tính năng người dùng muốn có */
   featureWish: string;
+  /** Muốn cải thiện tiếng Anh giao tiếp không; bỏ trống là không trả lời */
+  wantsEnglish?: boolean;
   createdAt: Date;
 }
 
 export interface FeedbackFormValues {
   courseWish: string;
   featureWish: string;
+  wantsEnglish?: boolean;
+}
+
+export interface FeedbackEnglishOption {
+  value: boolean;
+  /** Chữ trên nút chọn trong form */
+  label: string;
+  /** Chữ hiện ở trang admin */
+  adminLabel: string;
 }
 
 export interface CreateFeedbackResult {
@@ -40,6 +51,7 @@ export interface FeedbackItemData {
   } | null;
   courseWish: string;
   featureWish: string;
+  wantsEnglish?: boolean;
   createdAt: string;
 }
 
@@ -60,6 +72,8 @@ export interface FeedbackRow {
   userProfileHref: string;
   courseWish: string;
   featureWish: string;
+  /** Câu trả lời tiếng Anh giao tiếp đã dịch ra chữ, rỗng khi không trả lời */
+  englishAnswer: string;
   createdAt: string;
 }
 

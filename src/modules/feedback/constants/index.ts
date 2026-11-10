@@ -1,3 +1,5 @@
+import { FeedbackEnglishOption } from "../types";
+
 /** Mỗi ô nhập tối đa bấy nhiêu ký tự, client lẫn server cùng chặn */
 export const FEEDBACK_TEXT_MAX_LENGTH = 1000;
 
@@ -25,3 +27,8 @@ export const FEEDBACK_MANAGE_DEFAULT_FILTERS = {
   search: "",
   page: 1,
 };
+
+export const feedbackEnglishOptions: FeedbackEnglishOption[] = [
+  { value: true, label: "Có, mình muốn", adminLabel: "Muốn cải thiện" },
+  { value: false, label: "Chưa cần", adminLabel: "Chưa cần" },
+];

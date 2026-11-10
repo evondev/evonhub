@@ -15,6 +15,10 @@ const feedbackSchema = new Schema<FeedbackModelProps>({
     type: String,
     default: "",
   },
+  // Không đặt default: góp ý cũ và người bỏ qua câu này đều là "không trả lời"
+  wantsEnglish: {
+    type: Boolean,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
