@@ -1,3 +1,4 @@
+import { CatalogStats } from "@/modules/course/types";
 import { formatRating } from "@/modules/course/utils";
 import { fetchRatingsPublic } from "@/modules/rating/actions";
 import {
@@ -5,7 +6,6 @@ import {
   TESTIMONIAL_PINNED_COURSE_SLUGS,
   TESTIMONIAL_RATING,
 } from "../constants";
-import { CatalogStats } from "../types";
 import { mergeTestimonials, splitTestimonialRows } from "../utils";
 import { SectionHeading } from "./section-heading";
 import { TestimonialMarquee } from "./testimonial-marquee";

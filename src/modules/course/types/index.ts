@@ -69,6 +69,18 @@ export interface CourseItemData extends Omit<
   studentCount?: number;
 }
 
+/** Số liệu gộp của các khóa đang bán, dùng ở hero dashboard và landing */
+export interface CatalogStats {
+  courseCount: number;
+  /** Số khóa miễn phí (free và giá 0) trong danh sách */
+  freeCourseCount: number;
+  totalViews: number;
+  /** Tổng lượt vào học: mỗi người tối đa một lượt mỗi ngày mỗi khóa */
+  totalStudyCount: number;
+  averageRating: number;
+  ratingCount: number;
+}
+
 export interface FetchCoursesManageProps {
   search?: string;
   limit: number;
@@ -230,21 +242,20 @@ export interface CourseSelectOption {
 }
 
 /** Dữ liệu trang cập nhật khóa học cần, không phải cả document Mongoose */
-export interface CourseUpdateData
-  extends Pick<
-    CourseModelProps,
-    | "title"
-    | "slug"
-    | "price"
-    | "salePrice"
-    | "intro"
-    | "desc"
-    | "image"
-    | "cta"
-    | "seoKeywords"
-    | "free"
-    | "info"
-  > {
+export interface CourseUpdateData extends Pick<
+  CourseModelProps,
+  | "title"
+  | "slug"
+  | "price"
+  | "salePrice"
+  | "intro"
+  | "desc"
+  | "image"
+  | "cta"
+  | "seoKeywords"
+  | "free"
+  | "info"
+> {
   // Enum của form (updateCourseSchema), cùng giá trị chuỗi với CourseLevel, CourseStatus
   level: ECourseLevel;
   status: ECourseStatus;
@@ -274,23 +285,22 @@ export interface VideoLessonData {
 }
 
 /** Dữ liệu trang sửa video lẻ: thông tin bán của course và bài học của nó */
-export interface VideoUpdateData
-  extends Pick<
-    CourseUpdateData,
-    | "title"
-    | "slug"
-    | "price"
-    | "salePrice"
-    | "intro"
-    | "desc"
-    | "image"
-    | "cta"
-    | "seoKeywords"
-    | "free"
-    | "level"
-    | "status"
-    | "category"
-  > {
+export interface VideoUpdateData extends Pick<
+  CourseUpdateData,
+  | "title"
+  | "slug"
+  | "price"
+  | "salePrice"
+  | "intro"
+  | "desc"
+  | "image"
+  | "cta"
+  | "seoKeywords"
+  | "free"
+  | "level"
+  | "status"
+  | "category"
+> {
   isComingSoon?: boolean;
   lesson: VideoLessonData;
 }
@@ -305,22 +315,21 @@ export interface VideoDetailsLesson {
 }
 
 /** Dữ liệu trang xem video lẻ */
-export interface VideoDetailsData
-  extends Pick<
-    CourseModelProps,
-    | "title"
-    | "slug"
-    | "desc"
-    | "intro"
-    | "image"
-    | "price"
-    | "salePrice"
-    | "free"
-    | "cta"
-    | "level"
-    | "status"
-    | "seoKeywords"
-  > {
+export interface VideoDetailsData extends Pick<
+  CourseModelProps,
+  | "title"
+  | "slug"
+  | "desc"
+  | "intro"
+  | "image"
+  | "price"
+  | "salePrice"
+  | "free"
+  | "cta"
+  | "level"
+  | "status"
+  | "seoKeywords"
+> {
   _id: string;
   lesson: VideoDetailsLesson;
   isFree: boolean;
@@ -331,21 +340,20 @@ export interface VideoDetailsData
 }
 
 /** Một thẻ ở trang danh sách video: thông tin bán của course, thời lượng của bài */
-export interface VideoListItem
-  extends Pick<
-    CourseModelProps,
-    | "title"
-    | "slug"
-    | "image"
-    | "level"
-    | "rating"
-    | "price"
-    | "salePrice"
-    | "free"
-    | "isComingSoon"
-    | "createdAt"
-    | "studyCount"
-  > {
+export interface VideoListItem extends Pick<
+  CourseModelProps,
+  | "title"
+  | "slug"
+  | "image"
+  | "level"
+  | "rating"
+  | "price"
+  | "salePrice"
+  | "free"
+  | "isComingSoon"
+  | "createdAt"
+  | "studyCount"
+> {
   _id: string;
   duration: number;
   /** Mô tả dạng chữ thường đã cắt ngắn, cho dạng danh sách; rỗng là chưa có mô tả */
@@ -400,11 +408,7 @@ export interface FetchVideosParams extends VideoListFilters {
 }
 
 export type VideoListPreviewState =
-  | "du-lieu"
-  | "khong-ket-qua"
-  | "chua-co-video"
-  | "dang-tai"
-  | "loi";
+  "du-lieu" | "khong-ket-qua" | "chua-co-video" | "dang-tai" | "loi";
 
 export interface VideoListPreviewStateLink {
   state: VideoListPreviewState;

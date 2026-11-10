@@ -5,7 +5,7 @@ import {
   HERO_CODE_LINES,
   HERO_CODE_WARNING_TEXT,
   HERO_CODE_WARNING_TITLE,
-} from "../constants";
+} from "@/shared/constants/hero-code.constants";
 
 /** Đoạn code AI viết có lỗ hổng, minh hoạ câu "hậu quả thì bạn chịu". Chỉ hiện từ lg */
 export function HeroCodeCard() {

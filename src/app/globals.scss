@@ -92,6 +92,10 @@
   html:has([data-chat-room]) .wrapper {
     padding-bottom: 0;
   }
+  // Landing không có thanh điều hướng dưới nên bỏ phần đệm đáy dành cho nó
+  html:has([data-landing]) .wrapper {
+    padding-bottom: 0;
+  }
   body {
     @apply bg-gray-100 text-grayPrimary dark:text-[#cbd5e1] dark:bg-grayDarkest antialiased overflow-x-hidden;
   }
@@ -166,6 +170,45 @@
   }
 }
 @layer utilities {
+  // Chữ tô dải màu nhấn trôi chậm (vế sau tiêu đề landing)
+  .text-gradient-brand {
+    background-image: linear-gradient(
+      90deg,
+      rgb(var(--primary)) 0%,
+      #a855f7 30%,
+      #db2777 55%,
+      rgb(var(--primary)) 100%
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: gradient-pan 6s linear infinite;
+  }
+  // Hiện dần khi cuộn tới, chạy bằng CSS (không JavaScript). Trình duyệt chưa
+  // hỗ trợ animation-timeline hay máy bật giảm chuyển động thì hiện luôn
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .reveal-on-scroll {
+        animation: reveal-up linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 40%;
+      }
+    }
+  }
+  // Chữ có vệt sáng màu nhấn lướt qua, đi cùng animate-shine
+  .text-shine {
+    background-image: linear-gradient(
+      90deg,
+      rgb(var(--foreground)) 40%,
+      rgb(var(--primary)) 50%,
+      rgb(var(--foreground)) 60%
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
   .bgDarkMode {
     @apply bg-white dark:bg-grayDarker;
   }
@@ -663,4 +706,27 @@ button:focus-visible,
 [role="button"]:focus-visible,
 summary:focus-visible {
   outline: none;
+}
+
+@keyframes gradient-pan {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-gradient-brand {
+    animation: none;
+  }
 }

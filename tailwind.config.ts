@@ -65,11 +65,43 @@ const config: Config = {
           from: { transform: "translateX(0)" },
           to: { transform: "translateX(-50%)" },
         },
+        // Hiệu ứng vào trang của landing (cùng nhịp với evon.dev)
+        "blur-in": {
+          "0%": {
+            opacity: "0",
+            filter: "blur(10px)",
+            transform: "translateY(-14px)",
+          },
+          "50%": {
+            opacity: "0.5",
+            filter: "blur(5px)",
+            transform: "translateY(3px)",
+          },
+          "100%": { opacity: "1", filter: "blur(0)", transform: "none" },
+        },
+        "hero-rise": {
+          from: { opacity: "0", transform: "translateY(12px)" },
+          to: { opacity: "1", transform: "none" },
+        },
+        "line-in": {
+          from: { opacity: "0", transform: "translateX(-6px)" },
+          to: { opacity: "1", transform: "none" },
+        },
+        // Vệt sáng lướt qua chữ (dùng với class text-shine)
+        shine: {
+          "0%": { backgroundPosition: "150% 0" },
+          "60%, 100%": { backgroundPosition: "-50% 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         marquee: "marquee 70s linear infinite",
+        // "both": chữ ẩn trong lúc chờ animation-delay, không nháy lên rồi mới chạy
+        "blur-in": "blur-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "hero-rise": "hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "line-in": "line-in 0.4s ease-out both",
+        shine: "shine 4s ease-in-out infinite",
       },
     },
   },

@@ -10,6 +10,7 @@ import {
 } from "../constants";
 import type { LessonDetailsOutlineData } from "@/shared/types";
 import type {
+  CatalogStats,
   CourseCurriculumStats,
   CourseItemData,
   ExploreCoursesResult,
@@ -292,4 +293,24 @@ export function getCourseDiscountPercent(
   if (!salePrice || price >= salePrice) return null;
 
   return Math.round(((salePrice - price) / salePrice) * 100);
+}
+
+export function buildCatalogStats(courses: CourseItemData[]): CatalogStats {
+  const allRatings = courses.flatMap((course) => course.rating || []);
+  const ratingTotal = allRatings.reduce((total, rating) => total + rating, 0);
+
+  return {
+    courseCount: courses.length,
+    freeCourseCount: courses.filter((course) => isCourseFree(course)).length,
+    totalViews: courses.reduce(
+      (total, course) => total + (course.views || 0),
+      0,
+    ),
+    totalStudyCount: courses.reduce(
+      (total, course) => total + (course.studyCount || 0),
+      0,
+    ),
+    averageRating: allRatings.length ? ratingTotal / allRatings.length : 0,
+    ratingCount: allRatings.length,
+  };
 }
