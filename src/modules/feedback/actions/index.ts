@@ -65,6 +65,7 @@ export async function createFeedback(
       user: currentUser._id,
       courseWish: parsedValues.data.courseWish,
       featureWish: parsedValues.data.featureWish,
+      aiCourseOpinion: parsedValues.data.aiCourseOpinion,
       wantsEnglish: parsedValues.data.wantsEnglish,
     });
 
@@ -119,6 +120,7 @@ async function buildFeedbackSearchQuery(
     $or: [
       { courseWish: keywordRegex },
       { featureWish: keywordRegex },
+      { aiCourseOpinion: keywordRegex },
       { user: { $in: matchedUsers.map((user) => user._id) } },
     ],
   };
@@ -146,7 +148,9 @@ export async function fetchFeedbacks({
 
     const [feedbacks, total] = await Promise.all([
       FeedbackModel.find(query)
-        .select("user courseWish featureWish wantsEnglish createdAt")
+        .select(
+          "user courseWish featureWish aiCourseOpinion wantsEnglish createdAt",
+        )
         .sort({ createdAt: -1 })
         .skip((safePage - 1) * safeLimit)
         .limit(safeLimit)

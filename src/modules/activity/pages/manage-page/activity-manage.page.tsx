@@ -13,8 +13,8 @@ import {
   ACTIVITY_MANAGE_DEFAULT_FILTERS,
   ACTIVITY_MANAGE_TAB_VALUES,
 } from "../../constants";
-import { useQueryActivities } from "../../services";
-import { toActivityRow } from "../../utils";
+import { useQueryActivities, useQueryTopLessons } from "../../services";
+import { buildActivityManageResult, isTopLessonsTab } from "../../utils";
 import { ActivityManageView } from "./components";
 
 export interface ActivityManagePageProps {}
@@ -34,24 +34,34 @@ export function ActivityManagePage(_props: ActivityManagePageProps) {
   });
   const { userInfo } = useUserContext();
 
-  const { data, isPending, isPlaceholderData, isFetching, refetch } =
-    useQueryActivities({
-      search: filters.search,
-      tab: filters.tab,
-      courseId: filters.courseId,
-      from: filters.from,
-      to: filters.to,
-      page: filters.page,
-      limit: ITEMS_PER_PAGE,
-    });
+  const isTopLessonsView = isTopLessonsTab(filters.tab);
+  const sharedParams = {
+    search: filters.search,
+    courseId: filters.courseId,
+    from: filters.from,
+    to: filters.to,
+    page: filters.page,
+    limit: ITEMS_PER_PAGE,
+  };
+  // Mỗi lúc chỉ chạy query của kiểu tab đang xem
+  const activitiesQuery = useQueryActivities({
+    ...sharedParams,
+    tab: filters.tab,
+    enabled: !isTopLessonsView,
+  });
+  const topLessonsQuery = useQueryTopLessons({
+    ...sharedParams,
+    enabled: isTopLessonsView,
+  });
+  const activeQuery = isTopLessonsView ? topLessonsQuery : activitiesQuery;
   const { data: courses } = useQueryManagedCourses(userInfo?.clerkId);
 
-  // fetchActivities trả undefined khi lỗi hoặc không phải admin
-  const result = data && {
-    activities: data.activities.map(toActivityRow),
-    total: data.total,
-    tabCounts: data.tabCounts,
-  };
+  // Hai action trả undefined khi lỗi hoặc không phải admin
+  const result = buildActivityManageResult({
+    isTopLessonsView,
+    activitiesData: activitiesQuery.data,
+    topLessonsData: topLessonsQuery.data,
+  });
 
   return (
     <ActivityManageView
@@ -60,10 +70,10 @@ export function ActivityManagePage(_props: ActivityManagePageProps) {
       result={result}
       courses={courses || []}
       pageSize={ITEMS_PER_PAGE}
-      isLoading={isPending}
-      isError={!isPending && !data}
-      isRefreshing={isPlaceholderData && isFetching}
-      onRetry={refetch}
+      isLoading={activeQuery.isPending}
+      isError={!activeQuery.isPending && !activeQuery.data}
+      isRefreshing={activeQuery.isPlaceholderData && activeQuery.isFetching}
+      onRetry={activeQuery.refetch}
     />
   );
 }

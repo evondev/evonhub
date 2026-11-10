@@ -30,7 +30,10 @@ const inputClassName =
 
 const labelClassName = "text-sm font-medium text-foreground";
 
-/** Khoá học muốn học, tiếng Anh giao tiếp, tính năng muốn có. Trả lời một câu là gửi được */
+/**
+ * Khoá học muốn học, tiếng Anh giao tiếp, ý kiến về khoá AI / vibe coding, tính
+ * năng muốn có. Trả lời một câu là gửi được
+ */
 export function FeedbackForm({ onSubmitted, onCancel }: FeedbackFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<FeedbackFormValues>({
@@ -38,6 +41,7 @@ export function FeedbackForm({ onSubmitted, onCancel }: FeedbackFormProps) {
     defaultValues: {
       courseWish: "",
       featureWish: "",
+      aiCourseOpinion: "",
       wantsEnglish: undefined,
     },
   });
@@ -96,6 +100,27 @@ export function FeedbackForm({ onSubmitted, onCancel }: FeedbackFormProps) {
               value={field.value}
               onChange={field.onChange}
             />
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="aiCourseOpinion"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className={labelClassName}>
+                Bạn nghĩ sao về các khoá học AI / vibe coding?
+              </FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  maxLength={FEEDBACK_TEXT_MAX_LENGTH}
+                  placeholder="Ví dụ: rất muốn học, chưa thấy cần, muốn dùng AI code nhanh hơn…"
+                  className={inputClassName}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
         />
 

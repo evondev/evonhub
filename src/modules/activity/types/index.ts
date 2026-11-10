@@ -65,7 +65,13 @@ export interface ActivityTypeConfig {
   isSession?: boolean;
 }
 
-export type ActivityManageTab = "all" | "online" | ActivityGroup;
+/** Tab xem nhật ký từng dòng */
+export type ActivityLogTab = "all" | "online" | ActivityGroup;
+
+/** Tab xếp hạng bài học theo số người học, thay vì liệt kê từng dòng */
+export type ActivityTopLessonsTab = "top-lessons";
+
+export type ActivityManageTab = ActivityLogTab | ActivityTopLessonsTab;
 
 /** Bộ lọc của trang Hoạt động, lưu trên URL */
 export interface ActivityManageFilters {
@@ -89,6 +95,9 @@ export interface FetchActivitiesParams {
   page?: number;
   limit?: number;
 }
+
+/** Bộ lọc của tab "Top bài học": như nhật ký, trừ tab */
+export type FetchTopLessonsParams = Omit<FetchActivitiesParams, "tab">;
 
 /** Khoảng ngày của bộ lọc, dạng YYYY-MM-DD; hai chuỗi rỗng là mọi ngày */
 export interface ActivityDateRange {
@@ -160,8 +169,11 @@ export interface ActivityTypeCountGroup {
   count: number;
 }
 
-/** Số dòng của từng tab; tab "Đang học" đếm theo người, không theo dòng */
-export type ActivityManageTabCounts = Record<ActivityManageTab, number>;
+/**
+ * Số dòng của từng tab nhật ký; tab "Đang học" đếm theo người, không theo
+ * dòng. Tab "Top bài học" không ghi số
+ */
+export type ActivityManageTabCounts = Record<ActivityLogTab, number>;
 
 export interface FetchActivitiesResult {
   activities: ActivityItemData[];
@@ -193,8 +205,63 @@ export interface ActivityRow {
 export type ActivityManagePreviewState =
   "du-lieu" | "rong" | "dang-tai" | "loi";
 
+/** Kết quả $group theo bài của tab "Top bài học" */
+export interface TopLessonGroup {
+  _id: Types.ObjectId;
+  course?: Types.ObjectId;
+  /** Số người khác nhau đã mở bài */
+  learnerCount: number;
+  /** Số phiên học, mỗi lần quay lại sau ACTIVITY_SESSION_GAP_MS là một phiên */
+  sessionCount: number;
+  /** Tổng thời gian các phiên, từ lúc mở bài tới nhịp cuối */
+  totalStudyMs: number;
+}
+
+/** Kết quả $facet: một trang bài đã xếp hạng và tổng số bài */
+export interface TopLessonFacet {
+  lessons: TopLessonGroup[];
+  total: { count: number }[];
+}
+
+/** Một bài đã xếp hạng, đúng hình fetchTopLessons trả về */
+export interface TopLessonItemData {
+  lessonId: string;
+  /** Thứ hạng trên mọi trang, bắt đầu từ 1 */
+  rank: number;
+  /** null khi bài đã bị xoá hẳn khỏi DB */
+  lesson: ActivityLessonData | null;
+  isLessonDeleted: boolean;
+  course: ActivityCourseData | null;
+  learnerCount: number;
+  sessionCount: number;
+  totalStudyMinutes: number;
+}
+
+export interface FetchTopLessonsResult {
+  lessons: TopLessonItemData[];
+  total: number;
+  tabCounts: ActivityManageTabCounts;
+}
+
+/** Phần dữ liệu một bài trong bảng xếp hạng mà danh sách cần */
+export interface TopLessonRow {
+  id: string;
+  rank: number;
+  lessonTitle: string;
+  /** Trang học của bài; rỗng khi bài hoặc khoá đã bị xoá */
+  lessonHref: string;
+  courseTitle: string;
+  /** Trang giới thiệu khoá; rỗng khi khoá đã bị xoá */
+  courseHref: string;
+  learnerCount: number;
+  sessionCount: number;
+  totalStudyMinutes: number;
+}
+
+/** Tab nhật ký thì có activities, tab "Top bài học" thì có topLessons */
 export interface ActivityManageResult {
   activities: ActivityRow[];
+  topLessons: TopLessonRow[];
   total: number;
   tabCounts: ActivityManageTabCounts;
 }

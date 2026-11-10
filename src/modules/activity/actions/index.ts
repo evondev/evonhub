@@ -23,13 +23,18 @@ import {
 import ActivityModel from "../models";
 import { recordActivity } from "../services/activity.service";
 import {
+  ActivityManageTabCounts,
   ActivityModelProps,
+  ActivityTypeCountGroup,
   FetchActivitiesParams,
   FetchActivitiesResult,
-  ActivityTypeCountGroup,
+  FetchTopLessonsParams,
+  FetchTopLessonsResult,
   LogLessonViewParams,
   LogVideoViewParams,
   OnlineActivityGroup,
+  TopLessonFacet,
+  TopLessonItemData,
 } from "../types";
 import {
   buildActivityDateRangeQuery,
@@ -226,6 +231,40 @@ async function findOnlineActivityIds(
   return onlineGroups.map((group) => group.activityId);
 }
 
+/** Số của các tab nhật ký, kèm id dòng "đang học" (tab "Đang học" cần để cắt trang) */
+async function countActivityTabs(scopeQuery: ActivityQuery): Promise<{
+  tabCounts: ActivityManageTabCounts;
+  onlineActivityIds: Types.ObjectId[];
+}> {
+  // Một $group đếm theo loại việc cho mọi tab nhóm, thay vì mỗi tab một count
+  const [typeCountGroups, onlineActivityIds] = await Promise.all([
+    ActivityModel.aggregate<ActivityTypeCountGroup>([
+      { $match: scopeQuery },
+      { $group: { _id: "$type", count: { $sum: 1 } } },
+    ]),
+    findOnlineActivityIds(scopeQuery),
+  ]);
+
+  return {
+    tabCounts: buildActivityTabCounts(
+      typeCountGroups,
+      onlineActivityIds.length,
+    ),
+    onlineActivityIds,
+  };
+}
+
+/** Trang và số dòng mỗi trang client gửi lên, ép về số nguyên trong giới hạn */
+function normalizeActivityPaging(page: unknown, limit: unknown) {
+  const safeLimit = Math.min(
+    Math.max(Math.floor(Number(limit)) || 1, 1),
+    MAX_ACTIVITIES_PER_PAGE,
+  );
+  const safePage = Math.max(Math.floor(Number(page)) || 1, 1);
+
+  return { safeLimit, skip: (safePage - 1) * safeLimit };
+}
+
 /** Nhật ký hoạt động cho trang admin. Không phải admin thì undefined */
 export async function fetchActivities({
   search,
@@ -243,31 +282,15 @@ export async function fetchActivities({
 
     await connectToDatabase();
 
-    const safeLimit = Math.min(
-      Math.max(Math.floor(Number(limit)) || 1, 1),
-      MAX_ACTIVITIES_PER_PAGE,
-    );
-    const safePage = Math.max(Math.floor(Number(page)) || 1, 1);
-    const skip = (safePage - 1) * safeLimit;
-
+    const { safeLimit, skip } = normalizeActivityPaging(page, limit);
     const scopeQuery = await buildActivityScopeQuery({
       search,
       courseId,
       from,
       to,
     });
-    // Một $group đếm theo loại việc cho mọi tab nhóm, thay vì mỗi tab một count
-    const [typeCountGroups, onlineActivityIds] = await Promise.all([
-      ActivityModel.aggregate<ActivityTypeCountGroup>([
-        { $match: scopeQuery },
-        { $group: { _id: "$type", count: { $sum: 1 } } },
-      ]),
-      findOnlineActivityIds(scopeQuery),
-    ]);
-    const tabCounts = buildActivityTabCounts(
-      typeCountGroups,
-      onlineActivityIds.length,
-    );
+    const { tabCounts, onlineActivityIds } =
+      await countActivityTabs(scopeQuery);
 
     // Tab "Đang học" đã có sẵn danh sách id theo thứ tự: cắt trang trên mảng đó
     const isOnlineTab = tab === "online";
@@ -302,6 +325,145 @@ export async function fetchActivities({
     return {
       activities: parseData(activities),
       total,
+      tabCounts,
+    };
+  } catch (error) {
+    console.log("error:", error);
+  }
+}
+
+/**
+ * Bảng xếp hạng bài học cho tab "Top bài học": nhiều người học nhất lên đầu,
+ * hoà thì xét số phiên rồi tổng thời gian. Dùng chung bộ lọc người, khoá và
+ * ngày với nhật ký. Không phải admin thì undefined
+ */
+export async function fetchTopLessons({
+  search,
+  courseId,
+  from,
+  to,
+  page = 1,
+  limit = 10,
+}: FetchTopLessonsParams): Promise<FetchTopLessonsResult | undefined> {
+  try {
+    const currentAdmin = await getCurrentAdmin();
+
+    if (!currentAdmin) return;
+
+    await connectToDatabase();
+
+    const { safeLimit, skip } = normalizeActivityPaging(page, limit);
+    const scopeQuery = await buildActivityScopeQuery({
+      search,
+      courseId,
+      from,
+      to,
+    });
+    const [{ tabCounts }, [topLessonFacet]] = await Promise.all([
+      countActivityTabs(scopeQuery),
+      ActivityModel.aggregate<TopLessonFacet>([
+        {
+          $match: {
+            $and: [
+              scopeQuery,
+              { type: ActivityType.ViewLesson, lesson: { $ne: null } },
+            ],
+          },
+        },
+        // Gom theo (bài, người) trước để đếm người khác nhau mà không phải
+        // giữ cả mảng người trong một nhóm
+        {
+          $group: {
+            _id: { lesson: "$lesson", user: "$user" },
+            course: { $first: "$course" },
+            sessionCount: { $sum: 1 },
+            totalStudyMs: {
+              $sum: { $subtract: ["$lastSeenAt", "$createdAt"] },
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$_id.lesson",
+            course: { $first: "$course" },
+            learnerCount: { $sum: 1 },
+            sessionCount: { $sum: "$sessionCount" },
+            totalStudyMs: { $sum: "$totalStudyMs" },
+          },
+        },
+        {
+          $facet: {
+            lessons: [
+              {
+                $sort: {
+                  learnerCount: -1,
+                  sessionCount: -1,
+                  totalStudyMs: -1,
+                  _id: 1,
+                },
+              },
+              { $skip: skip },
+              { $limit: safeLimit },
+            ],
+            total: [{ $count: "count" }],
+          },
+        },
+      ]),
+    ]);
+    const lessonGroups = topLessonFacet?.lessons || [];
+
+    const [lessons, courses] = await Promise.all([
+      LessonModel.find({
+        _id: { $in: lessonGroups.map((group) => group._id) },
+      })
+        .select("title _destroy")
+        .lean<{ _id: Types.ObjectId; title: string; _destroy?: boolean }[]>(),
+      CourseModel.find({
+        _id: {
+          $in: lessonGroups
+            .map((group) => group.course)
+            .filter((courseId) => courseId !== undefined && courseId !== null),
+        },
+      })
+        .select("title slug")
+        .lean<{ _id: Types.ObjectId; title: string; slug: string }[]>(),
+    ]);
+    const lessonById = new Map(
+      lessons.map((lesson) => [lesson._id.toString(), lesson]),
+    );
+    const courseById = new Map(
+      courses.map((course) => [course._id.toString(), course]),
+    );
+
+    const topLessons: TopLessonItemData[] = lessonGroups.map((group, index) => {
+      const lesson = lessonById.get(group._id.toString());
+      const course = group.course
+        ? courseById.get(group.course.toString())
+        : undefined;
+
+      return {
+        lessonId: group._id.toString(),
+        rank: skip + index + 1,
+        lesson: lesson
+          ? { _id: lesson._id.toString(), title: lesson.title }
+          : null,
+        isLessonDeleted: !lesson || lesson._destroy === true,
+        course: course
+          ? {
+              _id: course._id.toString(),
+              title: course.title,
+              slug: course.slug,
+            }
+          : null,
+        learnerCount: group.learnerCount,
+        sessionCount: group.sessionCount,
+        totalStudyMinutes: Math.round(Math.max(group.totalStudyMs, 0) / 60_000),
+      };
+    });
+
+    return {
+      lessons: topLessons,
+      total: topLessonFacet?.total[0]?.count || 0,
       tabCounts,
     };
   } catch (error) {

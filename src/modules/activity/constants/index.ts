@@ -5,6 +5,7 @@ import {
   ActivityGroup,
   ActivityManageFilters,
   ActivityManageTab,
+  ActivityTopLessonsTab,
 } from "../types";
 
 /** Nhật ký tự xoá sau chừng này ngày (TTL index), không phình mãi */
@@ -40,7 +41,10 @@ export const ACTIVITY_MANAGE_TAB_VALUES = [
   "purchase",
   "account",
   "content",
+  "top-lessons",
 ] as const;
+
+export const ACTIVITY_TOP_LESSONS_TAB: ActivityTopLessonsTab = "top-lessons";
 
 export const ACTIVITY_GROUPS: ActivityGroup[] = [
   "learning",
@@ -56,6 +60,7 @@ export const ACTIVITY_MANAGE_TABS: FilterTabItem<ActivityManageTab>[] = [
   { value: "purchase", label: "Mua khoá" },
   { value: "account", label: "Tài khoản mới" },
   { value: "content", label: "Nội dung" },
+  { value: "top-lessons", label: "Top bài học" },
 ];
 
 /** Bài, khoá, chương hay người đã bị xoá thì hiện chữ này thay tên */
@@ -108,6 +113,9 @@ export const LESSON_FIELD_LABELS: Record<string, string> = {
 };
 
 export const ACTIVITY_SKELETON_ROW_COUNT = 6;
+
+/** Tab "Top bài học": chừng này hạng đầu được in đậm */
+export const ACTIVITY_TOP_RANK_HIGHLIGHT = 3;
 
 /** Ngày trên URL của bộ lọc ngày */
 export const ACTIVITY_DATE_FORMAT = "YYYY-MM-DD";

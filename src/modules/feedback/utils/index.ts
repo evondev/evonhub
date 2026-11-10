@@ -18,6 +18,7 @@ export function toFeedbackRow(feedback: FeedbackItemData): FeedbackRow {
       : "",
     courseWish: feedback.courseWish || "",
     featureWish: feedback.featureWish || "",
+    aiCourseOpinion: feedback.aiCourseOpinion || "",
     englishAnswer: getFeedbackEnglishAdminLabel(feedback.wantsEnglish),
     createdAt: feedback.createdAt,
   };
