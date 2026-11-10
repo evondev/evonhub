@@ -20,6 +20,9 @@ import { BadgeTone, MenuLinkItemProps, StatusBadgeVariant } from "../types";
 
 export const ADMIN_HOME_PATH = "/admin";
 
+// Trang chủ trong app sau đăng nhập. "/" để dành cho landing page
+export const DASHBOARD_PATH = "/dashboard";
+
 export const CHAT_PATH = "/chat";
 
 // Tạm tắt Trò chuyện: ẩn khỏi menu, /chat trả 404, layout thôi hỏi phòng chat.
@@ -53,7 +56,7 @@ export const menuLinks: MenuLinkItemProps[] = [
   {
     title: "Dashboard",
     icon: <Home />,
-    url: "/",
+    url: DASHBOARD_PATH,
   },
   {
     title: "Khu vực học tập",

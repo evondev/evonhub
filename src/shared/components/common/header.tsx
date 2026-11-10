@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 import { commonPath } from "@/constants";
 import { FeedbackPrompt } from "@/modules/feedback/components";
 import { ProductLogo } from "@/shared/components/product-logo";
-import { menuLinks } from "@/shared/constants/common.constants";
+import {
+  DASHBOARD_PATH,
+  menuLinks,
+} from "@/shared/constants/common.constants";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { cn } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
@@ -88,7 +91,7 @@ export const Header = () => {
               đứng sau logo */}
           {isSignedInUser && <FeedbackPrompt className="max-lg:order-last" />}
           <Link
-            href="/"
+            href={DASHBOARD_PATH}
             scroll={false}
             className={cn(
               "flex items-center gap-2.5",

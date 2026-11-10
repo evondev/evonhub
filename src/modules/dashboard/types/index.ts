@@ -54,21 +54,9 @@ export interface RoadmapStep extends RoadmapStepConfig {
   courseProgress?: DashboardCourseProgress;
 }
 
-export interface CatalogStats {
-  courseCount: number;
-  totalViews: number;
-  averageRating: number;
-  ratingCount: number;
-}
-
 export interface HeroStatItem {
   value: string;
   label: string;
-}
-
-export interface HeroCodeLine {
-  code: string;
-  isFlagged?: boolean;
 }
 
 export interface PreviewCourseSeed {

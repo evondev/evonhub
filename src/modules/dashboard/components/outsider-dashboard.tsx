@@ -1,8 +1,8 @@
+import { buildCatalogStats } from "@/modules/course/utils";
 import { CourseItemData } from "@/modules/course/types";
 import { ReactNode, Suspense } from "react";
 import { RoadmapStepConfig } from "../types";
 import {
-  buildCatalogStats,
   buildHeroStatItems,
   buildRoadmapSteps,
   hasEnoughRoadmapSteps,

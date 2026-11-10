@@ -1,6 +1,5 @@
 import { GraduationCap, Rocket, Sparkles } from "lucide-react";
 import {
-  HeroCodeLine,
   PartnerLink,
   PreviewCourseProgress,
   PreviewCourseSeed,
@@ -26,22 +25,6 @@ export const ROADMAP_SUBTITLE =
   "Từ để AI viết code, tới hiểu nó và đưa nó chạy thật";
 
 // Đoạn code minh hoạ ở khối đầu trang: AI viết, dòng 3 dính SQL injection
-export const HERO_CODE_FILE_NAME = "login.ts · AI vừa viết";
-
-export const HERO_CODE_LINES: HeroCodeLine[] = [
-  { code: "export async function login(email) {" },
-  { code: "  const user = await db.query(" },
-  { code: "    `SELECT * FROM users WHERE email='${email}'`", isFlagged: true },
-  { code: "  );" },
-  { code: "  return user;" },
-  { code: "}" },
-];
-
-export const HERO_CODE_WARNING_TITLE = "Dòng 3 dính SQL injection.";
-
-export const HERO_CODE_WARNING_TEXT =
-  "Chạy được, nhưng ai cũng đọc được cả bảng users.";
-
 export const IN_PROGRESS_COURSE_LIMIT = 4;
 
 // Khung chờ khối "Khóa đang học": đoán học viên có thêm ngần này khóa đang học

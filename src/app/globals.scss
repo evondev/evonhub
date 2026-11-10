@@ -37,10 +37,14 @@
     /* Chữ màu nhấn trên nền nhấn nhạt (bg-primary/10): đậm hơn một bậc cho đủ 4.5:1 */
     --primary-strong: 95 84 202;
     /* Bóng lớp nổi nhỏ (select, dropdown, popover): bằng shadow-lg ở nền sáng */
-    --elevation-popover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --elevation-popover:
+      0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     /* Thanh tab chuyển cách xem: rãnh chìm, ô đang chọn nổi như phím bấm */
-    --shadow-segment-track: inset 0 0 0 1px rgb(0 0 0 / 0.05), inset 0 1px 2px rgb(0 0 0 / 0.04);
-    --shadow-segment-thumb: 0 0 0 1px rgb(0 0 0 / 0.04), 0 1px 2px rgb(0 0 0 / 0.06), 0 2px 6px -2px rgb(0 0 0 / 0.08);
+    --shadow-segment-track:
+      inset 0 0 0 1px rgb(0 0 0 / 0.05), inset 0 1px 2px rgb(0 0 0 / 0.04);
+    --shadow-segment-thumb:
+      0 0 0 1px rgb(0 0 0 / 0.04), 0 1px 2px rgb(0 0 0 / 0.06),
+      0 2px 6px -2px rgb(0 0 0 / 0.08);
   }
   .dark {
     --primary: 151 141 248; /* #978df8 */
@@ -59,10 +63,14 @@
     --brand-band-end: 62 52 158;
     --primary-strong: 151 141 248;
     /* Bóng 10% trên nền gần đen không thấy; thứ tách lớp nổi là viền + nền sáng hơn */
-    --elevation-popover: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+    --elevation-popover:
+      0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
     /* Bóng đen khó thấy trên nền tối: ô nổi nhờ viền sáng và vệt sáng mép trên */
-    --shadow-segment-track: inset 0 0 0 1px var(--border), inset 0 1px 2px rgb(0 0 0 / 0.4);
-    --shadow-segment-thumb: 0 0 0 1px var(--border-strong), inset 0 1px 0 rgb(255 255 255 / 0.06), 0 1px 2px rgb(0 0 0 / 0.5);
+    --shadow-segment-track:
+      inset 0 0 0 1px var(--border), inset 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-segment-thumb:
+      0 0 0 1px var(--border-strong), inset 0 1px 0 rgb(255 255 255 / 0.06),
+      0 1px 2px rgb(0 0 0 / 0.5);
   }
   ::selection {
     @apply text-white bg-primary;
@@ -92,8 +100,17 @@
   html:has([data-chat-room]) .wrapper {
     padding-bottom: 0;
   }
+  // Landing không có thanh điều hướng dưới nên bỏ phần đệm đáy dành cho nó
+  html:has([data-landing]) .wrapper {
+    padding-bottom: 0;
+  }
   body {
     @apply bg-gray-100 text-grayPrimary dark:text-[#cbd5e1] dark:bg-grayDarkest antialiased overflow-x-hidden;
+  }
+  // Landing luôn nền tối: kéo quá đầu hay cuối trang cũng không lộ nền sáng
+  html:has([data-landing]) body {
+    background-color: rgb(7 6 13);
+    color-scheme: dark;
   }
   // Đã giữ chỗ bằng scrollbar-gutter thì bỏ phần bù margin-right của
   // react-remove-scroll, không thì trang bị đẩy sang trái gấp đôi
@@ -166,6 +183,145 @@
   }
 }
 @layer utilities {
+  // Vệt sáng lướt qua nút khi rê chuột vào
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      110deg,
+      transparent 35%,
+      rgb(255 255 255 / 0.45) 50%,
+      transparent 65%
+    );
+    transform: translateX(-120%);
+    transition: transform 0.8s ease;
+    pointer-events: none;
+  }
+  .btn-shine:hover::after {
+    transform: translateX(120%);
+  }
+  // Lưới kẻ đường mảnh mờ dần ở hai đầu, không khung bo góc (kiểu Reflect).
+  // Mỗi ô tự vẽ vạch dọc bên trái và vạch ngang bên trên nên đổi số cột theo
+  // màn hình vẫn đúng; clip-path cắt vạch ngang của hàng đầu, ::after của lưới
+  // vẽ vạch dọc ngoài cùng bên phải
+  .faded-grid {
+    position: relative;
+    clip-path: inset(1px 0 0 0);
+  }
+  .faded-grid::after,
+  .faded-grid > *::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(255 255 255 / 0.1) 25%,
+      rgb(255 255 255 / 0.1) 75%,
+      transparent
+    );
+    pointer-events: none;
+  }
+  .faded-grid::after {
+    right: 0;
+  }
+  .faded-grid > * {
+    position: relative;
+  }
+  .faded-grid > *::before {
+    left: 0;
+  }
+  .faded-grid > *::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgb(255 255 255 / 0.1) 25%,
+      rgb(255 255 255 / 0.1) 75%,
+      transparent
+    );
+    pointer-events: none;
+  }
+  // Vệt sáng chạy vòng quanh viền khối (border beam). Khối cần bo góc sẵn
+  .border-beam {
+    position: relative;
+  }
+  .border-beam::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: 1;
+    padding: 1px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--beam-angle),
+      transparent 0deg,
+      transparent 270deg,
+      rgb(var(--primary)) 320deg,
+      #f0abfc 345deg,
+      transparent 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: beam-spin 5s linear infinite;
+    pointer-events: none;
+  }
+  // Chữ tô dải màu nhấn trôi chậm (vế sau tiêu đề landing)
+  .text-gradient-brand {
+    background-image: linear-gradient(
+      90deg,
+      rgb(var(--primary)) 0%,
+      #a855f7 30%,
+      #db2777 55%,
+      rgb(var(--primary)) 100%
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: gradient-pan 6s linear infinite;
+  }
+  // Hiện dần khi cuộn tới, chạy bằng CSS (không JavaScript). Trình duyệt chưa
+  // hỗ trợ animation-timeline hay máy bật giảm chuyển động thì hiện luôn
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .reveal-on-scroll {
+        animation: reveal-up linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 40%;
+      }
+    }
+  }
+  // Chữ có vệt sáng màu nhấn lướt qua, đi cùng animate-shine
+  .text-shine {
+    background-image: linear-gradient(
+      90deg,
+      rgb(var(--foreground)) 40%,
+      rgb(var(--primary)) 50%,
+      rgb(var(--foreground)) 60%
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
   .bgDarkMode {
     @apply bg-white dark:bg-grayDarker;
   }
@@ -663,4 +819,40 @@ button:focus-visible,
 [role="button"]:focus-visible,
 summary:focus-visible {
   outline: none;
+}
+
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+@keyframes gradient-pan {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-gradient-brand,
+  .border-beam::before {
+    animation: none;
+  }
 }

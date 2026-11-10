@@ -1,6 +1,9 @@
 "use client";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { menuLinks } from "@/shared/constants/common.constants";
+import {
+  DASHBOARD_PATH,
+  menuLinks,
+} from "@/shared/constants/common.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { useLessonDetailsPath } from "@/shared/hooks";
 import { ProductLogo } from "@/shared/components/product-logo";
@@ -76,7 +79,7 @@ export function Sidebar({ role, chatSignal }: SidebarProps) {
           mép 15px là đúng tâm, cùng tâm với icon menu bên dưới. */}
       <div className="flex h-16 shrink-0 items-center px-[15px]">
         <Link
-          href="/"
+          href={DASHBOARD_PATH}
           className="flex items-center gap-2.5 whitespace-nowrap outline-none"
         >
           <ProductLogo />

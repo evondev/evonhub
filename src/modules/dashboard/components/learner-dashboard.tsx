@@ -1,10 +1,10 @@
+import { buildCatalogStats } from "@/modules/course/utils";
 import { CourseItemData } from "@/modules/course/types";
 import { cn } from "@/shared/utils";
 import { ReactNode, Suspense } from "react";
 import { IN_PROGRESS_COURSE_LIMIT } from "../constants";
 import { DashboardCourseProgress, RoadmapStepConfig } from "../types";
 import {
-  buildCatalogStats,
   buildRoadmapSteps,
   hasEnoughRoadmapSteps,
 } from "../utils";

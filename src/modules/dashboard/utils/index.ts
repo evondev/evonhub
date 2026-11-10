@@ -1,4 +1,4 @@
-import { CourseItemData } from "@/modules/course/types";
+import { CatalogStats, CourseItemData } from "@/modules/course/types";
 import { formatRating } from "@/modules/course/utils";
 import { RatingItemData } from "@/modules/rating/types";
 import { formatCompactCount } from "@/shared/helpers";
@@ -11,7 +11,6 @@ import {
   TESTIMONIAL_TWO_ROW_MIN_COUNT,
 } from "../constants";
 import {
-  CatalogStats,
   DashboardCourseProgress,
   HeroStatItem,
   RoadmapStep,
@@ -28,21 +27,6 @@ export function getFirstName(fullName?: string, givenName?: string | null) {
   const nameParts = (fullName || "").trim().split(/\s+/);
 
   return nameParts[nameParts.length - 1] || "";
-}
-
-export function buildCatalogStats(courses: CourseItemData[]): CatalogStats {
-  const allRatings = courses.flatMap((course) => course.rating || []);
-  const ratingTotal = allRatings.reduce((total, rating) => total + rating, 0);
-
-  return {
-    courseCount: courses.length,
-    totalViews: courses.reduce(
-      (total, course) => total + (course.views || 0),
-      0,
-    ),
-    averageRating: allRatings.length ? ratingTotal / allRatings.length : 0,
-    ratingCount: allRatings.length,
-  };
 }
 
 /** Số liệu ở khối đầu trang; số nào bằng 0 thì bỏ, không khoe con số 0 */

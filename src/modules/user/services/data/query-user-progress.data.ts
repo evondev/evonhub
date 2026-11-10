@@ -16,6 +16,8 @@ export function getUserProgressOptions({
   courseId,
 }: GetUserProgressProps) {
   return queryOptions({
+    // Khách chưa đăng nhập không có tiến độ: không gọi server, không lỗi undefined
+    enabled: Boolean(userId && courseId),
     placeholderData: keepPreviousData,
     queryFn: async () => {
       const response = await fetchUserCourseProgress({ userId, courseId });
