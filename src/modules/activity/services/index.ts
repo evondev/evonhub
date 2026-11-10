@@ -1,2 +1,7 @@
 // activity.service chạy Mongoose, chỉ import thẳng từ server, không qua barrel này
-export { getActivitiesOptions, useQueryActivities } from "./data";
+export {
+  getActivitiesOptions,
+  getTopLessonsOptions,
+  useQueryActivities,
+  useQueryTopLessons,
+} from "./data";

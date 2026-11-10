@@ -1,7 +1,9 @@
+import { getLessonUrl } from "@/modules/study/utils";
 import { ActivityType } from "@/shared/constants/activity.constants";
 import { COURSE_DETAILS_PATH_PREFIX } from "@/shared/constants/common.constants";
 import { PROFILE_PUBLIC_PATH } from "@/shared/constants/user.constants";
 import { FilterTabItem } from "@/shared/types";
+import { formatThoundsand } from "@/shared/utils";
 import dayjs from "dayjs";
 import {
   ACTIVITY_DELETED_LABELS,
@@ -9,19 +11,36 @@ import {
   ACTIVITY_MANAGE_TABS,
   ACTIVITY_ONLINE_WINDOW_MS,
   ACTIVITY_STAFF_ROLE_LABELS,
+  ACTIVITY_TOP_LESSONS_TAB,
 } from "../constants";
 import { ACTIVITY_TYPE_CONFIGS } from "../constants/activity-type.constants";
 import {
   ActivityGroup,
   ActivityItemData,
+  ActivityLogTab,
   ActivityManageFilters,
+  ActivityManageResult,
   ActivityManageTab,
   ActivityManageTabCounts,
   ActivityRow,
+  ActivityTopLessonsTab,
   ActivityTypeCountGroup,
+  FetchActivitiesResult,
+  FetchTopLessonsResult,
+  TopLessonItemData,
+  TopLessonRow,
 } from "../types";
 import { isInActivityDateRange } from "./activity-date.utils";
+import {
+  formatStudyMinutes,
+  isTopLessonsTab,
+} from "./activity-top-lessons.utils";
 
+export {
+  filterPreviewTopLessons,
+  formatStudyMinutes,
+  isTopLessonsTab,
+} from "./activity-top-lessons.utils";
 export {
   buildActivityDatePresets,
   buildActivityDateRangeQuery,
@@ -101,6 +120,62 @@ export function toActivityRow(activity: ActivityItemData): ActivityRow {
   };
 }
 
+export function toTopLessonRow(item: TopLessonItemData): TopLessonRow {
+  const canOpenLesson = Boolean(
+    item.lesson && !item.isLessonDeleted && item.course,
+  );
+
+  return {
+    id: item.lessonId,
+    rank: item.rank,
+    lessonTitle: item.lesson?.title || ACTIVITY_DELETED_LABELS.lesson,
+    lessonHref:
+      canOpenLesson && item.course
+        ? getLessonUrl(item.course.slug, item.lessonId)
+        : "",
+    courseTitle: item.course?.title || ACTIVITY_DELETED_LABELS.course,
+    courseHref: item.course
+      ? `${COURSE_DETAILS_PATH_PREFIX}${item.course.slug}`
+      : "",
+    learnerCount: item.learnerCount,
+    sessionCount: item.sessionCount,
+    totalStudyMinutes: item.totalStudyMinutes,
+  };
+}
+
+interface BuildActivityManageResultParams {
+  isTopLessonsView: boolean;
+  activitiesData?: FetchActivitiesResult;
+  topLessonsData?: FetchTopLessonsResult;
+}
+
+/** Dữ liệu của query đang chạy thành kết quả cho màn; chưa có thì undefined */
+export function buildActivityManageResult({
+  isTopLessonsView,
+  activitiesData,
+  topLessonsData,
+}: BuildActivityManageResultParams): ActivityManageResult | undefined {
+  if (isTopLessonsView) {
+    return (
+      topLessonsData && {
+        activities: [],
+        topLessons: topLessonsData.lessons.map(toTopLessonRow),
+        total: topLessonsData.total,
+        tabCounts: topLessonsData.tabCounts,
+      }
+    );
+  }
+
+  return (
+    activitiesData && {
+      activities: activitiesData.activities.map(toActivityRow),
+      topLessons: [],
+      total: activitiesData.total,
+      tabCounts: activitiesData.tabCounts,
+    }
+  );
+}
+
 /** Đếm theo loại việc (một $group) thành số của từng tab nhóm */
 export function buildActivityTabCounts(
   typeCountGroups: ActivityTypeCountGroup[],
@@ -130,7 +205,7 @@ export function buildActivityManageTabs(
 ): FilterTabItem<ActivityManageTab>[] {
   return ACTIVITY_MANAGE_TABS.map((tab) => ({
     ...tab,
-    count: tabCounts?.[tab.value],
+    count: isTopLessonsTab(tab.value) ? undefined : tabCounts?.[tab.value],
   }));
 }
 
@@ -149,16 +224,10 @@ export function formatActivityDuration(activity: ActivityRow): string {
     activity.startedAt,
     "minute",
   );
-  const hours = Math.floor(durationMinutes / 60);
-  const minutes = durationMinutes % 60;
 
   if (durationMinutes < 1) return "vừa mở";
 
-  if (hours === 0) return `học ${minutes} phút`;
-
-  if (minutes === 0) return `học ${hours} giờ`;
-
-  return `học ${hours} giờ ${minutes} phút`;
+  return `học ${formatStudyMinutes(durationMinutes)}`;
 }
 
 /**
@@ -216,7 +285,7 @@ export function countPreviewActivityTabs(
   filters: ActivityManageFilters,
   courseTitleById: Record<string, string>,
 ): ActivityManageTabCounts {
-  function countTab(tab: ActivityManageTab) {
+  function countTab(tab: ActivityLogTab) {
     return filterPreviewActivities(
       activities,
       { ...filters, tab },

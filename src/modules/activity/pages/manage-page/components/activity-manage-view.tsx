@@ -11,10 +11,11 @@ import {
   ActivityManageResult,
   ActivityManageTab,
 } from "../../../types";
-import { buildActivityManageTabs } from "../../../utils";
+import { buildActivityManageTabs, isTopLessonsTab } from "../../../utils";
 import { ActivityDateFilter } from "./activity-date-filter";
 import { ActivityList } from "./activity-list";
 import { ActivityListSkeleton } from "./activity-list-skeleton";
+import { TopLessonList } from "./top-lesson-list";
 
 export interface ActivityManageViewProps {
   filters: ActivityManageFilters;
@@ -43,6 +44,7 @@ export function ActivityManageView({
   onRetry,
 }: ActivityManageViewProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const isTopLessonsView = isTopLessonsTab(filters.tab);
 
   function handleTabChange(tab: ActivityManageTab) {
     onFiltersChange({ tab, page: 1 });
@@ -112,11 +114,26 @@ export function ActivityManageView({
       {isLoading && <ActivityListSkeleton />}
       {!isLoading && isError && (
         <LoadErrorState
-          title="Chưa tải được nhật ký hoạt động"
+          title={
+            isTopLessonsView
+              ? "Chưa tải được bảng xếp hạng bài học"
+              : "Chưa tải được nhật ký hoạt động"
+          }
           onRetry={onRetry}
         />
       )}
-      {!isLoading && !isError && result && (
+      {!isLoading && !isError && result && isTopLessonsView && (
+        <TopLessonList
+          id={activityListId}
+          result={result}
+          filters={filters}
+          pageSize={pageSize}
+          isRefreshing={isRefreshing}
+          onPageChange={handlePageChange}
+          onClearFilters={handleClearFilters}
+        />
+      )}
+      {!isLoading && !isError && result && !isTopLessonsView && (
         <ActivityList
           id={activityListId}
           result={result}

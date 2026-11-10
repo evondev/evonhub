@@ -1,7 +1,7 @@
 import { ActivityType } from "@/shared/constants/activity.constants";
 import { PROFILE_PUBLIC_PATH } from "@/shared/constants/user.constants";
 import { CourseFilterOption, PreviewStateLink } from "@/shared/types";
-import { ActivityRow } from "../types";
+import { ActivityRow, TopLessonRow } from "../types";
 import { ACTIVITY_DELETED_LABELS } from ".";
 
 export const ACTIVITY_MANAGE_PREVIEW_STATE_LINKS: PreviewStateLink[] = [
@@ -329,3 +329,124 @@ export const PREVIEW_ACTIVITIES: ActivityRow[] = [
     ...atMinutesAgo(60 * 50),
   },
 ];
+
+const previewLessonHref = (slug: string, lessonId: string) =>
+  `/${slug}/lesson?id=${lessonId}`;
+
+/**
+ * Bảng xếp hạng giả, đã xếp sẵn nhiều người học nhất trước, đủ hơn một trang:
+ * hạng hoà người học (xét phiên), tên dài, bài đã xoá, khoá đã xoá. Hạng tính
+ * lại sau khi lọc
+ */
+export const PREVIEW_TOP_LESSONS: TopLessonRow[] = [
+  {
+    id: "l01",
+    lessonTitle: "Bài 1: Giới thiệu khoá học",
+    lessonHref: previewLessonHref("javascript-co-ban-den-nang-cao", "l01"),
+    learnerCount: 186,
+    sessionCount: 241,
+    totalStudyMinutes: 1930,
+    ...previewCourse(3, "javascript-co-ban-den-nang-cao"),
+  },
+  {
+    id: "l02",
+    lessonTitle: "Bài 0: Lưu ý quan trọng",
+    lessonHref: previewLessonHref("reactjs-master", "l02"),
+    learnerCount: 142,
+    sessionCount: 160,
+    totalStudyMinutes: 812,
+    ...previewCourse(1, "reactjs-master"),
+  },
+  {
+    id: "l03",
+    lessonTitle: "Bài 12: Server Actions và revalidatePath",
+    lessonHref: previewLessonHref("nextjs-pro", "l03"),
+    learnerCount: 97,
+    sessionCount: 188,
+    totalStudyMinutes: 4215,
+    ...previewCourse(0, "nextjs-pro"),
+  },
+  {
+    id: "l04",
+    lessonTitle: "Bài 5: useEffect và những cái bẫy hay gặp",
+    lessonHref: previewLessonHref("reactjs-master", "l04"),
+    learnerCount: 97,
+    sessionCount: 152,
+    totalStudyMinutes: 3020,
+    ...previewCourse(1, "reactjs-master"),
+  },
+  {
+    id: "l05",
+    lessonTitle:
+      "Bài 103: Optional chaining, nullish coalescing và những toán tử mới giúp code ngắn gọn hơn rất nhiều",
+    lessonHref: previewLessonHref("javascript-co-ban-den-nang-cao", "l05"),
+    learnerCount: 64,
+    sessionCount: 90,
+    totalStudyMinutes: 1240,
+    ...previewCourse(3, "javascript-co-ban-den-nang-cao"),
+  },
+  {
+    id: "l06",
+    lessonTitle: "Bài 3: Flexbox từ A tới Z",
+    lessonHref: previewLessonHref("html-css-master", "l06"),
+    learnerCount: 58,
+    sessionCount: 71,
+    totalStudyMinutes: 960,
+    ...previewCourse(2, "html-css-master"),
+  },
+  {
+    id: "l07",
+    lessonTitle: "Bài 104: Destructuring",
+    lessonHref: previewLessonHref("javascript-co-ban-den-nang-cao", "l07"),
+    learnerCount: 41,
+    sessionCount: 55,
+    totalStudyMinutes: 600,
+    ...previewCourse(3, "javascript-co-ban-den-nang-cao"),
+  },
+  {
+    id: "l08",
+    lessonTitle: ACTIVITY_DELETED_LABELS.lesson,
+    lessonHref: "",
+    learnerCount: 33,
+    sessionCount: 38,
+    totalStudyMinutes: 300,
+    ...previewCourse(0, "nextjs-pro"),
+  },
+  {
+    id: "l09",
+    lessonTitle: "Bài 11: Route Handlers",
+    lessonHref: previewLessonHref("nextjs-pro", "l09"),
+    learnerCount: 29,
+    sessionCount: 44,
+    totalStudyMinutes: 715,
+    ...previewCourse(0, "nextjs-pro"),
+  },
+  {
+    id: "l10",
+    lessonTitle: "Bài 6: useMemo và useCallback",
+    lessonHref: previewLessonHref("reactjs-master", "l10"),
+    learnerCount: 22,
+    sessionCount: 25,
+    totalStudyMinutes: 60,
+    ...previewCourse(1, "reactjs-master"),
+  },
+  {
+    id: "l11",
+    lessonTitle: "Bài 2: Cài đặt môi trường",
+    lessonHref: "",
+    courseTitle: ACTIVITY_DELETED_LABELS.course,
+    courseHref: "",
+    learnerCount: 8,
+    sessionCount: 9,
+    totalStudyMinutes: 0,
+  },
+  {
+    id: "l12",
+    lessonTitle: "Bài 4: Grid layout",
+    lessonHref: previewLessonHref("html-css-master", "l12"),
+    learnerCount: 1,
+    sessionCount: 1,
+    totalStudyMinutes: 3,
+    ...previewCourse(2, "html-css-master"),
+  },
+].map((lesson, index) => ({ ...lesson, rank: index + 1 }));

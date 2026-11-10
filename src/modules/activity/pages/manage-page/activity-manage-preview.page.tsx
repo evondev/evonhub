@@ -10,9 +10,15 @@ import {
   ACTIVITY_MANAGE_PREVIEW_STATE_LINKS,
   PREVIEW_ACTIVITIES,
   PREVIEW_ACTIVITY_COURSES,
+  PREVIEW_TOP_LESSONS,
 } from "../../constants/activity-manage-preview.constants";
 import { ActivityManageFilters, ActivityManagePreviewState } from "../../types";
-import { countPreviewActivityTabs, filterPreviewActivities } from "../../utils";
+import {
+  countPreviewActivityTabs,
+  filterPreviewActivities,
+  filterPreviewTopLessons,
+  isTopLessonsTab,
+} from "../../utils";
 import { ActivityManageView } from "./components";
 
 interface ActivityManagePreviewPageProps {
@@ -37,6 +43,11 @@ export function ActivityManagePreviewPage({
     filters,
     previewCourseTitleById,
   );
+  const matchedTopLessons = filterPreviewTopLessons(
+    PREVIEW_TOP_LESSONS,
+    filters,
+    previewCourseTitleById,
+  );
   const previewTabCounts = countPreviewActivityTabs(
     PREVIEW_ACTIVITIES,
     filters,
@@ -52,6 +63,10 @@ export function ActivityManagePreviewPage({
       ? previewTabCounts.all
       : ACTIVITY_MANAGE_PREVIEW_ALL_COUNT,
   };
+
+  const isTopLessonsView = isTopLessonsTab(filters.tab);
+  const pageStart = (filters.page - 1) * ITEMS_PER_PAGE;
+  const pageEnd = filters.page * ITEMS_PER_PAGE;
 
   function handleFiltersChange(changes: Partial<ActivityManageFilters>) {
     setFilters((currentFilters) => ({ ...currentFilters, ...changes }));
@@ -69,11 +84,15 @@ export function ActivityManagePreviewPage({
         filters={filters}
         onFiltersChange={handleFiltersChange}
         result={{
-          activities: matchedActivities.slice(
-            (filters.page - 1) * ITEMS_PER_PAGE,
-            filters.page * ITEMS_PER_PAGE,
-          ),
-          total: tabCounts[filters.tab],
+          activities: isTopLessonsView
+            ? []
+            : matchedActivities.slice(pageStart, pageEnd),
+          topLessons: isTopLessonsView
+            ? matchedTopLessons.slice(pageStart, pageEnd)
+            : [],
+          total: isTopLessonsTab(filters.tab)
+            ? matchedTopLessons.length
+            : tabCounts[filters.tab],
           tabCounts,
         }}
         courses={PREVIEW_ACTIVITY_COURSES}
