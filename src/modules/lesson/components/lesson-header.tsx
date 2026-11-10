@@ -6,6 +6,7 @@ import { commonPath } from "@/constants";
 import { useCourseProgress } from "@/modules/lesson/hooks";
 import Notification from "@/shared/components/common/notification";
 import { ProductLogo } from "@/shared/components/product-logo";
+import { DASHBOARD_PATH } from "@/shared/constants/common.constants";
 import { RatingForm } from "@/shared/features/rating";
 import { useAuth, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
@@ -34,8 +35,8 @@ export function LessonHeader(_props: LessonHeaderProps) {
   return (
     <header className="fixed inset-x-0 top-0 z-40 flex h-16 items-center gap-3 border-b border-border bg-surface px-4 sm:px-6">
       <Link
-        href="/"
-        aria-label="EvonHub, về trang chủ"
+        href={DASHBOARD_PATH}
+        aria-label="EvonHub, về Dashboard"
         className="flex shrink-0 items-center"
       >
         <ProductLogo />
