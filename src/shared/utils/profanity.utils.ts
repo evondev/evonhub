@@ -1,8 +1,8 @@
 import {
   bannedTerms,
   bannedTermsWithDiacritics,
-  CHAT_LINK_PATTERN,
-} from "../constants";
+  TEXT_LINK_PATTERN,
+} from "../constants/profanity.constants";
 
 /** Số/ký hiệu hay dùng thay chữ để lách lọc: "d1t", "f@ck" */
 const LEET_CHARACTERS: Record<string, string> = {
@@ -141,7 +141,7 @@ const preparedBannedTermsWithDiacritics = bannedTermsWithDiacritics.map(
  * Bỏ qua link: đường dẫn hay có đoạn viết tắt trùng từ cấm.
  */
 export function hasProfanity(content: string): boolean {
-  const contentWithoutLinks = content.replace(CHAT_LINK_PATTERN, " ");
+  const contentWithoutLinks = content.replace(TEXT_LINK_PATTERN, " ");
   const tokensWithDiacritics = tokenize(
     prepareWithDiacritics(contentWithoutLinks),
   );

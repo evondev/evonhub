@@ -53,8 +53,8 @@ export function UserManagePage(_props: UserManagePageProps) {
   };
 
   const lockFlow = useUserLockFlow({
-    changeStatus: (user, status) =>
-      updateUserStatusAsync({ userId: user.id, status }),
+    changeStatus: (user, status, lock) =>
+      updateUserStatusAsync({ userId: user.id, status, lock }),
   });
 
   return (

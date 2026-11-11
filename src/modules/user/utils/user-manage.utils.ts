@@ -23,6 +23,9 @@ export function toUserManageRow(user: UserItemData): UserManageRow {
     avatar: user.avatar,
     createdAt: user.createdAt,
     status: user.status,
+    lockedUntil: user.lock?.until
+      ? new Date(user.lock.until).toISOString()
+      : null,
     role: user.role,
     courseCount: user.courses?.length || 0,
   };
@@ -55,6 +58,13 @@ export function formatUserJoinedDate(date: Date | string): string {
 
 export function isLockedUser(user: UserManageRow): boolean {
   return user.status === UserStatus.Inactive;
+}
+
+/** Khoá có hạn ghi ngày mở để biết khi nào người đó quay lại; vĩnh viễn ghi "Bị khoá" */
+export function getUserLockBadgeLabel(user: UserManageRow): string {
+  if (!user.lockedUntil) return "Bị khoá";
+
+  return `Khoá đến ${dayjs(user.lockedUntil).format("DD/MM")}`;
 }
 
 /** Vai trò thường gặp nhất thì chữ nhạt, để quản trị viên, chuyên gia nổi lên */

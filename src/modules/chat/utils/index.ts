@@ -8,7 +8,8 @@ export {
   readChatLastSeenAt,
   saveChatLastSeenAt,
 } from "./chat-activity.utils";
-export { insertTextAtSelection, resizeComposer } from "./chat-composer.utils";
+export { insertTextAtSelection } from "./chat-composer.utils";
+export { resizeComposer } from "@/shared/utils/composer.utils";
 export {
   formatChatTime,
   getMinutesUntilMidnight,
@@ -40,4 +41,4 @@ export {
 } from "./chat-preview.utils";
 export { getChatRoleLabel, groupOnlineMembers } from "./chat-role.utils";
 export { parseMessageSegments } from "./message-segments.utils";
-export { hasProfanity } from "./profanity.utils";
+export { hasProfanity } from "@/shared/utils/profanity.utils";

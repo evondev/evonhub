@@ -1,4 +1,5 @@
 import { UserRole, UserStatus } from "@/shared/constants/user.constants";
+import { UserLockInput } from "@/shared/types/user.types";
 import { FacetCountItem } from "@/shared/types/count.types";
 
 /** Tab trên bảng thành viên */
@@ -23,6 +24,8 @@ export interface UserManageRow {
   avatar?: string;
   createdAt: Date | string;
   status: UserStatus;
+  /** Hạn mở khoá (ISO); null là khoá vĩnh viễn hoặc không bị khoá */
+  lockedUntil: string | null;
   role: UserRole;
   courseCount: number;
 }
@@ -66,6 +69,8 @@ export interface UserManagePreviewStateLink {
 export interface UpdateUserStatusParams {
   userId: string;
   status: UserStatus;
+  /** Chỉ dùng khi khoá; bỏ trống thì khoá vĩnh viễn, không lý do */
+  lock?: UserLockInput;
 }
 
 export interface UpdateUserStatusResult {

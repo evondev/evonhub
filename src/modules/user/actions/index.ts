@@ -58,6 +58,8 @@ import {
   UserManageTabCounts,
 } from "../types/user-manage.types";
 import { isReservedUsername } from "../utils";
+import { buildUserStatusUpdate } from "../utils/user-lock.utils";
+import { releaseExpiredUserLocks } from "../services/user-lock.service";
 
 /** Khóa đã mua của chính user đang đăng nhập. userId client gửi lên bị bỏ qua */
 export async function fetchUserCourses({
@@ -266,6 +268,9 @@ export async function fetchUsers({
     const currentAdmin = await getCurrentAdmin();
 
     if (!currentAdmin) return undefined;
+
+    // Người hết hạn khoá mà chưa quay lại web thì mở trước khi đếm tab "Bị khoá"
+    await releaseExpiredUserLocks();
 
     // Tìm kiếm và vai trò áp cho cả số đếm của từng tab; tab chỉ áp cho danh sách
     const baseQuery: FilterQuery<typeof UserModel> = {};
@@ -638,10 +643,14 @@ export async function updateMyProfile(
   }
 }
 
-/** Admin khoá hoặc mở khoá một thành viên. Chỉ ghi trường status */
+/**
+ * Admin khoá (kèm thời hạn, lý do) hoặc mở khoá một thành viên. Khoá có hạn tự
+ * mở khi người đó quay lại web sau hạn, xem releaseExpiredUserLock
+ */
 export async function updateUserStatus({
   userId,
   status,
+  lock,
 }: UpdateUserStatusParams): Promise<UpdateUserStatusResult> {
   try {
     const currentAdmin = await getCurrentAdmin();
@@ -663,9 +672,13 @@ export async function updateUserStatus({
       return { isSuccess: false, message: USER_STATUS_SELF_LOCK_MESSAGE };
     }
 
-    const updatedUser = await UserModel.findByIdAndUpdate(userId, {
-      $set: { status },
-    });
+    const statusUpdate = buildUserStatusUpdate(status, lock);
+
+    if (!statusUpdate) {
+      return { isSuccess: false, message: USER_STATUS_SAVE_ERROR_MESSAGE };
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(userId, statusUpdate);
 
     if (!updatedUser) {
       return { isSuccess: false, message: USER_STATUS_NOT_FOUND_MESSAGE };
