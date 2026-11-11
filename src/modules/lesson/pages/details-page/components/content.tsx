@@ -2,6 +2,7 @@
 
 import { useUserContext } from "@/components/user-context";
 import { useTrackLessonActivity } from "@/modules/activity/hooks";
+import { useQueryLessonLearners } from "@/modules/activity/services";
 import { useTrackWatchTime } from "@/modules/leaderboard/hooks";
 import { LessonVideo } from "@/modules/lesson/components";
 import { useCourseProgress } from "@/modules/lesson/hooks";
@@ -54,6 +55,11 @@ export function LessonContent({
   const { data: lectures } = useQueryLessonDetailsOutline({ slug: courseSlug });
   const { percent } = useCourseProgress(courseSlug);
   useTrackLessonActivity({ lessonId, courseId, isEnabled: !!userId });
+  const { data: lessonLearners } = useQueryLessonLearners({
+    lessonId,
+    courseId,
+    enabled: !!userId,
+  });
 
   const embedVideo = parseEmbedVideo(lessonDetails?.iframe);
   const videoId = lessonDetails?.video || "";
@@ -120,6 +126,7 @@ export function LessonContent({
           duration={lessonDetails.duration}
           prevLessonId={canAccessContent ? prevLessonId : undefined}
           nextLessonId={canAccessContent ? nextLessonId : undefined}
+          lessonLearners={lessonLearners}
         />
       </div>
 

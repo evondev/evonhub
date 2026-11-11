@@ -265,3 +265,35 @@ export interface ActivityManageResult {
   total: number;
   tabCounts: ActivityManageTabCounts;
 }
+
+export interface FetchLessonLearnersParams {
+  lessonId: string;
+  courseId: string;
+}
+
+/** Một người đang học cùng bài; tên chỉ để dựng chữ cái đầu khi chưa có ảnh */
+export interface LessonLearnerAvatar {
+  userId: string;
+  name: string;
+  avatar?: string;
+}
+
+/** Người khác đang học cùng bài, đúng hình fetchLessonLearners trả về */
+export interface FetchLessonLearnersResult {
+  total: number;
+  /** Vài người mới nhất để xếp avatar chồng nhau */
+  learners: LessonLearnerAvatar[];
+}
+
+/** Một người trong $facet "đang học cùng bài", đã lấy tên và ảnh từ User */
+export interface LessonLearnerGroup {
+  _id: Types.ObjectId;
+  name: string;
+  avatar?: string;
+}
+
+/** Kết quả $facet: tổng số người và vài người mới nhất */
+export interface LessonLearnersFacet {
+  total: { count: number }[];
+  learners: LessonLearnerGroup[];
+}

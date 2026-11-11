@@ -6,6 +6,7 @@ import LessonModel from "@/modules/lesson/models";
 import UserModel from "@/modules/user/models";
 import { ActivityType } from "@/shared/constants/activity.constants";
 import { CourseStatus, CourseType } from "@/shared/constants/course.constants";
+import { UserRole } from "@/shared/constants/user.constants";
 import { parseData } from "@/shared/helpers";
 import { connectToDatabase } from "@/shared/libs";
 import {
@@ -18,6 +19,7 @@ import { FilterQuery, isValidObjectId, Types } from "mongoose";
 import {
   ACTIVITY_ONLINE_WINDOW_MS,
   ACTIVITY_SEARCH_USER_LIMIT,
+  LESSON_LEARNERS_AVATAR_LIMIT,
   MAX_ACTIVITIES_PER_PAGE,
 } from "../constants";
 import ActivityModel from "../models";
@@ -28,9 +30,12 @@ import {
   ActivityTypeCountGroup,
   FetchActivitiesParams,
   FetchActivitiesResult,
+  FetchLessonLearnersParams,
+  FetchLessonLearnersResult,
   FetchTopLessonsParams,
   FetchTopLessonsResult,
   LogLessonViewParams,
+  LessonLearnersFacet,
   LogVideoViewParams,
   OnlineActivityGroup,
   TopLessonFacet,
@@ -47,40 +52,47 @@ import {
 type ActivityQuery = FilterQuery<ActivityModelProps>;
 
 /**
+ * User đang đăng nhập mở được bài này thật không: bài thuộc đúng khoá, chưa
+ * xoá, và là bài học thử hoặc khoá đã mua hay quản lý
+ */
+async function canViewLesson({
+  lessonId,
+  courseId,
+}: LogLessonViewParams): Promise<boolean> {
+  // Chỉ nhận chuỗi id, chặn client gửi object toán tử Mongo như { $ne: null }
+  if (typeof lessonId !== "string" || !isValidObjectId(lessonId)) return false;
+
+  if (typeof courseId !== "string" || !isValidObjectId(courseId)) return false;
+
+  await connectToDatabase();
+
+  const lesson = await LessonModel.findOne({
+    _id: lessonId,
+    courseId,
+    _destroy: false,
+  })
+    .select("trial")
+    .lean<{ trial?: boolean }>();
+
+  if (!lesson) return false;
+
+  return lesson.trial === true || (await canAccessCourseContent(courseId));
+}
+
+/**
  * Nhịp từ trang học: ghi (hoặc nối phiên) "đang học bài này" cho user đang
- * đăng nhập. Chỉ ghi bài người đó mở được thật: bài học thử, hoặc khoá đã mua
- * hay quản lý.
+ * đăng nhập. Chỉ ghi bài người đó mở được thật.
  */
 export async function logLessonView({
   lessonId,
   courseId,
 }: LogLessonViewParams): Promise<void> {
   try {
-    // Chỉ nhận chuỗi id, chặn client gửi object toán tử Mongo như { $ne: null }
-    if (typeof lessonId !== "string" || !isValidObjectId(lessonId)) return;
-
-    if (typeof courseId !== "string" || !isValidObjectId(courseId)) return;
-
     const currentUser = await getCurrentUser();
 
     if (!currentUser) return;
 
-    await connectToDatabase();
-
-    const lesson = await LessonModel.findOne({
-      _id: lessonId,
-      courseId,
-      _destroy: false,
-    })
-      .select("trial")
-      .lean<{ trial?: boolean }>();
-
-    if (!lesson) return;
-
-    const canViewLesson =
-      lesson.trial === true || (await canAccessCourseContent(courseId));
-
-    if (!canViewLesson) return;
+    if (!(await canViewLesson({ lessonId, courseId }))) return;
 
     await recordActivity({
       userId: currentUser._id,
@@ -91,6 +103,88 @@ export async function logLessonView({
     });
   } catch (error) {
     console.log("error:", error);
+  }
+}
+
+/**
+ * Người khác đang học cùng bài, cho dòng "N người đang học cùng bạn" ở trang
+ * học. Cùng định nghĩa "đang học" với tab của admin: dòng mới nhất của mỗi
+ * người có nhịp trong ACTIVITY_ONLINE_WINDOW_MS. Chỉ đếm học viên: admin,
+ * chuyên gia mở bài để kiểm tra thì không tính. Không xem được bài thì null
+ */
+export async function fetchLessonLearners({
+  lessonId,
+  courseId,
+}: FetchLessonLearnersParams): Promise<FetchLessonLearnersResult | null> {
+  try {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) return null;
+
+    if (!(await canViewLesson({ lessonId, courseId }))) return null;
+
+    const onlineSince = new Date(Date.now() - ACTIVITY_ONLINE_WINDOW_MS);
+    const [learnersFacet] = await ActivityModel.aggregate<LessonLearnersFacet>([
+      {
+        $match: {
+          type: { $in: getSessionActivityTypes() },
+          lastSeenAt: { $gte: onlineSince },
+          user: { $ne: currentUser._id },
+        },
+      },
+      // Lấy bài mới nhất của mỗi người trước rồi mới lọc theo bài: người vừa
+      // chuyển sang bài khác thì không còn tính ở bài này
+      { $sort: { lastSeenAt: -1 } },
+      {
+        $group: {
+          _id: "$user",
+          lesson: { $first: "$lesson" },
+          lastSeenAt: { $first: "$lastSeenAt" },
+        },
+      },
+      { $match: { lesson: new Types.ObjectId(lessonId) } },
+      {
+        $lookup: {
+          from: UserModel.collection.name,
+          let: { userId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$_id", "$$userId"] },
+                role: UserRole.User,
+              },
+            },
+            { $project: { name: 1, avatar: 1 } },
+          ],
+          as: "user",
+        },
+      },
+      // Không khớp học viên (staff, người đã xoá) thì $unwind bỏ luôn dòng đó
+      { $unwind: "$user" },
+      { $sort: { lastSeenAt: -1 } },
+      {
+        $facet: {
+          total: [{ $count: "count" }],
+          learners: [
+            { $limit: LESSON_LEARNERS_AVATAR_LIMIT },
+            { $project: { name: "$user.name", avatar: "$user.avatar" } },
+          ],
+        },
+      },
+    ]);
+
+    return {
+      total: learnersFacet?.total[0]?.count || 0,
+      learners: (learnersFacet?.learners || []).map((learner) => ({
+        userId: learner._id.toString(),
+        name: learner.name || "",
+        avatar: learner.avatar,
+      })),
+    };
+  } catch (error) {
+    console.log("error:", error);
+
+    return null;
   }
 }
 
