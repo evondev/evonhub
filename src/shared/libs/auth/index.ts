@@ -1,6 +1,7 @@
 import CourseModel from "@/modules/course/models";
 import { canManageCourse } from "@/modules/course/services/course-permission.service";
 import UserModel from "@/modules/user/models";
+import { releaseExpiredUserLock } from "@/modules/user/services/user-lock.service";
 import {
   CourseStatus,
   CourseType,
@@ -24,7 +25,11 @@ export const getCurrentUser = cache(async () => {
 
   await connectToDatabase();
 
-  return UserModel.findOne({ clerkId });
+  const currentUser = await UserModel.findOne({ clerkId });
+
+  if (currentUser) await releaseExpiredUserLock(currentUser);
+
+  return currentUser;
 });
 
 /** User đang đăng nhập nếu là admin, không thì null */

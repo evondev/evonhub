@@ -3,6 +3,8 @@
 import { PreviewStateSwitcher } from "@/shared/components/common";
 import { ITEMS_PER_PAGE } from "@/shared/constants/common.constants";
 import { UserStatus } from "@/shared/constants/user.constants";
+import { UserLockInput } from "@/shared/types/user.types";
+import { getUserLockUntil } from "@/shared/utils/user-lock.utils";
 import { useState } from "react";
 import { useUserLockFlow } from "../../hooks/use-user-lock-flow";
 import {
@@ -51,14 +53,23 @@ export function UserManagePreviewPage({ state }: UserManagePreviewPageProps) {
   async function changePreviewStatus(
     user: UserManageRow,
     status: UserStatus,
+    lock?: UserLockInput,
   ): Promise<UpdateUserStatusResult> {
     await new Promise((resolve) =>
       setTimeout(resolve, USER_MANAGE_PREVIEW_SAVE_DELAY_MS),
     );
 
+    const lockedUntil = lock ? getUserLockUntil(lock.duration) : null;
+    const nextLockedUntil =
+      status === UserStatus.Inactive && lockedUntil
+        ? lockedUntil.toISOString()
+        : null;
+
     setPreviewUsers((currentUsers) =>
       currentUsers.map((currentUser) =>
-        currentUser.id === user.id ? { ...currentUser, status } : currentUser,
+        currentUser.id === user.id
+          ? { ...currentUser, status, lockedUntil: nextLockedUntil }
+          : currentUser,
       ),
     );
 

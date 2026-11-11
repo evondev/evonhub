@@ -1,10 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { FetchLessonLearnersResult } from "@/modules/activity/types";
 import { cn } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
 import { ChevronLeft, ChevronRight, PanelRightOpen } from "lucide-react";
 import Link from "next/link";
+import { LessonLearners } from "./lesson-learners";
 
 export interface LessonBarProps {
   title: string;
@@ -12,6 +14,8 @@ export interface LessonBarProps {
   duration?: number;
   prevLessonId?: string;
   nextLessonId?: string;
+  /** Người khác đang học cùng bài; null hoặc 0 người thì không hiện dòng này */
+  lessonLearners?: FetchLessonLearnersResult | null;
 }
 
 // Tên bài và hai nút đi tiếp, ngay dưới video. Tới bài đầu hoặc cuối thì nút
@@ -22,6 +26,7 @@ export function LessonBar({
   duration,
   prevLessonId,
   nextLessonId,
+  lessonLearners,
 }: LessonBarProps) {
   const { isExpanded, toggleExpanded } = useGlobalStore();
   const durationLabel = Number(duration) > 0 ? `${duration} phút` : "";
@@ -39,6 +44,9 @@ export function LessonBar({
         >
           {title}
         </h1>
+        {lessonLearners && lessonLearners.total > 0 && (
+          <LessonLearners lessonLearners={lessonLearners} />
+        )}
       </div>
 
       {/* Cặp nút ngang hàng nên rộng bằng nhau: mobile chia đôi hàng, từ lg cùng 160px */}

@@ -55,7 +55,7 @@ export const CHAT_HOST_BUBBLE_DISMISSED_STORAGE_KEY =
   "chat-host-bubble-dismissed";
 
 /** Link trong tin: http(s)://… hoặc www.… */
-export const CHAT_LINK_PATTERN = /\bhttps?:\/\/[^\s<>"]+|\bwww\.[^\s<>"]+/gi;
+export { TEXT_LINK_PATTERN as CHAT_LINK_PATTERN } from "@/shared/constants/profanity.constants";
 
 /** Virtuoso cần chỉ số đầu đủ lớn để chèn tin cũ lên trên mà không về âm */
 export const CHAT_FIRST_ITEM_INDEX = 1_000_000;
@@ -120,4 +120,3 @@ export {
   chatPreviewVisitors,
 } from "./chat-preview.constants";
 export { CHAT_HOST_ROLES, chatRoleLabels } from "./chat-role.constants";
-export { bannedTerms, bannedTermsWithDiacritics } from "./profanity.constants";

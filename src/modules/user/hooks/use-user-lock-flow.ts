@@ -1,4 +1,5 @@
 import { UserStatus } from "@/shared/constants/user.constants";
+import { UserLockInput } from "@/shared/types/user.types";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { USER_STATUS_SAVE_ERROR_MESSAGE } from "../constants/user-manage.constants";
@@ -13,6 +14,7 @@ interface UseUserLockFlowOptions {
   changeStatus: (
     user: UserManageRow,
     status: UserStatus,
+    lock?: UserLockInput,
   ) => Promise<UpdateUserStatusResult>;
 }
 
@@ -29,9 +31,10 @@ export function useUserLockFlow({ changeStatus }: UseUserLockFlowOptions) {
   async function submitStatus(
     user: UserManageRow,
     status: UserStatus,
+    lock?: UserLockInput,
   ): Promise<boolean> {
     try {
-      const result = await changeStatus(user, status);
+      const result = await changeStatus(user, status, lock);
 
       if (!result.isSuccess) {
         toast.error(result.message || USER_STATUS_SAVE_ERROR_MESSAGE);
@@ -60,12 +63,16 @@ export function useUserLockFlow({ changeStatus }: UseUserLockFlowOptions) {
     setUserPendingLock(user);
   }
 
-  async function handleConfirmLock() {
+  async function handleConfirmLock(lock: UserLockInput) {
     if (!userPendingLock) return;
 
     setIsLocking(true);
 
-    const isLocked = await submitStatus(userPendingLock, UserStatus.Inactive);
+    const isLocked = await submitStatus(
+      userPendingLock,
+      UserStatus.Inactive,
+      lock,
+    );
 
     setIsLocking(false);
 

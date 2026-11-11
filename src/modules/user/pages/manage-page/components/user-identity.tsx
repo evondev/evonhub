@@ -3,6 +3,7 @@ import Link from "next/link";
 import { UserManageRow } from "../../../types/user-manage.types";
 import {
   buildUserManageHref,
+  getUserLockBadgeLabel,
   isLockedUser,
 } from "../../../utils/user-manage.utils";
 
@@ -34,7 +35,7 @@ export function UserIdentity({ user }: UserIdentityProps) {
           {isLocked && (
             <ToneBadge
               tone="error"
-              label="Bị khoá"
+              label={getUserLockBadgeLabel(user)}
               className="shrink-0 py-0.5"
             />
           )}

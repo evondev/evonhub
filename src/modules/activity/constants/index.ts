@@ -34,6 +34,15 @@ export const MAX_ACTIVITIES_PER_PAGE = 50;
 /** Làm mới danh sách để cột "đang học" và giờ giấc không bị cũ */
 export const ACTIVITY_MANAGE_REFETCH_MS = 30 * 1000;
 
+/**
+ * Trang học hỏi lại số người đang học cùng bài: chỉ để tạo cảm giác có bạn học,
+ * trễ một phút không ai để ý
+ */
+export const LESSON_LEARNERS_REFETCH_MS = 60 * 1000;
+
+/** Số avatar xếp chồng cạnh dòng "đang học cùng bạn" */
+export const LESSON_LEARNERS_AVATAR_LIMIT = 3;
+
 export const ACTIVITY_MANAGE_TAB_VALUES = [
   "all",
   "online",

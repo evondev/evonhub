@@ -1,6 +1,8 @@
 "use client";
 
 import { LoadErrorState } from "@/shared/components/common";
+import { UserLockDialog } from "@/shared/components/user-lock-dialog";
+import { UserLockInput } from "@/shared/types/user.types";
 import { useRef } from "react";
 import { USER_MANAGE_DEFAULT_FILTERS } from "../../../constants/user-manage.constants";
 import {
@@ -11,7 +13,6 @@ import {
   UserRoleFilter,
 } from "../../../types/user-manage.types";
 import { buildUserManageTabs } from "../../../utils/user-manage.utils";
-import { UserLockDialog } from "./user-lock-dialog";
 import { UserManageToolbar } from "./user-manage-toolbar";
 import { UserTable } from "./user-table";
 import { UserTableSkeleton } from "./user-table-skeleton";
@@ -30,7 +31,7 @@ export interface UserManageViewProps {
   /** Thành viên đang chờ xác nhận khoá; null là hộp xác nhận đóng */
   userPendingLock: UserManageRow | null;
   isLocking: boolean;
-  onConfirmLock: () => void;
+  onConfirmLock: (lock: UserLockInput) => void;
   onCancelLock: () => void;
 }
 

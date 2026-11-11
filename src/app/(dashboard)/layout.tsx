@@ -5,6 +5,7 @@ import { ChatHostBubble } from "@/modules/chat/components/chat-host-bubble";
 import { CHAT_HOST_ROLES } from "@/modules/chat/constants/chat-role.constants";
 import { useChatActivity } from "@/modules/chat/hooks/use-chat-activity";
 import { LessonHeaderPlaceholder } from "@/modules/lesson/components/lesson-header-placeholder";
+import { AccountLockedState } from "@/modules/user/components/account-locked-state";
 // Import thẳng từ file: barrel common kéo cả 26 component (bảng, dialog, phân trang)
 // vào layout của mọi trang
 import { Header } from "@/shared/components/common/header";
@@ -51,7 +52,9 @@ export default function DashboardLayout({
   // Admin không cần lời mời vào phòng của chính mình
   const isChatHostViewer = CHAT_HOST_ROLES.includes(userInfo?.role || "");
 
-  if (userInfo?.status === UserStatus.Inactive) return null;
+  if (userInfo?.status === UserStatus.Inactive) {
+    return <AccountLockedState lock={userInfo.lock} />;
+  }
 
   return (
     <>

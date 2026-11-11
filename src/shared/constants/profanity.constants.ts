@@ -53,3 +53,6 @@ export const bannedTermsWithDiacritics: string[] = [
   "phò",
   "đĩ điếm",
 ];
+
+/** Link trong tin: http(s)://… hoặc www.… Bỏ đi trước khi lọc để tên miền không bị bắt nhầm */
+export const TEXT_LINK_PATTERN = /\bhttps?:\/\/[^\s<>"]+|\bwww\.[^\s<>"]+/gi;

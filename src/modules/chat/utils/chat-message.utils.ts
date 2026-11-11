@@ -6,7 +6,7 @@ import {
   CHAT_TOO_LONG_MESSAGE,
 } from "../constants";
 import { ChatMessageItem, ChatMessageView } from "../types";
-import { hasProfanity } from "./profanity.utils";
+import { hasProfanity } from "@/shared/utils/profanity.utils";
 
 /** Lỗi nội dung tin, null là gửi được. Client báo ngay, server kiểm lại */
 export function getChatContentError(content: string): string | null {

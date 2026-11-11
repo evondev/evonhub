@@ -81,6 +81,16 @@ const userSchema = new Schema<UserModelProps>({
       type: String,
     },
   },
+  // Lần khoá đang có hiệu lực: lý do và hạn mở. Mở khoá thì xoá cả trường
+  lock: {
+    type: {
+      _id: false,
+      reason: { type: String, default: "" },
+      until: { type: Date, default: null },
+      at: { type: Date, required: true },
+    },
+    default: undefined,
+  },
   _destroy: {
     type: Boolean,
     default: false,

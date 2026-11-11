@@ -1,3 +1,8 @@
+import type {
+  UserLockDurationOption,
+  UserLockInput,
+} from "../types/user.types";
+
 export enum UserStatus {
   Active = "active",
   Inactive = "inactive",
@@ -35,3 +40,42 @@ export enum MembershipPlan {
   Master = "master",
   Premium = "premium",
 }
+
+/** Các mức thời hạn khi khoá tài khoản. null là khoá tới khi admin mở tay */
+export enum UserLockDuration {
+  OneDay = "1d",
+  ThreeDays = "3d",
+  SevenDays = "7d",
+  ThirtyDays = "30d",
+  Forever = "forever",
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+export const userLockDurationOptions: UserLockDurationOption[] = [
+  { value: UserLockDuration.OneDay, label: "1 ngày", durationMs: DAY_MS },
+  {
+    value: UserLockDuration.ThreeDays,
+    label: "3 ngày",
+    durationMs: 3 * DAY_MS,
+  },
+  {
+    value: UserLockDuration.SevenDays,
+    label: "7 ngày",
+    durationMs: 7 * DAY_MS,
+  },
+  {
+    value: UserLockDuration.ThirtyDays,
+    label: "30 ngày",
+    durationMs: 30 * DAY_MS,
+  },
+  { value: UserLockDuration.Forever, label: "Vĩnh viễn", durationMs: null },
+];
+
+export const USER_LOCK_REASON_MAX_LENGTH = 300;
+
+/** Mức mặc định khi mở hộp khoá: đủ để hạ nhiệt, chưa tới mức đuổi hẳn */
+export const DEFAULT_USER_LOCK_INPUT: UserLockInput = {
+  duration: UserLockDuration.SevenDays,
+  reason: "",
+};

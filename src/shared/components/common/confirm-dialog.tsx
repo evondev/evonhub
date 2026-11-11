@@ -18,6 +18,8 @@ export interface ConfirmDialogProps {
   isConfirming: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  /** Ô nhập thêm dưới phần mô tả, vd chọn thời hạn khoá */
+  children?: React.ReactNode;
 }
 
 // Hộp xác nhận việc nguy hiểm: icon đỏ cùng hàng tiêu đề, nút xác nhận nền đỏ mờ ở cuối.
@@ -36,6 +38,7 @@ export function ConfirmDialog({
   isConfirming,
   onConfirm,
   onCancel,
+  children,
 }: ConfirmDialogProps) {
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
   const isDanger = tone === "danger";
@@ -84,6 +87,8 @@ export function ConfirmDialog({
               <div>{description}</div>
             </DialogPrimitive.Description>
           </div>
+
+          {children && <div className="mt-5">{children}</div>}
 
           <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Button
