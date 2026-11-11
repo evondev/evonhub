@@ -37,7 +37,8 @@ export function SupportInboxList({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="shrink-0 border-b border-border px-3 pt-2">
+      {/* p-2 như danh sách bên dưới: tab cách đều viền trên, viền dưới và thẳng mép với hội thoại */}
+      <div className="shrink-0 border-b border-border p-2">
         <FilterTabs
           tabs={buildSupportInboxTabs(inbox?.unreadCount)}
           activeValue={filter}
