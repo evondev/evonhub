@@ -7,6 +7,7 @@ import {
   FolderPlus,
   Gift,
   ListPlus,
+  MessageCircleQuestion,
   MessageSquare,
   MonitorPlay,
   Pencil,
@@ -58,6 +59,13 @@ export const ACTIVITY_TYPE_CONFIGS: Record<ActivityType, ActivityTypeConfig> = {
     group: "learning",
     target: "course",
     icon: Star,
+    tone: "default",
+  },
+  [ActivityType.PracticeInterview]: {
+    label: "Luyện phỏng vấn",
+    group: "learning",
+    target: "course",
+    icon: MessageCircleQuestion,
     tone: "default",
   },
   [ActivityType.EnrollFree]: {

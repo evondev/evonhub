@@ -6,6 +6,7 @@ export enum ActivityType {
   CompleteLesson = "COMPLETE_LESSON",
   Comment = "COMMENT",
   RateCourse = "RATE_COURSE",
+  PracticeInterview = "PRACTICE_INTERVIEW",
   // Mua khoá
   EnrollFree = "ENROLL_FREE",
   CreateOrder = "CREATE_ORDER",

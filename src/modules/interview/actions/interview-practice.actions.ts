@@ -1,6 +1,8 @@
 "use server";
 
+import { recordActivity } from "@/modules/activity/services/activity.service";
 import CourseModel from "@/modules/course/models";
+import { ActivityType } from "@/shared/constants/activity.constants";
 import { UserRole } from "@/shared/constants/user.constants";
 import { connectToDatabase } from "@/shared/libs";
 import { canAccessCourseContent, getCurrentUser } from "@/shared/libs/auth";
@@ -172,6 +174,15 @@ export async function fetchInterviewSession(
     }).sort({ publishedAt: 1, _id: 1 });
 
     if (!questions.length) return null;
+
+    // Vào làm lại hay tải lại trang trong 30 phút thì vẫn là một dòng nhật ký
+    await recordActivity({
+      userId: currentUser._id,
+      type: ActivityType.PracticeInterview,
+      courseId: course._id,
+      targetTitle: course.title,
+      shouldMergeRecent: true,
+    });
 
     const attempts = await InterviewAttemptModel.find({
       user: currentUser._id,
