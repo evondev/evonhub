@@ -28,3 +28,8 @@ export interface CourseFilterOption {
   id: string;
   title: string;
 }
+
+export interface FetchManagedCourseOptionsParams {
+  /** Bỏ khoá lưu trữ: nội dung đã xoá, học viên không còn thấy */
+  shouldHideArchived?: boolean;
+}

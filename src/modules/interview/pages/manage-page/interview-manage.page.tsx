@@ -14,7 +14,8 @@ export function InterviewManagePage() {
     search: parseAsString.withDefault(INTERVIEW_MANAGE_DEFAULT_FILTERS.search),
   });
   const { userInfo } = useUserContext();
-  const { data: courses } = useQueryManagedCourses(userInfo?.clerkId);
+  // Khoá lưu trữ đã xoá nội dung, học viên không còn vào được: không soạn câu cho nó
+  const { data: courses } = useQueryManagedCourses(userInfo?.clerkId, { shouldHideArchived: true });
   const { data, isPending, isPlaceholderData, isFetching, refetch } = useQueryInterviewQuestions(filters);
 
   return (

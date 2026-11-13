@@ -50,13 +50,19 @@ export function InterviewTagInput({
   return (
     <div className="flex min-h-11 flex-wrap items-center gap-2 rounded-xl border border-border-strong bg-surface px-2 py-1.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15 md:min-h-10">
       {tags.map((tag) => (
-        <span key={tag} className="inline-flex h-8 items-center rounded-lg bg-foreground/5 pl-2.5 text-sm text-foreground">
-          {tag}
+        // Link dài thì cắt bớt một dòng, rê chuột xem đủ
+        <span
+          key={tag}
+          className="inline-flex h-8 min-w-0 max-w-full items-center rounded-lg bg-foreground/5 pl-2.5 text-sm text-foreground"
+        >
+          <span className="min-w-0 truncate" title={tag}>
+            {tag}
+          </span>
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            className="size-8 rounded-lg"
+            className="size-8 shrink-0 rounded-lg"
             aria-label={`Bỏ ${tag}`}
             onClick={() => onChange(tags.filter((currentTag) => currentTag !== tag))}
           >

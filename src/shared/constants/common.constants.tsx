@@ -123,24 +123,26 @@ export const menuLinks: MenuLinkItemProps[] = [
   },
 ];
 
-// Thanh tab đầu khu quản lý. Tab đầu là trang mở mặc định khi vào /admin
+// Thanh tab đầu khu quản lý. Vào /admin thì admin mở tab đầu, chuyên gia mở tab
+// đầu tiên họ xem được
 export const adminNavLinks: MenuLinkItemProps[] = [
+  {
+    title: "Hoạt động",
+    icon: <Activity />,
+    url: "/admin/activity/manage",
+    isAdmin: true,
+  },
   {
     title: "Khóa học",
     icon: <LibraryBig />,
     url: "/admin/course/manage",
     isExpert: true,
+    isHiddenInNav: true,
   },
   {
     title: "Phỏng vấn",
     icon: <MessageCircleQuestion />,
     url: "/admin/interview/manage",
-    isAdmin: true,
-  },
-  {
-    title: "Hoạt động",
-    icon: <Activity />,
-    url: "/admin/activity/manage",
     isAdmin: true,
   },
   {
@@ -160,6 +162,7 @@ export const adminNavLinks: MenuLinkItemProps[] = [
     icon: <Tags />,
     url: "/admin/category/manage",
     isAdmin: true,
+    isHiddenInNav: true,
   },
   {
     title: "Đánh giá",
