@@ -15,6 +15,7 @@ export {
   getProgressPercent,
 } from "./interview-progress.utils";
 export { shuffleBySeed } from "./interview-shuffle.utils";
+export { formatQuestionStats, getCorrectPercent, isLowCorrectRate } from "./interview-stats.utils";
 export {
   extractHtmlTitle,
   extractMainHtml,

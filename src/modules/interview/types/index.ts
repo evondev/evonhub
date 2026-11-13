@@ -214,6 +214,12 @@ export interface InterviewAdminSource extends InterviewSourceValues {
 }
 
 /** Một câu hỏi đầy đủ cho trang Admin */
+/** Kết quả học viên làm một câu, chỉ tính lượt đầu của mỗi người */
+export interface InterviewQuestionStats {
+  learnerCount: number;
+  correctCount: number;
+}
+
 export interface InterviewAdminQuestion {
   id: string;
   courseId: string;
@@ -234,6 +240,7 @@ export interface InterviewAdminQuestion {
   createdAt: string;
   /** Đổi sau mỗi lần lưu, tạo lại: dùng làm key để form nạp lại nội dung mới */
   updatedAt: string;
+  stats: InterviewQuestionStats;
 }
 
 export interface FetchInterviewQuestionsParams {

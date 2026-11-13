@@ -4,7 +4,7 @@ import CourseModel from "@/modules/course/models";
 import { connectToDatabase } from "@/shared/libs";
 import { getCurrentAdmin } from "@/shared/libs/auth";
 import { escapeRegExp } from "lodash";
-import { FilterQuery, isValidObjectId } from "mongoose";
+import { FilterQuery, isValidObjectId, Types } from "mongoose";
 import { z } from "zod";
 import {
   INTERVIEW_AI_COUNT_OPTIONS,
@@ -28,6 +28,7 @@ import {
   GenerateInterviewQuestionsResult,
   InterviewActionResult,
   InterviewQuestionModelProps,
+  InterviewQuestionStats,
   InterviewTabCounts,
   RegenerateInterviewQuestionResult,
   SaveInterviewQuestionInput,
@@ -40,6 +41,10 @@ type InterviewQuestionQuery = FilterQuery<InterviewQuestionModelProps>;
 interface StatusCountRow {
   _id: InterviewQuestionStatus;
   count: number;
+}
+
+interface QuestionStatsRow extends InterviewQuestionStats {
+  _id: Types.ObjectId;
 }
 
 const MANAGE_QUESTION_LIMIT = 200;
@@ -109,6 +114,28 @@ export async function fetchInterviewQuestions({
         { $group: { _id: "$status", count: { $sum: 1 } } },
       ]),
     ]);
+    const statsRows = await InterviewAttemptModel.aggregate<QuestionStatsRow>([
+      {
+        $match: {
+          question: { $in: questions.map((question: InterviewQuestionModelProps) => question._id) },
+          isFirstAttempt: true,
+        },
+      },
+      {
+        $group: {
+          _id: "$question",
+          learnerCount: { $sum: 1 },
+          correctCount: { $sum: { $cond: ["$isCorrect", 1, 0] } },
+        },
+      },
+    ]);
+    // Chỉ lấy hai con số: ObjectId trong _id không gửi xuống client được
+    const statsByQuestionId = new Map<string, InterviewQuestionStats>(
+      statsRows.map((statsRow) => [
+        statsRow._id.toString(),
+        { learnerCount: statsRow.learnerCount, correctCount: statsRow.correctCount },
+      ]),
+    );
     const tabCounts: InterviewTabCounts = { draft: 0, published: 0, all: 0 };
 
     for (const statusCount of statusCounts) {
@@ -118,7 +145,9 @@ export async function fetchInterviewQuestions({
     }
 
     return {
-      questions: questions.map((question: InterviewQuestionModelProps) => toAdminQuestion(question)),
+      questions: questions.map((question: InterviewQuestionModelProps) =>
+        toAdminQuestion(question, statsByQuestionId.get(String(question._id))),
+      ),
       tabCounts,
     };
   } catch (error) {

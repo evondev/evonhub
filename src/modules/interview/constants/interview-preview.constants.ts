@@ -175,6 +175,7 @@ export const PREVIEW_INTERVIEW_ADMIN_QUESTIONS: InterviewAdminQuestion[] = [
     sourcePages: [],
     createdAt: "2026-11-13T03:24:00.000Z",
     updatedAt: "2026-11-13T03:24:00.000Z",
+    stats: { learnerCount: 0, correctCount: 0 },
   },
   {
     id: "q2",
@@ -202,6 +203,7 @@ export const PREVIEW_INTERVIEW_ADMIN_QUESTIONS: InterviewAdminQuestion[] = [
     sourcePages: [],
     createdAt: "2026-11-13T03:24:00.000Z",
     updatedAt: "2026-11-13T03:24:00.000Z",
+    stats: { learnerCount: 0, correctCount: 0 },
   },
   {
     id: "q3",
@@ -233,5 +235,7 @@ export const PREVIEW_INTERVIEW_ADMIN_QUESTIONS: InterviewAdminQuestion[] = [
     sourcePages: [],
     createdAt: "2026-10-28T03:24:00.000Z",
     updatedAt: "2026-10-28T03:24:00.000Z",
+    // Ít người đúng: để thấy badge nhắc đọc lại đáp án
+    stats: { learnerCount: 24, correctCount: 3 },
   },
 ];

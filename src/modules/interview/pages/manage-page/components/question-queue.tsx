@@ -8,6 +8,7 @@ import {
 } from "../../../constants";
 import { InterviewQuestionStatus } from "../../../constants/interview-enums";
 import { InterviewAdminQuestion } from "../../../types";
+import { formatQuestionStats, isLowCorrectRate } from "../../../utils";
 
 interface QuestionQueueProps {
   title: string;
@@ -20,6 +21,11 @@ interface QuestionQueueProps {
 
 function hasUnverifiedQuote(question: InterviewAdminQuestion) {
   return question.sources.some((source) => source.quote && !source.isQuoteVerified);
+}
+
+/** Câu nháp chưa ai thấy thì thôi; đã đăng, hay từng có người làm, thì hiện */
+function shouldShowStats(question: InterviewAdminQuestion) {
+  return question.status === InterviewQuestionStatus.Published || question.stats.learnerCount > 0;
 }
 
 export function QuestionQueue({
@@ -74,10 +80,12 @@ export function QuestionQueue({
                   )}
                 >
                   {INTERVIEW_TYPE_LABELS[question.type]} · {INTERVIEW_DIFFICULTY_LABELS[question.difficulty]}
+                  {shouldShowStats(question) && ` · ${formatQuestionStats(question.stats)}`}
                   {question.status === InterviewQuestionStatus.Published && (
                     <ToneBadge tone="success" label={INTERVIEW_STATUS_LABELS[question.status]} />
                   )}
                   {hasUnverifiedQuote(question) && <ToneBadge tone="error" label="Trích dẫn chưa khớp" />}
+                  {isLowCorrectRate(question.stats) && <ToneBadge tone="warning" label="Ít người đúng" />}
                 </span>
               </Button>
             </li>

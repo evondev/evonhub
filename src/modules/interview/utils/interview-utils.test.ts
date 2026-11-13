@@ -11,6 +11,7 @@ import {
   findStartQuestionIndex,
 } from "./interview-progress.utils";
 import { shuffleBySeed } from "./interview-shuffle.utils";
+import { formatQuestionStats, isLowCorrectRate } from "./interview-stats.utils";
 import { isAllowedSourceUrl, isQuoteInText } from "./interview-source.utils";
 
 describe("isCorrectChoice", () => {
@@ -145,5 +146,18 @@ describe("interviewQuestionContentSchema với dạng sắp xếp log", () => {
     const parsed = interviewQuestionContentSchema.safeParse(buildLogOrderQuestion(["0", "0", "0"]));
 
     expect(parsed.success).toBe(false);
+  });
+});
+
+describe("thống kê câu hỏi", () => {
+  it("ghi số người làm và phần trăm đúng, chưa ai làm thì nói rõ", () => {
+    expect(formatQuestionStats({ learnerCount: 12, correctCount: 4 })).toBe("12 người làm · 33% đúng");
+    expect(formatQuestionStats({ learnerCount: 0, correctCount: 0 })).toBe("Chưa ai làm");
+  });
+
+  it("chỉ nhắc khi đủ người làm mà ít người đúng", () => {
+    expect(isLowCorrectRate({ learnerCount: 24, correctCount: 3 })).toBe(true);
+    expect(isLowCorrectRate({ learnerCount: 4, correctCount: 0 })).toBe(false);
+    expect(isLowCorrectRate({ learnerCount: 10, correctCount: 2 })).toBe(false);
   });
 });

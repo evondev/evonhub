@@ -4,12 +4,16 @@ import {
   InterviewPracticeQuestion,
   InterviewQuestionModelProps,
   InterviewQuestionProgress,
+  InterviewQuestionStats,
 } from "../types";
 import { shuffleBySeed } from "../utils/interview-shuffle.utils";
 
-/** Câu hỏi đầy đủ cho Admin, kể cả đáp án */
+const EMPTY_QUESTION_STATS: InterviewQuestionStats = { learnerCount: 0, correctCount: 0 };
+
+/** Câu hỏi đầy đủ cho Admin, kể cả đáp án và kết quả học viên làm */
 export function toAdminQuestion(
   question: InterviewQuestionModelProps,
+  stats: InterviewQuestionStats = EMPTY_QUESTION_STATS,
 ): InterviewAdminQuestion {
   return {
     id: String(question._id),
@@ -38,6 +42,7 @@ export function toAdminQuestion(
     sourcePages: question.sourcePages || [],
     createdAt: new Date(question.createdAt).toISOString(),
     updatedAt: new Date(question.updatedAt || question.createdAt).toISOString(),
+    stats,
   };
 }
 

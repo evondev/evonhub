@@ -31,6 +31,8 @@ interviewAttemptSchema.index(
   { user: 1, question: 1 },
   { unique: true, partialFilterExpression: { isFirstAttempt: true } },
 );
+// Thống kê từng câu ở trang Admin, xoá lượt làm khi xoá câu
+interviewAttemptSchema.index({ question: 1, isFirstAttempt: 1 });
 // Tiến độ của một người trong một khoá
 interviewAttemptSchema.index({ user: 1, course: 1, createdAt: -1 });
 

@@ -20,6 +20,12 @@ export const INTERVIEW_PATH = "/interview";
 
 export const INTERVIEW_ADMIN_PATH = "/admin/interview/manage";
 
+/** Từ chừng này người làm trở lên mới xét tỉ lệ đúng, ít hơn thì chưa đủ để nói gì */
+export const INTERVIEW_LOW_CORRECT_MIN_LEARNERS = 5;
+
+/** Tỉ lệ đúng lượt đầu dưới mức này thì nhắc Admin đọc lại đáp án */
+export const INTERVIEW_LOW_CORRECT_RATE = 0.2;
+
 /** Điểm cộng khi đúng ngay lần nộp đầu, theo độ khó */
 export const INTERVIEW_POINTS_BY_DIFFICULTY: Record<
   InterviewDifficulty,
