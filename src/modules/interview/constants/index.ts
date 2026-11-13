@@ -115,7 +115,7 @@ Luật bắt buộc:
 - Code ngắn: tối đa 15 dòng, mỗi dòng tối đa 50 ký tự, thụt lề 2 dấu cách.
 - Dạng "predict": hỏi code chạy ra gì, 3–4 đáp án, đúng một đáp án đúng. Đáp án sai phải là lỗi hiểu sai phổ biến, không vô lý.
 - Dạng "concept": câu hỏi khái niệm, 3–4 đáp án, đúng một đáp án đúng. code để chuỗi rỗng nếu không cần.
-- Dạng "log-order": code có console.log, logItems liệt kê các dòng log theo ĐÚNG thứ tự in ra (3–8 dòng). options để mảng rỗng.
+- Dạng "log-order": code có console.log, logItems liệt kê các dòng log theo ĐÚNG thứ tự in ra (3–8 dòng). Mỗi dòng log phải KHÁC nhau, nên gắn nhãn chỗ in, ví dụ console.log("render", n), console.log("effect", n). Nếu các dòng in ra giống nhau thì đổi sang dạng "predict". options để mảng rỗng.
 - explanation: giải thích vì sao đáp án đúng, 2–4 câu, như người phỏng vấn giải thích lại.
 - keyPoints: 2–3 ý chính học viên cần nói được khi trả lời "vì sao", mỗi ý một câu ngắn.
 - version: phiên bản áp dụng, ví dụ "React 18+", "Next.js 15", "ES2022".

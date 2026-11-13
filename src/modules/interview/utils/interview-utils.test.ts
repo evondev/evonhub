@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { InterviewDifficulty } from "../constants/interview-enums";
+import { InterviewDifficulty, InterviewQuestionType } from "../constants/interview-enums";
+import { interviewQuestionContentSchema } from "../schemas";
 import {
   getAttemptPoints,
   isCorrectChoice,
@@ -116,5 +117,33 @@ describe("isQuoteInText", () => {
   it("không khớp khi câu bịa hoặc quá ngắn", () => {
     expect(isQuoteInText("Calling the set function three times increments once.", pageText)).toBe(false);
     expect(isQuoteInText("React", pageText)).toBe(false);
+  });
+});
+
+describe("interviewQuestionContentSchema với dạng sắp xếp log", () => {
+  const buildLogOrderQuestion = (logItems: string[]) => ({
+    type: InterviewQuestionType.LogOrder,
+    difficulty: InterviewDifficulty.Easy,
+    version: "React 19",
+    prompt: "Sau khi bấm nút, log in ra theo thứ tự nào?",
+    code: "console.log(n)",
+    options: [],
+    logItems,
+    explanation: "State là ảnh chụp của lần render.",
+    keyPoints: ["State không đổi trong cùng một lần render"],
+    sources: [{ url: "https://react.dev/learn/state-as-a-snapshot", title: "", quote: "" }],
+    tags: [],
+  });
+
+  it("nhận khi các dòng log khác nhau", () => {
+    const parsed = interviewQuestionContentSchema.safeParse(buildLogOrderQuestion(["a 0", "b 0", "c 0"]));
+
+    expect(parsed.success).toBe(true);
+  });
+
+  it("từ chối khi có dòng log trùng, vì đổi chỗ vẫn đúng", () => {
+    const parsed = interviewQuestionContentSchema.safeParse(buildLogOrderQuestion(["0", "0", "0"]));
+
+    expect(parsed.success).toBe(false);
   });
 });

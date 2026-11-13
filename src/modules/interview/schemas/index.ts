@@ -90,6 +90,15 @@ export const interviewQuestionContentSchema = z
         });
       }
 
+      // Hai dòng giống nhau thì đổi chỗ vẫn đúng, câu sắp xếp mất ý nghĩa
+      if (new Set(filledLogItems.map((logItem) => logItem.trim())).size !== filledLogItems.length) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["logItems"],
+          message: "Các dòng log phải khác nhau. Gắn nhãn vào console.log hoặc đổi sang dạng Đoán kết quả",
+        });
+      }
+
       return;
     }
 
