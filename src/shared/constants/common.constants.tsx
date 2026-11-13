@@ -5,11 +5,9 @@ import {
   ClipboardList,
   Compass,
   Home,
-  Inbox,
   Languages,
   LayoutGrid,
   LibraryBig,
-  MessageCircle,
   MessageSquare,
   MessageSquareHeart,
   MessagesSquare,
@@ -26,11 +24,6 @@ export const ADMIN_HOME_PATH = "/admin";
 export const DASHBOARD_PATH = "/dashboard";
 
 export const CHAT_PATH = "/chat";
-
-// Học viên nhắn riêng cho Admin; Admin đọc và trả lời ở hộp thư trong khu quản lý
-export const SUPPORT_PATH = "/support";
-
-export const SUPPORT_ADMIN_PATH = "/admin/support";
 
 // Tạm tắt Trò chuyện: ẩn khỏi menu, /chat trả 404, layout thôi hỏi phòng chat.
 // Bật lại thì đổi thành true
@@ -95,16 +88,6 @@ export const menuLinks: MenuLinkItemProps[] = [
   },
   ...(IS_CHAT_ENABLED ? [chatMenuLink] : []),
   {
-    title: "Nhắn Admin",
-    mobileTitle: "Nhắn tin",
-    icon: <MessageCircle />,
-    url: SUPPORT_PATH,
-    section: "community",
-    // Admin đọc tin ở Hộp thư trong khu quản lý. Đang chiếm chỗ thứ 6 của thanh
-    // dưới khi Trò chuyện tắt; bật lại Trò chuyện thì phải bỏ bớt một mục
-    isHideForAdmin: true,
-  },
-  {
     title: "Học tiếng Anh",
     icon: <Languages />,
     url: SPEAK_NOW_URL,
@@ -137,12 +120,6 @@ export const adminNavLinks: MenuLinkItemProps[] = [
     icon: <LibraryBig />,
     url: "/admin/course/manage",
     isExpert: true,
-  },
-  {
-    title: "Hộp thư",
-    icon: <Inbox />,
-    url: SUPPORT_ADMIN_PATH,
-    isAdmin: true,
   },
   {
     title: "Hoạt động",
