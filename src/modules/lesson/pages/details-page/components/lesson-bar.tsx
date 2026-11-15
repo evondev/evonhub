@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/button";
 import { FetchLessonLearnersResult } from "@/modules/activity/types";
 import { cn } from "@/shared/utils";
 import { useGlobalStore } from "@/store";
-import { ChevronLeft, ChevronRight, PanelRightOpen } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MessageCircleQuestion,
+  PanelRightOpen,
+} from "lucide-react";
 import Link from "next/link";
 import { LessonLearners } from "./lesson-learners";
 
@@ -16,10 +21,13 @@ export interface LessonBarProps {
   nextLessonId?: string;
   /** Người khác đang học cùng bài; null hoặc 0 người thì không hiện dòng này */
   lessonLearners?: FetchLessonLearnersResult | null;
+  /** Link luyện phỏng vấn của khóa; không có thì không hiện nút */
+  interviewHref?: string;
 }
 
-// Tên bài và hai nút đi tiếp, ngay dưới video. Tới bài đầu hoặc cuối thì nút
-// đó mờ nhưng vẫn giữ chỗ để nút kia không trượt sang.
+// Tên bài, nút luyện phỏng vấn (nếu khóa có) và hai nút đi tiếp, ngay dưới
+// video. Tới bài đầu hoặc cuối thì nút đó mờ nhưng vẫn giữ chỗ để nút kia
+// không trượt sang.
 export function LessonBar({
   title,
   chapterTitle,
@@ -27,6 +35,7 @@ export function LessonBar({
   prevLessonId,
   nextLessonId,
   lessonLearners,
+  interviewHref,
 }: LessonBarProps) {
   const { isExpanded, toggleExpanded } = useGlobalStore();
   const durationLabel = Number(duration) > 0 ? `${duration} phút` : "";
@@ -62,6 +71,21 @@ export function LessonBar({
             onClick={() => toggleExpanded?.(false)}
           >
             <PanelRightOpen className="size-4" />
+          </Button>
+        )}
+
+        {/* Mobile xuống hàng riêng dưới cặp nút đi tiếp; từ lg đứng trước cặp nút */}
+        {interviewHref && (
+          // Nền xanh secondary của theme cho nổi; variant "secondary" của Button
+          // chỉ là nền xám nhạt nên không dùng
+          <Button
+            asChild
+            className="order-last col-span-2 bg-secondary text-white hover:bg-secondary/90 lg:order-none"
+          >
+            <Link href={interviewHref}>
+              <MessageCircleQuestion className="size-4 shrink-0" />
+              Luyện phỏng vấn
+            </Link>
           </Button>
         )}
 

@@ -28,6 +28,7 @@ export interface LessonContentProps {
   lessonId: string;
   lessonDetails: LessonItemCutomizeData;
   canAccessContent?: boolean;
+  interviewHref?: string;
 }
 
 interface LastCourseLesson {
@@ -39,6 +40,7 @@ export function LessonContent({
   lessonId,
   lessonDetails,
   canAccessContent = false,
+  interviewHref,
 }: LessonContentProps) {
   const mutateCompleteLesson = useMutationCompleteLesson();
   const { userInfo } = useUserContext();
@@ -127,6 +129,7 @@ export function LessonContent({
           prevLessonId={canAccessContent ? prevLessonId : undefined}
           nextLessonId={canAccessContent ? nextLessonId : undefined}
           lessonLearners={lessonLearners}
+          interviewHref={canAccessContent ? interviewHref : undefined}
         />
       </div>
 

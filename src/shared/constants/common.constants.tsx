@@ -78,8 +78,6 @@ export const menuLinks: MenuLinkItemProps[] = [
     // Trang xem một video là /video/<slug>, không bắt đầu bằng /videos
     activePathPrefix: "/video/",
     isHideMobileForManager: true,
-    // Thanh dưới chừa chỗ cho Luyện phỏng vấn: 6 mục thì nhãn bị cắt ở 375px
-    isHideOnMobile: true,
   },
   {
     title: "Xếp hạng",
@@ -88,13 +86,6 @@ export const menuLinks: MenuLinkItemProps[] = [
     section: "community",
     // Admin, expert không lên bảng: thanh dưới của họ chừa chỗ cho Quản lý
     isHideMobileForManager: true,
-  },
-  {
-    title: "Luyện phỏng vấn",
-    mobileTitle: "Phỏng vấn",
-    icon: <MessageCircleQuestion />,
-    url: "/interview",
-    section: "community",
   },
   ...(IS_CHAT_ENABLED ? [chatMenuLink] : []),
   {

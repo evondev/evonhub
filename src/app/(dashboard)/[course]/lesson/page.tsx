@@ -2,6 +2,8 @@ import { NotFoundState } from "@/shared/components/not-found";
 import { getUserById } from "@/lib/actions/user.action";
 import { fetchCourseBySlug } from "@/modules/course/actions";
 import { recordStudySession } from "@/modules/course/services/course-study.service";
+import { INTERVIEW_PATH } from "@/modules/interview/constants";
+import { hasPublishedInterviewQuestions } from "@/modules/interview/services/interview-availability.service";
 import { getLessonById } from "@/modules/lesson/actions";
 import {
   DetailsPageLayout,
@@ -69,8 +71,15 @@ export default async function LessonNewPage({
 
   if (!isOwnedCourse && !isPreviewLesson) return <NotFoundState />;
 
-  // Chỉ tính khi đã qua kiểm tra quyền; mỗi người một lượt mỗi khóa mỗi ngày
-  await recordStudySession(courseId);
+  // Chỉ tính khi đã qua kiểm tra quyền; mỗi người một lượt mỗi khóa mỗi ngày.
+  // Nút luyện phỏng vấn chỉ dành cho người đã mua: người học thử không vào được
+  const [, hasInterviewPractice] = await Promise.all([
+    recordStudySession(courseId),
+    isOwnedCourse && hasPublishedInterviewQuestions(courseId),
+  ]);
+  const interviewHref = hasInterviewPractice
+    ? `${INTERVIEW_PATH}/${courseSlug}`
+    : undefined;
 
   return (
     <LessonQueryHydration
@@ -83,6 +92,7 @@ export default async function LessonNewPage({
           lessonDetails={lessonDetails}
           lessonId={lessonId}
           isPreviewLesson={isPreviewLesson}
+          interviewHref={interviewHref}
         />
       </DetailsPageLayout>
     </LessonQueryHydration>
