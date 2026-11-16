@@ -54,11 +54,7 @@ export function FeatureAnnouncementDialog({
             />
           ))}
         </div>
-        <Button
-          variant="ghost"
-          onClick={handleClose}
-          className="mt-4 w-full"
-        >
+        <Button variant="ghost" onClick={handleClose} className="mt-4 w-full">
           Để sau
         </Button>
       </DialogContent>

@@ -1,6 +1,10 @@
 import { INTERVIEW_PATH } from "@/modules/interview/constants";
 import { BriefcaseBusiness, Home } from "lucide-react";
-import { HOUSE_PATH } from "../constants";
+import { FEATURE_ANNOUNCEMENT_ID } from "@/shared/constants/announcement.constants";
+import {
+  FEATURE_ANNOUNCEMENT_STORAGE_KEY_PREFIX,
+  HOUSE_PATH,
+} from "../constants";
 import { FeatureAnnouncementItem } from "../types";
 
 /** Đường tới nhà của một người; tên có thể chứa ký tự đặc biệt nên phải mã hoá */
@@ -38,4 +42,25 @@ export function buildFeatureAnnouncementItems(
   };
 
   return [interviewItem, houseItem];
+}
+
+function getAnnouncementStorageKey(userId: string): string {
+  return `${FEATURE_ANNOUNCEMENT_STORAGE_KEY_PREFIX}:${FEATURE_ANNOUNCEMENT_ID}:${userId}`;
+}
+
+/** Trình duyệt này đã bật hộp cho người này chưa. Không đọc được storage thì coi như chưa */
+export function hasSeenAnnouncementLocally(userId: string): boolean {
+  try {
+    return localStorage.getItem(getAnnouncementStorageKey(userId)) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function markAnnouncementSeenLocally(userId: string) {
+  try {
+    localStorage.setItem(getAnnouncementStorageKey(userId), "1");
+  } catch {
+    // Storage bị chặn: còn mốc trên server, không ảnh hưởng gì khác
+  }
 }
