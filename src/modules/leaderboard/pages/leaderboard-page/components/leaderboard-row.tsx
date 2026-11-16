@@ -1,5 +1,6 @@
 import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { cn } from "@/shared/utils";
+import { HouseLinkButton } from "../../../components/house-link-button";
 import { LeaderboardProfileLink } from "../../../components/leaderboard-profile-link";
 import { StudyMinutesText } from "../../../components/study-minutes-text";
 import { TierBadge } from "../../../components/tier-badge";
@@ -15,7 +16,7 @@ interface LeaderboardRowProps {
   isMe: boolean;
 }
 
-/** Avatar và tên dẫn tới trang công khai; cả dòng không bấm được nên không có nền rê */
+/** Avatar và tên dẫn tới trang công khai, nút nhà dẫn tới đảo 3D; cả dòng không bấm được nên không có nền rê */
 export function LeaderboardRow({
   rank,
   username,
@@ -79,6 +80,7 @@ export function LeaderboardRow({
         )}
       </div>
       <TierBadge level={tierLevel} className="hidden sm:block" />
+      <HouseLinkButton username={username} name={name} isCompact />
       <p className="shrink-0 text-right text-sm sm:w-24">
         <StudyMinutesText minutes={minutes} />
       </p>

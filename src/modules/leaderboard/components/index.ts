@@ -1,3 +1,4 @@
+export { HouseLinkButton } from "./house-link-button";
 export { LeaderboardRetryButton } from "./leaderboard-retry-button";
 export { RankMedal } from "./rank-medal";
 export { StudyMinutesText } from "./study-minutes-text";

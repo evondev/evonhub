@@ -1,5 +1,6 @@
 import { UserAvatar } from "@/shared/components/common/user-avatar";
 import { cn } from "@/shared/utils";
+import { HouseLinkButton } from "../../../components/house-link-button";
 import { LeaderboardProfileLink } from "../../../components/leaderboard-profile-link";
 import { RankMedal } from "../../../components/rank-medal";
 import { StudyMinutesText } from "../../../components/study-minutes-text";
@@ -87,6 +88,7 @@ export function LeaderboardPodiumSlot({
           numberClassName="text-base font-semibold sm:text-lg"
         />
       </p>
+      <HouseLinkButton username={entry.username} name={entry.name} />
     </div>
   );
 }

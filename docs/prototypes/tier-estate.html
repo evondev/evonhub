@@ -1,0 +1,1793 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Đảo theo bậc</title>
+<style>
+  :root {
+    --card: rgba(255, 255, 255, 0.86);
+    --card-border: rgba(15, 23, 42, 0.08);
+    --text: #0f172a;
+    --muted: #5b6474;
+    --accent: #0e9aa7;
+    --accent-soft: rgba(14, 154, 167, 0.12);
+    --locked: #9aa3b2;
+    --shadow: 0 8px 28px rgba(15, 23, 42, 0.14);
+  }
+  body.is-night {
+    --card: rgba(17, 24, 39, 0.82);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --text: #f1f5f9;
+    --muted: #a5b0c2;
+    --accent: #5eead4;
+    --accent-soft: rgba(94, 234, 212, 0.14);
+    --locked: #64708a;
+    --shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #9fd8f0; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  #stage { position: fixed; inset: 0; }
+  #stage canvas { display: block; touch-action: none; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  #header {
+    position: fixed; top: 16px; left: 16px; padding: 14px 16px;
+    display: flex; gap: 12px; align-items: center; max-width: min(420px, calc(100vw - 32px));
+  }
+  #avatar {
+    width: 44px; height: 44px; border-radius: 999px; flex: none;
+    display: grid; place-items: center; font-weight: 700; color: #fff;
+    background: conic-gradient(#22d3ee, #e879f9, #fbbf24, #a78bfa, #22d3ee);
+  }
+  #header h1 { margin: 0; font-size: 16px; line-height: 1.3; }
+  #tierLine { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+  #nextLine { margin: 4px 0 0; font-size: 12px; color: var(--accent); }
+  #items {
+    position: fixed; top: 16px; right: 16px; width: 248px; padding: 14px 14px 10px;
+    max-height: calc(100vh - 150px); overflow: auto;
+  }
+  #items h2 { margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  #items ul { list-style: none; margin: 0; padding: 0; }
+  #items li {
+    display: flex; align-items: center; gap: 8px; padding: 5px 4px; font-size: 13px; border-radius: 8px;
+  }
+  #items li .mark { width: 18px; text-align: center; flex: none; }
+  #items li .tier { margin-left: auto; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  #items li.is-locked { color: var(--locked); }
+  #items li.is-next { background: var(--accent-soft); color: var(--text); }
+  #controls {
+    position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%);
+    width: min(720px, calc(100vw - 32px)); padding: 12px 16px 14px;
+  }
+  #controls .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  #controls label { font-size: 12px; color: var(--muted); }
+  #tierRange { flex: 1; min-width: 180px; accent-color: var(--accent); }
+  #ticks {
+    display: grid; grid-template-columns: repeat(11, 1fr); font-size: 10px; color: var(--muted);
+    margin: 2px 0 8px; text-align: center; font-variant-numeric: tabular-nums;
+  }
+  .btn {
+    font: inherit; font-size: 13px; padding: 7px 12px; border-radius: 10px; cursor: pointer;
+    border: 1px solid var(--card-border); background: transparent; color: var(--text);
+  }
+  .btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+  #toast {
+    position: fixed; top: 16px; left: 50%; transform: translate(-50%, -140%);
+    padding: 10px 16px; font-size: 14px; font-weight: 600; transition: transform 0.45s ease, opacity 0.3s ease;
+    opacity: 0; visibility: hidden;
+    max-width: calc(100vw - 32px); text-align: center;
+  }
+  #toast.is-shown { transform: translate(-50%, 0); opacity: 1; visibility: visible; }
+  #tip {
+    position: fixed; padding: 8px 12px; font-size: 13px; pointer-events: none;
+    opacity: 0; transition: opacity 0.15s ease; max-width: 260px;
+  }
+  #tip.is-shown { opacity: 1; }
+  #tip small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  @media (max-width: 760px) {
+    #items { display: none; }
+    #header { padding: 10px 12px; }
+    #toast { top: 96px; }
+  }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="stage"></div>
+
+<header id="header" class="card">
+  <div id="avatar">B</div>
+  <div>
+    <h1>Nhà của bạn</h1>
+    <p id="tierLine"></p>
+    <p id="nextLine"></p>
+  </div>
+</header>
+
+<aside id="items" class="card">
+  <h2 id="houseName"></h2>
+  <ul id="itemList"></ul>
+</aside>
+
+<div id="controls" class="card">
+  <div class="row">
+    <label for="tierRange">Bản thử: kéo để đổi bậc</label>
+    <input id="tierRange" type="range" min="0" max="10" step="1" value="6" />
+  </div>
+  <div id="ticks"></div>
+  <div class="row">
+    <button class="btn" id="ghostBtn" aria-pressed="false">Bậc kế có gì</button>
+    <button class="btn" id="nightBtn" aria-pressed="false">Ban đêm</button>
+    <button class="btn" id="spinBtn" aria-pressed="true">Tự xoay</button>
+  </div>
+</div>
+
+<div id="toast" class="card" role="status"></div>
+<div id="tip" class="card"></div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ------------------------------------------------------------------ */
+/* Dữ liệu bậc: mốc giờ khớp STUDY_TIERS của evonhub                 */
+/* ------------------------------------------------------------------ */
+const TIERS = [
+  { level: 0, name: 'Chưa có bậc', hours: 0 },
+  { level: 1, name: 'Tập sự', hours: 1 / 60 },
+  { level: 2, name: 'Băng tinh', hours: 1 },
+  { level: 3, name: 'Tinh tú', hours: 3 },
+  { level: 4, name: 'Nhiệt huyết', hours: 6 },
+  { level: 5, name: 'Đam mê', hours: 10 },
+  { level: 6, name: 'Vương miện', hours: 15 },
+  { level: 7, name: 'Chiến cúp', hours: 25 },
+  { level: 8, name: 'Kim cương', hours: 40 },
+  { level: 9, name: 'Thạch anh', hours: 60 },
+  { level: 10, name: 'Huyền thoại', hours: 100 },
+];
+
+// Món hiện trong danh sách bên phải. Món có nhiều bản (hồ bơi, du thuyền) dùng chung listId.
+const LIST_ROWS = [
+  { listId: 'campfire', name: 'Lửa trại', tier: 1 },
+  { listId: 'bike', name: 'Xe đạp', tier: 1 },
+  { listId: 'scooter', name: 'Xe máy', tier: 2 },
+  { listId: 'car', name: 'Ô tô con', tier: 3 },
+  { listId: 'balloon', name: 'Khinh khí cầu', tier: 4 },
+  { listId: 'dock', name: 'Bến gỗ', tier: 4 },
+  { listId: 'speedboat', name: 'Ca nô', tier: 5 },
+  { listId: 'pool', name: 'Hồ bơi', tier: 6 },
+  { listId: 'supercar', name: 'Siêu xe', tier: 6 },
+  { listId: 'garden', name: 'Vườn đèn', tier: 7 },
+  { listId: 'yacht', name: 'Du thuyền', tier: 7 },
+  { listId: 'supercar2', name: 'Siêu xe thứ hai', tier: 8 },
+  { listId: 'heli', name: 'Trực thăng', tier: 9 },
+  { listId: 'jet', name: 'Máy bay riêng', tier: 10 },
+  { listId: 'rainbow', name: 'Cầu vồng', tier: 10 },
+];
+
+const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ------------------------------------------------------------------ */
+/* Renderer, cảnh, camera                                              */
+/* ------------------------------------------------------------------ */
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+// Máy yếu (≤ 4 nhân hay ≤ 4 GB RAM): độ phân giải 1x, bóng cứng, bản đồ bóng nhỏ.
+const isLowPower = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, isLowPower ? 1 : 1.5));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = isLowPower ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+stage.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.5, 4000);
+const HOME_TARGET = new THREE.Vector3(8, 3, -2);
+camera.position.set(62, 52, 92);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.copy(HOME_TARGET);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 22;
+controls.maxDistance = 260;
+controls.maxPolarAngle = 1.38;
+controls.autoRotate = !isReducedMotion;
+controls.autoRotateSpeed = 0.35;
+controls.enablePan = false;
+
+/* ------------------------------------------------------------------ */
+/* Vật liệu                                                            */
+/* ------------------------------------------------------------------ */
+const materialCache = new Map();
+function mat(color, options = {}) {
+  const key = color + JSON.stringify(options);
+  if (!materialCache.has(key)) {
+    materialCache.set(key, new THREE.MeshStandardMaterial({ color, flatShading: true, roughness: 0.82, ...options }));
+  }
+  return materialCache.get(key);
+}
+
+// Vật liệu đổi theo ngày đêm: giữ tham chiếu để bật phát sáng ban đêm.
+const windowMat = new THREE.MeshStandardMaterial({ color: '#33506b', roughness: 0.12, metalness: 0.35, emissive: '#ffcf7a', emissiveIntensity: 0, flatShading: true });
+const lampMat = new THREE.MeshStandardMaterial({ color: '#fff4d6', emissive: '#ffd27a', emissiveIntensity: 0.2, flatShading: true });
+const headlightMat = new THREE.MeshStandardMaterial({ color: '#f5f7fa', emissive: '#fff3c4', emissiveIntensity: 0, roughness: 0.2 });
+const poolWaterMat = new THREE.MeshStandardMaterial({ color: '#43d3ea', emissive: '#1cc8e8', emissiveIntensity: 0.12, roughness: 0.08, metalness: 0.1 });
+const flameMat = new THREE.MeshStandardMaterial({ color: '#ffb340', emissive: '#ff7a1a', emissiveIntensity: 2.2, flatShading: true });
+const padLightMat = new THREE.MeshStandardMaterial({ color: '#c8ffd9', emissive: '#4cff8f', emissiveIntensity: 0.3 });
+const ghostMat = new THREE.MeshStandardMaterial({
+  color: '#9fe8ff', emissive: '#4fd2ff', emissiveIntensity: 0.7, transparent: true, opacity: 0.42, depthWrite: false, flatShading: true,
+});
+
+/* ------------------------------------------------------------------ */
+/* Hàm dựng khối                                                       */
+/* ------------------------------------------------------------------ */
+function addMesh(parent, geometry, material, position = [0, 0, 0], rotation = [0, 0, 0], castShadow = true) {
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(...position);
+  mesh.rotation.set(...rotation);
+  mesh.castShadow = castShadow;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+// Hộp đặt theo đáy: y là mặt dưới, dễ xếp tầng.
+function boxOn(parent, width, height, depth, material, x, bottomY, z, rotationY = 0) {
+  return addMesh(parent, new THREE.BoxGeometry(width, height, depth), material, [x, bottomY + height / 2, z], [0, rotationY, 0]);
+}
+function cylinderOn(parent, radiusTop, radiusBottom, height, segments, material, x, bottomY, z) {
+  return addMesh(parent, new THREE.CylinderGeometry(radiusTop, radiusBottom, height, segments), material, [x, bottomY + height / 2, z]);
+}
+const upAxis = new THREE.Vector3(0, 1, 0);
+function rodBetween(parent, start, end, radius, material, segments = 6) {
+  const startVector = new THREE.Vector3(...start);
+  const endVector = new THREE.Vector3(...end);
+  const length = startVector.distanceTo(endVector);
+  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, length, segments), material);
+  mesh.position.copy(startVector).add(endVector).multiplyScalar(0.5);
+  mesh.quaternion.setFromUnitVectors(upAxis, endVector.clone().sub(startVector).normalize());
+  mesh.castShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+// Biên dạng nhìn ngang (x = dọc thân, y = cao), đùn theo bề ngang z, căn giữa.
+function sideProfile(points, width, bevel = 0.06) {
+  const shape = new THREE.Shape(points.map(([x, y]) => new THREE.Vector2(x, y)));
+  const geometry = new THREE.ExtrudeGeometry(shape, {
+    depth: width - bevel * 2, bevelEnabled: bevel > 0, bevelSize: bevel, bevelThickness: bevel, bevelSegments: 1,
+  });
+  geometry.translate(0, 0, -(width - bevel * 2) / 2);
+  return geometry;
+}
+// Thót bề ngang theo độ cao: nóc xe hẹp hơn gầm.
+function taperTop(geometry, startY, endY, amount) {
+  const position = geometry.attributes.position;
+  for (let i = 0; i < position.count; i++) {
+    position.setZ(i, position.getZ(i) * (1 - amount * smoothstep(startY, endY, position.getY(i))));
+  }
+  geometry.computeVertexNormals();
+  return geometry;
+}
+// Viền nhìn từ trên (x = dọc, y = ngang), đùn lên theo y. bottomScale < 1 thót đáy thành thân thuyền.
+function hullFromOutline(points, height, bottomScale = 1) {
+  const shape = new THREE.Shape(points.map(([x, y]) => new THREE.Vector2(x, y)));
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth: height, bevelEnabled: false });
+  geometry.rotateX(-Math.PI / 2);
+  if (bottomScale !== 1) {
+    const position = geometry.attributes.position;
+    for (let i = 0; i < position.count; i++) {
+      if (position.getY(i) < height * 0.5) {
+        position.setZ(i, position.getZ(i) * bottomScale);
+        position.setX(i, position.getX(i) * (0.92 + 0.08 * bottomScale));
+      }
+    }
+    geometry.computeVertexNormals();
+  }
+  return geometry;
+}
+// Mái hông: chóp 4 cạnh xoay vuông góc rồi kéo theo hình chữ nhật.
+function hipRoof(width, depth, height) {
+  const geometry = new THREE.ConeGeometry(Math.SQRT1_2, height, 4, 1);
+  geometry.rotateY(Math.PI / 4);
+  geometry.scale(width, 1, depth);
+  return geometry;
+}
+// Mái hai dốc: tam giác đùn theo chiều sâu.
+function gableRoof(width, depth, rise) {
+  const shape = new THREE.Shape([new THREE.Vector2(-width / 2, 0), new THREE.Vector2(width / 2, 0), new THREE.Vector2(0, rise)]);
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false });
+  geometry.translate(0, 0, -depth / 2);
+  return geometry;
+}
+
+/* ------------------------------------------------------------------ */
+/* Đảo và biển                                                         */
+/* ------------------------------------------------------------------ */
+const GROUND_Y = 1.5;
+const ISLAND_RX = 34;
+const ISLAND_RZ = 28;
+const HILL = { x: -22, z: -14, radius: 8, height: 3.6 };
+
+function shoreWobble(angle) {
+  return 1 + 0.022 * Math.sin(3 * angle + 0.7) + 0.014 * Math.sin(7 * angle + 2.1) + 0.008 * Math.sin(13 * angle);
+}
+function normalizedRadius(x, z) {
+  const angle = Math.atan2(z / ISLAND_RZ, x / ISLAND_RX);
+  return Math.hypot(x / ISLAND_RX, z / ISLAND_RZ) / shoreWobble(angle);
+}
+function smoothstep(edge0, edge1, value) {
+  const t = Math.min(1, Math.max(0, (value - edge0) / (edge1 - edge0)));
+  return t * t * (3 - 2 * t);
+}
+// Độ cao mặt đảo: bãi cỏ phẳng, bờ cỏ, bãi cát thoai thoải, đáy biển sâu dần.
+function terrainHeight(x, z) {
+  const radius = normalizedRadius(x, z);
+  let height;
+  if (radius <= 1) height = GROUND_Y;
+  else if (radius <= 1.04) height = THREE.MathUtils.lerp(GROUND_Y, 0.95, (radius - 1) / 0.04);
+  else if (radius <= 1.25) height = THREE.MathUtils.lerp(0.95, -0.45, (radius - 1.04) / 0.21);
+  else if (radius <= 1.7) height = THREE.MathUtils.lerp(-0.45, -4.5, (radius - 1.25) / 0.45);
+  else height = THREE.MathUtils.lerp(-4.5, -16, Math.min(1, (radius - 1.7) / 1.5));
+  const hillDistance = Math.hypot(x - HILL.x, z - HILL.z) / HILL.radius;
+  if (hillDistance < 1) height += HILL.height * (1 - smoothstep(0, 1, hillDistance)) * (radius < 1 ? 1 : 0);
+  return height;
+}
+
+function buildIsland() {
+  const rings = [0, 0.12, 0.24, 0.36, 0.48, 0.58, 0.67, 0.75, 0.82, 0.88, 0.93, 0.97, 1.0, 1.04, 1.09, 1.15, 1.21, 1.27, 1.36, 1.5, 1.7, 2.0, 2.5, 3.2];
+  const segments = 128;
+  const positions = [];
+  const random = mulberry32(7);
+  for (let ringIndex = 0; ringIndex < rings.length; ringIndex++) {
+    for (let segmentIndex = 0; segmentIndex < segments; segmentIndex++) {
+      const ring = rings[ringIndex];
+      const isEdge = ring === 1.0 || ring === 1.04 || ring === 0;
+      const angle = (segmentIndex / segments) * Math.PI * 2 + (isEdge ? 0 : (random() - 0.5) * 0.02);
+      const wobble = shoreWobble(angle);
+      const x = ISLAND_RX * ring * wobble * Math.cos(angle);
+      const z = ISLAND_RZ * ring * wobble * Math.sin(angle);
+      let y = terrainHeight(x, z);
+      if (ring > 0.3 && ring < 0.97) y += random() * 0.1;
+      positions.push(x, y, z);
+    }
+  }
+  const indices = [];
+  for (let ringIndex = 0; ringIndex < rings.length - 1; ringIndex++) {
+    for (let segmentIndex = 0; segmentIndex < segments; segmentIndex++) {
+      const next = (segmentIndex + 1) % segments;
+      const a = ringIndex * segments + segmentIndex;
+      const b = ringIndex * segments + next;
+      const c = (ringIndex + 1) * segments + segmentIndex;
+      const d = (ringIndex + 1) * segments + next;
+      indices.push(a, b, c, b, d, c);
+    }
+  }
+  let geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setIndex(indices);
+  geometry = geometry.toNonIndexed();
+
+  const position = geometry.attributes.position;
+  const colors = new Float32Array(position.count * 3);
+  const grassA = new THREE.Color('#7ccf5b');
+  const grassB = new THREE.Color('#6cbf4f');
+  const bank = new THREE.Color('#c2a46a');
+  const sand = new THREE.Color('#f3dea5');
+  const wetSand = new THREE.Color('#dcc287');
+  const shallow = new THREE.Color('#e6d7a0');
+  const deep = new THREE.Color('#1b6b86');
+  const faceColor = new THREE.Color();
+  for (let i = 0; i < position.count; i += 3) {
+    const x = (position.getX(i) + position.getX(i + 1) + position.getX(i + 2)) / 3;
+    const y = (position.getY(i) + position.getY(i + 1) + position.getY(i + 2)) / 3;
+    const z = (position.getZ(i) + position.getZ(i + 1) + position.getZ(i + 2)) / 3;
+    const radius = normalizedRadius(x, z);
+    if (radius < 0.995) faceColor.copy(grassA).lerp(grassB, 0.5 + 0.5 * Math.sin(x * 0.21 + Math.cos(z * 0.17) * 2)).offsetHSL(0, 0, (random() - 0.5) * 0.015);
+    else if (radius < 1.045) faceColor.copy(bank);
+    else if (y > 0.25) faceColor.copy(sand).offsetHSL(0, 0, (random() - 0.5) * 0.02);
+    else if (y > -0.5) faceColor.copy(wetSand);
+    else faceColor.copy(shallow).lerp(deep, smoothstep(-0.5, -9, y));
+    for (let vertex = 0; vertex < 3; vertex++) colors.set([faceColor.r, faceColor.g, faceColor.b], (i + vertex) * 3);
+  }
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geometry.computeVertexNormals();
+  const island = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.95 }));
+  island.receiveShadow = true;
+  scene.add(island);
+}
+
+function mulberry32(seed) {
+  let state = seed >>> 0;
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Biển gần đảo trong suốt để thấy bãi cạn ngả xanh ngọc; biển xa đục, chìm vào sương.
+const seaMaterial = new THREE.MeshStandardMaterial({
+  color: '#22b4c9', transparent: true, opacity: 0.78, roughness: 0.22, metalness: 0.05, flatShading: true,
+});
+const seaGeometry = new THREE.RingGeometry(0.01, 170, 72, 34);
+seaGeometry.rotateX(-Math.PI / 2);
+const seaUniforms = { uTime: { value: 0 } };
+seaMaterial.onBeforeCompile = (shader) => {
+  shader.uniforms.uTime = seaUniforms.uTime;
+  shader.vertexShader = shader.vertexShader
+    .replace('#include <common>', '#include <common>\nuniform float uTime;')
+    .replace('#include <begin_vertex>', `#include <begin_vertex>
+    float seaDistance = length(transformed.xz);
+    float seaAmplitude = 0.06 + 0.32 * smoothstep(45.0, 110.0, seaDistance);
+    transformed.y += (sin(transformed.x * 0.13 + uTime * 0.9) * 0.6
+      + sin(transformed.z * 0.17 - uTime * 1.1) * 0.4
+      + sin((transformed.x + transformed.z) * 0.31 + uTime * 1.7) * 0.25) * seaAmplitude;`);
+};
+const sea = new THREE.Mesh(seaGeometry, seaMaterial);
+sea.receiveShadow = true;
+scene.add(sea);
+const farSea = new THREE.Mesh(
+  new THREE.RingGeometry(170, 3000, 72, 1).rotateX(-Math.PI / 2),
+  new THREE.MeshStandardMaterial({ color: '#1f8fae', roughness: 0.3, flatShading: true }),
+);
+farSea.position.y = -0.02;
+scene.add(farSea);
+
+
+// Viền bọt trắng ở mép nước, nhấp nhô theo nhịp sóng.
+const foamMaterial = new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.55, depthWrite: false });
+function buildFoam() {
+  const segments = 160;
+  const positions = [];
+  const indices = [];
+  for (let segmentIndex = 0; segmentIndex <= segments; segmentIndex++) {
+    const angle = (segmentIndex / segments) * Math.PI * 2;
+    const wobble = shoreWobble(angle);
+    [1.17, 1.2].forEach((ring) => {
+      positions.push(ISLAND_RX * ring * wobble * Math.cos(angle), 0.09, ISLAND_RZ * ring * wobble * Math.sin(angle));
+    });
+    if (segmentIndex < segments) {
+      const base = segmentIndex * 2;
+      indices.push(base, base + 1, base + 2, base + 1, base + 3, base + 2);
+    }
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setIndex(indices);
+  const foam = new THREE.Mesh(geometry, foamMaterial);
+  scene.add(foam);
+  return foam;
+}
+
+/* ------------------------------------------------------------------ */
+/* Trời, đèn                                                            */
+/* ------------------------------------------------------------------ */
+function gradientTexture(top, bottom) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 2;
+  canvas.height = 256;
+  const context = canvas.getContext('2d');
+  const gradient = context.createLinearGradient(0, 0, 0, 256);
+  gradient.addColorStop(0, top);
+  gradient.addColorStop(1, bottom);
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, 2, 256);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+const daySky = gradientTexture('#5fb6ea', '#fbe6c6');
+const nightSky = gradientTexture('#060d24', '#28406b');
+scene.background = daySky;
+scene.fog = new THREE.Fog('#d6ecf2', 160, 620);
+
+const hemiLight = new THREE.HemisphereLight('#e2f4ff', '#6f8f52', 1.0);
+scene.add(hemiLight);
+const sun = new THREE.DirectionalLight('#fff0d4', 2.7);
+sun.position.set(70, 95, 45);
+sun.target.position.set(10, 0, 0);
+sun.castShadow = true;
+sun.shadow.mapSize.setScalar(isLowPower ? 1024 : 2048);
+sun.shadow.bias = -0.0004;
+sun.shadow.normalBias = 0.05;
+Object.assign(sun.shadow.camera, { left: -75, right: 75, top: 60, bottom: -60, near: 10, far: 260 });
+scene.add(sun, sun.target);
+
+// Đèn điểm chỉ bật buổi tối: hiên nhà, đầu bến, lửa trại (lửa trại luôn bật nhẹ).
+const porchLight = new THREE.PointLight('#ffc977', 0, 26, 1.6);
+porchLight.position.set(-3, 5, 4);
+const dockLight = new THREE.PointLight('#ffc977', 0, 22, 1.6);
+dockLight.position.set(58, 4.5, 6);
+const fireLight = new THREE.PointLight('#ff8a2a', 0, 14, 1.8);
+fireLight.position.set(12, 2.6, 12);
+scene.add(porchLight, dockLight, fireLight);
+
+/* ------------------------------------------------------------------ */
+/* Sổ món: mỗi món có bậc mở, bậc bị thay (nếu có), điểm camera nhìn   */
+/* ------------------------------------------------------------------ */
+const items = [];
+function registerItem({ id, listId = null, name, tier, untilTier = 10, group, focus, isHouse = false }) {
+  group.traverse((child) => {
+    if (child.isMesh) {
+      child.userData.itemId = id;
+      child.userData.originalMaterial = child.material;
+      child.userData.castsShadow = child.castShadow;
+    }
+  });
+  group.userData.baseScale = group.scale.clone();
+  scene.add(group);
+  const item = { id, listId, name, tier, untilTier, group, focus: new THREE.Vector3(...focus), isHouse, mode: 'unset' };
+  items.push(item);
+  return item;
+}
+
+/* ---------------------------- Nhà theo bậc --------------------------- */
+const HOUSE_SPOT = new THREE.Vector3(-3, GROUND_Y, -6);
+function houseGroup() {
+  const group = new THREE.Group();
+  group.position.copy(HOUSE_SPOT);
+  return group;
+}
+function windowPane(parent, width, height, x, bottomY, z, rotationY = 0) {
+  return boxOn(parent, width, height, 0.12, windowMat, x, bottomY, z, rotationY);
+}
+
+function buildTent() {
+  const group = houseGroup();
+  boxOn(group, 5, 0.06, 5.4, mat('#4a7fb8'), 0, 0, 0);
+  const tent = addMesh(group, (() => {
+    const geometry = gableRoof(3.2, 3.6, 2.3);
+    return geometry;
+  })(), mat('#f08a3c'), [0, 0.04, 0]);
+  tent.castShadow = true;
+  const doorShape = new THREE.Shape([new THREE.Vector2(-0.7, 0), new THREE.Vector2(0.7, 0), new THREE.Vector2(0, 1.5)]);
+  addMesh(group, new THREE.ShapeGeometry(doorShape), mat('#6a3416', { side: THREE.DoubleSide }), [0, 0.06, 1.82], [0, 0, 0], false);
+  rodBetween(group, [0, 2.36, -1.9], [0, 2.36, 1.9], 0.05, mat('#7a5a3a'));
+  // Đèn bão cạnh lều.
+  cylinderOn(group, 0.16, 0.2, 0.42, 8, lampMat, 2.0, 0.06, 1.8);
+  boxOn(group, 0.9, 0.5, 0.6, mat('#3f6f4a'), -2.0, 0.06, 1.5, 0.3);
+  return group;
+}
+
+function buildCabin() {
+  const group = houseGroup();
+  const wood = mat('#c4874f');
+  boxOn(group, 7, 0.45, 6, mat('#8a5a35'), 0, 0, 0.4);
+  boxOn(group, 5.4, 2.7, 4.2, wood, 0, 0.45, 0);
+  for (let row = 0; row < 6; row++) boxOn(group, 5.5, 0.06, 4.3, mat('#a96f3e'), 0, 0.7 + row * 0.42, 0);
+  addMesh(group, gableRoof(6.6, 5.2, 2.1), mat('#7a3e2b'), [0, 3.15, 0]);
+  boxOn(group, 1.0, 1.9, 0.14, mat('#5a3420'), -1.2, 0.45, 2.12);
+  windowPane(group, 1.1, 0.9, 1.3, 1.5, 2.12);
+  windowPane(group, 0.9, 0.8, 2.72, 1.5, 0, Math.PI / 2);
+  boxOn(group, 0.7, 2.2, 0.7, mat('#9a948a'), 1.6, 3.6, -1.0);
+  // Ghế ngoài hiên.
+  boxOn(group, 1.4, 0.45, 0.5, mat('#6b4428'), 1.6, 0.45, 2.9);
+  return group;
+}
+
+function buildCottage() {
+  const group = houseGroup();
+  const wall = mat('#f6f0e4');
+  boxOn(group, 11, 0.35, 8.4, mat('#cfc6b4'), 0, 0, 0.6);
+  boxOn(group, 9.6, 3.1, 6.4, wall, 0, 0.35, 0);
+  addMesh(group, hipRoof(11.2, 8.0, 2.7), mat('#d0643a'), [0, 3.45 + 1.35, 0]);
+  boxOn(group, 1.3, 2.3, 0.14, mat('#7a4a2a'), 0, 0.35, 3.22);
+  [-3.0, 3.0].forEach((x) => {
+    windowPane(group, 1.4, 1.2, x, 1.5, 3.22);
+    boxOn(group, 0.38, 1.3, 0.1, mat('#3c78b5'), x - 0.92, 1.45, 3.27);
+    boxOn(group, 0.38, 1.3, 0.1, mat('#3c78b5'), x + 0.92, 1.45, 3.27);
+  });
+  windowPane(group, 1.2, 1.1, 4.82, 1.5, 0, Math.PI / 2);
+  // Bồn nước inox trên mái, rất "nhà Việt".
+  addMesh(group, new THREE.CylinderGeometry(0.6, 0.6, 1.6, 12), mat('#c9d1d9', { metalness: 0.6, roughness: 0.35 }), [2.8, 5.2, -1.6], [0, 0, Math.PI / 2]);
+  boxOn(group, 1.8, 0.7, 1.0, mat('#7d8791'), 2.8, 4.0, -1.6);
+  // Rào trắng thấp và chậu cây trước sân.
+  for (let x = -5.2; x <= 5.2; x += 0.8) {
+    if (Math.abs(x) < 1.0) continue;
+    boxOn(group, 0.14, 0.8, 0.14, mat('#ffffff'), x, 0, 5.4);
+  }
+  boxOn(group, 4.4, 0.1, 0.1, mat('#ffffff'), -3.1, 0.62, 5.4);
+  boxOn(group, 4.4, 0.1, 0.1, mat('#ffffff'), 3.1, 0.62, 5.4);
+  [-1.4, 1.4].forEach((x) => {
+    cylinderOn(group, 0.32, 0.25, 0.45, 8, mat('#b8643a'), x, 0.35, 3.9);
+    addMesh(group, new THREE.IcosahedronGeometry(0.45, 0), mat('#4f9e3a'), [x, 1.2, 3.9]);
+  });
+  return group;
+}
+
+function buildTownhouse() {
+  const group = houseGroup();
+  const facade = mat('#f5cf6b');
+  const accent = mat('#e39b52');
+  const white = mat('#fbf7ef');
+  boxOn(group, 9, 0.3, 10.5, mat('#cfc6b4'), 0, 0, 0.4);
+  boxOn(group, 7.6, 6.8, 9, facade, 0, 0.3, 0);
+  boxOn(group, 1.0, 7.4, 9.1, accent, -3.4, 0.3, 0);
+  windowPane(group, 5.0, 2.6, 0.5, 0.35, 4.52);
+  boxOn(group, 5.4, 0.18, 0.4, white, 0.5, 2.95, 4.7);
+  // Ban công tầng hai.
+  boxOn(group, 7.8, 0.25, 1.6, white, 0.2, 3.4, 5.2);
+  for (let x = -3.4; x <= 3.9; x += 0.45) boxOn(group, 0.06, 1.0, 0.06, mat('#3b3f45'), x, 3.65, 5.95);
+  boxOn(group, 7.6, 0.08, 0.1, mat('#3b3f45'), 0.2, 4.62, 5.95);
+  windowPane(group, 3.6, 2.4, 0.6, 3.7, 4.52);
+  // Mái bằng có lan can và vườn trên sân thượng.
+  [[7.8, 0.9, 0.3, 0, 4.5], [7.8, 0.9, 0.3, 0, -4.5], [0.3, 0.9, 9.0, 3.8, 0], [0.3, 0.9, 9.0, -3.8, 0]].forEach(([width, height, depth, x, z]) => {
+    boxOn(group, width, height, depth, white, x, 7.1, z);
+  });
+  for (let i = 0; i < 5; i++) {
+    addMesh(group, new THREE.IcosahedronGeometry(0.55 + (i % 2) * 0.2, 0), mat(i % 2 ? '#5aa743' : '#3f8f3a'), [-2.6 + i * 1.3, 7.7, 3.4]);
+  }
+  addMesh(group, new THREE.CylinderGeometry(0.55, 0.55, 1.5, 12), mat('#c9d1d9', { metalness: 0.6, roughness: 0.35 }), [2.2, 7.9, -2.6], [0, 0, Math.PI / 2]);
+  windowPane(group, 0.12, 2.2, 3.82, 3.9, -1.5, 0);
+  return group;
+}
+
+function buildModernVilla() {
+  const group = houseGroup();
+  const white = mat('#f7f5f0');
+  const wood = mat('#b07a4c');
+  const slab = mat('#3b3f45');
+  boxOn(group, 17, 0.35, 11.5, mat('#cfc8bc'), 0, 0, 0.3);
+  boxOn(group, 15, 3.4, 9, white, 0, 0.35, 0);
+  windowPane(group, 9.5, 2.7, -2.2, 0.55, 4.52);
+  boxOn(group, 4.2, 2.8, 0.15, wood, 4.9, 0.55, 4.55);
+  boxOn(group, 15.8, 0.3, 9.8, slab, 0, 3.75, 0);
+  boxOn(group, 10, 3.2, 8.2, wood, -2.3, 4.05, -0.6);
+  windowPane(group, 7.6, 2.0, -2.6, 4.6, 3.52);
+  windowPane(group, 0.12, 2.0, 2.72, 4.6, -0.6);
+  boxOn(group, 10.8, 0.3, 9.0, slab, -2.3, 7.25, -0.4);
+  // Lan can kính sân thượng phía phải.
+  boxOn(group, 4.6, 0.9, 0.08, new THREE.MeshStandardMaterial({ color: '#bfe6f2', transparent: true, opacity: 0.45, roughness: 0.1 }), 5.2, 4.05, 4.7);
+  return group;
+}
+
+function buildBeachVilla() {
+  const group = houseGroup();
+  const white = mat('#fbfaf6');
+  const charcoal = mat('#2f3338');
+  const stone = mat('#bfb3a1');
+  boxOn(group, 20, 0.4, 13, mat('#d9d1c4'), 0, 0, 0.4);
+  boxOn(group, 18, 3.6, 10, white, 0, 0.4, 0);
+  windowPane(group, 14.5, 2.9, 0.6, 0.6, 5.02);
+  boxOn(group, 18.6, 0.3, 10.8, charcoal, 0, 4.0, 0.2);
+  boxOn(group, 11, 3.4, 9.5, charcoal, -3.4, 4.3, 0.9);
+  windowPane(group, 10, 2.4, -3.4, 4.8, 5.67);
+  boxOn(group, 11.6, 0.3, 10.3, white, -3.4, 7.7, 1.0);
+  boxOn(group, 1.1, 8.6, 6.0, stone, -9.4, 0.4, -1.2);
+  // Giàn che nắng trên sân thượng phải.
+  [[2.6, 3.6], [8.4, 3.6], [2.6, -3.4], [8.4, -3.4]].forEach(([x, z]) => boxOn(group, 0.25, 2.6, 0.25, white, x, 4.3, z));
+  for (let x = 2.4; x <= 8.6; x += 0.7) boxOn(group, 0.14, 0.18, 7.6, mat('#c89a6a'), x, 6.9, 0.1);
+  [3.6, 6.2].forEach((x) => boxOn(group, 1.0, 0.35, 2.0, mat('#f2efe7'), x, 4.3, 1.5));
+  return group;
+}
+
+function buildMansion() {
+  const group = houseGroup();
+  const cream = mat('#f4ead6');
+  const trim = mat('#ffffff');
+  const roof = mat('#3e4a5c');
+  boxOn(group, 25, 0.6, 15, mat('#d8cfbf'), 0, 0, 0.6);
+  boxOn(group, 22, 0.4, 13.5, mat('#e7dfd0'), 0, 0.6, 0.4);
+  boxOn(group, 10, 9.2, 11, cream, 0, 1.0, -0.6);
+  [-8, 8].forEach((x) => {
+    boxOn(group, 6, 6.6, 10, cream, x, 1.0, -0.6);
+    boxOn(group, 6.6, 0.45, 10.6, trim, x, 7.6, -0.6);
+    boxOn(group, 6.4, 0.6, 10.4, roof, x, 8.05, -0.6);
+    for (let row = 0; row < 2; row++) {
+      [-1.4, 1.4].forEach((offset) => windowPane(group, 1.2, 1.9, x + offset, 1.8 + row * 3, 4.42));
+    }
+  });
+  boxOn(group, 10.6, 0.5, 11.6, trim, 0, 10.2, -0.6);
+  for (let row = 0; row < 2; row++) {
+    [-3, 3].forEach((x) => windowPane(group, 1.3, 2.2, x, 2.0 + row * 3.6, 4.92));
+  }
+  // Hiên cột kiểu cổ điển.
+  for (let i = 0; i < 6; i++) cylinderOn(group, 0.34, 0.4, 6.8, 12, trim, -3.75 + i * 1.5, 1.0, 6.4);
+  boxOn(group, 9.6, 0.7, 2.6, trim, 0, 7.8, 5.9);
+  addMesh(group, gableRoof(10.2, 2.8, 2.0), trim, [0, 8.5, 5.9]);
+  boxOn(group, 1.8, 3.2, 0.15, mat('#6b4a2e'), 0, 1.0, 4.95);
+  // Mái vòm vàng và cờ.
+  cylinderOn(group, 3.0, 3.0, 1.6, 20, trim, 0, 10.7, -0.6);
+  addMesh(group, new THREE.SphereGeometry(3.0, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2), mat('#e3b54d', { metalness: 0.55, roughness: 0.35 }), [0, 12.3, -0.6]);
+  cylinderOn(group, 0.08, 0.08, 4.5, 6, mat('#d8d8d8'), 0, 15.2, -0.6);
+  const flag = boxOn(group, 2.2, 1.3, 0.05, mat('#7c3aed'), 1.12, 18.2, -0.6);
+  flag.name = 'flag';
+  // Đài phun nước trước sân.
+  cylinderOn(group, 2.4, 2.6, 0.6, 16, trim, 0, 0, 11.5);
+  addMesh(group, new THREE.CylinderGeometry(2.1, 2.1, 0.1, 16), poolWaterMat, [0, 0.58, 11.5]);
+  cylinderOn(group, 0.3, 0.45, 1.6, 10, trim, 0, 0.6, 11.5);
+  cylinderOn(group, 0.9, 0.5, 0.3, 12, trim, 0, 2.1, 11.5);
+  return group;
+}
+
+/* ------------------------------------------------------------------ */
+/* Xe                                                                   */
+/* ------------------------------------------------------------------ */
+// Chỗ đỗ ở sân trái phía trước, đầu xe hướng ra biển (+z).
+const PARKING = { minX: -26, maxX: -6, minZ: 5, maxZ: 13.5 };
+function parkedGroup(x, z = 9.2) {
+  const group = new THREE.Group();
+  group.position.set(x, GROUND_Y + 0.12, z);
+  group.rotation.y = -0.45;
+  return group;
+}
+function addWheel(parent, x, z, radius, width, rimColor = '#c7ccd3') {
+  addMesh(parent, new THREE.CylinderGeometry(radius, radius, width, 14), mat('#1f2328'), [x, radius, z], [Math.PI / 2, 0, 0]);
+  addMesh(parent, new THREE.CylinderGeometry(radius * 0.55, radius * 0.55, width + 0.02, 10), mat(rimColor, { metalness: 0.6, roughness: 0.3 }), [x, radius, z], [Math.PI / 2, 0, 0]);
+}
+// Dựng xe dọc trục x rồi xoay để đầu xe hướng +z.
+function vehicleBody() {
+  const body = new THREE.Group();
+  body.rotation.y = -Math.PI / 2;
+  return body;
+}
+
+function buildBike() {
+  const group = parkedGroup(-23.6);
+  const body = vehicleBody();
+  group.add(body);
+  const frame = mat('#ff7a2f');
+  [-0.62, 0.62].forEach((x) => addMesh(body, new THREE.TorusGeometry(0.42, 0.05, 6, 18), mat('#22262b'), [x, 0.44, 0]));
+  rodBetween(body, [-0.62, 0.44, 0], [-0.05, 0.95, 0], 0.04, frame);
+  rodBetween(body, [-0.62, 0.44, 0], [0.1, 0.48, 0], 0.04, frame);
+  rodBetween(body, [0.1, 0.48, 0], [-0.05, 0.95, 0], 0.04, frame);
+  rodBetween(body, [0.1, 0.48, 0], [0.48, 0.98, 0], 0.04, frame);
+  rodBetween(body, [-0.05, 0.95, 0], [0.48, 0.98, 0], 0.04, frame);
+  rodBetween(body, [0.62, 0.44, 0], [0.48, 1.1, 0], 0.035, frame);
+  rodBetween(body, [0.45, 1.12, -0.32], [0.45, 1.12, 0.32], 0.03, mat('#22262b'));
+  boxOn(body, 0.32, 0.08, 0.16, mat('#22262b'), -0.08, 1.0, 0);
+  addMesh(body, new THREE.BoxGeometry(0.35, 0.22, 0.4), mat('#9a6b3d'), [0.7, 1.05, 0]);
+  return group;
+}
+
+function buildScooter() {
+  const group = parkedGroup(-20.8);
+  const body = vehicleBody();
+  group.add(body);
+  const paint = mat('#6fd3c0', { roughness: 0.4 });
+  addWheel(body, -0.62, 0, 0.27, 0.16);
+  addWheel(body, 0.66, 0, 0.27, 0.16);
+  const rear = addMesh(body, new THREE.SphereGeometry(0.5, 12, 8), paint, [-0.42, 0.68, 0]);
+  rear.scale.set(1.35, 0.72, 0.68);
+  boxOn(body, 0.6, 0.12, 0.42, paint, 0.15, 0.3, 0);
+  addMesh(body, new THREE.BoxGeometry(0.16, 0.95, 0.5), paint, [0.56, 0.8, 0], [0, 0, -0.18]);
+  boxOn(body, 0.72, 0.12, 0.36, mat('#5b3a26'), -0.42, 0.98, 0);
+  rodBetween(body, [0.62, 1.2, 0], [0.62, 1.32, 0], 0.08, paint);
+  rodBetween(body, [0.62, 1.32, -0.38], [0.62, 1.32, 0.38], 0.03, mat('#2b2f34'));
+  addMesh(body, new THREE.SphereGeometry(0.11, 8, 6), headlightMat, [0.72, 1.32, 0]);
+  addMesh(body, new THREE.SphereGeometry(0.22, 10, 6), paint, [0.72, 0.42, 0]).scale.set(1, 0.6, 0.7);
+  return group;
+}
+
+function buildCompactCar() {
+  const group = parkedGroup(-16.8);
+  const body = vehicleBody();
+  group.add(body);
+  const paint = mat('#3d8fe0', { roughness: 0.35, metalness: 0.2 });
+  addMesh(body, taperTop(sideProfile([[-2, 0.32], [2, 0.32], [2.08, 0.72], [1.92, 0.95], [0.9, 1.05], [0.32, 1.55], [-1.55, 1.6], [-1.98, 1.2], [-2.06, 0.7]], 1.75), 0.95, 1.6, 0.2), paint);
+  addMesh(body, taperTop(sideProfile([[0.78, 1.08], [0.28, 1.5], [-1.45, 1.54], [-1.84, 1.16], [-1.84, 1.08]], 1.8, 0.02), 0.95, 1.6, 0.2), windowMat);
+  [-1.32, 1.32].forEach((x) => [-0.82, 0.82].forEach((z) => addWheel(body, x, z, 0.36, 0.24)));
+  [-0.56, 0.56].forEach((z) => boxOn(body, 0.08, 0.16, 0.34, headlightMat, 2.06, 0.72, z));
+  boxOn(body, 0.06, 0.12, 1.4, mat('#b9c0c8'), 2.08, 0.42, 0);
+  return group;
+}
+
+function buildSupercar(x, color, hasWing) {
+  const group = parkedGroup(x);
+  const body = vehicleBody();
+  group.add(body);
+  const paint = mat(color, { roughness: 0.25, metalness: 0.35 });
+  addMesh(body, taperTop(sideProfile([[-2.3, 0.28], [2.3, 0.28], [2.38, 0.52], [1.7, 0.74], [0.55, 0.92], [-0.18, 1.18], [-1.05, 1.15], [-1.95, 0.95], [-2.36, 0.86], [-2.38, 0.48]], 2.0, 0.08), 0.62, 1.18, 0.32), paint);
+  addMesh(body, taperTop(sideProfile([[0.48, 0.95], [-0.14, 1.15], [-0.98, 1.12], [-1.45, 0.98]], 2.04, 0.02), 0.62, 1.18, 0.32), windowMat);
+  [-1.45, 1.45].forEach((wheelX) => [-0.9, 0.9].forEach((z) => addWheel(body, wheelX, z, 0.38, 0.3, '#2b2f36')));
+  [-1, 1].forEach((side) => boxOn(body, 0.9, 0.22, 0.06, mat('#1c1f24'), -0.7, 0.5, side * 1.02));
+  [-0.68, 0.68].forEach((z) => boxOn(body, 0.06, 0.1, 0.42, headlightMat, 2.3, 0.6, z));
+  if (hasWing) {
+    boxOn(body, 0.5, 0.06, 2.0, mat('#1c1f24'), -2.15, 1.18, 0);
+    [-0.6, 0.6].forEach((z) => boxOn(body, 0.18, 0.3, 0.06, mat('#1c1f24'), -2.1, 0.88, z));
+  }
+  return group;
+}
+
+/* ------------------------------------------------------------------ */
+/* Bến, thuyền                                                          */
+/* ------------------------------------------------------------------ */
+const DOCK = { startX: 30, endX: 60, z: 6, deckY: 1.35 };
+function buildDock() {
+  const group = new THREE.Group();
+  const plank = mat('#b88452');
+  const post = mat('#7a5634');
+  const length = DOCK.endX - DOCK.startX;
+  for (let i = 0; i < length / 0.6; i++) {
+    boxOn(group, 0.55, 0.22, 3.2, i % 3 === 0 ? mat('#a8763f') : plank, DOCK.startX + 0.3 + i * 0.6, DOCK.deckY - 0.22, DOCK.z);
+  }
+  for (let x = DOCK.startX + 2; x <= DOCK.endX; x += 3.5) {
+    [-1.7, 1.7].forEach((offset) => cylinderOn(group, 0.16, 0.18, 4.6, 6, post, x, -3.2, DOCK.z + offset));
+  }
+  cylinderOn(group, 0.1, 0.1, 3.2, 6, mat('#3b3f45'), DOCK.endX - 0.6, DOCK.deckY, DOCK.z - 1.3);
+  addMesh(group, new THREE.SphereGeometry(0.3, 10, 8), lampMat, [DOCK.endX - 0.6, DOCK.deckY + 3.3, DOCK.z - 1.3]);
+  return group;
+}
+function buildDockHead() {
+  const group = new THREE.Group();
+  boxOn(group, 4, 0.22, 10, mat('#b88452'), DOCK.endX + 2, DOCK.deckY - 0.22, DOCK.z + 2.6);
+  for (let z = DOCK.z - 2; z <= DOCK.z + 7.4; z += 3.1) {
+    [DOCK.endX + 0.3, DOCK.endX + 3.7].forEach((x) => cylinderOn(group, 0.16, 0.18, 4.6, 6, mat('#7a5634'), x, -3.2, z));
+  }
+  return group;
+}
+
+const floating = [];
+function floatingGroup(x, z, rotationY = 0, phase = 0) {
+  const group = new THREE.Group();
+  group.position.set(x, 0, z);
+  group.rotation.y = rotationY;
+  floating.push({ group, phase, baseRotationY: rotationY });
+  return group;
+}
+
+function buildSpeedboat() {
+  const group = floatingGroup(46.5, 9.6, Math.PI, 0.4);
+  const hullPoints = [[-2.8, -1.05], [1.2, -1.05], [2.9, 0], [1.2, 1.05], [-2.8, 1.05]];
+  addMesh(group, hullFromOutline(hullPoints, 1.0, 0.35), mat('#fbfbf8'), [0, -0.35, 0]);
+  addMesh(group, hullFromOutline(hullPoints.map(([x, y]) => [x * 1.02, y * 1.05]), 0.18), mat('#e5484d'), [0, 0.5, 0]);
+  boxOn(group, 3.6, 0.1, 1.7, mat('#e8e2d4'), -0.8, 0.62, 0);
+  addMesh(group, new THREE.BoxGeometry(0.08, 0.55, 1.6), mat('#a9d6ea', { transparent: true, opacity: 0.6 }), [0.7, 0.95, 0], [0, 0, -0.5]);
+  [-0.4, -1.6].forEach((x) => boxOn(group, 0.7, 0.4, 1.5, mat('#2d6cdf'), x, 0.68, 0));
+  boxOn(group, 0.5, 0.9, 0.45, mat('#1f2328'), -3.0, 0.1, 0);
+  return group;
+}
+
+function deckBlock(parent, length, height, width, rake, material, x, bottomY) {
+  return addMesh(parent, sideProfile([[-length / 2, 0], [length / 2, 0], [length / 2 - rake, height], [-length / 2, height]], width, 0.04), material, [x, bottomY, 0]);
+}
+
+function buildSmallYacht() {
+  const group = floatingGroup(55, 10.8, Math.PI, 1.3);
+  const hullPoints = [[-4.6, -1.7], [1.8, -1.7], [4.8, 0], [1.8, 1.7], [-4.6, 1.7]];
+  addMesh(group, hullFromOutline(hullPoints, 1.8, 0.4), mat('#fbfbf8'), [0, -0.6, 0]);
+  addMesh(group, hullFromOutline(hullPoints.map(([x, y]) => [x * 1.01, y * 1.03]), 0.25), mat('#1f3a5f'), [0, 0.05, 0]);
+  boxOn(group, 8.8, 0.1, 3.2, mat('#d9b98c'), -0.2, 1.2, 0);
+  deckBlock(group, 4.6, 1.3, 2.6, 1.0, mat('#fbfbf8'), -0.8, 1.3);
+  addMesh(group, sideProfile([[-2.1, 0.45], [1.6, 0.45], [1.3, 0.95], [-2.1, 0.95]], 2.66, 0.02), windowMat, [-0.8, 1.3, 0]);
+  deckBlock(group, 2.4, 0.9, 2.0, 0.6, mat('#fbfbf8'), -1.2, 2.6);
+  rodBetween(group, [-1.2, 3.5, 0], [-1.2, 4.6, 0], 0.05, mat('#c9d1d9'));
+  return group;
+}
+
+function buildBigYacht() {
+  const group = floatingGroup(54, 17.6, Math.PI, 2.1);
+  group.scale.setScalar(0.72);
+  const hullPoints = [[-11, -2.7], [4.5, -2.7], [11.5, 0], [4.5, 2.7], [-11, 2.7]];
+  addMesh(group, hullFromOutline(hullPoints, 3.0, 0.42), mat('#fbfbf8'), [0, -1.0, 0]);
+  addMesh(group, hullFromOutline(hullPoints.map(([x, y]) => [x * 1.005, y * 1.02]), 0.35), mat('#1d2b45'), [0, 0.15, 0]);
+  addMesh(group, hullFromOutline(hullPoints.map(([x, y]) => [x * 1.006, y * 1.025]), 0.22), windowMat, [0, 1.1, 0]);
+  boxOn(group, 21, 0.12, 5.1, mat('#d9b98c'), -0.5, 2.0, 0);
+  deckBlock(group, 14, 2.0, 4.6, 2.2, mat('#fbfbf8'), -2.0, 2.1);
+  addMesh(group, sideProfile([[-6.6, 0.6], [5.2, 0.6], [4.6, 1.5], [-6.6, 1.5]], 4.66, 0.02), windowMat, [-2.0, 2.1, 0]);
+  deckBlock(group, 9.5, 1.7, 4.0, 1.8, mat('#fbfbf8'), -3.2, 4.1);
+  addMesh(group, sideProfile([[-4.4, 0.5], [3.2, 0.5], [2.7, 1.25], [-4.4, 1.25]], 4.06, 0.02), windowMat, [-3.2, 4.1, 0]);
+  deckBlock(group, 5, 1.4, 3.4, 1.2, mat('#fbfbf8'), -4.0, 5.8);
+  addMesh(group, new THREE.TorusGeometry(1.6, 0.18, 6, 16, Math.PI), mat('#e8e8e8'), [-4.6, 7.2, 0], [0, Math.PI / 2, 0]);
+  addMesh(group, new THREE.SphereGeometry(0.42, 10, 8), mat('#ffffff'), [-4.6, 8.9, 0]);
+  boxOn(group, 2.0, 0.15, 4.4, mat('#d9b98c'), -11.8, 0.1, 0);
+  cylinderOn(group, 0.9, 0.9, 0.35, 14, poolWaterMat, 6.5, 2.1, 0);
+  return group;
+}
+
+/* ------------------------------------------------------------------ */
+/* Đồ bay                                                               */
+/* ------------------------------------------------------------------ */
+function buildBalloon() {
+  const group = new THREE.Group();
+  group.position.set(HILL.x, 30, HILL.z);
+  const profile = [[0.7, 0], [1.4, 0.7], [3.1, 2.4], [4.2, 4.5], [4.4, 6.2], [3.9, 7.9], [2.7, 9.1], [1.2, 9.7], [0.01, 9.85]].map(([x, y]) => new THREE.Vector2(x, y));
+  let geometry = new THREE.LatheGeometry(profile, 16).toNonIndexed();
+  const palette = ['#ff6b6b', '#ffd166', '#ffffff', '#06b6d4'].map((hex) => new THREE.Color(hex));
+  const position = geometry.attributes.position;
+  const colors = new Float32Array(position.count * 3);
+  for (let i = 0; i < position.count; i += 3) {
+    const x = (position.getX(i) + position.getX(i + 1) + position.getX(i + 2)) / 3;
+    const z = (position.getZ(i) + position.getZ(i + 1) + position.getZ(i + 2)) / 3;
+    const gore = Math.floor(((Math.atan2(z, x) + Math.PI) / (Math.PI * 2)) * 16) % palette.length;
+    for (let vertex = 0; vertex < 3; vertex++) colors.set([palette[gore].r, palette[gore].g, palette[gore].b], (i + vertex) * 3);
+  }
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geometry.computeVertexNormals();
+  addMesh(group, geometry, new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.7, side: THREE.DoubleSide }), [0, 0, 0]);
+  boxOn(group, 1.4, 1.0, 1.4, mat('#9b6a3c'), 0, -3.0, 0);
+  [[-0.6, -0.6], [0.6, -0.6], [-0.6, 0.6], [0.6, 0.6]].forEach(([x, z]) => rodBetween(group, [x, -2.0, z], [x * 1.1, 0.05, z * 1.1], 0.03, mat('#5b4630')));
+  addMesh(group, new THREE.ConeGeometry(0.25, 0.7, 8), flameMat, [0, -1.4, 0]);
+  return group;
+}
+
+function buildHelipad() {
+  const group = new THREE.Group();
+  group.position.set(17, GROUND_Y, -17);
+  cylinderOn(group, 5, 5.2, 0.3, 24, mat('#4a5059'), 0, 0, 0);
+  addMesh(group, new THREE.RingGeometry(4.1, 4.4, 32).rotateX(-Math.PI / 2), mat('#ffd23f'), [0, 0.32, 0], [0, 0, 0], false);
+  boxOn(group, 0.5, 0.05, 3.2, mat('#ffffff'), -1.1, 0.3, 0);
+  boxOn(group, 0.5, 0.05, 3.2, mat('#ffffff'), 1.1, 0.3, 0);
+  boxOn(group, 1.8, 0.05, 0.5, mat('#ffffff'), 0, 0.3, 0);
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * Math.PI * 2;
+    addMesh(group, new THREE.SphereGeometry(0.14, 6, 4), padLightMat, [Math.cos(angle) * 4.85, 0.38, Math.sin(angle) * 4.85]);
+  }
+  // Trực thăng đỗ trên sân.
+  const heli = new THREE.Group();
+  heli.position.set(0, 0.3, 0);
+  heli.rotation.y = -0.6;
+  group.add(heli);
+  const paint = mat('#1f3a5f', { roughness: 0.35, metalness: 0.25 });
+  const cabin = addMesh(heli, new THREE.SphereGeometry(1.25, 14, 10), paint, [0.3, 1.55, 0]);
+  cabin.scale.set(1.7, 1.0, 1.0);
+  const glass = addMesh(heli, new THREE.SphereGeometry(1.0, 12, 8, 0, Math.PI, 0, Math.PI / 2), windowMat, [1.2, 1.6, 0], [0, -Math.PI / 2, 0]);
+  glass.scale.set(1.0, 1.0, 1.05);
+  rodBetween(heli, [-1.6, 1.8, 0], [-5.6, 2.2, 0], 0.22, paint);
+  addMesh(heli, sideProfile([[0, 0], [0.9, 0], [0.5, 1.5], [0.05, 1.5]], 0.12, 0.02), mat('#ffd23f'), [-5.9, 2.1, 0]);
+  addMesh(heli, new THREE.CylinderGeometry(0.5, 0.5, 0.06, 10), mat('#2b2f34'), [-5.6, 2.6, 0.18], [Math.PI / 2, 0, 0]);
+  [-0.85, 0.85].forEach((z) => {
+    rodBetween(heli, [-1.3, 0.12, z], [1.9, 0.12, z], 0.08, mat('#2b2f34'));
+    rodBetween(heli, [-0.6, 0.12, z], [-0.4, 0.9, z * 0.6], 0.05, mat('#2b2f34'));
+    rodBetween(heli, [1.0, 0.12, z], [0.9, 0.9, z * 0.6], 0.05, mat('#2b2f34'));
+  });
+  cylinderOn(heli, 0.12, 0.12, 0.6, 6, mat('#2b2f34'), 0.2, 2.7, 0);
+  const rotor = new THREE.Group();
+  rotor.position.set(0.2, 3.3, 0);
+  rotor.name = 'rotor';
+  heli.add(rotor);
+  for (let i = 0; i < 4; i++) addMesh(rotor, new THREE.BoxGeometry(4.2, 0.06, 0.32), mat('#2b2f34'), [Math.cos((i * Math.PI) / 2) * 2.1, 0, Math.sin((i * Math.PI) / 2) * 2.1], [0, (-i * Math.PI) / 2, 0]);
+  return group;
+}
+
+function buildJet() {
+  const pivot = new THREE.Group();
+  const jet = new THREE.Group();
+  jet.name = 'jet';
+  pivot.add(jet);
+  const white = mat('#fbfbfb', { roughness: 0.3, metalness: 0.2 });
+  const stripe = mat('#7c3aed');
+  addMesh(jet, new THREE.CapsuleGeometry(1.0, 10, 6, 14), white, [0, 0, 0], [0, 0, Math.PI / 2]);
+  addMesh(jet, new THREE.ConeGeometry(1.0, 2.2, 14), white, [6.1, 0, 0], [0, 0, -Math.PI / 2]);
+  boxOn(jet, 10, 0.18, 2.06, stripe, 0, -0.18, 0);
+  for (let i = 0; i < 6; i++) [-1, 1].forEach((side) => boxOn(jet, 0.35, 0.3, 0.06, windowMat, 3.6 - i * 1.05, 0.15, side * 0.98));
+  const wingShape = new THREE.Shape([new THREE.Vector2(1.6, 0), new THREE.Vector2(-1.4, 0), new THREE.Vector2(-3.4, 7.4), new THREE.Vector2(-2.3, 7.4)]);
+  [-1, 1].forEach((side) => {
+    const wing = new THREE.ExtrudeGeometry(wingShape, { depth: 0.22, bevelEnabled: false });
+    wing.rotateX(Math.PI / 2);
+    const wingMesh = addMesh(jet, wing, white, [0.8, -0.3, 0]);
+    wingMesh.scale.z = side;
+    addMesh(jet, new THREE.CylinderGeometry(0.5, 0.45, 2.4, 10), white, [-4.1, 0.55, side * 1.45], [0, 0, Math.PI / 2]);
+  });
+  addMesh(jet, sideProfile([[0, 0], [2.4, 0], [0.9, 3.0], [-0.4, 3.0]], 0.2, 0.02), stripe, [-6.4, 0.6, 0]);
+  addMesh(jet, new THREE.BoxGeometry(1.6, 0.14, 5.2), white, [-6.6, 3.6, 0]);
+  return pivot;
+}
+
+function buildRainbow() {
+  const group = new THREE.Group();
+  group.position.set(-22, -4, -52);
+  group.rotation.y = 0.59;
+  ['#ff4d4d', '#ff9f43', '#ffd93d', '#6bcf63', '#4dabf7', '#5c7cfa', '#9c6ade'].forEach((color, index) => {
+    const band = new THREE.Mesh(
+      new THREE.TorusGeometry(52 - index * 1.25, 0.62, 4, 72, Math.PI),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.5, depthWrite: false, fog: false }),
+    );
+    group.add(band);
+  });
+  return group;
+}
+
+/* ------------------------------------------------------------------ */
+/* Lửa trại, vườn, cây, đá, mây, chim                                   */
+/* ------------------------------------------------------------------ */
+const CAMPFIRE = new THREE.Vector3(12, GROUND_Y, 13);
+const flames = [];
+function buildCampfire() {
+  const group = new THREE.Group();
+  group.position.copy(CAMPFIRE);
+  for (let i = 0; i < 9; i++) {
+    const angle = (i / 9) * Math.PI * 2;
+    addMesh(group, new THREE.DodecahedronGeometry(0.32, 0), mat('#8d8f93'), [Math.cos(angle) * 1.0, 0.15, Math.sin(angle) * 1.0]);
+  }
+  rodBetween(group, [-0.6, 0.15, -0.3], [0.6, 0.35, 0.3], 0.12, mat('#6b4428'));
+  rodBetween(group, [-0.6, 0.15, 0.3], [0.6, 0.35, -0.3], 0.12, mat('#6b4428'));
+  [0, 1, 2].forEach((index) => {
+    const flame = addMesh(group, new THREE.ConeGeometry(0.34 - index * 0.07, 1.1 - index * 0.2, 6), flameMat, [(index - 1) * 0.18, 0.75, (index % 2) * 0.15], [0, 0, 0], false);
+    flames.push(flame);
+  });
+  [[-2.4, 0, 0.2], [2.4, 0, -0.2], [0, 2.4, Math.PI / 2]].forEach(([x, z, rotationY]) => {
+    addMesh(group, new THREE.CylinderGeometry(0.32, 0.32, 2.2, 8), mat('#8a5a35'), [x, 0.32, z], [0, rotationY, Math.PI / 2]);
+  });
+  return group;
+}
+
+function buildPool(isInfinity) {
+  const group = new THREE.Group();
+  const width = isInfinity ? 13 : 8.5;
+  const depth = isInfinity ? 5.6 : 4.2;
+  group.position.set(isInfinity ? 15.5 : 13.5, GROUND_Y, -3.8);
+  boxOn(group, width + 3, 0.25, depth + 3, mat('#e9e2d4'), 0, 0, 0);
+  boxOn(group, width, 0.12, depth, poolWaterMat, 0, 0.2, 0);
+  [[width / 2 + 0.6, depth / 2 - 0.4], [width / 2 + 0.6, -depth / 2 + 1.4]].forEach(([x, z]) => {
+    boxOn(group, 0.9, 0.3, 2.0, mat('#ffffff'), x, 0.25, z);
+  });
+  cylinderOn(group, 0.05, 0.05, 2.4, 6, mat('#8b8f96'), -width / 2 - 0.9, 0.25, -depth / 2 - 0.6);
+  addMesh(group, new THREE.ConeGeometry(1.5, 0.6, 8), mat(isInfinity ? '#f4f1ea' : '#ef6f5e'), [-width / 2 - 0.9, 2.9, -depth / 2 - 0.6]);
+  addLyingPerson(group, PEOPLE_LOOKS[isInfinity ? 1 : 3], width / 2 + 0.6, 0.55, depth / 2 - 0.4, 0);
+  return group;
+}
+
+function buildGarden() {
+  const group = new THREE.Group();
+  const lampPositions = [[8, 3.6], [14, 3.6], [20, 3.6], [26, 3.6], [-8, 15], [-14, 15], [-20, 15], [3, 2]];
+  lampPositions.forEach(([x, z]) => {
+    cylinderOn(group, 0.08, 0.1, 2.6, 6, mat('#2f3338'), x, GROUND_Y, z);
+    addMesh(group, new THREE.SphereGeometry(0.24, 8, 6), lampMat, [x, GROUND_Y + 2.75, z]);
+  });
+  const hedge = mat('#3f8f3a');
+  boxOn(group, 1.0, 1.1, 10, hedge, -16.5, GROUND_Y, -6);
+  boxOn(group, 1.0, 1.1, 8, hedge, 10.5, GROUND_Y, -14);
+  const flowerColors = ['#ff6b9a', '#ffd166', '#ffffff', '#c084fc'];
+  for (let i = 0; i < 26; i++) {
+    const x = -14 + (i % 13) * 2.1;
+    const z = i < 13 ? 3.2 : -16;
+    if (z === 3.2 && x > -6 && x < 1) continue;
+    addMesh(group, new THREE.IcosahedronGeometry(0.32, 0), mat(flowerColors[i % flowerColors.length]), [x, GROUND_Y + 0.35, z]);
+  }
+  return group;
+}
+
+const swayingPalms = [];
+// Tàu lá dừa: dải gấp chữ V dọc sống lá, cong lên rồi rủ xuống, mép răng cưa từng cặp lá chét.
+function buildFrondGeometry(length, droop, width) {
+  const segments = 10;
+  const rows = [];
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const x = t * length;
+    const y = (0.5 * t - droop * t * t) * length * 0.45;
+    const leafletWidth = width * Math.pow(Math.sin(Math.PI * Math.min(1, t * 1.12)), 0.6) * (i % 2 ? 0.62 : 1) * (1 - 0.3 * t);
+    const fold = leafletWidth * 0.4;
+    rows.push([[x, y - fold, -leafletWidth], [x, y, 0], [x, y - fold, leafletWidth]]);
+  }
+  const positions = [];
+  for (let i = 0; i < segments; i++) {
+    const [left0, middle0, right0] = rows[i];
+    const [left1, middle1, right1] = rows[i + 1];
+    positions.push(...left0, ...middle0, ...left1, ...middle0, ...middle1, ...left1, ...middle0, ...right0, ...middle1, ...right0, ...right1, ...middle1);
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.computeVertexNormals();
+  return geometry;
+}
+const FROND_GEOMETRIES = [buildFrondGeometry(4.4, 1.5, 0.72), buildFrondGeometry(3.8, 1.9, 0.66), buildFrondGeometry(4.8, 1.2, 0.76)];
+const frondMaterials = ['#3f9a3e', '#4caf4a', '#5bbd52'].map((color) => mat(color, { side: THREE.DoubleSide, roughness: 0.7 }));
+
+function buildPalm(x, z, height, lean, seed) {
+  const random = mulberry32(seed);
+  const group = new THREE.Group();
+  group.position.set(x, terrainHeight(x, z) - 0.1, z);
+  group.rotation.y = random() * Math.PI * 2;
+  // Thân cong mượt, từng đốt loe ở gốc cho ra vân đốt dừa.
+  const trunkColors = [mat('#a07a52'), mat('#8f6b46')];
+  const segments = 9;
+  let previous = new THREE.Vector3(0, 0, 0);
+  for (let i = 1; i <= segments; i++) {
+    const t = i / segments;
+    const point = new THREE.Vector3(lean * t * t * height * 0.35, t * height, 0);
+    const radius = 0.3 - t * 0.12;
+    const piece = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.86, radius * 1.04, previous.distanceTo(point), 7), trunkColors[i % 2]);
+    piece.position.copy(previous).add(point).multiplyScalar(0.5);
+    piece.quaternion.setFromUnitVectors(upAxis, point.clone().sub(previous).normalize());
+    piece.castShadow = true;
+    group.add(piece);
+    previous = point;
+  }
+  const crown = new THREE.Group();
+  crown.position.copy(previous);
+  group.add(crown);
+  const frondCount = 8;
+  for (let i = 0; i < frondCount; i++) {
+    const frond = new THREE.Mesh(FROND_GEOMETRIES[i % FROND_GEOMETRIES.length], frondMaterials[Math.floor(random() * frondMaterials.length)]);
+    frond.rotation.order = 'YZX';
+    frond.rotation.y = (i / frondCount) * Math.PI * 2 + random() * 0.35;
+    frond.rotation.z = 0.15 + random() * 0.3;
+    frond.castShadow = true;
+    crown.add(frond);
+  }
+  // Hai tàu non dựng đứng ở ngọn.
+  [0, 1].forEach((index) => {
+    const sprout = new THREE.Mesh(FROND_GEOMETRIES[1], frondMaterials[2]);
+    sprout.rotation.order = 'YZX';
+    sprout.rotation.y = index * Math.PI + random();
+    sprout.rotation.z = 1.0;
+    sprout.scale.setScalar(0.55);
+    crown.add(sprout);
+  });
+  for (let i = 0; i < 4; i++) addMesh(crown, new THREE.SphereGeometry(0.22, 7, 5), mat('#7a5a2e'), [Math.cos(i * 1.6) * 0.3, -0.25, Math.sin(i * 1.6) * 0.3]);
+  scene.add(group);
+  swayingPalms.push({ crown, phase: random() * 6 });
+}
+
+function buildScenery() {
+  [
+    [-31, -1, 7, 0.8], [-29, 9, 8, 0.6], [-18, 21, 7.5, 0.5], [-6, 24.5, 7, 0.7], [6, 23.5, 8, 0.4], [21, 18, 7.5, 0.6],
+    [29, 13, 8.5, 0.9], [27, -12, 7.5, 0.5], [6, -24.5, 8, 0.5], [-8, -24, 7, 0.4], [33, -1, 8, 1.0], [37, 2, 7, 1.2],
+    [-34, -8, 7.5, 0.7], [-12, -21, 8, 0.4],
+  ].forEach(([x, z, height, lean], index) => buildPalm(x, z, height, lean, index + 11));
+
+  const rockMaterial = mat('#9aa0a6');
+  [[-36, 6], [-24, -24], [34, -10], [30, 18], [9, 30.5], [14, -28]].forEach(([x, z], index) => {
+    const rock = addMesh(scene, new THREE.DodecahedronGeometry(1 + (index % 3) * 0.6, 0), rockMaterial, [x, terrainHeight(x, z) + 0.2, z], [index, index * 2, 0]);
+    rock.scale.y = 0.7;
+  });
+
+  // Sân đỗ xe và lối đi lát đá.
+  const pavement = mat('#d7d2c8');
+  boxOn(scene, PARKING.maxX - PARKING.minX, 0.12, PARKING.maxZ - PARKING.minZ, pavement, (PARKING.minX + PARKING.maxX) / 2, GROUND_Y, (PARKING.minZ + PARKING.maxZ) / 2);
+  for (let x = PARKING.minX + 4.4; x < PARKING.maxX; x += 4.2) boxOn(scene, 0.12, 0.02, 6, mat('#ffffff'), x, GROUND_Y + 0.12, 9.6);
+  boxOn(scene, 3.4, 0.1, 6, pavement, -3, GROUND_Y, 3.0);
+  for (let x = 1; x < DOCK.startX + 1; x += 1.6) boxOn(scene, 1.1, 0.1, 1.6, pavement, x, GROUND_Y, 6 + Math.sin(x * 0.4) * 0.2);
+  for (let z = 7; z < 12; z += 1.6) boxOn(scene, 1.1, 0.1, 1.1, pavement, 11, GROUND_Y, z);
+}
+
+// Biển báo khi chưa có bậc nào.
+function buildEmptySign() {
+  const group = new THREE.Group();
+  group.position.copy(HOUSE_SPOT).add(new THREE.Vector3(0, 0, 4));
+  cylinderOn(group, 0.14, 0.14, 2.4, 6, mat('#7a5634'), 0, 0, 0);
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 220;
+  const context = canvas.getContext('2d');
+  context.fillStyle = '#f6e7c8';
+  context.fillRect(0, 0, 512, 220);
+  context.fillStyle = '#5a3a1e';
+  context.font = '600 40px system-ui, sans-serif';
+  context.textAlign = 'center';
+  context.fillText('Học phút đầu tiên', 256, 95);
+  context.fillText('để dựng lều', 256, 150);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  const board = new THREE.Mesh(new THREE.BoxGeometry(4.2, 1.8, 0.12), [mat('#8a5a35'), mat('#8a5a35'), mat('#8a5a35'), mat('#8a5a35'), new THREE.MeshStandardMaterial({ map: texture, roughness: 0.9 }), mat('#8a5a35')]);
+  board.position.set(0, 2.9, 0);
+  board.castShadow = true;
+  group.add(board);
+  return group;
+}
+
+const clouds = [];
+function buildClouds() {
+  const cloudMaterial = new THREE.MeshStandardMaterial({ color: '#ffffff', flatShading: true, roughness: 1, emissive: '#ffffff', emissiveIntensity: 0.15 });
+  const random = mulberry32(99);
+  for (let i = 0; i < 9; i++) {
+    const cloud = new THREE.Group();
+    for (let puff = 0; puff < 5; puff++) {
+      const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(3 + random() * 3, 0), cloudMaterial);
+      mesh.position.set(puff * 4 - 8, random() * 2, random() * 4 - 2);
+      mesh.scale.y = 0.6;
+      cloud.add(mesh);
+    }
+    const angle = random() * Math.PI * 2;
+    const distance = 120 + random() * 160;
+    cloud.position.set(Math.cos(angle) * distance, 48 + random() * 26, Math.sin(angle) * distance);
+    cloud.userData.speed = 1.2 + random() * 1.2;
+    scene.add(cloud);
+    clouds.push(cloud);
+  }
+}
+
+const gulls = [];
+function buildGulls() {
+  const gullMaterial = mat('#ffffff', { side: THREE.DoubleSide });
+  for (let i = 0; i < 4; i++) {
+    const gull = new THREE.Group();
+    const wings = [-1, 1].map((side) => {
+      const wing = new THREE.Group();
+      addMesh(wing, new THREE.BoxGeometry(0.5, 0.05, 1.4), gullMaterial, [0, 0, side * 0.7], [0, 0, 0], false);
+      gull.add(wing);
+      return { wing, side };
+    });
+    addMesh(gull, new THREE.BoxGeometry(0.9, 0.22, 0.25), gullMaterial, [0, 0, 0], [0, 0, 0], false);
+    scene.add(gull);
+    gulls.push({ gull, wings, radius: 26 + i * 9, height: 18 + i * 3, speed: 0.12 + i * 0.03, phase: i * 1.7 });
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Đăng ký mọi món                                                      */
+/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* Người trên đảo, đồ nghỉ mát, cá                                      */
+/* ------------------------------------------------------------------ */
+const PEOPLE_LOOKS = [
+  { shirt: '#ff6b6b', shorts: '#2f3e5c', skin: '#f1c7a0', hair: '#2b1d14' },
+  { shirt: '#4dabf7', shorts: '#1f2937', skin: '#d9a77c', hair: '#1a1410' },
+  { shirt: '#ffd166', shorts: '#3b4a3f', skin: '#c58c63', hair: '#4a2e1a' },
+  { shirt: '#ffffff', shorts: '#e5484d', skin: '#f1c7a0', hair: '#111111' },
+  { shirt: '#a78bfa', shorts: '#334155', skin: '#e2b089', hair: '#3a2416' },
+];
+// Người chibi: chân, tay gắn ở khớp hông, vai để đung đưa được.
+function buildPerson({ shirt, shorts, skin, hair }) {
+  const group = new THREE.Group();
+  const limbs = {};
+  const hips = 0.86;
+  [-1, 1].forEach((side) => {
+    const leg = new THREE.Group();
+    leg.position.set(side * 0.12, hips, 0);
+    addMesh(leg, new THREE.BoxGeometry(0.17, 0.42, 0.2), mat(shorts), [0, -0.2, 0]);
+    addMesh(leg, new THREE.BoxGeometry(0.15, 0.42, 0.17), mat(skin), [0, -0.6, 0]);
+    addMesh(leg, new THREE.BoxGeometry(0.17, 0.08, 0.28), mat('#f4f4f4'), [0, -0.83, 0.04]);
+    group.add(leg);
+    limbs[side < 0 ? 'leftLeg' : 'rightLeg'] = leg;
+  });
+  addMesh(group, new THREE.BoxGeometry(0.46, 0.6, 0.26), mat(shirt), [0, hips + 0.3, 0]);
+  [-1, 1].forEach((side) => {
+    const arm = new THREE.Group();
+    arm.position.set(side * 0.31, hips + 0.56, 0);
+    addMesh(arm, new THREE.BoxGeometry(0.13, 0.26, 0.14), mat(shirt), [0, -0.12, 0]);
+    addMesh(arm, new THREE.BoxGeometry(0.11, 0.32, 0.12), mat(skin), [0, -0.4, 0]);
+    group.add(arm);
+    limbs[side < 0 ? 'leftArm' : 'rightArm'] = arm;
+  });
+  addMesh(group, new THREE.SphereGeometry(0.22, 10, 8), mat(skin), [0, hips + 0.83, 0]);
+  addMesh(group, new THREE.SphereGeometry(0.235, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), mat(hair), [0, hips + 0.86, -0.02]);
+  return { group, limbs };
+}
+// Người nằm: ngửa mặt lên trời, thân dọc theo trục z của chỗ nằm.
+function addLyingPerson(parent, look, x, y, z, rotationY) {
+  const holder = new THREE.Group();
+  holder.position.set(x, y, z);
+  holder.rotation.y = rotationY;
+  parent.add(holder);
+  const person = buildPerson(look);
+  person.group.rotation.x = -Math.PI / 2;
+  person.group.position.set(0, 0.13, 0.9);
+  person.limbs.leftArm.rotation.z = -0.25;
+  person.limbs.rightArm.rotation.z = 0.25;
+  holder.add(person.group);
+  return holder;
+}
+
+// Chạy bộ quanh đảo trên bãi cát; đi ngang bến thì bước lên mặt bến.
+const JOG_RING = 1.09;
+const joggers = [];
+function ringPoint(angle, ring) {
+  const wobble = shoreWobble(angle);
+  const x = ISLAND_RX * ring * wobble * Math.cos(angle);
+  const z = ISLAND_RZ * ring * wobble * Math.sin(angle);
+  let y = terrainHeight(x, z);
+  if (x > DOCK.startX && x < DOCK.endX && Math.abs(z - DOCK.z) < 1.8) y = Math.max(y, DOCK.deckY);
+  return new THREE.Vector3(x, Math.max(y, 0.05), z);
+}
+function buildJogger(look, startAngle, speed) {
+  const person = buildPerson(look);
+  person.group.position.copy(ringPoint(startAngle, JOG_RING));
+  joggers.push({ ...person, angle: startAngle, speed, phase: startAngle * 3 });
+  return person.group;
+}
+
+// Tập nhảy dang tay chân trên thảm ở bãi cỏ trước.
+const exercisers = [];
+function buildExerciser() {
+  const spot = new THREE.Group();
+  spot.position.set(2, GROUND_Y, 17);
+  spot.rotation.y = 0.5;
+  boxOn(spot, 0.9, 0.03, 1.9, mat('#7c3aed'), 0, 0.02, 0);
+  const person = buildPerson(PEOPLE_LOOKS[2]);
+  person.group.position.y = 0.05;
+  spot.add(person.group);
+  exercisers.push(person);
+  return spot;
+}
+
+// Góc nghỉ mát trên bãi cát trước: ô, hai khăn, hai người nằm, bóng, thùng đá, ván lướt.
+function buildBeachSpot() {
+  const group = new THREE.Group();
+  const x = -6;
+  const z = 31.4;
+  group.position.set(x, terrainHeight(x, z) + 0.02, z);
+  boxOn(group, 2.0, 0.03, 1.0, mat('#ff8fab'), -1.3, 0, 0);
+  boxOn(group, 2.0, 0.03, 1.0, mat('#4dd4c6'), 1.3, 0, 0);
+  addLyingPerson(group, PEOPLE_LOOKS[3], -1.3, 0.03, 0, Math.PI / 2);
+  addLyingPerson(group, PEOPLE_LOOKS[4], 1.3, 0.03, 0, -Math.PI / 2);
+  cylinderOn(group, 0.05, 0.05, 2.7, 6, mat('#f4f4f4'), 0, 0, -0.9);
+  const canopy = addMesh(group, new THREE.ConeGeometry(1.9, 0.7, 8), mat('#ff7b54'), [0, 2.65, -0.9]);
+  canopy.castShadow = true;
+  addMesh(group, new THREE.ConeGeometry(0.9, 0.34, 8), mat('#ffffff'), [0, 2.88, -0.9]);
+  addMesh(group, new THREE.SphereGeometry(0.3, 10, 8), mat('#ffd166'), [3.0, 0.3, 0.8]);
+  boxOn(group, 0.7, 0.45, 0.45, mat('#2d6cdf'), -3.0, 0, -0.5);
+  const board = addMesh(group, new THREE.CapsuleGeometry(0.3, 2.0, 4, 8), mat('#ffd23f'), [3.6, 0.1, -0.6], [Math.PI / 2, 0, 0.3]);
+  board.scale.set(1, 1, 0.25);
+  return group;
+}
+
+// Đàn cá bơi vòng ở chỗ nước cạn quanh đảo, thấy qua mặt nước trong.
+const fishes = [];
+function buildFishSchools() {
+  const colors = ['#ff8a3d', '#ffd23f', '#4dabf7', '#ff6b9a'];
+  const random = mulberry32(31);
+  [[0.3, 1.4], [0.55, 1.36], [0.85, 1.42], [1.25, 1.4], [1.7, 1.42]].forEach(([turns, ring], schoolIndex) => {
+    const angle = turns * Math.PI;
+    const wobble = shoreWobble(angle);
+    const center = new THREE.Vector3(ISLAND_RX * ring * wobble * Math.cos(angle), 0, ISLAND_RZ * ring * wobble * Math.sin(angle));
+    const color = mat(colors[schoolIndex % colors.length], { emissive: colors[schoolIndex % colors.length], emissiveIntensity: 0.25 });
+    for (let i = 0; i < 7; i++) {
+      const fish = new THREE.Group();
+      const body = addMesh(fish, new THREE.SphereGeometry(0.28, 8, 6), color, [0, 0, 0], [0, 0, 0], false);
+      body.scale.set(1.7, 0.75, 0.5);
+      const tail = new THREE.Group();
+      tail.position.x = -0.42;
+      addMesh(tail, new THREE.ConeGeometry(0.2, 0.34, 4), color, [-0.12, 0, 0], [0, 0, Math.PI / 2], false);
+      fish.add(tail);
+      scene.add(fish);
+      fishes.push({ fish, tail, center, radius: 1.6 + random() * 2.4, speed: 0.45 + random() * 0.3, offset: i * 0.85 + random() * 0.3, depth: -0.4 - random() * 0.45 });
+    }
+  });
+}
+
+const HOUSE_FOCUS = [-3, 6, -6];
+buildIsland();
+const foam = buildFoam();
+buildScenery();
+buildClouds();
+buildGulls();
+buildFishSchools();
+
+registerItem({ id: 'sign', name: 'Biển báo', tier: 0, untilTier: 0, group: buildEmptySign(), focus: [-3, 3, -2] });
+registerItem({ id: 'tent', name: 'Lều cắm trại', tier: 1, untilTier: 1, group: buildTent(), focus: HOUSE_FOCUS, isHouse: true });
+registerItem({ id: 'cabin', name: 'Nhà gỗ nhỏ', tier: 2, untilTier: 2, group: buildCabin(), focus: HOUSE_FOCUS, isHouse: true });
+registerItem({ id: 'cottage', name: 'Nhà cấp 4 mái ngói', tier: 3, untilTier: 4, group: buildCottage(), focus: HOUSE_FOCUS, isHouse: true });
+registerItem({ id: 'townhouse', name: 'Nhà phố 2 tầng', tier: 5, untilTier: 5, group: buildTownhouse(), focus: HOUSE_FOCUS, isHouse: true });
+registerItem({ id: 'modernVilla', name: 'Biệt thự', tier: 6, untilTier: 7, group: buildModernVilla(), focus: HOUSE_FOCUS, isHouse: true });
+registerItem({ id: 'beachVilla', name: 'Villa ven biển', tier: 8, untilTier: 9, group: buildBeachVilla(), focus: HOUSE_FOCUS, isHouse: true });
+registerItem({ id: 'mansion', name: 'Dinh thự', tier: 10, group: buildMansion(), focus: [-3, 9, -4], isHouse: true });
+
+registerItem({ id: 'campfire', listId: 'campfire', name: 'Lửa trại', tier: 1, group: buildCampfire(), focus: [12, 2, 13] });
+registerItem({ id: 'bike', listId: 'bike', name: 'Xe đạp', tier: 1, group: buildBike(), focus: [-23.6, 2, 9] });
+registerItem({ id: 'scooter', listId: 'scooter', name: 'Xe máy', tier: 2, group: buildScooter(), focus: [-20.8, 2, 9] });
+registerItem({ id: 'car', listId: 'car', name: 'Ô tô con', tier: 3, group: buildCompactCar(), focus: [-16.8, 2, 9] });
+registerItem({ id: 'balloon', listId: 'balloon', name: 'Khinh khí cầu', tier: 4, group: buildBalloon(), focus: [HILL.x, 30, HILL.z] });
+registerItem({ id: 'dock', listId: 'dock', name: 'Bến gỗ', tier: 4, group: buildDock(), focus: [45, 2, 6] });
+registerItem({ id: 'speedboat', listId: 'speedboat', name: 'Ca nô', tier: 5, group: buildSpeedboat(), focus: [46.5, 1, 9.6] });
+registerItem({ id: 'pool', listId: 'pool', name: 'Hồ bơi', tier: 6, untilTier: 7, group: buildPool(false), focus: [13.5, 2, -3.8] });
+registerItem({ id: 'supercar', listId: 'supercar', name: 'Siêu xe', tier: 6, group: buildSupercar(-12.4, '#e5322d', false), focus: [-12.4, 2, 9] });
+registerItem({ id: 'garden', listId: 'garden', name: 'Vườn đèn', tier: 7, group: buildGarden(), focus: [8, 3, 4] });
+registerItem({ id: 'yachtSmall', listId: 'yacht', name: 'Du thuyền nhỏ', tier: 7, untilTier: 7, group: buildSmallYacht(), focus: [55, 2, 10.8] });
+registerItem({ id: 'dockHead', listId: 'yacht', name: 'Bến mở rộng', tier: 7, group: buildDockHead(), focus: [62, 2, 10] });
+registerItem({ id: 'poolInfinity', listId: 'pool', name: 'Hồ bơi tràn bờ', tier: 8, group: buildPool(true), focus: [15.5, 2, -3.8] });
+registerItem({ id: 'supercar2', listId: 'supercar2', name: 'Siêu xe thứ hai', tier: 8, group: buildSupercar(-8.2, '#f6c21c', true), focus: [-8.2, 2, 9] });
+registerItem({ id: 'yachtBig', listId: 'yacht', name: 'Du thuyền lớn', tier: 8, group: buildBigYacht(), focus: [54, 4, 17.6] });
+registerItem({ id: 'heli', listId: 'heli', name: 'Trực thăng', tier: 9, group: buildHelipad(), focus: [17, 3, -17] });
+const jetItem = registerItem({ id: 'jet', listId: 'jet', name: 'Máy bay riêng', tier: 10, group: buildJet(), focus: [0, 30, 0] });
+registerItem({ id: 'rainbow', listId: 'rainbow', name: 'Cầu vồng', tier: 10, group: buildRainbow(), focus: [-40, 30, -60] });
+
+// Người trên đảo đông dần theo bậc (không nằm trong danh sách món).
+registerItem({ id: 'jogger1', name: 'Người chạy bộ', tier: 1, group: buildJogger(PEOPLE_LOOKS[0], 1.3, 0.07), focus: [0, 2, 30] });
+registerItem({ id: 'exerciser', name: 'Người tập thể dục', tier: 2, group: buildExerciser(), focus: [2, 3, 17] });
+registerItem({ id: 'beachSpot', name: 'Góc nghỉ mát', tier: 3, group: buildBeachSpot(), focus: [-6, 2, 31] });
+registerItem({ id: 'jogger2', name: 'Người chạy bộ', tier: 4, group: buildJogger(PEOPLE_LOOKS[1], 3.6, 0.06), focus: [0, 2, 30] });
+registerItem({ id: 'jogger3', name: 'Người chạy bộ', tier: 8, group: buildJogger(PEOPLE_LOOKS[4], 5.2, 0.08), focus: [0, 2, 30] });
+
+/* ------------------------------------------------------------------ */
+/* Đổi bậc, xem trước bậc kế, cảnh lên bậc                              */
+/* ------------------------------------------------------------------ */
+const state = { tier: 6, isGhost: false, isNight: false };
+const pops = [];
+
+function isOwned(item, tier) {
+  return tier >= item.tier && tier <= item.untilTier;
+}
+function setItemMode(item, mode) {
+  if (item.mode === mode) return;
+  item.mode = mode;
+  item.group.visible = mode !== 'hidden';
+  item.group.traverse((child) => {
+    if (!child.isMesh) return;
+    child.material = mode === 'ghost' ? ghostMat : child.userData.originalMaterial;
+    child.castShadow = mode === 'owned' && child.userData.castsShadow;
+  });
+}
+
+function applyTier(nextTier, { celebrate = false } = {}) {
+  const previousTier = state.tier;
+  state.tier = nextTier;
+  const newlyOwned = [];
+  const nextLevel = nextTier + 1;
+  const ghostReplacesHouse = state.isGhost && items.some((item) => item.isHouse && item.tier === nextLevel);
+
+  items.forEach((item) => {
+    const wasOwned = item.mode === 'owned';
+    let mode = isOwned(item, nextTier) ? 'owned' : 'hidden';
+    if (state.isGhost && nextLevel <= 10 && item.tier === nextLevel) mode = 'ghost';
+    // Bậc kế đổi nhà: ẩn nhà đang có để bóng của nhà mới không chồng lên.
+    if (ghostReplacesHouse && item.isHouse && mode === 'owned') mode = 'hidden';
+    // Món bị thay ở bậc kế (du thuyền nhỏ, hồ bơi nhỏ) cũng nhường chỗ cho bóng của bản mới.
+    if (state.isGhost && mode === 'owned' && item.untilTier === nextTier && item.listId && items.some((other) => other.listId === item.listId && other.tier === nextLevel)) mode = 'hidden';
+    setItemMode(item, mode);
+    if (mode === 'owned' && !wasOwned) newlyOwned.push(item);
+  });
+
+  if (celebrate && nextTier > previousTier && newlyOwned.length) {
+    celebrateTier(nextTier, newlyOwned);
+  } else {
+    items.forEach((item) => item.group.scale.copy(item.group.userData.baseScale));
+  }
+  renderPanel();
+}
+
+function celebrateTier(tier, newlyOwned) {
+  newlyOwned.forEach((item, index) => {
+    if (isReducedMotion) return;
+    item.group.scale.setScalar(0.001);
+    pops.push({ item, start: clock.elapsedTime + index * 0.18, duration: 0.75 });
+  });
+  const names = newlyOwned.filter((item) => item.id !== 'dockHead').map((item) => item.name);
+  showToast(`Lên bậc ${tier} · ${TIERS[tier].name}: ${names.join(', ')}`);
+  const hero = newlyOwned.find((item) => item.isHouse) || newlyOwned[0];
+  flyTo(hero.id === 'jet' ? new THREE.Vector3(0, 6, 0) : hero.focus);
+  if (!isReducedMotion) {
+    for (let i = 0; i < 3; i++) launchFirework(hero.focus.clone().add(new THREE.Vector3((i - 1) * 7, 16 + i * 3, 0)), i * 0.35);
+  }
+}
+
+const flight = { active: false, start: 0, fromTarget: new THREE.Vector3(), toTarget: new THREE.Vector3(), fromPosition: new THREE.Vector3(), toPosition: new THREE.Vector3() };
+function flyTo(focus) {
+  flight.active = true;
+  flight.start = clock.elapsedTime;
+  flight.fromTarget.copy(controls.target);
+  flight.toTarget.copy(focus);
+  flight.fromPosition.copy(camera.position);
+  const direction = camera.position.clone().sub(controls.target).normalize();
+  flight.toPosition.copy(focus).add(direction.multiplyScalar(58 * portraitFactor()));
+  flight.toPosition.y = Math.max(flight.toPosition.y, focus.y + 14);
+}
+
+/* Pháo hoa */
+const fireworks = [];
+function launchFirework(origin, delay) {
+  const count = 110;
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(count * 3), 3));
+  const color = new THREE.Color(['#ffd166', '#ff6b9a', '#5eead4', '#a78bfa', '#ffffff'][Math.floor(Math.random() * 5)]);
+  const points = new THREE.Points(geometry, new THREE.PointsMaterial({ color, size: 0.55, transparent: true, opacity: 1, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
+  points.visible = false;
+  scene.add(points);
+  const velocities = [];
+  for (let i = 0; i < count; i++) {
+    const direction = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+    velocities.push(direction.multiplyScalar(7 + Math.random() * 3));
+  }
+  fireworks.push({ points, velocities, origin, start: clock.elapsedTime + delay, life: 1.8 });
+}
+function updateFireworks(time) {
+  for (let index = fireworks.length - 1; index >= 0; index--) {
+    const firework = fireworks[index];
+    const age = time - firework.start;
+    if (age < 0) continue;
+    if (age > firework.life) {
+      scene.remove(firework.points);
+      firework.points.geometry.dispose();
+      firework.points.material.dispose();
+      fireworks.splice(index, 1);
+      continue;
+    }
+    firework.points.visible = true;
+    const position = firework.points.geometry.attributes.position;
+    firework.velocities.forEach((velocity, i) => {
+      const drag = 1 - Math.exp(-age * 1.6);
+      position.setXYZ(
+        i,
+        firework.origin.x + (velocity.x * drag) / 1.6,
+        firework.origin.y + (velocity.y * drag) / 1.6 - 2.2 * age * age,
+        firework.origin.z + (velocity.z * drag) / 1.6,
+      );
+    });
+    position.needsUpdate = true;
+    firework.points.material.opacity = 1 - age / firework.life;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Ngày đêm                                                             */
+/* ------------------------------------------------------------------ */
+function applyNight(isNight) {
+  state.isNight = isNight;
+  document.body.classList.toggle('is-night', isNight);
+  scene.background = isNight ? nightSky : daySky;
+  scene.fog.color.set(isNight ? '#1a2a4a' : '#d6ecf2');
+  hemiLight.color.set(isNight ? '#5a6fa8' : '#e2f4ff');
+  hemiLight.groundColor.set(isNight ? '#1c2a1f' : '#6f8f52');
+  hemiLight.intensity = isNight ? 0.45 : 1.0;
+  sun.color.set(isNight ? '#a9bcff' : '#fff0d4');
+  sun.intensity = isNight ? 0.55 : 2.7;
+  sun.position.set(isNight ? -60 : 70, isNight ? 80 : 95, isNight ? 30 : 45);
+  windowMat.emissiveIntensity = isNight ? 1.5 : 0;
+  lampMat.emissiveIntensity = isNight ? 2.4 : 0.2;
+  headlightMat.emissiveIntensity = isNight ? 1.2 : 0;
+  poolWaterMat.emissiveIntensity = isNight ? 0.9 : 0.12;
+  padLightMat.emissiveIntensity = isNight ? 2.2 : 0.3;
+  seaMaterial.color.set(isNight ? '#123e63' : '#22b4c9');
+  farSea.material.color.set(isNight ? '#0f2b4a' : '#1f8fae');
+  foamMaterial.opacity = isNight ? 0.25 : 0.55;
+  clouds.forEach((cloud) => cloud.children.forEach((puff) => puff.material.color.set(isNight ? '#3b4a6b' : '#ffffff')));
+  const rainbow = items.find((item) => item.id === 'rainbow');
+  rainbow.group.children.forEach((band) => (band.material.opacity = isNight ? 0 : 0.5));
+  document.getElementById('nightBtn').setAttribute('aria-pressed', String(isNight));
+}
+
+/* ------------------------------------------------------------------ */
+/* Giao diện                                                            */
+/* ------------------------------------------------------------------ */
+function formatHours(hours) {
+  if (hours < 1) return `${Math.round(hours * 60)} phút`;
+  return `${hours} giờ`;
+}
+function renderPanel() {
+  const tier = state.tier;
+  const current = TIERS[tier];
+  const next = TIERS[tier + 1];
+  const house = items.find((item) => item.isHouse && isOwned(item, tier));
+  document.getElementById('tierLine').textContent = tier === 0 ? 'Chưa có phút học nào' : `Bậc ${tier} · ${current.name} · ${formatHours(current.hours)} học`;
+  const nextNames = items.filter((item) => item.tier === tier + 1 && item.id !== 'dockHead').map((item) => item.name);
+  document.getElementById('nextLine').textContent = next
+    ? `Còn ${formatHours(Math.round((next.hours - current.hours) * 60) / 60)} lên ${next.name}: ${nextNames.join(', ')}`
+    : 'Đã ở bậc cao nhất';
+  document.getElementById('houseName').textContent = house ? `Nhà: ${house.name}` : 'Nhà: bãi đất trống';
+  document.getElementById('itemList').innerHTML = LIST_ROWS.map((row) => {
+    const isUnlocked = tier >= row.tier;
+    const isNext = row.tier === tier + 1;
+    const owned = items.filter((item) => item.listId === row.listId && isOwned(item, tier) && item.id !== 'dockHead');
+    const label = owned.length ? owned[owned.length - 1].name : row.name;
+    return `<li class="${isUnlocked ? '' : 'is-locked'} ${isNext ? 'is-next' : ''}">
+      <span class="mark" aria-hidden="true">${isUnlocked ? '✓' : '🔒'}</span>${label}<span class="tier">bậc ${row.tier}</span></li>`;
+  }).join('');
+  document.getElementById('tierRange').value = String(tier);
+  document.getElementById('ghostBtn').disabled = tier >= 10;
+}
+
+let toastTimer = 0;
+function showToast(text) {
+  const toast = document.getElementById('toast');
+  toast.textContent = text;
+  toast.classList.add('is-shown');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('is-shown'), 3800);
+}
+
+document.getElementById('ticks').innerHTML = TIERS.map((tier) => `<span>${tier.level}</span>`).join('');
+document.getElementById('tierRange').addEventListener('input', (event) => {
+  applyTier(Number(event.target.value), { celebrate: true });
+});
+document.getElementById('ghostBtn').addEventListener('click', (event) => {
+  state.isGhost = !state.isGhost;
+  event.currentTarget.setAttribute('aria-pressed', String(state.isGhost));
+  applyTier(state.tier);
+});
+document.getElementById('nightBtn').addEventListener('click', () => applyNight(!state.isNight));
+document.getElementById('spinBtn').addEventListener('click', (event) => {
+  controls.autoRotate = !controls.autoRotate;
+  event.currentTarget.setAttribute('aria-pressed', String(controls.autoRotate));
+});
+
+// Bấm vào một món: nhãn tên + bậc mở.
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+const tip = document.getElementById('tip');
+let pointerDown = null;
+renderer.domElement.addEventListener('pointerdown', (event) => (pointerDown = { x: event.clientX, y: event.clientY }));
+renderer.domElement.addEventListener('pointerup', (event) => {
+  if (!pointerDown || Math.hypot(event.clientX - pointerDown.x, event.clientY - pointerDown.y) > 6) return;
+  pointer.set((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1);
+  raycaster.setFromCamera(pointer, camera);
+  const pickable = items.filter((item) => item.mode !== 'hidden').map((item) => item.group);
+  const hit = raycaster.intersectObjects(pickable, true)[0];
+  if (!hit) {
+    tip.classList.remove('is-shown');
+    return;
+  }
+  const item = items.find((candidate) => candidate.id === hit.object.userData.itemId);
+  if (!item || item.id === 'sign') return;
+  const tierInfo = TIERS[item.tier];
+  const extra = item.mode === 'ghost'
+    ? `Mở ở bậc ${item.tier} ${tierInfo.name} · còn ${formatHours(Math.round((tierInfo.hours - TIERS[state.tier].hours) * 60) / 60)}`
+    : `Mở ở bậc ${item.tier} ${tierInfo.name}`;
+  tip.innerHTML = `${item.name}<small>${extra}</small>`;
+  tip.style.left = `${Math.min(event.clientX + 12, window.innerWidth - 270)}px`;
+  tip.style.top = `${Math.max(event.clientY - 52, 8)}px`;
+  tip.classList.add('is-shown');
+});
+
+let idleTimer = 0;
+controls.addEventListener('start', () => {
+  flight.active = false;
+  clearTimeout(idleTimer);
+});
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* ------------------------------------------------------------------ */
+/* Vòng lặp                                                             */
+/* ------------------------------------------------------------------ */
+const clock = new THREE.Clock();
+function easeOutBack(t) {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+function easeInOut(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+const FRAME_INTERVAL = 1 / 30;
+let lastFrameAt = 0;
+function tick() {
+  const now = performance.now() / 1000;
+  if (now - lastFrameAt < FRAME_INTERVAL - 0.002) return;
+  lastFrameAt = now;
+  const delta = Math.min(clock.getDelta(), 0.05);
+  const time = clock.elapsedTime;
+  const motion = isReducedMotion ? 0 : 1;
+
+  seaUniforms.uTime.value = time * motion;
+  foam.material.opacity = (state.isNight ? 0.22 : 0.45) + Math.sin(time * 1.4) * 0.12 * motion;
+
+  floating.forEach(({ group, phase, baseRotationY }) => {
+    group.position.y = Math.sin(time * 1.1 + phase) * 0.12 * motion;
+    group.rotation.z = Math.sin(time * 0.9 + phase) * 0.025 * motion;
+    group.rotation.y = baseRotationY + Math.sin(time * 0.3 + phase) * 0.02 * motion;
+  });
+  swayingPalms.forEach(({ crown, phase }) => {
+    crown.rotation.z = Math.sin(time * 0.8 + phase) * 0.05 * motion;
+    crown.rotation.x = Math.cos(time * 0.6 + phase) * 0.04 * motion;
+  });
+  flames.forEach((flame, index) => {
+    flame.scale.y = 1 + Math.sin(time * 9 + index * 2) * 0.18;
+    flame.scale.x = flame.scale.z = 1 + Math.cos(time * 7 + index) * 0.1;
+  });
+  const campfireItem = items.find((item) => item.id === 'campfire');
+  fireLight.intensity = campfireItem.mode === 'owned' ? (state.isNight ? 26 : 3) * (0.85 + Math.sin(time * 11) * 0.15) : 0;
+  porchLight.intensity = state.isNight && state.tier > 0 ? 40 : 0;
+  dockLight.intensity = state.isNight && state.tier >= 4 ? 30 : 0;
+
+  const balloon = items.find((item) => item.id === 'balloon').group;
+  balloon.position.y = 30 + Math.sin(time * 0.5) * 1.2 * motion;
+  balloon.rotation.y = time * 0.05 * motion;
+
+  const heli = items.find((item) => item.id === 'heli').group.getObjectByName('rotor');
+  heli.rotation.y = time * 0.6 * motion;
+
+  const mansionFlag = items.find((item) => item.id === 'mansion').group.getObjectByName('flag');
+  mansionFlag.rotation.y = Math.sin(time * 2.4) * 0.25 * motion;
+
+  // Máy bay riêng bay vòng quanh đảo, nghiêng cánh theo đường vòng.
+  const jetAngle = time * 0.11 * (motion || 0.0001) + 1.2;
+  const jet = jetItem.group;
+  jet.position.set(Math.cos(jetAngle) * 62 + 8, 30 + Math.sin(time * 0.3) * 2 * motion, Math.sin(jetAngle) * 52 - 4);
+  jet.rotation.set(0, -jetAngle - Math.PI, 0);
+  jet.children[0].rotation.x = -0.32;
+
+  clouds.forEach((cloud) => {
+    cloud.position.x += cloud.userData.speed * delta * motion;
+    if (cloud.position.x > 320) cloud.position.x = -320;
+  });
+  gulls.forEach(({ gull, wings, radius, height, speed, phase }) => {
+    const angle = time * speed + phase;
+    gull.position.set(Math.cos(angle) * radius + 4, height + Math.sin(time + phase) * 1.5, Math.sin(angle) * radius);
+    gull.rotation.y = -angle;
+    wings.forEach(({ wing, side }) => (wing.rotation.x = side * (0.3 + Math.sin(time * 6 + phase) * 0.45 * motion)));
+    gull.visible = !state.isNight;
+  });
+
+  for (let index = pops.length - 1; index >= 0; index--) {
+    const pop = pops[index];
+    const t = (time - pop.start) / pop.duration;
+    if (t < 0) continue;
+    const scale = t >= 1 ? 1 : Math.max(0.001, easeOutBack(t));
+    pop.item.group.scale.copy(pop.item.group.userData.baseScale).multiplyScalar(scale);
+    if (t >= 1) pops.splice(index, 1);
+  }
+  joggers.forEach((jogger) => {
+    jogger.angle += jogger.speed * delta * motion;
+    const step = time * 9 + jogger.phase;
+    const point = ringPoint(jogger.angle, JOG_RING);
+    const ahead = ringPoint(jogger.angle + 0.02, JOG_RING);
+    jogger.group.position.copy(point);
+    jogger.group.position.y += Math.abs(Math.sin(step)) * 0.08 * motion;
+    jogger.group.lookAt(ahead.x, point.y, ahead.z);
+    jogger.limbs.leftLeg.rotation.x = Math.sin(step) * 0.75 * motion;
+    jogger.limbs.rightLeg.rotation.x = -Math.sin(step) * 0.75 * motion;
+    jogger.limbs.leftArm.rotation.x = -Math.sin(step) * 0.8 * motion;
+    jogger.limbs.rightArm.rotation.x = Math.sin(step) * 0.8 * motion;
+  });
+  exercisers.forEach((person) => {
+    const spread = (Math.sin(time * 5) + 1) / 2 * motion;
+    person.limbs.leftArm.rotation.z = -(0.15 + spread * 2.6);
+    person.limbs.rightArm.rotation.z = 0.15 + spread * 2.6;
+    person.limbs.leftLeg.rotation.z = -spread * 0.3;
+    person.limbs.rightLeg.rotation.z = spread * 0.3;
+    person.group.position.y = 0.05 + Math.abs(Math.sin(time * 5)) * 0.12 * motion;
+  });
+  fishes.forEach(({ fish, tail, center, radius, speed, offset, depth }) => {
+    const angle = time * speed * (motion || 0) + offset;
+    fish.position.set(center.x + Math.cos(angle) * radius, depth + Math.sin(time * 2 + offset) * 0.05, center.z + Math.sin(angle) * radius);
+    fish.rotation.y = Math.atan2(-Math.cos(angle), -Math.sin(angle));
+    tail.rotation.y = Math.sin(time * 10 + offset) * 0.45 * motion;
+  });
+  updateFireworks(time);
+
+  if (flight.active) {
+    const t = Math.min(1, (time - flight.start) / 1.6);
+    const eased = easeInOut(t);
+    controls.target.lerpVectors(flight.fromTarget, flight.toTarget, eased);
+    camera.position.lerpVectors(flight.fromPosition, flight.toPosition, eased);
+    if (t >= 1) flight.active = false;
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+// Bậc thấp nhà nhỏ: đứng gần cho thấy rõ, bậc cao lùi xa cho vừa cả bến và du thuyền.
+// Màn dọc (điện thoại) hẹp ngang: lùi camera theo tỉ lệ để đảo không bị cắt.
+function portraitFactor() {
+  return Math.max(1, 1.15 / camera.aspect);
+}
+function frameForTier(tier) {
+  const distance = (tier <= 2 ? 62 : tier <= 5 ? 88 : 118) * portraitFactor();
+  const target = tier <= 2 ? new THREE.Vector3(-6, 3, 0) : HOME_TARGET.clone();
+  const direction = new THREE.Vector3(0.5, 0.42, 0.76).normalize();
+  controls.target.copy(target);
+  camera.position.copy(target).add(direction.multiplyScalar(distance));
+}
+
+/* Khởi động: ngày đêm theo giờ trên máy, bậc mặc định 6 */
+const hour = new Date().getHours();
+const params = new URLSearchParams(location.search);
+const startTier = params.has('tier') ? Math.min(10, Math.max(0, Number(params.get('tier')))) : 6;
+applyNight(params.has('night') ? params.get('night') === '1' : hour < 6 || hour >= 18);
+applyTier(startTier);
+frameForTier(startTier);
+renderer.setAnimationLoop(tick);
+document.addEventListener('visibilitychange', () => renderer.setAnimationLoop(document.hidden ? null : tick));
+
+// Móc cho kịch bản chụp ảnh.
+window.__estate = {
+  setTier: (tier, celebrate = false) => applyTier(tier, { celebrate }),
+  setNight: applyNight,
+  setGhost: (isGhost) => { state.isGhost = isGhost; applyTier(state.tier); },
+  frame: frameForTier,
+  setCamera: (position, target) => { camera.position.set(...position); controls.target.set(...target); controls.autoRotate = false; },
+};
+window.__estateReady = true;
+</script>
+</body>
+</html>

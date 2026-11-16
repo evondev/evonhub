@@ -34,7 +34,10 @@ export function LeaderboardBoard({
         studyDays={data.studyDays}
       />
       {data.tierProgress && (
-        <TierProgressCard tierProgress={data.tierProgress} />
+        <TierProgressCard
+          tierProgress={data.tierProgress}
+          username={viewer?.username || ""}
+        />
       )}
     </>
   ) : undefined;
