@@ -1,5 +1,6 @@
 "use client";
 import { useUserContext } from "@/components/user-context";
+import { FeatureAnnouncementDialog } from "@/modules/announcement/components";
 // Import thẳng từ file: barrel của chat kéo theo code của trang chat
 import { ChatHostBubble } from "@/modules/chat/components/chat-host-bubble";
 import { CHAT_HOST_ROLES } from "@/modules/chat/constants/chat-role.constants";
@@ -85,6 +86,8 @@ export default function DashboardLayout({
           {IS_CHAT_ENABLED && chatHost && !isChatHostViewer && (
             <ChatHostBubble host={chatHost} />
           )}
+          {/* Trang học không bật: đang xem video thì để trang khác mới giới thiệu */}
+          <FeatureAnnouncementDialog isEnabled={!isLessonPage} />
         </section>
       </Main>
     </>

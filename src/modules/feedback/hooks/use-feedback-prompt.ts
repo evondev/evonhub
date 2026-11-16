@@ -1,9 +1,13 @@
 "use client";
 
 import { useUserContext } from "@/components/user-context";
+import { isFeatureAnnouncementPending } from "@/shared/utils/announcement.utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { FEEDBACK_PROMPT_DELAY_MS } from "../constants";
+import {
+  FEEDBACK_PROMPT_DELAY_MS,
+  IS_FEEDBACK_AUTO_PROMPT_ENABLED,
+} from "../constants";
 import {
   getMyFeedbackStatusOptions,
   useQueryMyFeedbackStatus,
@@ -23,9 +27,19 @@ export function useFeedbackPrompt() {
   const { data: feedbackStatus } = useQueryMyFeedbackStatus({ userId });
   // Lỗi tải thì data là undefined: không bật, thà bỏ lỡ còn hơn bật nhầm người đã gửi
   const shouldPrompt = feedbackStatus?.hasSubmitted === false;
+  // Hộp giới thiệu tính năng mới sắp bật: nhường cả phiên này, không bật hai
+  // hộp liền nhau. Phiên sau (tab mới) mới hỏi góp ý
+  const isAnnouncementPending = isFeatureAnnouncementPending(userInfo);
 
   useEffect(() => {
+    if (!IS_FEEDBACK_AUTO_PROMPT_ENABLED) return;
+
     if (!shouldPrompt || hasShownFeedbackPrompt()) return;
+
+    if (isAnnouncementPending) {
+      markFeedbackPromptShown();
+      return;
+    }
 
     const openPromptTimer = setTimeout(() => {
       markFeedbackPromptShown();
@@ -33,7 +47,7 @@ export function useFeedbackPrompt() {
     }, FEEDBACK_PROMPT_DELAY_MS);
 
     return () => clearTimeout(openPromptTimer);
-  }, [shouldPrompt]);
+  }, [shouldPrompt, isAnnouncementPending]);
 
   function handleSubmitted() {
     const submittedStatus: MyFeedbackStatus = { hasSubmitted: true };

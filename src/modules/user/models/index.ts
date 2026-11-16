@@ -99,6 +99,11 @@ const userSchema = new Schema<UserModelProps>({
   notificationsSeenAt: {
     type: Date,
   },
+  // Mã các hộp giới thiệu tính năng mới đã bật cho người này: mỗi mã chỉ bật một lần
+  seenAnnouncements: {
+    type: [String],
+    default: [],
+  },
   socials: {
     facebook: {
       type: String,
