@@ -1,15 +1,21 @@
+import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
+import Link from "next/link";
 import { STUDY_TIERS } from "../../../constants";
 import { TierBadge } from "../../../components/tier-badge";
 import { TierProgress } from "../../../types";
+import { buildHousePath } from "../../../utils/estate.utils";
 import { formatStudyDuration } from "../../../utils";
 import { TierLadderDialog } from "./tier-ladder-dialog";
 
 interface TierProgressCardProps {
   tierProgress: TierProgress;
+  /** Username của người xem; rỗng thì không có nút xem nhà */
+  username: string;
 }
 
 /** Bậc hiện tại theo tổng giờ học, thanh tiến độ và còn bao lâu lên bậc kế */
-export function TierProgressCard({ tierProgress }: TierProgressCardProps) {
+export function TierProgressCard({ tierProgress, username }: TierProgressCardProps) {
   const { tier, nextTier, totalSeconds, remainingSeconds, percent } =
     tierProgress;
   const remainingText = formatStudyDuration(remainingSeconds, true);
@@ -74,6 +80,14 @@ export function TierProgressCard({ tierProgress }: TierProgressCardProps) {
           )}
         </div>
       </div>
+      {username && (
+        <Button asChild variant="primary" className="w-full">
+          <Link href={buildHousePath(username)}>
+            <Home aria-hidden className="size-4" />
+            Xem nhà của bạn
+          </Link>
+        </Button>
+      )}
     </section>
   );
 }

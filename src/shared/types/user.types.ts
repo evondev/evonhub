@@ -56,6 +56,7 @@ export interface UserModelProps extends Document {
     bankBranch: string;
   };
   notificationsSeenAt?: Date;
+  seenAnnouncements?: string[];
   lock?: UserLock;
   _destroy: boolean;
   socials: {

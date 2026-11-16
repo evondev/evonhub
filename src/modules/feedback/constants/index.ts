@@ -14,6 +14,12 @@ export const FEEDBACK_SEARCH_USER_LIMIT = 200;
 
 export const FEEDBACK_SKELETON_ROW_COUNT = 5;
 
+/**
+ * Tạm tắt tự bật hộp góp ý khi vào web (2026-11-16). Nút "Góp ý" trên header
+ * vẫn mở được. Bật lại thì đổi thành true
+ */
+export const IS_FEEDBACK_AUTO_PROMPT_ENABLED = false;
+
 /** Chờ trang hiện xong rồi mới bật hộp, không chặn ngay cú nhìn đầu */
 export const FEEDBACK_PROMPT_DELAY_MS = 1500;
 
