@@ -47,12 +47,14 @@ export const STREAK_DAY_COUNT = 7;
 
 export const STREAK_IMAGE_SRC = "/tiers/tier-streak.png";
 
-const HOUR_SECONDS = 60 * 60;
+const MINUTE_SECONDS = 60;
+const HOUR_SECONDS = 60 * MINUTE_SECONDS;
 
 /**
  * Mười bậc theo tổng giờ học từ trước tới nay, chỉ tăng không giảm. Bậc đầu
- * nhận ngay phút đầu tiên. Mốc đã hạ cho vừa nhịp học hiện tại (người học
- * chăm nhất khoảng 1,5 giờ mỗi tuần): bậc 2 trong tuần đầu, bậc cao nhất hơn một năm.
+ * nhận ngay phút đầu tiên. Mốc hạ cho vừa thời lượng các khoá và nhịp học hiện
+ * tại (người học chăm nhất khoảng 1,5 giờ mỗi tuần): bậc 2 ngay buổi đầu, bậc
+ * cao nhất khoảng ba tháng.
  */
 export const STUDY_TIERS: StudyTier[] = [
   {
@@ -64,55 +66,55 @@ export const STUDY_TIERS: StudyTier[] = [
   {
     level: 2,
     name: "Băng tinh",
-    minSeconds: 1 * HOUR_SECONDS,
+    minSeconds: 20 * MINUTE_SECONDS,
     imageSrc: "/tiers/tier-2.png",
   },
   {
     level: 3,
     name: "Tinh tú",
-    minSeconds: 3 * HOUR_SECONDS,
+    minSeconds: 45 * MINUTE_SECONDS,
     imageSrc: "/tiers/tier-3.png",
   },
   {
     level: 4,
     name: "Nhiệt huyết",
-    minSeconds: 6 * HOUR_SECONDS,
+    minSeconds: 1.5 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-4.png",
   },
   {
     level: 5,
     name: "Đam mê",
-    minSeconds: 10 * HOUR_SECONDS,
+    minSeconds: 3 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-5.png",
   },
   {
     level: 6,
     name: "Vương miện",
-    minSeconds: 15 * HOUR_SECONDS,
+    minSeconds: 5 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-6.png",
   },
   {
     level: 7,
     name: "Chiến cúp",
-    minSeconds: 25 * HOUR_SECONDS,
+    minSeconds: 8 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-7.png",
   },
   {
     level: 8,
     name: "Kim cương",
-    minSeconds: 40 * HOUR_SECONDS,
+    minSeconds: 12 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-8.png",
   },
   {
     level: 9,
     name: "Thạch anh",
-    minSeconds: 60 * HOUR_SECONDS,
+    minSeconds: 16 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-9.png",
   },
   {
     level: 10,
     name: "Huyền thoại",
-    minSeconds: 100 * HOUR_SECONDS,
+    minSeconds: 20 * HOUR_SECONDS,
     imageSrc: "/tiers/tier-10.png",
   },
 ];

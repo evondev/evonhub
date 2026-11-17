@@ -51,7 +51,7 @@ export function buildPreviewStudyStreak(
 }
 
 function getPreviewViewerTotalHours(state: LeaderboardPreviewState): number {
-  if (state === "bac-cao-nhat") return 196;
+  if (state === "bac-cao-nhat") return 26;
 
   if (state === "chua-co-phut") return 0;
 
