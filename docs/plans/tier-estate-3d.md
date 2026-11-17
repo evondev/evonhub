@@ -31,15 +31,15 @@ Mốc giờ giữ đúng `STUDY_TIERS`. Mỗi bậc có **một lần nâng nhà
 | Bậc | Tên | Tổng giờ | Nhà | Món mới |
 |---|---|---|---|---|
 | 1 | Tập sự | 1 phút | Lều cắm trại, lửa trại | Xe đạp |
-| 2 | Băng tinh | 1 giờ | Nhà gỗ nhỏ | Xe máy |
-| 3 | Tinh tú | 3 giờ | Nhà cấp 4 mái ngói, sân trước | Ô tô con |
-| 4 | Nhiệt huyết | 6 giờ | (giữ) | Khinh khí cầu bay lơ lửng trên đảo, bến gỗ nhỏ |
-| 5 | Đam mê | 10 giờ | Nhà phố 2 tầng, ban công | Ca nô ở bến |
-| 6 | Vương miện | 15 giờ | Biệt thự, hồ bơi | Siêu xe đỗ trước cửa |
-| 7 | Chiến cúp | 25 giờ | (giữ), thêm vườn, đèn sân | Du thuyền nhỏ, bến mở rộng |
-| 8 | Kim cương | 40 giờ | Villa ven biển, hồ bơi tràn bờ | Siêu xe thứ hai, du thuyền lớn thay du thuyền nhỏ |
-| 9 | Thạch anh | 60 giờ | (giữ), thêm sân đáp | Trực thăng |
-| 10 | Huyền thoại | 100 giờ | Dinh thự trên đỉnh đảo, cờ, đèn sáng cả đảo | Máy bay riêng bay vòng quanh đảo, cầu vồng sau mưa |
+| 2 | Băng tinh | 20 phút | Nhà gỗ nhỏ | Xe máy |
+| 3 | Tinh tú | 45 phút | Nhà cấp 4 mái ngói, sân trước | Ô tô con |
+| 4 | Nhiệt huyết | 1,5 giờ | (giữ) | Khinh khí cầu bay lơ lửng trên đảo, bến gỗ nhỏ |
+| 5 | Đam mê | 3 giờ | Nhà phố 2 tầng, ban công | Ca nô ở bến |
+| 6 | Vương miện | 5 giờ | Biệt thự, hồ bơi | Siêu xe đỗ trước cửa |
+| 7 | Chiến cúp | 8 giờ | (giữ), thêm vườn, đèn sân | Du thuyền nhỏ, bến mở rộng |
+| 8 | Kim cương | 12 giờ | Villa ven biển, hồ bơi tràn bờ | Siêu xe thứ hai, du thuyền lớn thay du thuyền nhỏ |
+| 9 | Thạch anh | 16 giờ | (giữ), thêm sân đáp | Trực thăng |
+| 10 | Huyền thoại | 20 giờ | Dinh thự trên đỉnh đảo, cờ, đèn sáng cả đảo | Máy bay riêng bay vòng quanh đảo, cầu vồng sau mưa |
 
 - Bro nhắc cả "máy bay" lẫn "khinh khí cầu": khinh khí cầu ở bậc 4 (sớm, dễ thương), máy bay riêng là
   phần thưởng cuối ở bậc 10.

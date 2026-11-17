@@ -23,8 +23,8 @@ export const PREVIEW_VIEWER: LeaderboardViewer = {
   avatar: "https://randomuser.me/api/portraits/men/52.jpg",
 };
 
-/** Tổng giờ của bạn trên trang xem trước: bậc Đam mê, còn 12 giờ 20 phút lên Vương miện */
-export const PREVIEW_VIEWER_TOTAL_HOURS = 27 + 40 / 60;
+/** Tổng giờ của bạn trên trang xem trước: bậc Chiến cúp, còn 2 giờ 20 phút lên Kim cương */
+export const PREVIEW_VIEWER_TOTAL_HOURS = 9 + 40 / 60;
 
 export const PREVIEW_VIEWER_WEEK_MINUTES = 66;
 
@@ -40,71 +40,71 @@ export const PREVIEW_LEADERBOARD_PEOPLE: PreviewLeaderboardPerson[] = [
     name: "Nguyễn Minh Khang",
     avatar: "https://randomuser.me/api/portraits/men/32.jpg",
     minutes: 252,
-    totalHours: 142,
+    totalHours: 28,
   },
   {
     name: "Trần Bảo Ngọc",
     avatar: "https://randomuser.me/api/portraits/women/44.jpg",
     minutes: 218,
-    totalHours: 71,
+    totalHours: 14,
   },
   {
     name: "Lê Hoàng Phúc",
     avatar: "https://randomuser.me/api/portraits/men/12.jpg",
     minutes: 190,
-    totalHours: 196,
+    totalHours: 36,
   },
   {
     name: "Phạm Thị Thu Hà",
     avatar: "https://randomuser.me/api/portraits/women/65.jpg",
     minutes: 164,
-    totalHours: 44,
+    totalHours: 9,
   },
   {
     name: "Đỗ Quang Huy",
     avatar: "https://randomuser.me/api/portraits/men/41.jpg",
     minutes: 151,
-    totalHours: 95,
+    totalHours: 19,
   },
   {
     name: "Võ Nguyễn Ngọc Anh Thư (Frontend Developer tại Đà Nẵng)",
     avatar: "https://randomuser.me/api/portraits/women/21.jpg",
     minutes: 139,
-    totalHours: 17,
+    totalHours: 3.5,
   },
-  { name: "Bùi Tuấn Kiệt", avatar: "", minutes: 122, totalHours: 9 },
+  { name: "Bùi Tuấn Kiệt", avatar: "", minutes: 122, totalHours: 2 },
   {
     name: "Hoàng Gia Bảo",
     avatar: "https://randomuser.me/api/portraits/men/76.jpg",
     minutes: 108,
-    totalHours: 26,
+    totalHours: 5.5,
   },
   {
     name: "Mai Phương Linh",
     avatar: "https://randomuser.me/api/portraits/women/33.jpg",
     minutes: 96,
-    totalHours: 31,
+    totalHours: 6,
   },
   {
     name: "Đặng Quốc Việt",
     avatar: "https://randomuser.me/api/portraits/men/64.jpg",
     minutes: 88,
-    totalHours: 0.5,
+    totalHours: 0.3,
   },
-  { name: "Phan Minh Đức", avatar: "", minutes: 80, totalHours: 4 },
+  { name: "Phan Minh Đức", avatar: "", minutes: 80, totalHours: 0.9 },
   {
     name: "Ngô Thanh Tâm",
     avatar: "https://randomuser.me/api/portraits/women/8.jpg",
     minutes: 74,
-    totalHours: 5,
+    totalHours: 1,
   },
   {
     name: "Lý Gia Hân",
     avatar: "https://randomuser.me/api/portraits/women/12.jpg",
     minutes: 71,
-    totalHours: 12,
+    totalHours: 2.5,
   },
-  { name: "Trịnh Văn Nam", avatar: "", minutes: 61, totalHours: 2 },
+  { name: "Trịnh Văn Nam", avatar: "", minutes: 61, totalHours: 0.4 },
 ];
 
 export const PREVIEW_STREAK_STATUSES: StreakStatus[] = [
