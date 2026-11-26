@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   getYoutubeVideoId,
+  getYoutubeWatchUrl,
   isValidEmbedVideoInput,
   parseEmbedVideo,
 } from "./video-embed.utils";
@@ -88,5 +89,23 @@ describe("isValidEmbedVideoInput", () => {
     expect(isValidEmbedVideoInput("")).toBe(true);
     expect(isValidEmbedVideoInput("https://youtu.be/dQw4w9WgXcQ")).toBe(true);
     expect(isValidEmbedVideoInput("https://vimeo.com/123456")).toBe(false);
+  });
+});
+
+describe("getYoutubeWatchUrl", () => {
+  it("dựng link watch từ link rút gọn hoặc mã iframe", () => {
+    expect(getYoutubeWatchUrl("https://youtu.be/dQw4w9WgXcQ")).toBe(
+      "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    );
+    expect(
+      getYoutubeWatchUrl(
+        '<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe>',
+      ),
+    ).toBe("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+  });
+
+  it("trả về rỗng khi không phải link YouTube", () => {
+    expect(getYoutubeWatchUrl("")).toBe("");
+    expect(getYoutubeWatchUrl("https://vimeo.com/123456")).toBe("");
   });
 });

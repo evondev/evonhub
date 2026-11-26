@@ -8,23 +8,30 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Sparkles } from "lucide-react";
+// Import thẳng từ file: hộp nằm trong layout của mọi trang, barrel của course
+// kéo theo nhiều component không dùng tới
+import { VideoCover } from "@/modules/course/components/video-cover";
+import { formatVideoMeta } from "@/modules/course/utils/video-list.utils";
+import { Play, Sparkles, Youtube } from "lucide-react";
 import { useFeatureAnnouncement } from "../hooks/use-feature-announcement";
-import { buildFeatureAnnouncementItems } from "../utils";
-import { FeatureAnnouncementCard } from "./feature-announcement-card";
+import { AnnouncedVideoLink } from "./announced-video-link";
 
 interface FeatureAnnouncementDialogProps {
   isEnabled: boolean;
 }
 
-/** Hộp "Có gì mới" bật một lần cho mỗi người sau khi đăng nhập */
+/**
+ * Hộp giới thiệu video mới, bật một lần cho mỗi người sau khi đăng nhập. Ảnh bìa
+ * và nút chính đều mở video (YouTube ở tab mới), bấm là đóng hộp luôn
+ */
 export function FeatureAnnouncementDialog({
   isEnabled,
 }: FeatureAnnouncementDialogProps) {
-  const { isOpen, setIsOpen, username } = useFeatureAnnouncement({
-    isEnabled,
-  });
-  const announcementItems = buildFeatureAnnouncementItems(username);
+  const { isOpen, setIsOpen, video } = useFeatureAnnouncement({ isEnabled });
+
+  if (!video) return null;
+
+  const watchLabel = video.youtubeUrl ? "Xem trên YouTube" : "Xem video";
 
   function handleClose() {
     setIsOpen(false);
@@ -36,25 +43,49 @@ export function FeatureAnnouncementDialog({
         <DialogHeader className="pr-8 text-left">
           <span className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary-strong">
             <Sparkles className="size-3.5" aria-hidden />
-            Mới trên EvonHub
+            Video mới trên EvonHub
           </span>
-          <DialogTitle className="text-lg font-semibold text-foreground">
-            {announcementItems.length} tính năng mới đang chờ bạn
+          <DialogTitle className="text-pretty text-lg font-semibold text-foreground">
+            {video.title}
           </DialogTitle>
           <DialogDescription className="mt-1 text-pretty text-sm/6 text-muted">
-            Mình vừa làm xong, bạn ghé thử nhé.
+            Mình vừa làm xong video này, bạn xem thử nhé. {formatVideoMeta(video)}
           </DialogDescription>
         </DialogHeader>
-        <div className="mt-5 flex flex-col gap-3">
-          {announcementItems.map((item) => (
-            <FeatureAnnouncementCard
-              key={item.id}
-              item={item}
-              onNavigate={handleClose}
-            />
-          ))}
-        </div>
-        <Button variant="ghost" onClick={handleClose} className="mt-4 w-full">
+        <AnnouncedVideoLink
+          video={video}
+          onClick={handleClose}
+          aria-label={`${watchLabel}: ${video.title}`}
+          className="group relative mt-5 block overflow-hidden rounded-xl border border-border outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+        >
+          <VideoCover video={video} sizes="448px" isPriority />
+          <span className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/15 motion-reduce:transition-none">
+            <span className="flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-white/40 transition-transform group-hover:scale-110 motion-reduce:transition-none">
+              <Play className="size-6 translate-x-0.5 fill-current" aria-hidden />
+            </span>
+          </span>
+        </AnnouncedVideoLink>
+        <Button
+          asChild
+          variant="primary"
+          size="lg"
+          className="mt-5 w-full font-semibold"
+        >
+          <AnnouncedVideoLink video={video} onClick={handleClose}>
+            {video.youtubeUrl ? (
+              <Youtube className="size-5" aria-hidden />
+            ) : (
+              <Play className="size-4 fill-current" aria-hidden />
+            )}
+            {watchLabel}
+          </AnnouncedVideoLink>
+        </Button>
+        <Button
+          variant="ghost"
+          size="lg"
+          onClick={handleClose}
+          className="mt-2 w-full font-normal"
+        >
           Để sau
         </Button>
       </DialogContent>

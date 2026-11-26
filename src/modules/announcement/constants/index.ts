@@ -1,5 +1,8 @@
-/** Trang 3D khu đất theo bậc học, mỗi người một đường dẫn `/house/<username>` */
-export const HOUSE_PATH = "/house";
+/**
+ * Slug của video đang giới thiệu trong hộp thông báo. Đổi video thì đổi luôn
+ * `FEATURE_ANNOUNCEMENT_ID` để người đã xem đợt trước thấy hộp thêm một lần
+ */
+export const ANNOUNCED_VIDEO_SLUG = "developer-hoc-tieng-anh-the-nao";
 
 /** Chờ trang hiện xong rồi mới bật hộp, không chặn ngay cú nhìn đầu */
 export const FEATURE_ANNOUNCEMENT_DELAY_MS = 800;

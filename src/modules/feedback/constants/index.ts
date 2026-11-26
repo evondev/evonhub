@@ -15,10 +15,10 @@ export const FEEDBACK_SEARCH_USER_LIMIT = 200;
 export const FEEDBACK_SKELETON_ROW_COUNT = 5;
 
 /**
- * Tự bật hộp góp ý khi vào web (bật lại 2026-11-20). Đổi thành false để tắt,
- * nút "Góp ý" trên header vẫn mở được
+ * Tạm tắt tự bật hộp góp ý khi vào web (2026-11-26), nhường chỗ cho hộp giới
+ * thiệu video mới. Nút "Góp ý" trên header vẫn mở được. Bật lại thì đổi thành true
  */
-export const IS_FEEDBACK_AUTO_PROMPT_ENABLED = true;
+export const IS_FEEDBACK_AUTO_PROMPT_ENABLED = false;
 
 /** Chờ trang hiện xong rồi mới bật hộp, không chặn ngay cú nhìn đầu */
 export const FEEDBACK_PROMPT_DELAY_MS = 1500;
