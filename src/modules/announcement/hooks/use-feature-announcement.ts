@@ -3,11 +3,12 @@
 import { useUserContext } from "@/components/user-context";
 import { getUserByIdOptions } from "@/modules/user/services";
 import { FEATURE_ANNOUNCEMENT_ID } from "@/shared/constants/announcement.constants";
+import { QUERY_KEYS } from "@/shared/constants/react-query.constants";
 import { UserInfoData } from "@/shared/types/user.types";
 import { isFeatureAnnouncementPending } from "@/shared/utils/announcement.utils";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { markFeatureAnnouncementSeen } from "../actions";
+import { fetchAnnouncedVideo, markFeatureAnnouncementSeen } from "../actions";
 import { FEATURE_ANNOUNCEMENT_DELAY_MS } from "../constants";
 import {
   hasSeenAnnouncementLocally,
@@ -20,9 +21,10 @@ interface UseFeatureAnnouncementProps {
 }
 
 /**
- * Hộp giới thiệu tính năng mới: bật đúng một lần cho mỗi người. Ghi "đã xem"
- * ngay lúc bật (server lẫn localStorage), nên đóng, bấm "Để sau", tải lại trang
- * hay đổi máy đều không bật lại
+ * Hộp giới thiệu video mới: bật đúng một lần cho mỗi người. Ghi "đã xem" ngay
+ * lúc bật (server lẫn localStorage), nên đóng, bấm "Để sau", tải lại trang hay
+ * đổi máy đều không bật lại. Chỉ tải video khi người này còn chưa xem; không lấy
+ * được video thì không bật và cũng không ghi "đã xem"
  */
 export function useFeatureAnnouncement({
   isEnabled,
@@ -32,10 +34,19 @@ export function useFeatureAnnouncement({
   const [isOpen, setIsOpen] = useState(false);
   const isPending = isEnabled && isFeatureAnnouncementPending(userInfo);
   const clerkUserId = userInfo?.clerkId || "";
+  const { data: video } = useQuery({
+    queryKey: [QUERY_KEYS.GET_ANNOUNCED_VIDEO],
+    queryFn: () => fetchAnnouncedVideo(),
+    enabled: isPending,
+    staleTime: Infinity,
+  });
+  const isVideoReady = Boolean(video);
 
   useEffect(() => {
+    if (!isPending || !isVideoReady) return;
+
     // localStorage đọc trong effect: server không có, đọc lúc render sẽ lệch hydrate
-    if (!isPending || hasSeenAnnouncementLocally(clerkUserId)) return;
+    if (hasSeenAnnouncementLocally(clerkUserId)) return;
 
     const openAnnouncementTimer = setTimeout(() => {
       setIsOpen(true);
@@ -57,7 +68,7 @@ export function useFeatureAnnouncement({
     }, FEATURE_ANNOUNCEMENT_DELAY_MS);
 
     return () => clearTimeout(openAnnouncementTimer);
-  }, [isPending, clerkUserId, queryClient]);
+  }, [isPending, isVideoReady, clerkUserId, queryClient]);
 
-  return { isOpen, setIsOpen, username: userInfo?.username };
+  return { isOpen, setIsOpen, video };
 }
